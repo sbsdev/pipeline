@@ -6,7 +6,6 @@ import static org.daisy.pipeline.pax.exam.Options.logbackClassic;
 import static org.daisy.pipeline.pax.exam.Options.logbackConfigFile;
 import static org.daisy.pipeline.pax.exam.Options.mavenBundle;
 import static org.daisy.pipeline.pax.exam.Options.mavenBundlesWithDependencies;
-import static org.daisy.pipeline.pax.exam.Options.pipelineModule;
 import static org.daisy.pipeline.pax.exam.Options.thisBundle;
 import static org.daisy.pipeline.pax.exam.Options.xprocspec;
 import static org.daisy.pipeline.pax.exam.Options.xspec;
@@ -17,7 +16,6 @@ import org.ops4j.pax.exam.util.PathUtils;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemPackage;
 
 public class PaxExamConfig {
