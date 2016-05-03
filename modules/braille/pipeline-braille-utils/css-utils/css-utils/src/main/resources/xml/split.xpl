@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <p:declare-step xmlns:p="http://www.w3.org/ns/xproc"
+                xmlns:px="http://www.daisy.org/ns/pipeline/xproc"
                 xmlns:pxi="http://www.daisy.org/ns/pipeline/xproc/internal"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:css="http://www.daisy.org/ns/pipeline/braille-css"
@@ -47,17 +48,21 @@
         </p:documentation>
     </p:output>
     
+    <p:import href="http://www.daisy.org/pipeline/modules/common-utils/library.xpl"/>
+    
     <p:identity>
         <p:input port="source">
             <p:document href="split.xsl"/>
         </p:input>
     </p:identity>
+    <px:message message="[progress css:split 1]"/>
     <p:add-attribute match="/*/*[@name='split-before']" attribute-name="match">
         <p:with-option name="attribute-value" select="$split-before"/>
     </p:add-attribute>
     <p:add-attribute match="/*/*[@name='split-after']" attribute-name="match">
         <p:with-option name="attribute-value" select="$split-after"/>
     </p:add-attribute>
+    <px:message message="[progress css:split 99 split.xsl]"/>
     <p:identity name="css-split.compiled-xslt"/>
     
     <p:xslt name="css-split.xslt">

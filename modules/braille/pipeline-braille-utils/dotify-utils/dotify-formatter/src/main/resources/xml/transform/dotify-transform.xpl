@@ -17,6 +17,7 @@
 	<p:option name="text-transform" required="true"/>
 	<p:option name="temp-dir" required="true"/>
 	
+	<p:import href="http://www.daisy.org/pipeline/modules/common-utils/library.xpl"/>
 	<p:import href="http://www.daisy.org/pipeline/modules/braille/common-utils/library.xpl"/>
 	<p:import href="http://www.daisy.org/pipeline/modules/braille/dotify-utils/library.xpl"/>
 	<p:import href="../css-to-obfl.xpl"/>
@@ -34,7 +35,11 @@
 	<!-- for debug info -->
 	<p:for-each><p:identity/></p:for-each>
 	
-	<px:transform>
+	<px:message message="[progress px:dotify-transform 50 *] Transforming blocks"/>
+	<px:message severity="DEBUG">
+		<p:with-option name="message" select="concat('px:transform query=',$css-block-transform)"/>
+	</px:message>
+	<px:transform name="dotify-transform.transform">
 		<p:with-option name="query" select="$css-block-transform"/>
 		<p:with-option name="temp-dir" select="$temp-dir"/>
 		<p:input port="parameters">
@@ -45,13 +50,15 @@
 	<!-- for debug info -->
 	<p:for-each><p:identity/></p:for-each>
 	
-	<pxi:css-to-obfl>
+	<px:message message="[progress px:dotify-transform 25 pxi:css-to-obfl] Converting from CSS to OBFL"/>
+	<pxi:css-to-obfl name="dotify-transform.css-to-obfl">
 		<p:with-option name="text-transform" select="$text-transform"/>
 		<p:with-option name="duplex" select="$duplex"/>
 		<p:with-option name="skip-margin-top-of-page" select="$skip-margin-top-of-page"/>
 	</pxi:css-to-obfl>
 	
-	<pxi:obfl-normalize-space/>
+	<px:message message="[progress px:dotify-transform 1 pxi:obfl-normalize-space] Normalizing space"/>
+	<pxi:obfl-normalize-space name="dotify-transform.obfl-normalize-space"/>
 	
 	<p:choose>
 		<p:when test="$output='pef'">
@@ -59,6 +66,7 @@
 			<!-- for debug info -->
 			<p:for-each><p:identity/></p:for-each>
 				
+			<px:message message="[progress px:dotify-transform 24 css-to-obfl] Converting from OBFL to PEF"/>
 			<dotify:obfl-to-pef locale="und">
 				<p:with-option name="mode" select="$text-transform"/>
 				<p:input port="parameters">
@@ -67,6 +75,7 @@
 			</dotify:obfl-to-pef>
 		</p:when>
 		<p:otherwise>
+			<px:message message="[progress px:dotify-transform 24]"/>
 			<p:identity/>
 		</p:otherwise>
 	</p:choose>

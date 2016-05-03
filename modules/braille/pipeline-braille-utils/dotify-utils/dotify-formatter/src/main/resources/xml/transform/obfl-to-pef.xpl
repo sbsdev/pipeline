@@ -14,10 +14,12 @@
 	<p:input port="parameters" kind="parameter" primary="false"/>
 	
 	<p:import href="../obfl-normalize-space.xpl"/>
+	<p:import href="http://www.daisy.org/pipeline/modules/common-utils/library.xpl"/>
 	<p:import href="http://www.daisy.org/pipeline/modules/braille/dotify-utils/library.xpl"/>
 	
 	<pxi:obfl-normalize-space/>
 	
+	<px:message message="[progress px:dotify-obfl-to-pef 100 dotify:obfl-to-pef]"/>
 	<dotify:obfl-to-pef locale="und">
 		<p:with-option name="mode" select="$text-transform"/>
 		<p:input port="parameters">

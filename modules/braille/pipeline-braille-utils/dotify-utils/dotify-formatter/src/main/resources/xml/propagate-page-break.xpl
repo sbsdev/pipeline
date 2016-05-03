@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <p:declare-step xmlns:p="http://www.w3.org/ns/xproc"
+                xmlns:px="http://www.daisy.org/ns/pipeline/xproc"
                 xmlns:pxi="http://www.daisy.org/ns/pipeline/xproc/internal"
                 xmlns:css="http://www.daisy.org/ns/pipeline/braille-css"
                 type="pxi:propagate-page-break"
@@ -46,6 +47,8 @@
         </p:documentation>
     </p:output>
     
+    <p:import href="http://www.daisy.org/pipeline/modules/common-utils/library.xpl"/>
+    
     <p:label-elements match="css:box[some $page in @css:page satisfies
                                      preceding::css:box[@type='inline'][1][not((ancestor-or-self::*/@css:page)[last()][.=$page])]]"
                       attribute="css:start-page"
@@ -63,6 +66,7 @@
                       attribute="css:end-volume"
                       label="@css:volume"/>
     
+    <px:message message="[progress pxi:propagate-page-break 100 propagate-page-break.xsl]"/>
     <p:xslt>
         <p:input port="stylesheet">
             <p:document href="propagate-page-break.xsl"/>

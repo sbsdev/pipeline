@@ -24,12 +24,16 @@
     <p:option name="ascii-file-format" select="''"/>
     <p:option name="ascii-table" select="''"/>
     
+    <p:import href="http://www.daisy.org/pipeline/modules/common-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl"/>
     
     <!-- ========= -->
     <!-- STORE PEF -->
     <!-- ========= -->
-    <pef:store>
+    <px:message>
+        <p:with-option name="message" select="concat('[progress px:dtbook-to-pef.store ',(if ($include-obfl='true') then '90' else '100'),' pef:store] Storing PEF',(if ($include-brf='true') then ', BRF' else ''),(if ($include-preview='true') then ' and HTML preview' else ''))"/>
+    </px:message>
+    <pef:store name="pef-store">
         <p:with-option name="href" select="concat($pef-output-dir,'/',$name,'.pef')"/>
         <p:with-option name="preview-href" select="if ($include-preview='true' and $preview-output-dir!='')
                                                    then concat($preview-output-dir,'/',$name,'.pef.html')
@@ -46,21 +50,20 @@
     <!-- ========== -->
     <!-- STORE OBFL -->
     <!-- ========== -->
+    <p:identity>
+        <p:input port="source">
+            <p:pipe step="main" port="obfl"/>
+        </p:input>
+    </p:identity>
     <p:choose>
         <p:when test="$include-obfl='true'">
+            <px:message message="[progress px:dtbook-to-pef.store 10 p:store] Storing OBFL"/>
             <p:store>
-                <p:input port="source">
-                    <p:pipe step="main" port="obfl"/>
-                </p:input>
                 <p:with-option name="href" select="concat($pef-output-dir,'/',$name,'.obfl')"/>
             </p:store>
         </p:when>
         <p:otherwise>
-            <p:sink>
-                <p:input port="source">
-                    <p:empty/>
-                </p:input>
-            </p:sink>
+            <p:sink/>
         </p:otherwise>
     </p:choose>
     
