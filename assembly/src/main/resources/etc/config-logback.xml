@@ -21,6 +21,17 @@
     </sift>
   </appender>
 
+  <appender name="EVENTBUS" class="org.daisy.pipeline.logging.EventBusAppender">
+    <filter class="org.daisy.pipeline.logging.ThresholdFilter">
+      <rootLevel>INFO</rootLevel>
+      <loggerLevels>
+        cz.vutbr.web=WARN
+        org.daisy.common.xproc.calabash.steps.Message=OFF
+        com.xmlcalabash.runtime.XAtomicStep=OFF
+      </loggerLevels>
+    </filter>
+  </appender>
+
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <filter class="org.daisy.pipeline.logging.OSGIFilter"/>   
     <file>${org.daisy.pipeline.logdir}/daisy-pipeline.log</file>
@@ -49,6 +60,7 @@
     <appender-ref ref="FILE"/>
     <appender-ref ref="STDOUT"/>
     <appender-ref ref="JOB"/>
+    <appender-ref ref="EVENTBUS"/>
   </root>
   <logger name="com.xmlcalabash" level="INFO"/>
   <logger name="org.eclipse.jetty.util.log" level="INFO" />
