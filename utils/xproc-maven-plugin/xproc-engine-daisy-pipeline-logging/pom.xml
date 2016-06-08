@@ -21,6 +21,11 @@
       <version>1.0.11</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.daisy.pipeline</groupId>
+      <artifactId>clientlib-java</artifactId>
+      <version>4.7.0</version>
+    </dependency>
   </dependencies>
   
   <build>
