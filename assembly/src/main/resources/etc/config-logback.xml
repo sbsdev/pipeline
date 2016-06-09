@@ -26,6 +26,9 @@
       <rootLevel>INFO</rootLevel>
       <loggerLevels>
         cz.vutbr.web=WARN
+        org.daisy.pipeline.job.Job=OFF
+        org.daisy.pipeline.job.impl.DefaultJobExecutionService=OFF
+        org.daisy.pipeline.persistence.impl.job.PersistentJob=OFF
         org.daisy.common.xproc.calabash.steps.Message=OFF
         com.xmlcalabash.runtime.XAtomicStep=OFF
       </loggerLevels>
