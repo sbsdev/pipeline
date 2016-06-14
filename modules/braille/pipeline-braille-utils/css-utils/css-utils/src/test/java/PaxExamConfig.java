@@ -44,6 +44,7 @@ public class PaxExamConfig {
 				mavenBundle("org.daisy.pipeline:calabash-adapter:?"),
 				// logging
 				logbackClassic(),
+				mavenBundle("org.daisy.pipeline:logging-appender:?"),
 				// xprocspec
 				xprocspec(),
 				mavenBundle("org.daisy.maven:xproc-engine-daisy-pipeline:?"),
