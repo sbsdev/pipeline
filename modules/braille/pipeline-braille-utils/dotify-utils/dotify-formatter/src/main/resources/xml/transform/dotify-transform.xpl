@@ -50,15 +50,15 @@
 	<!-- for debug info -->
 	<p:for-each><p:identity/></p:for-each>
 	
-	<px:message message="[progress px:dotify-transform 25 pxi:css-to-obfl] Converting from CSS to OBFL"/>
-	<pxi:css-to-obfl name="dotify-transform.css-to-obfl">
+	<px:message message="[progress px:dotify-transform 25 css-to-obfl] Converting from CSS to OBFL"/>
+	<pxi:css-to-obfl>
 		<p:with-option name="text-transform" select="$text-transform"/>
 		<p:with-option name="duplex" select="$duplex"/>
 		<p:with-option name="skip-margin-top-of-page" select="$skip-margin-top-of-page"/>
 	</pxi:css-to-obfl>
 	
-	<px:message message="[progress px:dotify-transform 1 pxi:obfl-normalize-space] Normalizing space"/>
-	<pxi:obfl-normalize-space name="dotify-transform.obfl-normalize-space"/>
+	<px:message message="[progress px:dotify-transform 1 obfl-normalize-space] Normalizing space"/>
+	<pxi:obfl-normalize-space/>
 	
 	<p:choose>
 		<p:when test="$output='pef'">
