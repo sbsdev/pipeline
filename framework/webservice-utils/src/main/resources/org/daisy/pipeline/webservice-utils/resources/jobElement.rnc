@@ -24,6 +24,7 @@ element job {
 			element message { 
 				attribute level { message.level }
 				& attribute sequence { text }
+				& attribute timeStamp { xsd:long }
 				& text
 			}*
 		}?
