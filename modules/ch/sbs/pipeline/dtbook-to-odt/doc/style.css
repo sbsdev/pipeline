@@ -1,0 +1,109 @@
+@namespace text url(urn:oasis:names:tc:opendocument:xmlns:text:1.0);
+@namespace draw url(urn:oasis:names:tc:opendocument:xmlns:drawing:1.0);
+@namespace svg url(urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0);
+
+.src-odt {
+	display: none;
+}
+
+.src-odt + * {
+	display: block;
+	border: 1px solid #ccc;
+	box-shadow: 3px 3px 3px #eee;
+	padding: 8pt;
+	margin: 1em;
+}
+
+/* nxml-mode syntax highlighting */
+
+.org-nxml-element-prefix,
+.org-nxml-attribute-prefix,
+.org-nxml-namespace-attribute-xmlns {
+	color: #9030b0;
+}
+
+.org-nxml-element-local-name {
+	color: #1d58d0;
+}
+
+.org-nxml-text,
+.org-nxml-tag-slash,
+.org-nxml-tag-delimiter,
+.org-nxml-namespace-attribute-colon {
+	color: inherit;
+}
+
+.org-nxml-attribute-local-name,
+.org-nxml-namespace-attribute-prefix {
+	color: #dca000;
+}
+
+.org-nxml-attribute-value,
+.org-nxml-attribute-value-delimiter,
+.org-nxml-namespace-attribute-value-delimiter,
+.org-nxml-namespace-attribute-value {
+	color: #2994a1;
+}
+
+.org-nxml-comment-content,
+.org-nxml-comment-delimiter {
+	color: #8e908c;
+	font-style: italic;
+}
+
+/* odt */
+
+text|h,
+text|p,
+text|section {
+	display: block;
+}
+
+text|span {
+	display: inline;
+	font-size: inherit;
+}
+
+draw|frame {
+	display: inline-block;
+	border: 1px solid #ddd;
+	padding : 2px;
+}
+
+draw|image {
+	display: inline-block;
+	background-size: 100% 100%;
+}
+
+draw|image[href="p188-001.jpg"] {
+	background-image: url("p188-001.jpg");
+	width: 11.76em;  /* 980px / 600dpi x 72pt/in x .1em/pt */
+	height: 7.872em; /* 656px / 600dpi x 72pt/in x .1em/pt */
+}
+
+svg|title {
+	display: none;
+}
+
+/* pilcrow sign indicates forced line breaks */
+
+text|p::after,
+text|h::after {
+	content: "¶";
+	color: #ccc;
+}
+
+/* etext.ott */
+
+text|p,
+text|h {
+	font-family: "Verdana", sans-serif;
+	font-size: 1.2em; /* 12pt x .1em/pt */
+}
+
+text|h[style-name="Überschrift_20_1"] {
+	padding-top: 0.17in;
+	padding-bottom: 0.08in;
+	font-size: 1.61em; /* 16.1pt x .1em/pt */
+	font-weight: bold;
+}

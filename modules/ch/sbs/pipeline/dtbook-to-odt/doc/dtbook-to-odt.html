@@ -1,0 +1,526 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<?xml version="1.0" encoding="utf-8"?><html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>DTBook to ODT</title>
+<!-- 2016-09-07 Wed 16:39 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<meta name="generator" content="Org-mode">
+<meta name="author" content="Bert Frees">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rev="doc" href="../resources/xml/dtbook-to-odt.xpl" vocab="http://www.daisy.org/ns/pipeline/">
+<meta about="../resources/xml/dtbook-to-odt.xpl" property="rdf:type" resource="http://www.daisy.org/ns/pipeline/script">
+<link rel="rdf:type" href="http://www.daisy.org/ns/pipeline/userdoc">
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="script.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012  Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">DTBook to ODT</h1>
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">Headings</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Headings get the paragraph style “Überschrift 1” and are preceded and
+followed by an empty paragraph.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dtbook"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">h1</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">    Klappentext</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">h1</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+<div class="org-src-container">
+
+<pre class="src src-odt"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">Standard</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">h</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">outline-level</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">1</span><span class="org-nxml-attribute-value-delimiter">"</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">Überschrift_20_1</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">Klappentext</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">h</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">Standard</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">Notes</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Small footnotes are rendered inline, directly following the note
+reference, in between round brackets. Inline notes get the character
+style “dtb:note”.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dtbook"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">    Du brauchst</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">noteref</span> <span class="org-nxml-attribute-local-name">idref</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">#t0138</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">*</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">noteref</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text"> nicht zu rennen.</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">note</span> <span class="org-nxml-attribute-local-name">id</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">t0138</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">        * brauchen + zu kann nur negativ oder einschränkend verwendet werden.</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">note</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+<div class="org-src-container">
+
+<pre class="src src-odt"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">    Du brauchst *</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_note</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">        ( * brauchen + zu kann nur negativ oder einschränkend verwendet werden. )</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">    nicht zu rennen.</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+
+<p>
+If the text of a note or note reference does not already start with an
+asterisk (*), an asterisk is prepended.
+</p>
+
+<p>
+Footnotes consisting of several paragraphs are rendered after the
+paragraph that contains the note reference. The paragraph style
+“dtb:note_footnote” is applied.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dtbook"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">noteref</span> <span class="org-nxml-attribute-local-name">idref</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">#t0157</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">+</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">noteref</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">note</span> <span class="org-nxml-attribute-local-name">id</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">t0157</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">        + Sowohl Mozart als auch Schubert waren bedeutende Komponisten.</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">        + Queen Victoria war nicht nur glücklich verheiratet, sondern (sie) hatte auch viele Kinder.</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">note</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+<div class="org-src-container">
+
+<pre class="src src-odt"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">* +</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_note_5f_footnote</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_note</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">( *</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_note_5f_footnote</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_note</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">        + Sowohl Mozart als auch Schubert waren bedeutende Komponisten.</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_note_5f_footnote</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_note</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">        + Queen Victoria war nicht nur glücklich verheiratet, sondern (sie) hatte auch viele Kinder.</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_note_5f_footnote</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_note</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">)</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">Images</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Images can either be embedded, linked or dropped. When embedded or
+linked, an image appears in the document with the same dimensions as
+in the original book, in a paragraph with style “dtb:img”. It is
+assumed that they are scanned at 600 dpi.
+</p>
+
+<p>
+Image captions are always inserted before the image as a paragraph
+with style “dtb:caption”. They are preceded by an empty paragraph,
+and followed by a colon (:).
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dtbook"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">imggroup</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">img</span> <span class="org-nxml-attribute-local-name">id</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">p188-001</span><span class="org-nxml-attribute-value-delimiter">"</span> <span class="org-nxml-attribute-local-name">src</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">p188-001.jpg</span><span class="org-nxml-attribute-value-delimiter">"</span> <span class="org-nxml-attribute-local-name">alt</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">image</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">caption</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">        Der schnellste Vogel im Sturzflug: der Wanderfalke</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">caption</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">imggroup</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+<div class="org-src-container">
+
+<pre class="src src-odt"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">Standard</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_caption</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">Der schnellste Vogel im Sturzflug: der Wanderfalke :</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_img</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">draw</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">frame</span> <span class="org-nxml-attribute-prefix">draw</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb:img#1</span><span class="org-nxml-attribute-value-delimiter">"</span> <span class="org-nxml-attribute-prefix">draw</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_img</span><span class="org-nxml-attribute-value-delimiter">"</span>
+                <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">anchor-type</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">as-char</span><span class="org-nxml-attribute-value-delimiter">"</span> <span class="org-nxml-attribute-prefix">draw</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">z-index</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">0</span><span class="org-nxml-attribute-value-delimiter">"</span>
+                <span class="org-nxml-attribute-prefix">svg</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">width</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">1.6667in</span><span class="org-nxml-attribute-value-delimiter">"</span> <span class="org-nxml-attribute-prefix">svg</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">height</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">1.6667in</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">draw</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">image</span> <span class="org-nxml-attribute-prefix">xlink</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">href</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">p188-001.jpg</span><span class="org-nxml-attribute-value-delimiter">"</span> <span class="org-nxml-attribute-prefix">xlink</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">type</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">simple</span><span class="org-nxml-attribute-value-delimiter">"</span> <span class="org-nxml-attribute-prefix">xlink</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">show</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">embed</span><span class="org-nxml-attribute-value-delimiter">"</span> <span class="org-nxml-attribute-prefix">xlink</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">actuate</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">onLoad</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">svg</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">title</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">image</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">svg</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">title</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">draw</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">frame</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">Exercises</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+
+<pre class="src src-dtbook"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-local-name">class</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">exercisenumber</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">3</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text"> Ergänzen Sie Informationen aus dem Text.</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-local-name">class</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">exercisepart</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">a</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text"> Geburtsdatum: </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-local-name">class</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">answer</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">___</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-local-name">class</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">exercisepart</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">b</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text"> Geburtsort: </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-local-name">class</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">answer</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">___</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+<div class="org-src-container">
+
+<pre class="src src-odt"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_span_5f_exercisenumber</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">3</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">    Ergänzen Sie Informationen aus dem Text.</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_span_5f_exercisepart</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">a</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">    Geburtsdatum:</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">xml</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">lang</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">none</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">_...</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_span_5f_exercisepart</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">b</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">    Geburtsort:</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">xml</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">lang</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">none</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">_...</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">Math</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+
+<pre class="src src-dtbook"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">math</span> <span class="org-nxml-namespace-attribute-xmlns">xmlns</span>=<span class="org-nxml-namespace-attribute-value-delimiter">"</span><span class="org-nxml-namespace-attribute-value">http://www.w3.org/1998/Math/MathML</span><span class="org-nxml-namespace-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">semantics</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">msup</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">mrow</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">mo</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">(</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">mo</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">mn</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">3</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">mn</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">mi</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">x</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">mi</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">mi</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">y</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">mi</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">mo</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">)</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">mo</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">mrow</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">mn</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">2</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">mn</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">msup</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">annotation</span> <span class="org-nxml-attribute-local-name">encoding</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">ASCIIMath</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">(3xy)^2</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">annotation</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">semantics</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">math</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+<div class="org-src-container">
+
+<pre class="src src-odt"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">draw</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">frame</span> <span class="org-nxml-attribute-prefix">draw</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">math:math#1</span><span class="org-nxml-attribute-value-delimiter">"</span> <span class="org-nxml-attribute-prefix">draw</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_math</span><span class="org-nxml-attribute-value-delimiter">"</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">anchor-type</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">as-char</span><span class="org-nxml-attribute-value-delimiter">"</span> <span class="org-nxml-attribute-prefix">draw</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">z-index</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">0</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">draw</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">object</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">math</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">semantics</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">msup</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">mrow</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">mo</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">(</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">mo</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">mn</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">3</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">mn</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">mi</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">x</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">mi</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">mi</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">y</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">mi</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">mo</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">)</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">mo</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">mrow</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">mn</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">2</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">mn</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">msup</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">annotation</span> <span class="org-nxml-attribute-local-name">encoding</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">ASCIIMath</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">(3xy)^2</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">annotation</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">semantics</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">math</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">math</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">draw</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">object</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">svg</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">title</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">(3xy)^2</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">svg</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">title</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">draw</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">frame</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_span_5f_asciimath</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">(3xy)^2</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">Page Numbering</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+
+<pre class="src src-dtbook"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">pagenum</span> <span class="org-nxml-attribute-local-name">id</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">p54</span><span class="org-nxml-attribute-value-delimiter">"</span> <span class="org-nxml-attribute-local-name">page</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">normal</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">54</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">pagenum</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+<div class="org-src-container">
+
+<pre class="src src-odt"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_pagenum</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">xml</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">lang</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">de</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">\\Seite</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text"> 54</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7">Sidebars</h2>
+<div class="outline-text-2" id="text-7">
+<div class="org-src-container">
+
+<pre class="src src-dtbook"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">sidebar</span> <span class="org-nxml-attribute-local-name">render</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">optional</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">        Hohe Redeanteile, Belustigung auf Kosten anderer, Körpersprache („sie dröckte die</span>
+<span class="org-nxml-text">        Fingerkuppen fest ans Holz“), ironische Wiederholung, Sarkasmus, betretenes Schweigen ...</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">sidebar</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+<div class="org-src-container">
+
+<pre class="src src-odt"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">section</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb:sidebar#1</span><span class="org-nxml-attribute-value-delimiter">"</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_sidebar</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">xml</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">lang</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">en</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">[Begin of sidebar]</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">        Hohe Redeanteile, Belustigung auf Kosten anderer, Körpersprache („sie dröckte die</span>
+<span class="org-nxml-text">        Fingerkuppen fest ans Holz“), ironische Wiederholung, Sarkasmus, betretenes Schweigen ...</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">xml</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">lang</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">en</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">[End of sidebar]</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">section</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8">Line Numbering</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-sec-8-1" class="outline-3">
+<h3 id="sec-8-1">Linegroups</h3>
+<div class="outline-text-3" id="text-8-1">
+<div class="org-src-container">
+
+<pre class="src src-dtbook"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">linegroup</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">line</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">linenum</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">15</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">linenum</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text"> Einsamkeit und Hummelgesumm.</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">line</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">linegroup</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+<div class="org-src-container">
+
+<pre class="src src-odt"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">Standard</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_linenum</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">Z 15</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">    Einsamkeit und Hummelgesumm.</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-8-2" class="outline-3">
+<h3 id="sec-8-2">Continuous Text with Line Numbers</h3>
+<div class="outline-text-3" id="text-8-2">
+<div class="org-src-container">
+
+<pre class="src src-dtbook"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-local-name">class</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">precedingemptyline</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">    Dann gibt es noch drei Katzen. Niko bekommt immer einen Schreck, wenn</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-local-name">class</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">linenum</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">5</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">    eine von ihnen um seine Beine streicht. Am schönsten findet er aber die Papageien.</span>
+<span class="org-nxml-text">    Sie sitzen in einem Käfig, der über der Theke hängt. Einer der Papageien ist weiß,</span>
+<span class="org-nxml-text">    </span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span> <span class="org-nxml-attribute-local-name">class</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">linenum</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">10</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">span</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">    der andere quietschgrün. Manchmal kreischen sie.</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+<div class="org-src-container">
+
+<pre class="src src-odt"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">    Dann gibt es noch drei Katzen. Niko bekommt immer einen Schreck, wenn</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">    Z 5 eine von ihnen um seine Beine streicht. Am schönsten findet er aber die Papageien.</span>
+<span class="org-nxml-text">    Sie sitzen in einem Käfig, der über der Theke hängt. Einer der Papageien ist weiß,</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-text">    Z 10 der andere quietschgrün. Manchmal kreischen sie.</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9">Phonetic symbols</h2>
+<div class="outline-text-2" id="text-9">
+<div class="org-src-container">
+
+<pre class="src src-dtbook"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">aunt /ɑːnt/</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">book /bʊk/</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">brother /brʌðǝ(r)/</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">child /tʃaɪld/</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">dtb</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+
+<p>
+Phonetics enabled:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-odt"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">aunt /ɑːnt/</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">book /bʊk/</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">brother /brʌðǝ(r)/</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">child /tʃaɪld/</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+
+<p>
+Phonetics disabled:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-odt"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">aunt /nt/</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">book /bk/</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">brother /brðǝ(r)/</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span> <span class="org-nxml-attribute-prefix">text</span><span class="org-nxml-attribute-colon">:</span><span class="org-nxml-attribute-local-name">style-name</span>=<span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-attribute-value">dtb_3a_p</span><span class="org-nxml-attribute-value-delimiter">"</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">child /tald/</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-prefix">text</span><span class="org-nxml-element-colon">:</span><span class="org-nxml-element-local-name">p</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
