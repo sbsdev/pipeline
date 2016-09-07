@@ -1,6 +1,9 @@
 #+TITLE: DTBook to ODT
 *                                                          :noexport:ARCHIVE:
 #+OPTIONS: num:nil toc:nil ^:nil
+#+HTML_HEAD: <link rev="doc" href="../resources/xml/dtbook-to-odt.xpl" vocab="http://www.daisy.org/ns/pipeline/"/>
+#+HTML_HEAD: <meta about="../resources/xml/dtbook-to-odt.xpl" property="rdf:type" resource="http://www.daisy.org/ns/pipeline/script"/>
+#+HTML_HEAD: <link rel="rdf:type" href="http://www.daisy.org/ns/pipeline/userdoc"/>
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="style.css" />
 #+HTML_HEAD: <script src="script.js"></script>
 #+BEGIN_SRC emacs-lisp

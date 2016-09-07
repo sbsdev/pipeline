@@ -295,6 +295,68 @@
 	  </dataSet>
 	</configuration>
       </plugin>
+      <!--
+	  intended to be called from command line
+      -->
+      <plugin>
+	<artifactId>maven-resources-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <id>default-cli</id>
+	    <phase>none</phase>
+	    <goals>
+	      <goal>copy-resources</goal>
+	    </goals>
+	    <configuration>
+	      <outputDirectory>${project.build.directory}/doc/doc</outputDirectory>
+	      <resources>
+		<resource>
+		  <directory>src/main/doc</directory>
+		  <excludes>
+		    <include>*.org</include>
+		  </excludes>
+		</resource>
+	      </resources>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+      <plugin>
+	<artifactId>maven-jar-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <id>default-cli</id>
+	    <phase>none</phase>
+	    <goals>
+	      <goal>jar</goal>
+	    </goals>
+	    <configuration>
+	      <classifier>doc</classifier>
+	      <classesDirectory>${project.build.directory}/doc</classesDirectory>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+      <plugin>
+	<artifactId>maven-install-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <id>default-cli</id>
+	    <phase>none</phase>
+	    <goals>
+	      <goal>install-file</goal>
+	    </goals>
+	    <configuration>
+	      <file>${project.build.directory}/${project.artifactId}-${project.version}-doc.jar</file>
+	      <groupId>${project.groupId}</groupId>
+	      <artifactId>${project.artifactId}</artifactId>
+	      <version>${project.version}</version>
+	      <classifier>doc</classifier>
+	      <packaging>jar</packaging>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
     </plugins>
   </build>
   
