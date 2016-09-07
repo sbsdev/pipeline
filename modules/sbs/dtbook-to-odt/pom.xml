@@ -8,7 +8,7 @@
   <parent>
     <groupId>ch.sbs.pipeline</groupId>
     <artifactId>modules-parent</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.6-SNAPSHOT</version>
     <relativePath />
   </parent>
   
@@ -20,19 +20,24 @@
   <name>DAISY Pipeline 2 module :: sbs:dtbook-to-odt</name>
   
   <properties>
-    <dtbook-to-odt.version>1.0.0-SNAPSHOT</dtbook-to-odt.version>
     <!--
-	this needs to match the version in script-utils-aggregator
+	this needs to match the version in scripts-aggregator 1.9
     -->
-    <odt-utils.version>1.0.0</odt-utils.version>
+    <dtbook-to-odt.version>1.0.0</dtbook-to-odt.version>
+    <!--
+	this needs to match the version in script-utils-aggregator 1.9
+    -->
+    <odt-utils.version>1.0.1</odt-utils.version>
     <tagNameFormat>v@{project.version}</tagNameFormat>
   </properties>
   
   <dependencies>
+    <!--
+	runtime dependencies
+    -->
     <dependency>
       <groupId>org.daisy.pipeline.modules</groupId>
       <artifactId>dtbook-to-odt</artifactId>
-      <version>${dtbook-to-odt.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -47,14 +52,25 @@
     </dependency>
     <dependency>
       <groupId>org.daisy.pipeline.modules</groupId>
-      <artifactId>image-utils</artifactId>
+      <artifactId>file-utils</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.daisy.pipeline.modules</groupId>
-      <artifactId>asciimath-utils</artifactId>
-      <scope>test</scope>
+    <!--
+	for dtbook-to-odt
+    -->
+  <dependency>
+    <groupId>org.daisy.pipeline.modules</groupId>
+    <artifactId>image-utils</artifactId>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.daisy.pipeline.modules</groupId>
+    <artifactId>asciimath-utils</artifactId>
+    <scope>test</scope>
     </dependency>
+    <!--
+	for odt-utils
+    -->
     <dependency>
       <groupId>org.daisy.pipeline.modules</groupId>
       <artifactId>fileset-utils</artifactId>
@@ -62,7 +78,7 @@
     </dependency>
     <dependency>
       <groupId>org.daisy.pipeline.modules</groupId>
-      <artifactId>file-utils</artifactId>
+      <artifactId>zip-utils</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -70,14 +86,12 @@
       <artifactId>common-utils</artifactId>
       <scope>test</scope>
     </dependency>
+    <!--
+	other transitive dependencies
+    -->
     <dependency>
       <groupId>org.daisy.pipeline.modules</groupId>
       <artifactId>html-utils</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.daisy.pipeline.modules</groupId>
-      <artifactId>zip-utils</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -95,6 +109,9 @@
       <artifactId>dtbook-validator</artifactId>
       <scope>test</scope>
     </dependency>
+    <!--
+	test dependencies
+    -->
     <dependency>
       <groupId>org.daisy.maven</groupId>
       <artifactId>xproc-engine-daisy-pipeline</artifactId>
@@ -253,6 +270,9 @@
 		<prefix>/opt/daisy-pipeline2/modules</prefix>
 	      </mapper>
 	    </data>
+	    <!--
+		dtbook-to-odt is not in pipeline-assembly yet
+	    -->
 	    <data>
 	      <type>file</type>
 	      <src>target/dependency/org.daisy.pipeline.modules.dtbook-to-odt-${dtbook-to-odt.version}.jar</src>
@@ -262,7 +282,7 @@
 	      </mapper>
 	    </data>
 	    <!--
-		odt-utils is not in pipeline-assembly 1.8 yet
+		odt-utils is not in pipeline-assembly yet
 	    -->
 	    <data>
 	      <type>file</type>

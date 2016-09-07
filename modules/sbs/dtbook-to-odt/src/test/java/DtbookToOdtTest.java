@@ -6,10 +6,12 @@ import org.daisy.maven.xproc.xprocspec.XProcSpecRunner;
 
 import static org.daisy.pipeline.pax.exam.Options.calabashConfigFile;
 import static org.daisy.pipeline.pax.exam.Options.felixDeclarativeServices;
-import static org.daisy.pipeline.pax.exam.Options.logbackBundles;
+import static org.daisy.pipeline.pax.exam.Options.logbackClassic;
 import static org.daisy.pipeline.pax.exam.Options.logbackConfigFile;
+import static org.daisy.pipeline.pax.exam.Options.mavenBundle;
+import static org.daisy.pipeline.pax.exam.Options.mavenBundlesWithDependencies;
 import static org.daisy.pipeline.pax.exam.Options.pipelineModule;
-import static org.daisy.pipeline.pax.exam.Options.xprocspecBundles;
+import static org.daisy.pipeline.pax.exam.Options.xprocspec;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +26,6 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.util.PathUtils;
 
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 @RunWith(PaxExam.class)
@@ -36,23 +37,30 @@ public class DtbookToOdtTest {
 		return options(
 			logbackConfigFile(),
 			calabashConfigFile(),
-			logbackBundles(),
 			felixDeclarativeServices(),
-			pipelineModule("file-utils"),
-			pipelineModule("common-utils"),
-			pipelineModule("html-utils"),
-			pipelineModule("zip-utils"),
-			pipelineModule("mediatype-utils"),
-			pipelineModule("fileset-utils"),
-			pipelineModule("validation-utils"),
-			pipelineModule("dtbook-validator"),
-			pipelineModule("dtbook-utils"),
-			pipelineModule("image-utils"),
-			pipelineModule("asciimath-utils"),
-			pipelineModule("odt-utils"),
-			pipelineModule("dtbook-to-odt"),
-			xprocspecBundles(),
-			junitBundles()
+			junitBundles(),
+			mavenBundlesWithDependencies(
+				pipelineModule("dtbook-to-odt"),
+				pipelineModule("odt-utils"),
+				pipelineModule("dtbook-utils"),
+				pipelineModule("file-utils"),
+				// for dtbook-to-odt
+				pipelineModule("image-utils"),
+				pipelineModule("asciimath-utils"),
+				// for odt-utils
+				pipelineModule("fileset-utils"),
+				pipelineModule("zip-utils"),
+				pipelineModule("common-utils"),
+				// other transitive dependencies
+				pipelineModule("html-utils"),
+				pipelineModule("mediatype-utils"),
+				pipelineModule("validation-utils"),
+				pipelineModule("dtbook-validator"),
+				// logging
+				logbackClassic(),
+				// xprocspec
+				xprocspec(),
+				mavenBundle("org.daisy.maven:xproc-engine-daisy-pipeline:?"))
 		);
 	}
 	
