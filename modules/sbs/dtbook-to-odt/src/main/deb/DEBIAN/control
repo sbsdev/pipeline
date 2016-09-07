@@ -1,0 +1,9 @@
+Package: ${project.artifactId}
+Version: ${project.detailedVersion}
+Section: text
+Priority: optional
+Architecture: all
+Depends: daisy-pipeline2
+Maintainer: Christian Egli <christian.egli@sbs.ch>
+Description: DTBook to ODT converter module for DAISY Pipeline2
+Homepage: https://github.com/sbsdev/dtbook-to-odt

@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x:description xmlns:x="http://www.daisy.org/ns/xprocspec"
+               xmlns:p="http://www.w3.org/ns/xproc"
+               xmlns:pxi="http://www.daisy.org/ns/pipeline/xproc/internal"
+               xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
+               xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+               xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0"
+               xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0"
+               xmlns:xlink="http://www.w3.org/1999/xlink">
+  
+  <x:script>
+    <p:pipeline type="pxi:test-content" name="main" version="1.0">
+      <p:xslt>
+        <p:input port="source">
+          <p:inline>
+            <template/>
+          </p:inline>
+          <p:pipe step="main" port="source"/>
+        </p:input>
+        <p:input port="stylesheet">
+          <p:inline>
+            <xsl:stylesheet version="2.0"
+                            xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                            xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                            xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                            xmlns:pf="http://www.daisy.org/ns/pipeline/functions"
+                            xmlns:xlink="http://www.w3.org/1999/xlink">
+              
+              <xsl:import href="../../main/resources/xml/content-sbs.xsl"/>
+              <xsl:import href="http://www.daisy.org/pipeline/modules/file-utils/uri-functions.xsl"/>
+              
+              <xsl:template match="/">
+                <xsl:variable name="result" as="element()*">
+                  <xsl:apply-templates select="collection()[2]/*" mode="office:text"/>
+                </xsl:variable>
+                <xsl:apply-templates select="$result" mode="post"/>
+              </xsl:template>
+              
+              <xsl:template match="/wrapper" mode="office:text">
+                <xsl:copy>
+                  <xsl:apply-templates select="*" mode="#current"/>
+                </xsl:copy>
+              </xsl:template>
+              
+              <xsl:template match="@*|node()" mode="post">
+                <xsl:copy>
+                  <xsl:apply-templates select="@*|node()" mode="#current"/>
+                </xsl:copy>
+              </xsl:template>
+              
+              <!--
+                  Relativize image hrefs
+              -->
+              <xsl:template match="@xlink:href" mode="post">
+                <xsl:attribute name="xlink:href" select="pf:relativize-uri(string(.), base-uri(collection()[2]/*))"/>
+              </xsl:template>
+              
+              <!--
+                  Make it possible to reference non-existing images in tests
+              -->
+              <xsl:function name="pf:image-dimensions" as="xs:integer*">
+                <xsl:param name="src" as="xs:anyURI"/>
+                <xsl:sequence select="(1000,1000)"/>
+              </xsl:function>
+              
+            </xsl:stylesheet>
+          </p:inline>
+        </p:input>
+      </p:xslt>
+    </p:pipeline>
+  </x:script>
+  
+  <!-- ======== -->
+  <!-- HEADINGS -->
+  <!-- ======== -->
+  
+  <x:scenario label="headings">
+    <x:call step="pxi:test-content">
+      <x:input port="source">
+        <x:document type="inline">
+          <wrapper>
+            <dtb:h1>Klappentext</dtb:h1>
+          </wrapper>
+        </x:document>
+      </x:input>
+    </x:call>
+    <x:context label="result">
+      <x:document type="port" port="result"/>
+    </x:context>
+    <x:expect label="result" type="compare">
+      <x:document type="inline">
+        <wrapper>
+          <text:p text:style-name="Standard"/>
+          <text:h text:outline-level="1" text:style-name="Überschrift_20_1">Klappentext</text:h>
+          <text:p text:style-name="Standard"/>
+        </wrapper>
+      </x:document>
+    </x:expect>
+  </x:scenario>
+  
+  <!-- ===== -->
+  <!-- NOTES -->
+  <!-- ===== -->
+  
+  <x:scenario label="one paragraph in a note">
+    <x:call step="pxi:test-content">
+      <x:input port="source">
+        <x:document type="inline">
+          <wrapper>
+            <dtb:p>
+              Du brauchst<dtb:noteref idref="#t0138">*</dtb:noteref> nicht zu rennen.
+            </dtb:p>
+            <dtb:note id="t0138">
+              <dtb:p>
+                * brauchen + zu kann nur negativ oder einschränkend verwendet werden.
+              </dtb:p>
+            </dtb:note>
+          </wrapper>
+        </x:document>
+      </x:input>
+    </x:call>
+    <x:context label="result">
+      <x:document type="port" port="result"/>
+    </x:context>
+    <x:expect label="result" type="compare">
+      <x:document type="inline">
+        <wrapper>
+          <text:p text:style-name="dtb_3a_p">
+            Du brauchst *
+            <text:span text:style-name="dtb_3a_note">
+              ( * brauchen + zu kann nur negativ oder einschränkend verwendet werden. )
+            </text:span>
+            nicht zu rennen.
+          </text:p>
+        </wrapper>
+      </x:document>
+    </x:expect>
+  </x:scenario>
+  
+  <x:scenario label="two paragraphs in a note">
+    <x:call step="pxi:test-content">
+      <x:input port="source">
+        <x:document type="inline">
+          <wrapper>
+            <dtb:p>
+              <dtb:noteref idref="#t0157">+</dtb:noteref>
+            </dtb:p>
+            <dtb:note id="t0157">
+              <dtb:p>
+                + Sowohl Mozart als auch Schubert waren bedeutende Komponisten.
+              </dtb:p>
+              <dtb:p>
+                + Queen Victoria war nicht nur glücklich verheiratet, sondern (sie) hatte auch viele Kinder.
+              </dtb:p>
+            </dtb:note>
+          </wrapper>
+        </x:document>
+      </x:input>
+    </x:call>
+    <x:context label="result">
+      <x:document type="port" port="result"/>
+    </x:context>
+    <x:expect label="result" type="compare">
+      <x:document type="inline">
+        <wrapper>
+          <text:p text:style-name="dtb_3a_p">* +</text:p>
+          <text:p text:style-name="dtb_3a_note_5f_footnote">
+            <text:span text:style-name="dtb_3a_note">( *</text:span>
+          </text:p>
+          <text:p text:style-name="dtb_3a_note_5f_footnote">
+            <text:span text:style-name="dtb_3a_note">
+              + Sowohl Mozart als auch Schubert waren bedeutende Komponisten.
+            </text:span>
+          </text:p>
+          <text:p text:style-name="dtb_3a_note_5f_footnote">
+            <text:span text:style-name="dtb_3a_note">
+              + Queen Victoria war nicht nur glücklich verheiratet, sondern (sie) hatte auch viele Kinder.
+            </text:span>
+          </text:p>
+          <text:p text:style-name="dtb_3a_note_5f_footnote">
+            <text:span text:style-name="dtb_3a_note">)</text:span>
+          </text:p>
+        </wrapper>
+      </x:document>
+    </x:expect>
+  </x:scenario>
+  
+  <!-- ====== -->
+  <!-- IMAGES -->
+  <!-- ====== -->
+  
+  <x:scenario label="images">
+    <x:call step="pxi:test-content">
+      <x:input port="source">
+        <x:document type="inline">
+          <wrapper>
+            <dtb:imggroup>
+              <dtb:img id="p188-001" src="p188-001.jpg" alt="image"/>
+              <dtb:caption>
+                Der schnellste Vogel im Sturzflug: der Wanderfalke
+              </dtb:caption>
+            </dtb:imggroup>
+          </wrapper>
+        </x:document>
+      </x:input>
+    </x:call>
+    <x:scenario label="image with caption">
+      <x:call/>
+      <x:context label="result">
+        <x:document type="port" port="result"/>
+      </x:context>
+      <x:expect label="result" type="compare">
+        <x:document type="inline">
+          <wrapper>
+            <text:p text:style-name="Standard"/>
+            <text:p text:style-name="dtb_3a_caption">Der schnellste Vogel im Sturzflug: der Wanderfalke :</text:p>
+            <text:p text:style-name="dtb_3a_img">
+              <draw:frame draw:name="dtb:img#1" draw:style-name="dtb_3a_img"
+                          text:anchor-type="as-char" draw:z-index="0"
+                          svg:width="1.6667in" svg:height="1.6667in">
+                <draw:image xlink:href="p188-001.jpg" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
+                <svg:title>image</svg:title>
+              </draw:frame>
+            </text:p>
+          </wrapper>
+        </x:document>
+      </x:expect>
+    </x:scenario>
+    <x:scenario label="drop image">
+      <x:call>
+        <x:param name="images" select="'DROP'"/>
+      </x:call>
+      <x:context label="result">
+        <x:document type="port" port="result"/>
+      </x:context>
+      <x:expect label="result" type="compare">
+        <x:document type="inline">
+          <wrapper/>
+        </x:document>
+      </x:expect>
+    </x:scenario>
+  </x:scenario>
+  
+  <!-- ========= -->
+  <!-- EXERCISES -->
+  <!-- ========= -->
+  
+  <x:scenario label="exercise with parts and answers">
+    <x:call step="pxi:test-content">
+      <x:input port="source">
+        <x:document type="inline">
+          <wrapper>
+            <dtb:p>
+              <dtb:span class="exercisenumber">3</dtb:span> Ergänzen Sie Informationen aus dem Text.
+            </dtb:p>
+            <dtb:p>
+              <dtb:span class="exercisepart">a</dtb:span> Geburtsdatum: <dtb:span class="answer">___</dtb:span>
+            </dtb:p>
+            <dtb:p>
+              <dtb:span class="exercisepart">b</dtb:span> Geburtsort: <dtb:span class="answer">___</dtb:span>
+            </dtb:p>
+          </wrapper>
+        </x:document>
+      </x:input>
+      <x:param name="answer" select="'_...'"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="port" port="result"/>
+    </x:context>
+    <x:expect label="result" type="compare">
+      <x:document type="inline">
+        <wrapper>
+          <text:p text:style-name="dtb_3a_p">
+            <text:span text:style-name="dtb_3a_span_5f_exercisenumber">3</text:span>
+            Ergänzen Sie Informationen aus dem Text.
+          </text:p>
+          <text:p text:style-name="dtb_3a_p">
+            <text:span text:style-name="dtb_3a_span_5f_exercisepart">a</text:span>
+            Geburtsdatum:
+            <text:span xml:lang="none">_...</text:span>
+          </text:p>
+          <text:p text:style-name="dtb_3a_p">
+            <text:span text:style-name="dtb_3a_span_5f_exercisepart">b</text:span>
+            Geburtsort:
+            <text:span xml:lang="none">_...</text:span>
+          </text:p>
+        </wrapper>
+      </x:document>
+    </x:expect>
+  </x:scenario>
+    
+  <!-- ==== -->
+  <!-- MATH -->
+  <!-- ==== -->
+
+  <x:scenario label="both asciimath and mathml">
+    <x:call step="pxi:test-content">
+      <x:input port="source">
+        <x:document type="inline">
+          <dtb:p>
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <semantics>
+                <msup>
+                  <mrow>
+                    <mo>(</mo>
+                    <mn>3</mn>
+                    <mi>x</mi>
+                    <mi>y</mi>
+                    <mo>)</mo>
+                  </mrow>
+                  <mn>2</mn>
+                </msup>
+                <annotation encoding="ASCIIMath">(3xy)^2</annotation>
+              </semantics>
+            </math>
+          </dtb:p>
+        </x:document>
+      </x:input>
+      <x:param name="asciimath" select="'BOTH'"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="port" port="result"/>
+    </x:context>
+    <x:expect label="result" type="compare">
+      <x:document type="inline">
+        <text:p text:style-name="dtb_3a_p">
+          <draw:frame draw:name="math:math#1" draw:style-name="dtb_3a_math" text:anchor-type="as-char" draw:z-index="0">
+            <draw:object>
+              <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <semantics>
+                  <msup>
+                    <mrow>
+                      <mo>(</mo>
+                      <mn>3</mn>
+                      <mi>x</mi>
+                      <mi>y</mi>
+                      <mo>)</mo>
+                    </mrow>
+                    <mn>2</mn>
+                  </msup>
+                  <annotation encoding="ASCIIMath">(3xy)^2</annotation>
+                </semantics>
+              </math>
+            </draw:object>
+            <svg:title>(3xy)^2</svg:title>
+          </draw:frame>
+          <text:span text:style-name="dtb_3a_span_5f_asciimath">(3xy)^2</text:span>
+        </text:p>
+      </x:document>
+    </x:expect>
+  </x:scenario>
+  
+  <!-- ============== -->
+  <!-- PAGE NUMBERING -->
+  <!-- ============== -->
+  
+  <x:scenario label="page number">
+    <x:call step="pxi:test-content">
+      <x:input port="source">
+        <x:document type="inline">
+          <dtb:pagenum id="p54" page="normal">54</dtb:pagenum>
+        </x:document>
+      </x:input>
+      <x:param name="page_numbers" select="'true'"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="port" port="result"/>
+    </x:context>
+    <x:expect label="result" type="compare">
+      <x:document type="inline">
+        <text:p text:style-name="dtb_3a_pagenum">
+          <text:span xml:lang="de">\\Seite</text:span> 54
+        </text:p>
+      </x:document>
+    </x:expect>
+  </x:scenario>
+  
+  <!-- ==================== -->
+  <!-- OTHER BLOCK ELEMENTS -->
+  <!-- ==================== -->
+  
+  <x:scenario label="sidebar">
+    <x:call step="pxi:test-content">
+      <x:input port="source">
+        <x:document type="inline">
+          <dtb:sidebar render="optional">
+            <dtb:p>
+              Hohe Redeanteile, Belustigung auf Kosten anderer, Körpersprache („sie dröckte die
+              Fingerkuppen fest ans Holz“), ironische Wiederholung, Sarkasmus, betretenes Schweigen ...
+            </dtb:p>
+          </dtb:sidebar>
+        </x:document>
+      </x:input>
+    </x:call>
+    <x:context label="result">
+      <x:document type="port" port="result"/>
+    </x:context>
+    <x:expect label="result" type="compare">
+      <x:document type="inline">
+        <text:section text:name="dtb:sidebar#1" text:style-name="dtb_3a_sidebar">
+          <text:p text:style-name="dtb_3a_p">
+            <text:span xml:lang="en">[Begin of sidebar]</text:span>
+          </text:p>
+          <text:p text:style-name="dtb_3a_p">
+            Hohe Redeanteile, Belustigung auf Kosten anderer, Körpersprache („sie dröckte die
+            Fingerkuppen fest ans Holz“), ironische Wiederholung, Sarkasmus, betretenes Schweigen ...
+          </text:p>
+          <text:p text:style-name="dtb_3a_p">
+            <text:span xml:lang="en">[End of sidebar]</text:span>
+          </text:p>
+        </text:section>
+      </x:document>
+    </x:expect>
+  </x:scenario>
+  
+  <!-- ====================== -->
+  <!-- INLINE ELEMENTS & TEXT -->
+  <!-- ====================== -->
+
+  <x:scenario label="linegroup">
+    <x:call step="pxi:test-content">
+      <x:input port="source">
+        <x:document type="inline">
+          <wrapper>
+            <dtb:linegroup>
+              <dtb:line>
+                <dtb:linenum>15</dtb:linenum> Einsamkeit und Hummelgesumm.
+              </dtb:line>
+            </dtb:linegroup>
+          </wrapper>
+        </x:document>
+      </x:input>
+    </x:call>
+    <x:context label="result">
+      <x:document type="port" port="result"/>
+    </x:context>
+    <x:expect label="result" type="compare">
+      <x:document type="inline">
+        <wrapper>
+          <text:p text:style-name="Standard">
+            <text:span text:style-name="dtb_3a_linenum">Z 15</text:span>
+            Einsamkeit und Hummelgesumm.
+          </text:p>
+        </wrapper>
+      </x:document>
+    </x:expect>
+  </x:scenario>
+  
+  <x:scenario label="paragraph with linenum spans">
+    <x:call step="pxi:test-content">
+      <x:input port="source">
+        <x:document type="inline">
+          <wrapper>
+            <dtb:p class="precedingemptyline">
+              Dann gibt es noch drei Katzen. Niko bekommt immer einen Schreck, wenn
+              <dtb:span class="linenum">5</dtb:span>
+              eine von ihnen um seine Beine streicht. Am schönsten findet er aber die Papageien.
+              Sie sitzen in einem Käfig, der über der Theke hängt. Einer der Papageien ist weiß,
+              <dtb:span class="linenum">10</dtb:span>
+              der andere quietschgrün. Manchmal kreischen sie.
+            </dtb:p>
+          </wrapper>
+        </x:document>
+      </x:input>
+    </x:call>
+    <x:context label="result">
+      <x:document type="port" port="result"/>
+    </x:context>
+    <x:expect label="result" type="compare">
+      <x:document type="inline">
+        <wrapper>
+          <text:p text:style-name="dtb_3a_p">
+            Dann gibt es noch drei Katzen. Niko bekommt immer einen Schreck, wenn
+          </text:p>
+          <text:p text:style-name="dtb_3a_p">
+            Z 5 eine von ihnen um seine Beine streicht. Am schönsten findet er aber die Papageien.
+            Sie sitzen in einem Käfig, der über der Theke hängt. Einer der Papageien ist weiß,
+          </text:p>
+          <text:p text:style-name="dtb_3a_p">
+            Z 10 der andere quietschgrün. Manchmal kreischen sie.
+          </text:p>
+        </wrapper>
+      </x:document>
+    </x:expect>
+  </x:scenario>
+  
+  <x:scenario label="phonetics">
+    <x:call step="pxi:test-content">
+      <x:input port="source">
+        <x:document type="inline">
+          <wrapper>
+            <dtb:p>aunt /ɑːnt/</dtb:p>
+            <dtb:p>book /bʊk/</dtb:p>
+            <dtb:p>brother /brʌðǝ(r)/</dtb:p>
+            <dtb:p>child /tʃaɪld/</dtb:p>
+          </wrapper>
+        </x:document>
+      </x:input>
+    </x:call>
+    <x:scenario label="enabled">
+      <x:call>
+        <x:param name="phonetics" select="'true'"/>
+      </x:call>
+      <x:context label="result">
+        <x:document type="port" port="result"/>
+      </x:context>
+      <x:expect label="result" type="compare">
+        <x:document type="inline">
+          <wrapper>
+            <text:p text:style-name="dtb_3a_p">aunt /ɑːnt/</text:p>
+            <text:p text:style-name="dtb_3a_p">book /bʊk/</text:p>
+            <text:p text:style-name="dtb_3a_p">brother /brʌðǝ(r)/</text:p>
+            <text:p text:style-name="dtb_3a_p">child /tʃaɪld/</text:p>
+          </wrapper>
+        </x:document>
+      </x:expect>
+    </x:scenario>
+    <x:scenario label="disabled">
+      <x:call>
+        <x:param name="phonetics" select="'false'"/>
+      </x:call>
+      <x:context label="result">
+        <x:document type="port" port="result"/>
+      </x:context>
+      <x:expect label="result" type="compare">
+        <x:document type="inline">
+          <wrapper>
+            <text:p text:style-name="dtb_3a_p">aunt /nt/</text:p>
+            <text:p text:style-name="dtb_3a_p">book /bk/</text:p>
+            <text:p text:style-name="dtb_3a_p">brother /brðǝ(r)/</text:p>
+            <text:p text:style-name="dtb_3a_p">child /tald/</text:p>
+          </wrapper>
+        </x:document>
+      </x:expect>
+    </x:scenario>
+  </x:scenario>
+  
+</x:description>

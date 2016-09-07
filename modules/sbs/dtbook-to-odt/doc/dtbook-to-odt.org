@@ -1,0 +1,307 @@
+#+TITLE: DTBook to ODT
+*                                                          :noexport:ARCHIVE:
+#+OPTIONS: num:nil toc:nil ^:nil
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="style.css" />
+#+HTML_HEAD: <script src="script.js"></script>
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-lang-modes (append org-src-lang-modes
+                                   '(("odt" . nxml) ("dtbook" . nxml))))
+#+END_SRC
+
+* Headings
+
+Headings get the paragraph style “Überschrift 1” and are preceded and
+followed by an empty paragraph.
+
+#+BEGIN_SRC dtbook
+  <dtb:h1>
+      Klappentext
+  </dtb:h1>
+#+END_SRC
+#+BEGIN_SRC odt
+  <text:p text:style-name="Standard"/>
+  <text:h text:outline-level="1" text:style-name="Überschrift_20_1">Klappentext</text:h>
+  <text:p text:style-name="Standard"/>
+#+END_SRC
+
+* Notes
+
+Small footnotes are rendered inline, directly following the note
+reference, in between round brackets. Inline notes get the character
+style “dtb:note”.
+
+#+BEGIN_SRC dtbook
+  <dtb:p>
+      Du brauchst<dtb:noteref idref="#t0138">*</dtb:noteref> nicht zu rennen.
+  </dtb:p>
+  <dtb:note id="t0138">
+      <dtb:p>
+          ,* brauchen + zu kann nur negativ oder einschränkend verwendet werden.
+      </dtb:p>
+  </dtb:note>
+#+END_SRC
+#+BEGIN_SRC odt
+  <text:p text:style-name="dtb_3a_p">
+      Du brauchst *
+      <text:span text:style-name="dtb_3a_note">
+          ( * brauchen + zu kann nur negativ oder einschränkend verwendet werden. )
+      </text:span>
+      nicht zu rennen.
+  </text:p>
+#+END_SRC
+
+If the text of a note or note reference does not already start with an
+asterisk (*), an asterisk is prepended.
+
+Footnotes consisting of several paragraphs are rendered after the
+paragraph that contains the note reference. The paragraph style
+“dtb:note_footnote” is applied.
+
+#+BEGIN_SRC dtbook
+  <dtb:p>
+      <dtb:noteref idref="#t0157">+</dtb:noteref>
+  </dtb:p>
+  <dtb:note id="t0157">
+      <dtb:p>
+          + Sowohl Mozart als auch Schubert waren bedeutende Komponisten.
+      </dtb:p>
+      <dtb:p>
+          + Queen Victoria war nicht nur glücklich verheiratet, sondern (sie) hatte auch viele Kinder.
+      </dtb:p>
+  </dtb:note>
+#+END_SRC
+#+BEGIN_SRC odt
+  <text:p text:style-name="dtb_3a_p">* +</text:p>
+  <text:p text:style-name="dtb_3a_note_5f_footnote">
+      <text:span text:style-name="dtb_3a_note">( *</text:span>
+  </text:p>
+  <text:p text:style-name="dtb_3a_note_5f_footnote">
+      <text:span text:style-name="dtb_3a_note">
+          + Sowohl Mozart als auch Schubert waren bedeutende Komponisten.
+      </text:span>
+  </text:p>
+  <text:p text:style-name="dtb_3a_note_5f_footnote">
+      <text:span text:style-name="dtb_3a_note">
+          + Queen Victoria war nicht nur glücklich verheiratet, sondern (sie) hatte auch viele Kinder.
+      </text:span>
+  </text:p>
+  <text:p text:style-name="dtb_3a_note_5f_footnote">
+      <text:span text:style-name="dtb_3a_note">)</text:span>
+  </text:p>
+#+END_SRC
+
+* Images
+
+Images can either be embedded, linked or dropped. When embedded or
+linked, an image appears in the document with the same dimensions as
+in the original book, in a paragraph with style “dtb:img”. It is
+assumed that they are scanned at 600 dpi.
+
+Image captions are always inserted before the image as a paragraph
+with style “dtb:caption”. They are preceded by an empty paragraph,
+and followed by a colon (:).
+
+#+BEGIN_SRC dtbook
+  <dtb:imggroup>
+      <dtb:img id="p188-001" src="p188-001.jpg" alt="image"/>
+      <dtb:caption>
+          Der schnellste Vogel im Sturzflug: der Wanderfalke
+      </dtb:caption>
+  </dtb:imggroup>
+#+END_SRC
+#+BEGIN_SRC odt
+  <text:p text:style-name="Standard"/>
+  <text:p text:style-name="dtb_3a_caption">Der schnellste Vogel im Sturzflug: der Wanderfalke :</text:p>
+  <text:p text:style-name="dtb_3a_img">
+      <draw:frame draw:name="dtb:img#1" draw:style-name="dtb_3a_img"
+                  text:anchor-type="as-char" draw:z-index="0"
+                  svg:width="1.6667in" svg:height="1.6667in">
+          <draw:image xlink:href="p188-001.jpg" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
+          <svg:title>image</svg:title>
+      </draw:frame>
+  </text:p>
+#+END_SRC
+
+* Exercises
+
+#+BEGIN_SRC dtbook
+  <dtb:p>
+      <dtb:span class="exercisenumber">3</dtb:span> Ergänzen Sie Informationen aus dem Text.
+  </dtb:p>
+  <dtb:p>
+      <dtb:span class="exercisepart">a</dtb:span> Geburtsdatum: <dtb:span class="answer">___</dtb:span>
+  </dtb:p>
+  <dtb:p>
+      <dtb:span class="exercisepart">b</dtb:span> Geburtsort: <dtb:span class="answer">___</dtb:span>
+  </dtb:p>
+#+END_SRC
+#+BEGIN_SRC odt
+  <text:p text:style-name="dtb_3a_p">
+      <text:span text:style-name="dtb_3a_span_5f_exercisenumber">3</text:span>
+      Ergänzen Sie Informationen aus dem Text.
+  </text:p>
+  <text:p text:style-name="dtb_3a_p">
+      <text:span text:style-name="dtb_3a_span_5f_exercisepart">a</text:span>
+      Geburtsdatum:
+      <text:span xml:lang="none">_...</text:span>
+  </text:p>
+  <text:p text:style-name="dtb_3a_p">
+      <text:span text:style-name="dtb_3a_span_5f_exercisepart">b</text:span>
+      Geburtsort:
+      <text:span xml:lang="none">_...</text:span>
+  </text:p>
+#+END_SRC
+
+* Math
+
+#+BEGIN_SRC dtbook
+  <dtb:p>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <semantics>
+              <msup>
+                  <mrow>
+                      <mo>(</mo>
+                      <mn>3</mn>
+                      <mi>x</mi>
+                      <mi>y</mi>
+                      <mo>)</mo>
+                  </mrow>
+                  <mn>2</mn>
+              </msup>
+              <annotation encoding="ASCIIMath">(3xy)^2</annotation>
+          </semantics>
+      </math>
+  </dtb:p>
+#+END_SRC
+#+BEGIN_SRC odt
+  <text:p text:style-name="dtb_3a_p">
+      <draw:frame draw:name="math:math#1" draw:style-name="dtb_3a_math" text:anchor-type="as-char" draw:z-index="0">
+          <draw:object>
+              <math:math>
+                  <math:semantics>
+                      <math:msup>
+                          <math:mrow>
+                              <math:mo>(</math:mo>
+                              <math:mn>3</math:mn>
+                              <math:mi>x</math:mi>
+                              <math:mi>y</math:mi>
+                              <math:mo>)</math:mo>
+                          </math:mrow>
+                          <math:mn>2</math:mn>
+                      </math:msup>
+                      <math:annotation encoding="ASCIIMath">(3xy)^2</math:annotation>
+                  </math:semantics>
+              </math:math>
+          </draw:object>
+          <svg:title>(3xy)^2</svg:title>
+      </draw:frame>
+      <text:span text:style-name="dtb_3a_span_5f_asciimath">(3xy)^2</text:span>
+  </text:p>
+#+END_SRC
+
+* Page Numbering
+
+#+BEGIN_SRC dtbook
+  <dtb:pagenum id="p54" page="normal">54</dtb:pagenum>
+#+END_SRC
+#+BEGIN_SRC odt
+  <text:p text:style-name="dtb_3a_pagenum">
+      <text:span xml:lang="de">\\Seite</text:span> 54
+  </text:p>
+#+END_SRC
+
+* Sidebars
+
+#+BEGIN_SRC dtbook
+  <dtb:sidebar render="optional">
+      <dtb:p>
+          Hohe Redeanteile, Belustigung auf Kosten anderer, Körpersprache („sie dröckte die
+          Fingerkuppen fest ans Holz“), ironische Wiederholung, Sarkasmus, betretenes Schweigen ...
+      </dtb:p>
+  </dtb:sidebar>
+#+END_SRC
+#+BEGIN_SRC odt
+  <text:section text:name="dtb:sidebar#1" text:style-name="dtb_3a_sidebar">
+      <text:p text:style-name="dtb_3a_p">
+          <text:span xml:lang="en">[Begin of sidebar]</text:span>
+      </text:p>
+      <text:p text:style-name="dtb_3a_p">
+          Hohe Redeanteile, Belustigung auf Kosten anderer, Körpersprache („sie dröckte die
+          Fingerkuppen fest ans Holz“), ironische Wiederholung, Sarkasmus, betretenes Schweigen ...
+      </text:p>
+      <text:p text:style-name="dtb_3a_p">
+          <text:span xml:lang="en">[End of sidebar]</text:span>
+      </text:p>
+  </text:section>
+#+END_SRC
+
+* Line Numbering
+
+** Linegroups
+
+#+BEGIN_SRC dtbook
+  <dtb:linegroup>
+      <dtb:line>
+          <dtb:linenum>15</dtb:linenum> Einsamkeit und Hummelgesumm.
+      </dtb:line>
+  </dtb:linegroup>
+#+END_SRC
+#+BEGIN_SRC odt
+  <text:p text:style-name="Standard">
+      <text:span text:style-name="dtb_3a_linenum">Z 15</text:span>
+      Einsamkeit und Hummelgesumm.
+  </text:p>
+#+END_SRC
+
+** Continuous Text with Line Numbers
+
+#+BEGIN_SRC dtbook
+  <dtb:p class="precedingemptyline">
+      Dann gibt es noch drei Katzen. Niko bekommt immer einen Schreck, wenn
+      <dtb:span class="linenum">5</dtb:span>
+      eine von ihnen um seine Beine streicht. Am schönsten findet er aber die Papageien.
+      Sie sitzen in einem Käfig, der über der Theke hängt. Einer der Papageien ist weiß,
+      <dtb:span class="linenum">10</dtb:span>
+      der andere quietschgrün. Manchmal kreischen sie.
+  </dtb:p>
+#+END_SRC
+#+BEGIN_SRC odt
+  <text:p text:style-name="dtb_3a_p">
+      Dann gibt es noch drei Katzen. Niko bekommt immer einen Schreck, wenn
+  </text:p>
+  <text:p text:style-name="dtb_3a_p">
+      Z 5 eine von ihnen um seine Beine streicht. Am schönsten findet er aber die Papageien.
+      Sie sitzen in einem Käfig, der über der Theke hängt. Einer der Papageien ist weiß,
+  </text:p>
+  <text:p text:style-name="dtb_3a_p">
+      Z 10 der andere quietschgrün. Manchmal kreischen sie.
+  </text:p>
+#+END_SRC
+
+* Phonetic symbols
+
+#+BEGIN_SRC dtbook
+  <dtb:p>aunt /ɑːnt/</dtb:p>
+  <dtb:p>book /bʊk/</dtb:p>
+  <dtb:p>brother /brʌðǝ(r)/</dtb:p>
+  <dtb:p>child /tʃaɪld/</dtb:p>
+#+END_SRC
+
+Phonetics enabled:
+
+#+BEGIN_SRC odt
+  <text:p text:style-name="dtb_3a_p">aunt /ɑːnt/</text:p>
+  <text:p text:style-name="dtb_3a_p">book /bʊk/</text:p>
+  <text:p text:style-name="dtb_3a_p">brother /brʌðǝ(r)/</text:p>
+  <text:p text:style-name="dtb_3a_p">child /tʃaɪld/</text:p>
+#+END_SRC
+
+Phonetics disabled:
+
+#+BEGIN_SRC odt
+  <text:p text:style-name="dtb_3a_p">aunt /nt/</text:p>
+  <text:p text:style-name="dtb_3a_p">book /bk/</text:p>
+  <text:p text:style-name="dtb_3a_p">brother /brðǝ(r)/</text:p>
+  <text:p text:style-name="dtb_3a_p">child /tald/</text:p>
+#+END_SRC
+
