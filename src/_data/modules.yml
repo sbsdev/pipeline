@@ -135,3 +135,6 @@
   artifact: zedai-break-detection
 - group: org.daisy.pipeline.modules
   artifact: dtbook-break-detection
+- group: ch.sbs.pipeline
+  artifact: dtbook-to-odt
+  version: 1.0.0-SNAPSHOT

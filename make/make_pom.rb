@@ -38,7 +38,11 @@ $stdout << CommaParty.markup(
               group = mod['group']
               artifact = mod['artifact']
               version = mod['version']
-              if not (group == 'org.daisy.pipeline.modules' or group.start_with?('org.daisy.pipeline.modules.'))
+              if (group == 'ch.sbs.pipeline')
+                outputDirectory = 'doc/org/daisy/pipeline/modules/sbs'
+              elsif (group == 'org.daisy.pipeline.modules' or group.start_with?('org.daisy.pipeline.modules.'))
+                outputDirectory = 'doc/' + group.gsub('.', '/') + '/' + artifact
+              else
                 STDERR.puts 'unexpected groupId: ' + group
                 exit 1
               end
@@ -48,7 +52,7 @@ $stdout << CommaParty.markup(
                version && [:version, version],
                [:type, 'jar'],
                [:classifier, 'doc'],
-               [:outputDirectory, 'doc/' + (group.gsub('.', '/') + '/' + artifact)]]}]
+               [:outputDirectory, outputDirectory]]}]
          else
            []
          end      

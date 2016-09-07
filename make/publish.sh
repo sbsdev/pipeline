@@ -5,7 +5,7 @@ test -z "$(git status . --porcelain)"
 GIT_HASH=$( git rev-parse HEAD )
 WORKING_DIR=$(pwd)
 SITE_DIR=$1
-GH_REMOTE="git@github.com:daisy/pipeline.git"
+GH_REMOTE="git@github.com:sbsdev/pipeline.git"
 GH_BRANCH=gh-pages
 TMP_DIR=$( mktemp -t "$(basename "$0").XXXXXX" )
 rm $TMP_DIR

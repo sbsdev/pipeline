@@ -1,5 +1,5 @@
-# [daisy.github.io/pipeline][]
-[Jekyll][] powered website: http://daisy.github.io/pipeline.
+# [sbsdev.github.io/pipeline][]
+[Jekyll][] powered website: http://sbsdev.github.io/pipeline.
 
 ## Prerequisites
 [Jekyll][]
@@ -11,5 +11,5 @@
     make serve
 
 
-[daisy.github.io/pipeline]: https://daisy.github.io/pipeline
+[sbsdev.github.io/pipeline]: https://sbsdev.github.io/pipeline
 [jekyll]: http://jekyllrb.com

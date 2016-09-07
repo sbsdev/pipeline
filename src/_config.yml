@@ -38,5 +38,5 @@ kramdown:
 sass:
   sass_dir: css
 baseurl: "/pipeline"
-site_base: "http://daisy.github.io"
+site_base: "http://sbsdev.github.io"
 meta_file: _meta.ttl
