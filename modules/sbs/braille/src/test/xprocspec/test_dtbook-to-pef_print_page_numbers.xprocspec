@@ -20,10 +20,12 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="don't ignore pagenum elements lying at the end of the spread" xfail="true">
+  <x:scenario label="pagenum elements should end up in the correct range" xfail="true">
     <x:documentation>
-      See issue https://github.com/sbsdev/pipeline-mod-sbs/issues/45. See also related tests
-      4.8.107_ex1_skip_page_breaks and 4.8.107_ex2_skip_page_breaks.
+      Broken:
+      - string(..., start-except-last) does not behave as expected: pagenum elements lying at the
+        end of a spread show up in the print page number range of the next spread. See issue
+        https://github.com/sbsdev/pipeline-mod-sbs/issues/45.
     </x:documentation>
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
