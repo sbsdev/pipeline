@@ -414,11 +414,16 @@ level4, level5, level6 {
     orphans:4;
 }
 
-frontmatter, bodymatter, rearmatter {
+bodymatter, rearmatter {
     display: block;
 }
 
 frontmatter {
+    display: none;
+}
+
+frontmatter:has(> *:not(doctitle, docauthor, #cover-recto, #cover-verso)) {
+    display: block;
     page: frontmatter;
     flow: frontmatter;
 }
