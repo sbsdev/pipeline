@@ -20,13 +20,7 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="pagenum elements should end up in the correct range" xfail="true">
-    <x:documentation>
-      Broken:
-      - string(..., start-except-last) does not behave as expected: pagenum elements lying at the
-        end of a spread show up in the print page number range of the next spread. See issue
-        https://github.com/sbsdev/pipeline-mod-sbs/issues/45.
-    </x:documentation>
+  <x:scenario label="pagenum elements should end up in the correct range">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_print_page_numbers_end_of_spread/test_print_page_numbering.xml"/>

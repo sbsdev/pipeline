@@ -488,13 +488,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="4.8.107_ex1_skip_page_breaks" xfail="true">
-    <x:documentation>
-      Broken:
-      - string(..., start-except-last) does not behave as expected: empty print pages at the
-        beginning of the document are not skipped. See issue
-        https://github.com/sbsdev/pipeline-mod-sbs/issues/45.
-    </x:documentation>
+  <x:scenario label="4.8.107_ex1_skip_page_breaks">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_4.8.107_ex1_skip_page_breaks/test_4.8.107.xml"/>
