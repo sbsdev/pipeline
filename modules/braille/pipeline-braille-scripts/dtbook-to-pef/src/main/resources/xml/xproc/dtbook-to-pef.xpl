@@ -167,13 +167,13 @@
     <!-- STORE -->
     <!-- ===== -->
     <px:message message="[progress 6 px:dtbook-to-pef.store] Storing PEF"/>
-    <px:xml-to-pef.store>
+    <px:dtbook-to-pef.store>
+        <p:input port="dtbook">
+            <p:pipe step="main" port="source"/>
+        </p:input>
         <p:input port="obfl">
             <p:pipe step="convert" port="obfl"/>
         </p:input>
-        <p:with-option name="name" select="replace(p:base-uri(/),'^.*/([^/]*)\.[^/\.]*$','$1')">
-            <p:pipe step="main" port="source"/>
-        </p:with-option>
         <p:with-option name="include-brf" select="$include-brf"/>
         <p:with-option name="include-preview" select="$include-preview"/>
         <p:with-option name="include-obfl" select="$include-obfl"/>
@@ -182,6 +182,6 @@
         <p:with-option name="pef-output-dir" select="$pef-output-dir"/>
         <p:with-option name="brf-output-dir" select="$brf-output-dir"/>
         <p:with-option name="preview-output-dir" select="$preview-output-dir"/>
-    </px:xml-to-pef.store>
+    </px:dtbook-to-pef.store>
     
 </p:declare-step>
