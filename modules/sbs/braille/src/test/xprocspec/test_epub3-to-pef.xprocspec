@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x:description xmlns:x="http://www.daisy.org/ns/xprocspec"
+               xmlns:sbs="http://www.sbs.ch"
+               script="http://www.sbs.ch/pipeline/modules/braille/epub3-to-pef.xpl">
+  
+  <x:scenario label="basic">
+    <x:call step="sbs:epub3-to-pef">
+      <x:option name="epub" select="resolve-uri('../resources/test_epub3_basic/EPUB/package.opf')"/>
+      <x:option name="contraction-grade" select="'0'"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_basic/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_basic/123456.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_epub3_basic/expected.pef"/>
+    </x:expect>
+  </x:scenario>
+  
+</x:description>

@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<p:declare-step type="sbs:dtbook-to-pef" version="1.0"
+<p:declare-step type="sbs:epub3-to-pef" version="1.0"
                 xmlns:sbs="http://www.sbs.ch"
                 xmlns:p="http://www.w3.org/ns/xproc"
                 xmlns:px="http://www.daisy.org/ns/pipeline/xproc"
                 xmlns:pef="http://www.daisy.org/ns/2008/pef"
                 xmlns:c="http://www.w3.org/ns/xproc-step"
+                xmlns:dc="http://purl.org/dc/elements/1.1/"
+                xmlns:opf="http://www.idpf.org/2007/opf"
                 exclude-inline-prefixes="#all"
                 name="main">
 
     <p:documentation xmlns="http://www.w3.org/1999/xhtml">
-        <h1 px:role="name">DTBook to PEF (SBS)</h1>
-        <p px:role="desc">Transforms a DTBook (DAISY 3 XML) document into a PEF.</p>
+        <h1 px:role="name">EPUB 3 to PEF (SBS)</h1>
+        <p px:role="desc">Transforms a EPUB 3 publication into a PEF.</p>
     </p:documentation>
 
-    <p:input port="source" primary="true" px:name="source" px:media-type="application/x-dtbook+xml">
+    <p:option name="epub" required="true" px:type="anyFileURI" px:sequence="false" px:media-type="application/epub+zip application/oebps-package+xml">
         <p:documentation xmlns="http://www.w3.org/1999/xhtml">
-            <h2 px:role="name">Input DTBook</h2>
+            <h2 px:role="name">Input EPUB 3</h2>
+            <p px:role="desc" xml:space="preserve">The EPUB you want to convert to braille. You may alternatively use the EPUB package document (the OPF-file) if your input is a unzipped/"exploded" version of an EPUB.</p>
         </p:documentation>
-    </p:input>
+    </p:option>
     
     <p:option name="pef-output-dir"/>
     <p:option name="brf-output-dir"/>
@@ -53,24 +56,7 @@
     <p:option name="show-print-page-numbers"/>
     <p:option name="force-braille-page-break"/>
     <p:option name="toc-depth"/>
-    
-    <p:option name="footnotes-placement" select="'standard'">
-      <p:pipeinfo>
-        <px:data-type>
-          <choice xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">
-            <value>standard</value>
-            <a:documentation xml:lang="en">Standard (bottom of page)</a:documentation>
-            <value>end-of-chapter</value>
-            <a:documentation xml:lang="en">End of level 1-6</a:documentation>
-            <value>end-of-volume</value>
-            <a:documentation xml:lang="en">End of volume</a:documentation>
-            <value>end-of-book</value>
-            <a:documentation xml:lang="en">End of last volume</a:documentation>
-          </choice>
-        </px:data-type>
-      </p:pipeinfo>
-    </p:option>
-    
+    <p:option name="footnotes-placement"/>
     <p:option name="colophon-metadata-placement"/>
     <p:option name="rear-cover-placement"/>
     <p:option name="number-of-sheets"/>
@@ -81,9 +67,11 @@
     <!-- for testing purposes -->
     <p:input port="parameters" kind="parameter" primary="false"/>
     
-    <p:import href="http://www.daisy.org/pipeline/modules/braille/dtbook-to-pef/library.xpl"/>
+    <p:import href="http://www.daisy.org/pipeline/modules/braille/epub3-to-pef/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/braille/xml-to-pef/library.xpl"/>
+    <p:import href="http://www.daisy.org/pipeline/modules/common-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl"/>
+    <p:import href="http://www.daisy.org/pipeline/modules/fileset-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl"/>
     
     <p:in-scope-names name="in-scope-names"/>
@@ -103,7 +91,6 @@
                                            temp-dir"/>
     <px:add-parameters>
         <p:with-param name="skip-margin-top-of-page" select="'true'"/>
-        <p:with-param name="allow-text-overflow-trimming" select="'true'"/>
     </px:add-parameters>
     <p:identity name="input-options"/>
     <p:sink/>
@@ -114,35 +101,61 @@
     <px:tempdir name="temp-dir">
         <p:with-option name="href" select="if ($temp-dir!='') then $temp-dir else $pef-output-dir"/>
     </px:tempdir>
-    <p:sink/>
+    
+    <!-- =========== -->
+    <!-- LOAD EPUB 3 -->
+    <!-- =========== -->
+    <px:message message="Loading EPUB"/>
+    <px:epub3-to-pef.load name="load">
+        <p:with-option name="epub" select="$epub"/>
+        <p:with-option name="temp-dir" select="concat(string(/c:result),'load/')">
+            <p:pipe step="temp-dir" port="result"/>
+        </p:with-option>
+    </px:epub3-to-pef.load>
     
     <!-- ============= -->
-    <!-- DTBOOK TO PEF -->
+    <!-- EPUB 3 TO PEF -->
     <!-- ============= -->
-    <px:dtbook-to-pef.convert default-stylesheet="http://www.daisy.org/pipeline/modules/braille/dtbook-to-pef/css/default.css">
+    <p:identity>
         <p:input port="source">
-            <p:pipe step="main" port="source"/>
+            <p:pipe port="fileset.out" step="load"/>
         </p:input>
-        <p:with-option name="temp-dir" select="string(/c:result)">
+    </p:identity>
+    <px:message message="Done loading EPUB, starting conversion to PEF"/>
+    <px:epub3-to-pef.convert default-stylesheet="http://www.daisy.org/pipeline/modules/braille/epub3-to-pef/css/default.css"
+                             apply-document-specific-stylesheets="false"
+                             name="convert">
+        <p:with-option name="epub" select="$epub"/>
+        <p:input port="in-memory.in">
+            <p:pipe port="in-memory.out" step="load"/>
+        </p:input>
+        <p:with-option name="temp-dir" select="concat(string(/c:result),'convert/')">
             <p:pipe step="temp-dir" port="result"/>
         </p:with-option>
         <p:with-option name="stylesheet" select="string-join((
-                                                 'http://www.sbs.ch/pipeline/modules/braille/internal/group-starting-with-linenum.xsl',
-                                                 'http://www.sbs.ch/pipeline/modules/braille/internal/handle-toc-and-running-line.xsl',
-                                                 'http://www.sbs.ch/pipeline/modules/braille/internal/insert-boilerplate.xsl',
-                                                 $stylesheet),' ')"/>
+                                                   'http://www.sbs.ch/pipeline/modules/braille/internal/insert-boilerplate.xsl',
+                                                   $stylesheet),' ')"/>
         <p:with-option name="transform" select="concat('(formatter:dotify)(translator:sbs)(grade:',$contraction-grade,')')"/>
         <p:input port="parameters">
             <p:pipe port="result" step="input-options"/>
         </p:input>
-    </px:dtbook-to-pef.convert>
+    </px:epub3-to-pef.convert>
+    <p:sink/>
     
     <!-- ========= -->
     <!-- STORE PEF -->
     <!-- ========= -->
-    <px:dtbook-to-pef.store>
-        <p:input port="dtbook">
-            <p:pipe step="main" port="source"/>
+    <p:identity>
+        <p:input port="source">
+            <p:pipe step="convert" port="in-memory.out"/>
+        </p:input>
+    </p:identity>
+    <px:message message="Storing PEF"/>
+    <p:delete match="/*/@xml:base"/>
+    <px:epub3-to-pef.store>
+        <p:with-option name="epub" select="$epub"/>
+        <p:input port="opf">
+            <p:pipe step="load" port="opf"/>
         </p:input>
         <p:with-option name="include-brf" select="$include-brf"/>
         <p:with-option name="include-preview" select="$include-preview"/>
@@ -150,6 +163,6 @@
         <p:with-option name="pef-output-dir" select="$pef-output-dir"/>
         <p:with-option name="brf-output-dir" select="$brf-output-dir"/>
         <p:with-option name="preview-output-dir" select="$preview-output-dir"/>
-    </px:dtbook-to-pef.store>
+    </px:epub3-to-pef.store>
     
 </p:declare-step>

@@ -70,7 +70,8 @@ public class SBSTest {
 			"test_dtbook-to-pef_pagination",
 			"test_dtbook-to-pef_titlepage",
 			"test_dtbook-to-pef_print_page_numbers",
-			"test_dtbook-to-pef_notes"
+			"test_dtbook-to-pef_notes",
+			"test_epub3-to-pef"
 		    })
 		    xprocspecTests.put(test, new File(baseDir, "src/test/xprocspec/" + test + ".xprocspec"));
 		boolean xspecHasFocus = xspecRunner.hasFocus(xspecTestsDir);
@@ -132,6 +133,10 @@ public class SBSTest {
 				brailleModule("dotify-utils"),
 				brailleModule("dotify-formatter"),
 				brailleModule("dtbook-to-pef"),
+				brailleModule("epub3-to-pef"),
+				pipelineModule("common-utils"),
+				pipelineModule("file-utils"),
+				pipelineModule("fileset-utils"),
 				// because of bug in lou_indexTables we need to include liblouis-tables even though
 				// we're not using it (needed for include-brf)
 				brailleModule("liblouis-tables"),
