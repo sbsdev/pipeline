@@ -1188,7 +1188,29 @@
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="dtbook:h1 | dtbook:h2 | dtbook:h3 | dtbook:h4 | dtbook:h5 | dtbook:h6 | dtbook:hd">
+    <xsl:template match="dtbook:h1 | dtbook:h2 | dtbook:h3 | dtbook:h4 | dtbook:h5 | dtbook:h6">
+        <xsl:variable name="name">
+            <xsl:choose>
+                <xsl:when test="ancestor-or-self::*[self::dtbook:level1 or
+                                                    self::dtbook:level2 or
+                                                    self::dtbook:level3 or
+                                                    self::dtbook:level4 or
+                                                    self::dtbook:level5 or
+                                                    self::dtbook:level6]">
+                    <xsl:sequence select="concat('h',f:level(.))"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:sequence select="local-name(.)"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:element name="{$name}">
+            <xsl:call-template name="f:attlist.h"/>
+            <xsl:apply-templates select="node()"/>
+        </xsl:element>
+    </xsl:template>
+    
+    <xsl:template match="dtbook:hd">
         <xsl:element name="h{f:level(.)}">
             <xsl:call-template name="f:attlist.h"/>
             <xsl:apply-templates select="node()"/>

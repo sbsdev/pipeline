@@ -8,6 +8,7 @@
 	<xsl:import href="epub3-vocab.xsl"/>
 
     <xsl:param name="allow-links" select="false()"/>
+    <xsl:param name="normalize-space-in-h" select="true()"/>
 
     <xsl:output indent="yes" exclude-result-prefixes="#all" doctype-public="-//NISO//DTD dtbook 2005-3//EN" doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd"/>
 
@@ -1008,7 +1009,24 @@
     </xsl:template>
 
     <xsl:template match="html:h1 | html:h2 | html:h3 | html:h4 | html:h5 | html:h6">
-        <xsl:element name="h{if (parent::*/f:types(.)=('sidebar','z3998:poem','z3998:verse') or parent::*/f:classes(.)='linegroup') then 'd' else f:level(.)}">
+        <xsl:variable name="name">
+            <xsl:choose>
+                <xsl:when test="parent::*/f:types(.)=('sidebar','z3998:poem','z3998:verse') or parent::*/f:classes(.)='linegroup'">
+                    <xsl:sequence select="'hd'"/>
+                </xsl:when>
+                <xsl:when test="ancestor-or-self::html:*[self::html:section or
+                                                         self::html:article or
+                                                         self::html:aside or
+                                                         self::html:nav or
+                                                         self::html:body]">
+                    <xsl:sequence select="concat('h',f:level(.))"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:sequence select="local-name(.)"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:element name="{$name}">
             <xsl:call-template name="f:attlist.h"/>
             <xsl:apply-templates select="node()"/>
         </xsl:element>
@@ -1021,6 +1039,9 @@
     <xsl:template match="text()[ancestor::html:h1 | ancestor::html:h2 | ancestor::html:h3 | ancestor::html:h4 | ancestor::html:h5 | ancestor::html:h6]">
         <!-- normalize space in headlines -->
         <xsl:choose>
+            <xsl:when test="not($normalize-space-in-h)">
+                <xsl:sequence select="."/>
+            </xsl:when>
             <xsl:when
                 test="normalize-space()='' and count((ancestor::*[matches(name(),'h\d')][1]//text() intersect preceding::text())[normalize-space()]) and count((ancestor::*[matches(name(),'h\d')][1]//text() intersect following::text())[normalize-space()])">
                 <xsl:text> </xsl:text>

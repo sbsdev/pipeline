@@ -19,6 +19,9 @@
 	
 	<xsl:import href="epub3-dtbook-migrator.xsl"/>
 	
+	<!-- @Override -->
+	<xsl:variable name="normalize-space-in-h" select="false()"/>
+	
 	<xsl:include href="block-translate.xsl"/>
 	
 	<xsl:template match="@*|node()" priority="1000">
