@@ -27,6 +27,12 @@
        uri="../xml/handle-toc-and-running-line.xsl"/>
   <uri name="http://www.sbs.ch/pipeline/modules/braille/internal/insert-boilerplate.xsl"
        uri="../xml/insert-boilerplate.xsl"/>
+
+  <!-- for testing (needs to be in catalog.xml in order to automatically copy default option values)
+       -->
+  <uri name="http://www.sbs.ch/pipeline/modules/braille/internal/dtbook-to-epub3-to-pef.xpl"
+       uri="../xml/dtbook-to-epub3-to-pef.xpl"
+       px:extends="http://www.sbs.ch/pipeline/modules/braille/dtbook-to-pef.xpl"/>
   
   <!-- dependencies -->
   <nextCatalog catalog="org:daisy:pipeline:modules:braille:css-utils"/>

@@ -71,23 +71,26 @@ public class SBSTest {
 		File xspecTestsDir = new File(baseDir, "src/test/xspec");
 		File generatedXSpecTestsDir = new File(baseDir, "target/generated-test-sources/xspec");
 		String generateXSpecTests = new File(baseDir, "src/test/resources/generate-xspec-tests.xpl").toURI().toASCIIString();
+		File xprocspecTestsDir = new File(baseDir, "src/test/xprocspec");
+		File generatedXProcSpecTestsDir = new File(baseDir, "target/generated-test-sources/xprocspec");
+		String generateXProcSpecTests = new File(baseDir, "src/test/resources/generate-xprocspec-tests.xpl").toURI().toASCIIString();
 		Map<String,File> xspecTests = new HashMap<String,File>();
 		for (File file : xspecTestsDir.listFiles())
 			xspecTests.put(file.getName().replaceAll("\\.xspec$", ""), file);
 		Map<String,File> xprocspecTests = new HashMap<String,File>();
 		for (String test : new String[]{
 			"test_translator",
-			"test_dtbook-to-pef_prodnote",
-			"test_dtbook-to-pef_downgrade",
+			"test_epub3-to-pef",
 			"test_dtbook-to-pef",
-			"test_dtbook-to-pef_tables",
-			"test_dtbook-to-pef_pagination",
-			"test_dtbook-to-pef_titlepage",
-			"test_dtbook-to-pef_print_page_numbers",
+			"test_dtbook-to-pef_downgrade",
 			"test_dtbook-to-pef_notes",
-			"test_epub3-to-pef"
-		    })
-		    xprocspecTests.put(test, new File(baseDir, "src/test/xprocspec/" + test + ".xprocspec"));
+			"test_dtbook-to-pef_pagination",
+			"test_dtbook-to-pef_print_page_numbers",
+			"test_dtbook-to-pef_prodnote",
+			"test_dtbook-to-pef_tables",
+			"test_dtbook-to-pef_titlepage"
+			})
+			xprocspecTests.put(test, new File(xprocspecTestsDir, test + ".xprocspec"));
 		boolean xspecHasFocus = xspecRunner.hasFocus(xspecTests.values());
 		boolean xprocspecHasFocus = xprocspecRunner.hasFocus(xprocspecTests.values());
 		List<AssertionError> errors = new ArrayList<AssertionError>();
@@ -117,6 +120,19 @@ public class SBSTest {
 			catch (AssertionError e) {
 				errors.add(e); }}
 		if (xprocspecHasFocus || !xspecHasFocus) {
+			
+			// execute tests a second time via EPUB 3, except if they contain custom, DTBook-specific CSS
+			Set<String> tests = new HashSet<>(xprocspecTests.keySet());
+			for (String test : tests)
+				if (!test.equals("test_translator") &&
+				    !test.equals("test_epub3-to-pef")) {
+					File generatedTest = new File(generatedXProcSpecTestsDir, test + ".xprocspec");
+					xprocEngine.run(generateXProcSpecTests,
+					                ImmutableMap.of("source", (List<String>)ImmutableList.of(xprocspecTests.get(test).toURI().toASCIIString())),
+					                ImmutableMap.of("result", generatedTest.toURI().toASCIIString()),
+					                null,
+					                null);
+					xprocspecTests.put(test + "_via_epub3", generatedTest); }
 			boolean success = xprocspecRunner.run(xprocspecTests,
 			                                      new File(baseDir, "target/xprocspec-reports"),
 			                                      new File(baseDir, "target/surefire-reports"),
@@ -168,6 +184,7 @@ public class SBSTest {
 				pipelineModule("common-utils"),
 				pipelineModule("file-utils"),
 				pipelineModule("fileset-utils"),
+				pipelineModule("epubcheck-adapter"),
 				pipelineModule("nordic-epub3-dtbook-migrator"),
 				// because of bug in lou_indexTables we need to include liblouis-tables even though
 				// we're not using it (needed for include-brf)
