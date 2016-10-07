@@ -32,6 +32,7 @@
     <module>modules/sbs/maven-parents/super-parent</module>
     <module>modules/sbs/maven-parents/modules-parent</module>
     <module>modules/sbs/braille-tables</module>
+    <module>modules/sbs/epub3-dtbook-migrator</module>
   </modules>
   
   <build>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <x:description xmlns:x="http://www.jenitennison.com/xslt/xspec"
-               stylesheet="../../main/resources/xml/block-translate.xsl">
+               stylesheet="../resources/block-translate.xsl">
   
   <x:param name="contraction-grade">0</x:param>
   

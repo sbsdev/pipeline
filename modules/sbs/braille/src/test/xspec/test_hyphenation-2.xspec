@@ -2,7 +2,7 @@
 <x:description xmlns:x="http://www.jenitennison.com/xslt/xspec"
 	       xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
 	       xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
-               stylesheet="../../main/resources/xml/block-translate.xsl"
+               stylesheet="../resources/block-translate.xsl"
 	       preserve-space="dtb:p dtb:byline dtb:author dtb:li dtb:lic dtb:doctitle dtb:docauthor dtb:span dtb:em dtb:strong brl:emph dtb:line dtb:h1 dtb:h2 dtb:h3 dtb:h4 dtb:h5 dtb:h6">
 
   <x:param name="contraction-grade">0</x:param>

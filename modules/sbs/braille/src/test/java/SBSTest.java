@@ -4,11 +4,17 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import org.daisy.dotify.api.text.Integer2TextFactoryMakerService;
 
+import org.daisy.maven.xproc.api.XProcEngine;
 import org.daisy.maven.xproc.xprocspec.XProcSpecRunner;
 import org.daisy.maven.xspec.TestResults;
 import org.daisy.maven.xspec.XSpecRunner;
@@ -51,6 +57,9 @@ import static org.ops4j.pax.exam.CoreOptions.systemPackage;
 public class SBSTest {
 	
 	@Inject
+	private XProcEngine xprocEngine;
+	
+	@Inject
 	private XSpecRunner xspecRunner;
 	
 	@Inject
@@ -60,6 +69,11 @@ public class SBSTest {
 	public void runXSpecAndXProcSpec() throws Exception {
 		File baseDir = new File(PathUtils.getBaseDir());
 		File xspecTestsDir = new File(baseDir, "src/test/xspec");
+		File generatedXSpecTestsDir = new File(baseDir, "target/generated-test-sources/xspec");
+		String generateXSpecTests = new File(baseDir, "src/test/resources/generate-xspec-tests.xpl").toURI().toASCIIString();
+		Map<String,File> xspecTests = new HashMap<String,File>();
+		for (File file : xspecTestsDir.listFiles())
+			xspecTests.put(file.getName().replaceAll("\\.xspec$", ""), file);
 		Map<String,File> xprocspecTests = new HashMap<String,File>();
 		for (String test : new String[]{
 			"test_translator",
@@ -74,13 +88,30 @@ public class SBSTest {
 			"test_epub3-to-pef"
 		    })
 		    xprocspecTests.put(test, new File(baseDir, "src/test/xprocspec/" + test + ".xprocspec"));
-		boolean xspecHasFocus = xspecRunner.hasFocus(xspecTestsDir);
+		boolean xspecHasFocus = xspecRunner.hasFocus(xspecTests.values());
 		boolean xprocspecHasFocus = xprocspecRunner.hasFocus(xprocspecTests.values());
 		List<AssertionError> errors = new ArrayList<AssertionError>();
 		if (xspecHasFocus || !xprocspecHasFocus) {
+			
+			// execute tests a second time via EPUB 3, except if they contain custom CSS (in style attributes)
+			Set<String> tests = new HashSet<>(xspecTests.keySet());
+			for (String test : tests) {
+				File generatedTest = new File(generatedXSpecTestsDir, xspecTests.get(test).getName());
+				if (!test.equals("test_block-translate") &&
+				    !test.equals("test_handle_downgrading-1") &&
+				    !test.equals("test_handle-downgrading-2") &&
+				    !test.equals("test_dtbook2sbsform-9")) {
+					xprocEngine.run(generateXSpecTests,
+					                ImmutableMap.of("source", (List<String>)ImmutableList.of(xspecTests.get(test).toURI().toASCIIString())),
+					                ImmutableMap.of("result", generatedTest.toURI().toASCIIString()),
+					                null,
+					                ImmutableMap.of("parameters",
+					                                (Map<String,String>)ImmutableMap.of("projectBaseDir",
+					                                                                    baseDir.toURI().toASCIIString())));
+					xspecTests.put(test + "_via_epub3", generatedTest); }}
 			File xspecReportsDir = new File(baseDir, "target/surefire-reports");
 			xspecReportsDir.mkdirs();
-			TestResults result = xspecRunner.run(xspecTestsDir, xspecReportsDir);
+			TestResults result = xspecRunner.run(xspecTests, xspecReportsDir);
 			try {
 				assertEquals("Number of XSpec failures and errors should be zero", 0L, result.getFailures() + result.getErrors()); }
 			catch (AssertionError e) {
@@ -137,6 +168,7 @@ public class SBSTest {
 				pipelineModule("common-utils"),
 				pipelineModule("file-utils"),
 				pipelineModule("fileset-utils"),
+				pipelineModule("nordic-epub3-dtbook-migrator"),
 				// because of bug in lou_indexTables we need to include liblouis-tables even though
 				// we're not using it (needed for include-brf)
 				brailleModule("liblouis-tables"),
@@ -149,7 +181,9 @@ public class SBSTest {
 				mavenBundle("org.daisy.maven:xproc-engine-daisy-pipeline:?"),
 				// xspec
 				xspec(),
-				mavenBundle("org.daisy.pipeline:saxon-adapter:?"))
+				mavenBundle("org.daisy.pipeline:saxon-adapter:?")),
+			// second version of guava needed for epubcheck-adapter
+			mavenBundle("com.google.guava:guava:14.0.1")
 		);
 	}
 	

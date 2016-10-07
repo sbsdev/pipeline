@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<x:description xmlns:x="http://www.jenitennison.com/xslt/xspec"
+	       xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
+	       xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
+               stylesheet="../resources/block-translate.xsl"
+	       preserve-space="dtb:p dtb:byline dtb:author dtb:li dtb:lic dtb:doctitle dtb:docauthor dtb:span dtb:em dtb:strong brl:emph dtb:line dtb:h1 dtb:h2 dtb:h3 dtb:h4 dtb:h5 dtb:h6">
+
+  <x:param name="contraction-grade">2</x:param>
+  <x:param name="hyphenator">(locale:de)</x:param>
+  <x:param name="ascii-braille">yes</x:param>
+  <x:param name="hyphenation">true</x:param>
+  
+    <x:scenario label="Downgrading">
+      <x:context>
+        <stub xml:lang="de">
+          <dtb:p>Kurzschrift schrift schrift <dtb:span>╙</dtb:span><dtb:span brl:grade="1" style="text-transform: grade-1">Vollschrift</dtb:span> kurz kurz kurz</dtb:p>
+          <dtb:p>Kurzschrift schrift schrift <dtb:span>╙</dtb:span><dtb:span brl:grade="0" style="text-transform: grade-0">Basisschrift</dtb:span> kurz kurz kurz</dtb:p>
+          <dtb:p>Kurzschrift schrift schrift <dtb:span>╚</dtb:span><dtb:span brl:grade="1" style="text-transform: grade-1">Vollschrift schrift schrift</dtb:span><dtb:span>╝</dtb:span> kurz kurz kurz</dtb:p>
+          <dtb:p>Kurzschrift schrift schrift <dtb:span>╚</dtb:span><dtb:span brl:grade="0" style="text-transform: grade-0">Basisschrift schrift schrift</dtb:span><dtb:span>╝</dtb:span> kurz kurz kurz</dtb:p>
+          <dtb:p>Kurzschrift schrift schrift <dtb:span>╚</dtb:span><dtb:span brl:grade="1" style="text-transform: grade-1">Vollschrift/Vollschrift</dtb:span><dtb:span>╝</dtb:span> kurz kurz kurz</dtb:p>
+          <dtb:p>Kurzschrift schrift schrift <dtb:span>╚</dtb:span><dtb:span brl:grade="0" style="text-transform: grade-0">Basisschrift/Basisschrift</dtb:span><dtb:span>╝</dtb:span> kurz kurz kurz</dtb:p>
+          <dtb:p>Kurzschrift schrift schrift <dtb:span>╚</dtb:span><dtb:span brl:grade="1" style="text-transform: grade-1">Vollschrift-​Vollschrift</dtb:span><dtb:span>╝</dtb:span> kurz kurz kurz</dtb:p>
+          <dtb:p>Kurzschrift schrift schrift <dtb:span>╚</dtb:span><dtb:span brl:grade="0" style="text-transform: grade-0">Basisschrift-​Basisschrift</dtb:span><dtb:span>╝</dtb:span> kurz kurz kurz</dtb:p>
+        </stub>
+      </x:context>
+      <x:expect label="braille">
+        <stub xml:lang="de">
+          <dtb:p>KZ5T 5T 5T <dtb:span>'.</dtb:span><dtb:span brl:grade="1">VOLL5RIFT</dtb:span> KZ KZ KZ</dtb:p>
+          <dtb:p>KZ5T 5T 5T <dtb:span>'.</dtb:span><dtb:span brl:grade="0">BASISSCHRIFT</dtb:span> KZ KZ KZ</dtb:p>
+          <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="1">VOLL5RIFT 5RIFT 5RIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
+          <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="0">BASISSCHRIFT SCHRIFT SCHRIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
+          <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="1">VOLL5RIFT!,mVOLL5RIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
+          <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="0">BASISSCHRIFT!,mBASISSCHRIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
+          <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="1">VOLL5RIFT-mVOLL5RIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
+          <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="0">BASISSCHRIFT-mBASISSCHRIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
+        </stub>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Span inside span 2">
+      <x:context>
+        <stub xml:lang="de">
+          <dtb:p><dtb:span brl:accents="reduced">René</dtb:span></dtb:p>
+          <dtb:p><dtb:span brl:accents="reduced">René René</dtb:span></dtb:p>
+          <dtb:p>Kurz <dtb:span>╚</dtb:span><dtb:span brl:grade="1" brl:accents="reduced" style="text-transform: grade-1">René René</dtb:span><dtb:span>╝</dtb:span> René</dtb:p>
+          <dtb:p><dtb:span>╚</dtb:span><dtb:span brl:grade="1" style="text-transform: grade-1">René <dtb:span brl:accents="reduced">René</dtb:span> René</dtb:span><dtb:span>╝</dtb:span></dtb:p>
+        </stub>
+      </x:context>
+      <x:expect label="braille">
+        <stub xml:lang="de">
+          <dtb:p><dtb:span brl:accents="reduced">RC"E</dtb:span></dtb:p>
+          <dtb:p><dtb:span brl:accents="reduced">RC"E RC"E</dtb:span></dtb:p>
+          <dtb:p>KZ <dtb:span>-.</dtb:span><dtb:span brl:grade="1" brl:accents="reduced">REN"E REN"E</dtb:span><dtb:span>'.</dtb:span> RC"%</dtb:p>
+          <dtb:p><dtb:span>-.</dtb:span><dtb:span brl:grade="1">REN"% <dtb:span brl:accents="reduced">REN"E</dtb:span> REN"%</dtb:span><dtb:span>'.</dtb:span></dtb:p>
+        </stub>
+      </x:expect>
+    </x:scenario>
+
+</x:description>

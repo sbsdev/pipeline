@@ -8,15 +8,17 @@
                 xmlns:my="http://my-functions"
                 exclude-result-prefixes="#all">
 	
-	<xsl:import href="http://www.daisy.org/pipeline/modules/braille/css-utils/transform/block-translator-template.xsl"/>
 	<xsl:import href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xsl"/>
 	<xsl:import href="functions.xsl"/>
 	<xsl:import href="select-braille-table.xsl"/>
-	<xsl:import href="handle-elements.xsl"/>
+	
+	<xsl:include href="http://www.daisy.org/pipeline/modules/braille/css-utils/transform/block-translator-template.xsl"/>
+	<xsl:include href="handle-elements.xsl"/>
 	
 	<xsl:param name="text-transform-query-base" select="'(input:text-css)(output:braille)(translator:sbs)(locale:de)'"/>
 	
-	<xsl:template match="css:block" mode="#default before after">
+	<!-- @Override -->
+	<xsl:template match="css:block" mode="#default before after" priority="1">
 		<xsl:apply-templates/>
 	</xsl:template>
 	
@@ -120,17 +122,7 @@
 	
 	<xsl:template match="*" priority="10">
 		<xsl:param name="source-style" as="element()*" tunnel="yes"/> <!-- css:property* -->
-		<xsl:param name="result-style" as="element()*" tunnel="yes"> <!-- css:property* -->
-			<!--
-				the default is also set in the root matcher of block-translator-template.xsl, but is
-				repeated here for the XSpec tests
-			-->
-			<xsl:call-template name="css:computed-properties">
-				<xsl:with-param name="properties" select="$text-properties"/>
-				<xsl:with-param name="context" select="$dummy-element"/>
-				<xsl:with-param name="cascaded-properties" tunnel="yes" select="css:property('text-transform','none')"/>
-			</xsl:call-template>
-		</xsl:param>
+		<xsl:param name="result-style" as="element()*" tunnel="yes"/> <!-- css:property* -->
 		<xsl:variable name="style" as="element()*"> <!-- css:rule* -->
 			<xsl:if test="@css:*">
 				<css:rule>
