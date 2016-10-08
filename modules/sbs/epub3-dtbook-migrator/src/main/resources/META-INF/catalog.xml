@@ -34,5 +34,6 @@
     <nextCatalog catalog="org:daisy:pipeline:modules:dtbook-utils"/>
     <nextCatalog catalog="org:daisy:pipeline:modules:fileset-utils"/>
     <nextCatalog catalog="org:daisy:pipeline:modules:file-utils"/>
+    <nextCatalog catalog="org:daisy:pipeline:modules:asciimath-utils"/>
 
 </catalog>
