@@ -807,7 +807,7 @@
             <html:span class="byline"/>
         </x:context>
         <x:expect label="the resulting element should be a byline and the byline class should be removed">
-            <dtbook:span class="byline"/>
+            <dtbook:byline/>
         </x:expect>
     </x:scenario>
 

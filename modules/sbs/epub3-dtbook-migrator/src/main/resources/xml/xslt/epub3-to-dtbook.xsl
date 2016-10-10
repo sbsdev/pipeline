@@ -471,19 +471,16 @@
         </xsl:call-template>
     </xsl:template>
 
-    <!-- <byline> is not allowed in nordic DTBook. Using span instead. -->
     <xsl:template match="html:span[f:classes(.)='byline']">
-        <xsl:message select="'&lt;byline&gt; is not allowed in nordic DTBook. Using span instead with a byline class.'"/>
-        <span>
+        <byline>
             <xsl:call-template name="f:attlist.byline"/>
             <xsl:apply-templates select="node()"/>
-        </span>
+        </byline>
     </xsl:template>
 
-    <!-- <byline> is not allowed in nordic DTBook. Using span instead with a byline class. -->
     <xsl:template name="f:attlist.byline">
         <xsl:call-template name="f:attrs">
-            <!--            <xsl:with-param name="except-classes" select="'byline'" tunnel="yes"/>-->
+            <xsl:with-param name="except-classes" select="'byline'" tunnel="yes"/>
         </xsl:call-template>
     </xsl:template>
 
