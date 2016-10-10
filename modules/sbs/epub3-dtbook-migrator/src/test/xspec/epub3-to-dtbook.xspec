@@ -1022,7 +1022,7 @@
             <html:abbr/>
         </x:context>
         <x:expect label="the resulting element should be a abbr">
-            <dtbook:span class="acronym"/>
+            <dtbook:abbr/>
         </x:expect>
     </x:scenario>
 
@@ -1032,16 +1032,16 @@
             <x:context>
                 <html:abbr epub:type="z3998:acronym"/>
             </x:context>
-            <x:expect label="the resulting element should be a span with class 'acronym'">
-                <dtbook:span class="acronym"/>
+            <x:expect label="the resulting element should be a acronym">
+                <dtbook:acronym/>
             </x:expect>
         </x:scenario>
         <x:scenario label="when the epub:type is 'z3998:initialism'">
             <x:context>
                 <html:abbr epub:type="z3998:initialism"/>
             </x:context>
-            <x:expect label="the resulting element should be a span with class 'initialism'">
-                <dtbook:span class="initialism"/>
+            <x:expect label="the resulting element should be a acronym with pronounce attribute 'no'">
+                <dtbook:acronym pronounce="no"/>
             </x:expect>
         </x:scenario>
         <x:scenario label="when the epub:type is 'z3998:truncation'">
@@ -1060,7 +1060,7 @@
             <html:abbr epub:type="z3998:acronym"/>
         </x:context>
         <x:expect label="the resulting element should be a acronym">
-            <dtbook:span class="acronym"/>
+            <dtbook:acronym/>
         </x:expect>
     </x:scenario>
 

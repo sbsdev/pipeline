@@ -712,7 +712,13 @@
         </xsl:call-template>
     </xsl:template>
 
-    <!-- abbr is disallowed in nordic dtbooks, using span instead -->
+    <xsl:template match="html:abbr">
+        <abbr>
+            <xsl:call-template name="f:attlist.abbr"/>
+            <xsl:apply-templates select="node()"/>
+        </abbr>
+    </xsl:template>
+    
     <xsl:template match="html:abbr[f:types(.)='z3998:truncation']">
         <span>
             <xsl:call-template name="f:attlist.abbr"/>
@@ -724,22 +730,20 @@
         <xsl:call-template name="f:attrs"/>
     </xsl:template>
 
-    <!-- acronym is disallowed in nordic dtbooks, using span instead -->
-    <xsl:template match="html:abbr">
-        <span>
+    <xsl:template match="html:abbr[f:types(.)[.=('z3998:initialism','z3998:acronym')]]">
+        <acronym>
             <xsl:call-template name="f:attlist.acronym"/>
             <xsl:apply-templates select="node()"/>
-        </span>
+        </acronym>
     </xsl:template>
 
-    <!-- acronym is disallowed in nordic dtbooks, using span instead and thus not setting the pronounce attribute -->
     <xsl:template name="f:attlist.acronym">
         <xsl:call-template name="f:attrs">
-            <xsl:with-param name="classes" select="if (not(f:types(.)='z3998:initialism')) then 'acronym' else ()" tunnel="yes"/>
+            <xsl:with-param name="except-classes" tunnel="yes" select="('initialism','acronym')"/>
         </xsl:call-template>
-        <!--<xsl:if test="">
-            <xsl:attribute name="pronounce" select="if (f:types(.)='z3998:initialism') then 'yes' else 'no'"/>
-        </xsl:if>-->
+        <xsl:if test="f:types(.)='z3998:initialism'">
+            <xsl:attribute name="pronounce" select="'no'"/>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="html:sub">
