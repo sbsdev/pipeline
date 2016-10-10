@@ -239,7 +239,8 @@
     </xsl:call-template>
   </xsl:template>
   
-  <xsl:template match="dtb:abbr">
+  <xsl:template match="dtb:abbr|
+                       html:abbr">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:call-template name="handle_abbr"/>
@@ -937,7 +938,7 @@
   <!-- Single word mixed abbr -->
   <!-- ====================== -->
   <xsl:template
-      match="text()[my:starts-with-word(string()) and not(my:starts-with-number(string())) and my:ends-with-word(string(my:preceding-textnode-within-block(.)[ancestor::dtb:abbr]))]"
+      match="text()[my:starts-with-word(string()) and not(my:starts-with-number(string())) and my:ends-with-word(string(my:preceding-textnode-within-block(.)[ancestor::*:abbr]))]"
       priority="60">
     <xsl:call-template name="translate">
       <xsl:with-param name="text" select="concat('&#x250A;',string())"/>
