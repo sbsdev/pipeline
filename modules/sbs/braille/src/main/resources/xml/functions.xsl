@@ -3,6 +3,7 @@
     version="2.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
+    xmlns:epub="http://www.idpf.org/2007/ops"
     xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
     xmlns:my="http://my-functions"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -186,6 +187,12 @@
   <xsl:function name="my:insert-element-changed-comment" as="xs:string">
     <xsl:param name="element" as="xs:string"/>
     <xsl:value-of select="concat('&#10;', 'xxx Was originally a ', $element, '&#10;')"/>
+  </xsl:function>
+
+  <xsl:function name="epub:type" as="xs:boolean">
+    <xsl:param name="element" as="element()"/>
+    <xsl:param name="type" as="xs:string"/>
+    <xsl:sequence select="exists($element[@epub:type=$type])"/>
   </xsl:function>
 
 </xsl:stylesheet>
