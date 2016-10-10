@@ -25,6 +25,20 @@
 	<!-- @Override -->
 	<xsl:variable name="generate-ids" select="false()"/>
 	
+	<!-- @Override -->
+	<xsl:template name="f:attrs" xmlns:f="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/dtbook-to-epub3.xsl">
+		<xsl:call-template name="f:coreattrs"/>
+		<xsl:call-template name="f:i18n"/>
+		<xsl:copy-of select="@brl:*"/>
+	</xsl:template>
+	
+	<!-- @Override -->
+	<xsl:template name="f:attrs" xmlns:f="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/epub3-to-dtbook.xsl">
+		<xsl:call-template name="f:coreattrs"/>
+		<xsl:call-template name="f:i18n"/>
+		<xsl:copy-of select="@brl:*"/>
+	</xsl:template>
+	
 	<xsl:include href="block-translate.xsl"/>
 	
 	<xsl:template match="@*|node()" priority="1000">
@@ -51,7 +65,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template mode="dtbook-to-epub3" match="dtb:*|dtb:*/@*|dtb:*/text()">
+	<xsl:template mode="dtbook-to-epub3" match="dtb:*|dtb:*/@*|dtb:*/text()|brl:*">
 		<xsl:apply-templates select=".">
 			<xsl:with-param name="this:mode" select="'dtbook-to-epub3'" tunnel="yes"/>
 		</xsl:apply-templates>
@@ -63,7 +77,7 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:template mode="epub3-to-dtbook" match="html:*|html:*/@*|html:*/text()">
+	<xsl:template mode="epub3-to-dtbook" match="html:*|html:*/@*|html:*/text()|brl:*">
 		<xsl:apply-templates select=".">
 			<xsl:with-param name="this:mode" select="'epub3-to-dtbook'" tunnel="yes"/>
 		</xsl:apply-templates>
@@ -75,5 +89,5 @@
 			<xsl:apply-templates mode="#current"/>
 		</xsl:copy>
 	</xsl:template>
-		
+	
 </xsl:stylesheet>
