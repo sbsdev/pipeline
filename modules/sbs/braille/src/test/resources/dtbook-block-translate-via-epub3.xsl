@@ -22,6 +22,9 @@
 	<!-- @Override -->
 	<xsl:variable name="normalize-space-in-h" select="false()"/>
 	
+	<!-- @Override -->
+	<xsl:variable name="generate-ids" select="false()"/>
+	
 	<xsl:include href="block-translate.xsl"/>
 	
 	<xsl:template match="@*|node()" priority="1000">
