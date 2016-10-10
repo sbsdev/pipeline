@@ -568,8 +568,8 @@
         <x:context>
             <html:address/>
         </x:context>
-        <x:expect label="the resulting element should be a p with a address class">
-            <dtbook:p class="address"/>
+        <x:expect label="the resulting element should be a address">
+            <dtbook:address/>
         </x:expect>
     </x:scenario>
 

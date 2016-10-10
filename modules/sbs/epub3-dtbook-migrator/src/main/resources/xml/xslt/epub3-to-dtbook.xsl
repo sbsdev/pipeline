@@ -303,20 +303,15 @@
         </xsl:call-template>
     </xsl:template>
 
-    <!-- <address> is not allowed in nordic DTBook. Replacing with p. -->
     <xsl:template match="html:address">
-        <xsl:message select="'&lt;address&gt; is not allowed in nordic DTBook. Replacing with p and a &quot;address&quot; class.'"/>
-        <p>
+        <address>
             <xsl:call-template name="f:attlist.address"/>
             <xsl:apply-templates select="node()"/>
-        </p>
+        </address>
     </xsl:template>
 
-    <!-- <address> is not allowed in nordic DTBook. Replacing with p and a "address" class. -->
     <xsl:template name="f:attlist.address">
-        <xsl:call-template name="f:attrs">
-            <xsl:with-param name="classes" select="'address'" tunnel="yes"/>
-        </xsl:call-template>
+        <xsl:call-template name="f:attrs"/>
     </xsl:template>
 
     <xsl:template match="html:div">
