@@ -658,7 +658,7 @@
                         </dtbook:poem>
                         <dtbook:poem>
                             <dtbook:author>Author in poem context (2015-2)</dtbook:author>
-                            <dtbook:linegroup class="verse"/>
+                            <dtbook:linegroup/>
                         </dtbook:poem>
                         <dtbook:p class="author">Author on p element</dtbook:p>
                         <dtbook:p><dtbook:span class="author">Author on span element</dtbook:span></dtbook:p>

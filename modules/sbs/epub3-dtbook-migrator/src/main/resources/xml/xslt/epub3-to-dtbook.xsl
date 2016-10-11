@@ -509,7 +509,10 @@
 
     <xsl:template name="f:attlist.linegroup">
         <xsl:call-template name="f:attrs">
-            <xsl:with-param name="except-classes" select="'linegroup'" tunnel="yes"/>
+            <xsl:with-param name="except-classes" tunnel="yes"
+                            select="if (f:types(.)='z3998:verse' and parent::*[f:types(.)='z3998:poem'])
+                                    then ('linegroup','verse')
+                                    else 'linegroup'" />
         </xsl:call-template>
     </xsl:template>
 
