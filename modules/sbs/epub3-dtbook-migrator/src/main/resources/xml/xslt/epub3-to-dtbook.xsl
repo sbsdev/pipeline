@@ -586,6 +586,7 @@
             <xsl:with-param name="classes" select="('a', if (@target) then concat('target-',replace(@target,'_','-')) else ())" tunnel="yes"/>
             <xsl:with-param name="except-classes" select="for $rev in (f:classes(.)[matches(.,'^rev-')]) return $rev" tunnel="yes"/>
             -->
+            <xsl:with-param name="except-classes" tunnel="yes" select="if ($allow-links) then ('external-true','external-false') else ()"/>
         </xsl:call-template>
 
         <xsl:if test="$allow-links">
@@ -593,11 +594,19 @@
             <!-- @download and @media is dropped - they don't have a good equivalent in DTBook -->
 
             <xsl:choose>
+                <xsl:when test="f:classes(.)='external-true'">
+                    <xsl:attribute name="external" select="'true'"/>
+                </xsl:when>
+                <xsl:when test="f:classes(.)='external-false'">
+                    <!-- "false" is default value -->
+                    <!-- <xsl:attribute name="external" select="'false'"/> -->
+                </xsl:when>
                 <xsl:when test="@target='_blank' or matches(@href,'^(\w+:|/)')">
                     <xsl:attribute name="external" select="'true'"/>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:attribute name="external" select="'false'"/>
+                    <!-- "false" is default value -->
+                    <!-- <xsl:attribute name="external" select="'false'"/> -->
                 </xsl:otherwise>
             </xsl:choose>
 

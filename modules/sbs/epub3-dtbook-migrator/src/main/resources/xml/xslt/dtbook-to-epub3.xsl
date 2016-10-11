@@ -714,24 +714,31 @@
     </xsl:template>
 
     <xsl:template name="f:attlist.a">
+        <xsl:variable name="target" as="xs:string?">
+            <xsl:choose>
+                <xsl:when test="f:classes(.)[matches(.,'^target--')]">
+                    <xsl:sequence select="replace((f:classes(.)[matches(.,'^target--')])[1],'^target--','_')"/>
+                </xsl:when>
+                <xsl:when test="f:classes(.)[matches(.,'^target-')]">
+                    <xsl:sequence select="replace((f:classes(.)[matches(.,'^target-')])[1],'^target-','')"/>
+                </xsl:when>
+                <xsl:when test="@external='true'">
+                    <xsl:sequence select="'_blank'"/>
+                </xsl:when>
+            </xsl:choose>
+        </xsl:variable>
         <xsl:call-template name="f:attrs">
-            <xsl:with-param name="classes" select="(if (@external) then concat('external-',@external) else (), if (@rev) then concat('rev-',@rev) else ())" tunnel="yes"/>
+            <xsl:with-param name="classes" select="(if (@external) then concat('external-',@external)
+                                                    else if ($target='_blank' or matches(@href,'^(\w+:|/)')) then 'external-false'
+                                                    else (),
+                                                    if (@rev) then concat('rev-',@rev) else ())" tunnel="yes"/>
             <xsl:with-param name="exclude-classes" select="for $target in (f:classes(.)[matches(.,'^target-')]) return $target" tunnel="yes"/>
         </xsl:call-template>
         <xsl:copy-of select="@type|@href|@hreflang|@rel|@accesskey|@tabindex"/>
         <!-- @rev is dropped since it's not supported in HTML5 -->
-
-        <xsl:choose>
-            <xsl:when test="f:classes(.)[matches(.,'^target--')]">
-                <xsl:attribute name="target" select="replace((f:classes(.)[matches(.,'^target--')])[1],'^target--','_')"/>
-            </xsl:when>
-            <xsl:when test="f:classes(.)[matches(.,'^target-')]">
-                <xsl:attribute name="target" select="replace((f:classes(.)[matches(.,'^target-')])[1],'^target-','')"/>
-            </xsl:when>
-            <xsl:when test="@external='true'">
-                <xsl:attribute name="target" select="'_blank'"/>
-            </xsl:when>
-        </xsl:choose>
+        <xsl:if test="$target">
+            <xsl:attribute name="target" select="$target"/>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="dtbook:em">

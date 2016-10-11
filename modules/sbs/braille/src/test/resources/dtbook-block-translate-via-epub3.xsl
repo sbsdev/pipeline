@@ -23,6 +23,9 @@
 	<xsl:variable name="normalize-space-in-h" select="false()"/>
 	
 	<!-- @Override -->
+	<xsl:variable name="allow-links" select="true()"/>
+	
+	<!-- @Override -->
 	<xsl:variable name="generate-ids" select="false()"/>
 	
 	<!-- @Override -->
