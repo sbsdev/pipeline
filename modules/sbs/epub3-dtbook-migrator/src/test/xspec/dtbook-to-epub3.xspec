@@ -4017,26 +4017,27 @@
 
     <x:scenario label="a p element with code children">
         <x:context xml:space="preserve">
-            <dtbook:p/>
-            <dtbook:p><dtbook:code/></dtbook:p>
-            <dtbook:p>TEXT<dtbook:code/>TEXT</dtbook:p>
-            <dtbook:p>
+            <dtbook:p xml:space="preserve"/>
+            <dtbook:p xml:space="preserve"><dtbook:code/></dtbook:p>
+            <dtbook:p xml:space="preserve">TEXT<dtbook:code/>TEXT</dtbook:p>
+            <dtbook:p xml:space="preserve">
                 <dtbook:code/>
                 <dtbook:code/>
             </dtbook:p>
-            <dtbook:p><dtbook:code>  preserve  whitespace  </dtbook:code></dtbook:p>
             <dtbook:p xml:space="preserve"><dtbook:code>  preserve  whitespace  </dtbook:code></dtbook:p>
+            <dtbook:p><dtbook:code>  preserve  whitespace  </dtbook:code></dtbook:p>
         </x:context>
-        <x:expect xml:space="preserve" label="should map to a pre element if it contains exactly one code child and nothing else">
-            <html:p/>
+        <x:expect xml:space="preserve" label="should map to a pre element if it has a xml:space='preserve' attribute
+                                              and contains exactly one code child and nothing else">
+            <html:p xml:space="preserve"/>
             <html:pre><html:code/></html:pre>
-            <html:p>TEXT<html:code/>TEXT</html:p>
-            <html:p>
+            <html:p xml:space="preserve">TEXT<html:code/>TEXT</html:p>
+            <html:p xml:space="preserve">
                 <html:code/>
                 <html:code/>
             </html:p>
             <html:pre><html:code>  preserve  whitespace  </html:code></html:pre>
-            <html:pre><html:code>  preserve  whitespace  </html:code></html:pre>
+            <html:p><html:code>  preserve  whitespace  </html:code></html:p>
         </x:expect>
     </x:scenario>
 

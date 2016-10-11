@@ -652,7 +652,6 @@
     </xsl:template>
 
     <xsl:template name="f:attlist.code">
-        <xsl:attribute name="xml:space" select="'preserve'"/>
         <xsl:call-template name="f:attrs"/>
         <xsl:call-template name="f:i18n"/>
     </xsl:template>

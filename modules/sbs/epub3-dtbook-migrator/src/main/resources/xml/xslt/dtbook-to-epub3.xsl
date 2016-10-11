@@ -1111,7 +1111,7 @@
     <xsl:template match="dtbook:p">
         <xsl:variable name="element" select="."/>
         <xsl:variable name="has-block-elements" select="if (dtbook:list or dtbook:dl or dtbook:imggroup) then true() else false()"/>
-        <xsl:variable name="contains-single-code-element" select="count(dtbook:code) = 1 and count(* | text()[normalize-space()]) = 1"/>
+        <xsl:variable name="contains-single-code-element" select="count(dtbook:code) = 1 and count(* | text()[normalize-space()]) = 1 and @xml:space='preserve'"/>
         <xsl:if test="f:classes($element)=('precedingemptyline','precedingseparator')">
             <hr class="{if (f:classes($element)='precedingseparator') then 'separator' else 'emptyline'}"/>
         </xsl:if>
