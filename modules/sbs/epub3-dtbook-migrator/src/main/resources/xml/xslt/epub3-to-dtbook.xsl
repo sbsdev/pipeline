@@ -611,20 +611,15 @@
         <xsl:call-template name="f:attrs"/>
     </xsl:template>
 
-    <!-- <dfn> is not allowed in nordic DTBook. Replacing with span. -->
     <xsl:template match="html:dfn">
-        <xsl:message select="'&lt;dfn&gt; is not allowed in nordic DTBook. Replacing with span and a &quot;definition&quot; class.'"/>
-        <span>
+        <dfn>
             <xsl:call-template name="f:attlist.dfn"/>
             <xsl:apply-templates select="node()"/>
-        </span>
+        </dfn>
     </xsl:template>
 
-    <!-- <dfn> is not allowed in nordic DTBook. Replacing with span and a "definition" class. -->
     <xsl:template name="f:attlist.dfn">
-        <xsl:call-template name="f:attrs">
-            <xsl:with-param name="classes" select="'definition'" tunnel="yes"/>
-        </xsl:call-template>
+        <xsl:call-template name="f:attrs"/>
     </xsl:template>
 
     <!-- <kbd> is not allowed in nordic DTBook. Replacing with code. -->
