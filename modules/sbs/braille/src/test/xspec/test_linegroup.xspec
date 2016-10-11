@@ -44,15 +44,6 @@
       </x:expect>
     </x:scenario>
 
-    <x:scenario label="linenum">
-      <x:context>
-        <dtb:linenum xml:lang="de">Foo</dtb:linenum>
-      </x:context>
-      <x:expect label="braille">
-	<dtb:linenum xml:lang="de">FOO</dtb:linenum>
-      </x:expect>
-    </x:scenario>
-
     <x:scenario label="Line with linenum">
       <x:context>
         <dtb:line xml:lang="de"><dtb:linenum>6</dtb:linenum>DAS HIER IST EIN KLEINER TEST. ES GEHT DARUM.</dtb:line>
