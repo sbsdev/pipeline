@@ -1601,9 +1601,11 @@
                     </html:header>
                 </html:body>
             </x:context>
-            <x:expect label="the resulting covertitle should be dropped (covertitle is not allowed in nordic dtbook)">
+            <x:expect label="the resulting element should be a covertitle">
                 <dtbook:book>
-                    <dtbook:frontmatter/>
+                    <dtbook:frontmatter>
+                        <dtbook:covertitle>COVERTITLE</dtbook:covertitle>
+                    </dtbook:frontmatter>
                 </dtbook:book>
             </x:expect>
         </x:scenario>

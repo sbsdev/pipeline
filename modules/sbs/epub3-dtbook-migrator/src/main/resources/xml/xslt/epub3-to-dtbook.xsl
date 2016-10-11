@@ -1004,15 +1004,16 @@
         </xsl:call-template>
     </xsl:template>
 
-    <!-- <covertitle> is not allowed in nordic DTBook. Using p instead. -->
     <xsl:template match="html:*[f:types(.)='covertitle' and parent::html:header[parent::html:body]]">
-        <xsl:message select="'&lt;covertitle&gt; is not allowed in nordic DTBook, dropping it...'"/>
+        <covertitle>
+            <xsl:call-template name="f:attlist.covertitle"/>
+            <xsl:apply-templates select="node()"/>
+        </covertitle>
     </xsl:template>
 
-    <!-- <covertitle> is not allowed in nordic DTBook. Using p instead with a "covertitle" class. -->
     <xsl:template name="f:attlist.covertitle">
         <xsl:call-template name="f:attrs">
-            <xsl:with-param name="classes" select="'covertitle'" tunnel="yes"/>
+            <xsl:with-param name="except-classes" tunnel="yes" select="'covertitle'"/>
         </xsl:call-template>
     </xsl:template>
 
