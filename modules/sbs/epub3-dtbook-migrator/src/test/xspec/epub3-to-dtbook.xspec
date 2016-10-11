@@ -1137,8 +1137,8 @@
         <x:context>
             <html:span epub:type="z3998:word"/>
         </x:context>
-        <x:expect label="the resulting element should be a sent">
-            <dtbook:span class="word"/>
+        <x:expect label="the resulting element should be a w">
+            <dtbook:w/>
         </x:expect>
     </x:scenario>
 

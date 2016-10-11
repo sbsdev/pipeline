@@ -787,19 +787,16 @@
         </xsl:call-template>
     </xsl:template>
 
-    <!-- <w> is not allowed in nordic DTBook. Using span instead. -->
     <xsl:template match="html:span[f:types(.)='z3998:word' and not(f:types(.)='z3998:sentence')]">
-        <xsl:message select="'&lt;w&gt; is not allowed in nordic DTBook. Using span instead with a &quot;word&quot; class.'"/>
-        <span>
+        <w>
             <xsl:call-template name="f:attlist.w"/>
             <xsl:apply-templates select="node()"/>
-        </span>
+        </w>
     </xsl:template>
 
-    <!-- <w> is not allowed in nordic DTBook. Using span instead with a "word" class. -->
     <xsl:template name="f:attlist.w">
         <xsl:call-template name="f:attrs">
-            <!--            <xsl:with-param name="except-classes" select="'word'" tunnel="yes"/>-->
+            <xsl:with-param name="except-classes" select="'word'" tunnel="yes"/>
         </xsl:call-template>
     </xsl:template>
 
