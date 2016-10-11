@@ -1125,7 +1125,7 @@
             <html:span epub:type="z3998:sentence"/>
         </x:context>
         <x:expect label="the resulting element should be a sent">
-            <dtbook:span class="sentence"/>
+            <dtbook:sent/>
         </x:expect>
     </x:scenario>
 

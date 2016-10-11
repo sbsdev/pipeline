@@ -774,18 +774,17 @@
         <xsl:call-template name="f:i18n"/>
     </xsl:template>
 
-    <!-- <sent> not allowed in nordic guidelines, using <span> instead -->
     <xsl:template match="html:span[f:types(.)='z3998:sentence']">
-        <span>
+        <sent>
             <xsl:call-template name="f:attlist.sent"/>
             <xsl:apply-templates select="node()"/>
-        </span>
+        </sent>
     </xsl:template>
 
-    <!-- <sent> not allowed in nordic guidelines, using <span> instead and including the 'sentence' type as a class -->
-    <!--            <xsl:with-param name="except-classes" select="'sentence'" tunnel="yes"/>-->
     <xsl:template name="f:attlist.sent">
-        <xsl:call-template name="f:attrs"/>
+        <xsl:call-template name="f:attrs">
+            <xsl:with-param name="except-classes" select="'sentence'" tunnel="yes"/>
+        </xsl:call-template>
     </xsl:template>
 
     <!-- <w> is not allowed in nordic DTBook. Using span instead. -->
