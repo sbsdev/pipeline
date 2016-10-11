@@ -125,22 +125,24 @@
   <!-- CODE -->
   <!-- ==== -->
 
-  <xsl:template match="dtb:code[matches(.,'\s')]">
+  <xsl:template match="dtb:code[matches(.,'\s')]|
+                       html:code[matches(.,'\s')]">
     <!-- Multi-word code -->
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:call-template name="translate">
-        <xsl:with-param name="table" select="'sbs.dis,sbs-special.cti,sbs-code.cti'"/>
+        <xsl:with-param name="table" select="$computer_braille_tables"/>
         <xsl:with-param name="text" select="concat('&#x2588;',string(),'&#x2589;')"/>
       </xsl:call-template>
     </xsl:copy>
   </xsl:template>
 
-  <xsl:template match="dtb:code">
+  <xsl:template match="dtb:code|
+                       html:code">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:call-template name="translate">
-        <xsl:with-param name="table" select="'sbs.dis,sbs-special.cti,sbs-code.cti'"/>
+        <xsl:with-param name="table" select="$computer_braille_tables"/>
         <xsl:with-param name="text" select="concat('&#x257C;',string())"/>
       </xsl:call-template>
     </xsl:copy>
