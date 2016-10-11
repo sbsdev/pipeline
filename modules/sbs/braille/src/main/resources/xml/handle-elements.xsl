@@ -449,7 +449,9 @@
   <!-- ========== -->
 
   <!-- Excercise answers and boxes -->
-  <xsl:template match="dtb:span[@class=('answer','box')]">
+  <xsl:template match="dtb:span[@class=('answer','box')]|
+                       html:span[@epub:type='answer']|
+                       html:span[@class='box']">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:choose>
@@ -465,7 +467,8 @@
     </xsl:copy>
   </xsl:template>
 
-  <xsl:template match="dtb:span[@class='answer_1']">
+  <xsl:template match="dtb:span[@class='answer_1']|
+                       html:span[@class='answer_1']">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:choose>
