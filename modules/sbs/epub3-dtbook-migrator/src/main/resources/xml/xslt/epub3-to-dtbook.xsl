@@ -1048,19 +1048,16 @@
         </xsl:choose>
     </xsl:template>
 
-    <!-- <bridgehead> is not allowed in nordic DTBook. Using p instead. -->
     <xsl:template match="html:p[f:types(.)='bridgehead']">
-        <xsl:message select="'&lt;bridgehead&gt; is not allowed in nordic DTBook. Using p instead with a bridgehead class.'"/>
-        <p>
+        <bridgehead>
             <xsl:call-template name="f:attlist.bridgehead"/>
             <xsl:apply-templates select="node()"/>
-        </p>
+        </bridgehead>
     </xsl:template>
 
-    <!-- <bridgehead> is not allowed in nordic DTBook. Using p instead with a bridgehead class. -->
     <xsl:template name="f:attlist.bridgehead">
         <xsl:call-template name="f:attrs">
-            <xsl:with-param name="classes" select="'bridgehead'" tunnel="yes"/>
+            <xsl:with-param name="except-classes" tunnel="yes" select="'bridgehead'"/>
         </xsl:call-template>
     </xsl:template>
 
