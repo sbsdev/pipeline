@@ -10,13 +10,13 @@
 
     <x:scenario label="Sidebar">
       <x:context>
-        <dtb:sidebar xml:lang="de">
+        <dtb:sidebar xml:lang="de" render="optional">
           <dtb:hd>Wichtiger Merksatz:</dtb:hd>
           <dtb:p>Kräht der Hahn auf dem Mist, ändert sich das Wetter oder es bleibt, wie es ist.</dtb:p>
 	</dtb:sidebar>
       </x:context>
       <x:expect label="braille">
-        <dtb:sidebar xml:lang="de">
+        <dtb:sidebar xml:lang="de" render="optional">
           <dtb:hd>W#T&gt;7 M7KSZ:</dtb:hd>
           <dtb:p>KR@HT R HAHN 1 [ MI], !7T C D WETT7 O % BBT, 2 % ].</dtb:p>
 	</dtb:sidebar>
