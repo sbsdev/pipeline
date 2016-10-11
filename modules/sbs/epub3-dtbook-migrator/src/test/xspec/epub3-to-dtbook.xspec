@@ -1112,7 +1112,7 @@
             <html:bdo/>
         </x:context>
         <x:expect label="the resulting element should be a bdo">
-            <dtbook:span class="bdo"/>
+            <dtbook:bdo/>
         </x:expect>
     </x:scenario>
 

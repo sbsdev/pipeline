@@ -768,20 +768,15 @@
         <xsl:call-template name="f:attrs"/>
     </xsl:template>
 
-    <!-- <bdo> is not allowed in nordic DTBook. Replacing with span. -->
     <xsl:template match="html:bdo">
-        <xsl:message select="'&lt;bdo&gt; is not allowed in nordic DTBook. Replacing with span and a &quot;bdo-dir-{@dir}&quot; class.'"/>
-        <span>
+        <bdo>
             <xsl:call-template name="f:attlist.bdo"/>
             <xsl:apply-templates select="node()"/>
-        </span>
+        </bdo>
     </xsl:template>
 
-    <!-- <bdo> is not allowed in nordic DTBook. Replacing with span and a "bdo-dir-{@dir}" class. -->
     <xsl:template name="f:attlist.bdo">
-        <xsl:call-template name="f:coreattrs">
-            <xsl:with-param name="classes" select="('bdo', if (@dir and not(@dir='')) then concat('bdo-dir-',@dir) else ())" tunnel="yes"/>
-        </xsl:call-template>
+        <xsl:call-template name="f:coreattrs"/>
         <xsl:call-template name="f:i18n"/>
     </xsl:template>
 
