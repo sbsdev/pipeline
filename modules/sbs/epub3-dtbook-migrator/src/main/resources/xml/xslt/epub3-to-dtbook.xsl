@@ -689,21 +689,15 @@
         <xsl:attribute name="xml:space" select="'preserve'"/>
     </xsl:template>
 
-    <!-- <samp> is not allowed in nordic DTBook. Replacing with code. -->
     <xsl:template match="html:samp">
-        <xsl:message select="'&lt;samp&gt; is not allowed in nordic DTBook. Replacing with code and a &quot;example&quot; class.'"/>
-        <code>
+        <samp>
             <xsl:call-template name="f:attlist.samp"/>
             <xsl:apply-templates select="node()"/>
-        </code>
+        </samp>
     </xsl:template>
 
-    <!-- <samp> is not allowed in nordic DTBook. Replacing with code and a "example" class. -->
     <xsl:template name="f:attlist.samp">
-        <xsl:attribute name="xml:space" select="'preserve'"/>
-        <xsl:call-template name="f:attrs">
-            <xsl:with-param name="classes" select="'example'" tunnel="yes"/>
-        </xsl:call-template>
+        <xsl:call-template name="f:attrs"/>
         <xsl:call-template name="f:i18n"/>
     </xsl:template>
 

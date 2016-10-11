@@ -996,7 +996,7 @@
             <html:samp/>
         </x:context>
         <x:expect label="the resulting element should be a samp">
-            <dtbook:code xml:space="preserve" class="example"/>
+            <dtbook:samp/>
         </x:expect>
     </x:scenario>
 
