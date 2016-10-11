@@ -552,7 +552,9 @@
             <xsl:with-param name="all-ids" select="$all-ids" tunnel="yes"/>
         </xsl:call-template>
         <!-- @imgref is dropped, the relationship is preserved in the corresponding img/@longdesc -->
-        <xsl:if test="not(@id)">
+        <xsl:if test="not(@id) and (
+                        $generate-ids or (
+                        some $ref in tokenize(@imgref,'\s+')[not(.='')] satisfies //dtbook:img[@id=$ref]))">
             <xsl:attribute name="id" select="f:generate-pretty-id(.,$all-ids)"/>
         </xsl:if>
     </xsl:template>
@@ -1570,7 +1572,9 @@
             <xsl:with-param name="all-ids" select="$all-ids" tunnel="yes"/>
         </xsl:call-template>
         <!-- @imgref is dropped, the relationship is preserved in the corresponding img/@longdesc -->
-        <xsl:if test="not(@id)">
+        <xsl:if test="not(@id) and (
+                        $generate-ids or (
+                        some $ref in tokenize(@imgref,'\s+')[not(.='')] satisfies //dtbook:img[@id=$ref]))">
             <xsl:attribute name="id" select="f:generate-pretty-id(.,$all-ids)"/>
         </xsl:if>
     </xsl:template>

@@ -9,6 +9,18 @@
 
     <xsl:param name="allow-links" select="false()"/>
     <xsl:param name="normalize-space-in-h" select="true()"/>
+    <xsl:param name="generate-ids" select="true()"/>
+
+    <!--
+        * imgref:
+            Try to transform a longdesc attribute to an imgref attributes on the target.
+        * longdesc:
+            Keep longdesc attributes.
+        * both:
+            Keep longdesc attributes and also try to transform them to imgref attributes. This
+            results in redundancy.
+    -->
+    <xsl:param name="transform-longdesc-to" select="'both'"/>
 
     <xsl:output indent="yes" exclude-result-prefixes="#all" doctype-public="-//NISO//DTD dtbook 2005-3//EN" doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd"/>
 
@@ -372,8 +384,16 @@
 
     <xsl:template name="f:attlist.prodnote">
         <xsl:param name="all-ids" tunnel="yes" select=".//@id"/>
+        <xsl:variable name="img" as="element()*">
+            <xsl:if test="@id and $transform-longdesc-to=('imgref','both')">
+                <xsl:variable name="id" select="@id"/>
+                <xsl:sequence select="//html:img[replace(@longdesc,'^#','')=$id]"/>
+            </xsl:if>
+        </xsl:variable>
         <xsl:call-template name="f:attrs">
             <xsl:with-param name="except-classes" select="('production','render-required','render-optional')" tunnel="yes"/>
+            <xsl:with-param name="except" tunnel="yes"
+                            select="if ($transform-longdesc-to='imgref' and exists($img)) then 'id' else ()"/>
         </xsl:call-template>
         <xsl:choose>
             <xsl:when test="f:classes(.)='render-required'">
@@ -387,12 +407,8 @@
                 <xsl:attribute name="render" select="'optional'"/>
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:if test="@id">
-            <xsl:variable name="id" select="@id"/>
-            <xsl:variable name="img" select="//html:img[replace(@longdesc,'^#','')=$id]"/>
-            <xsl:if test="$img">
-                <xsl:attribute name="imgref" select="string-join($img/((@id,f:generate-pretty-id(.,$all-ids))[1]),' ')"/>
-            </xsl:if>
+        <xsl:if test="exists($img)">
+            <xsl:attribute name="imgref" select="string-join($img/((@id,f:generate-pretty-id(.,$all-ids))[1]),' ')"/>
         </xsl:if>
     </xsl:template>
 
@@ -889,8 +905,20 @@
                 <xsl:copy-of select="@alt"/>
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:copy-of select="@longdesc|@height|@width"/>
-        <xsl:if test="not(@id)">
+        <xsl:copy-of select="@height|@width"/>
+        <xsl:variable name="imgref-element" as="element()*">
+            <xsl:if test="@longdesc and $transform-longdesc-to=('imgref','both')">
+                <xsl:variable name="longdesc" select="@longdesc"/>
+                <!-- assuming element is converted to a dtbook:prodnote or dtbook:caption -->
+                <xsl:sequence select="//*[concat('#',@id)=$longdesc]"/>
+            </xsl:if>
+        </xsl:variable>
+        <xsl:if test="$transform-longdesc-to=('longdesc','both') or not(exists($imgref-element))">
+            <xsl:copy-of select="@longdesc"/>
+        </xsl:if>
+        <xsl:if test="not(@id) and (
+                        $generate-ids or
+                        exists($imgref-element))">
             <xsl:attribute name="id" select="f:generate-pretty-id(.,$all-ids)"/>
         </xsl:if>
     </xsl:template>
@@ -1317,7 +1345,20 @@
     </xsl:template>
 
     <xsl:template name="f:attlist.caption">
-        <xsl:call-template name="f:attrs"/>
+        <xsl:param name="all-ids" tunnel="yes" select=".//@id"/>
+        <xsl:variable name="img" as="element()*">
+            <xsl:if test="@id and $transform-longdesc-to=('imgref','both')">
+                <xsl:variable name="id" select="@id"/>
+                <xsl:sequence select="//html:img[replace(@longdesc,'^#','')=$id]"/>
+            </xsl:if>
+        </xsl:variable>
+        <xsl:if test="exists($img)">
+            <xsl:attribute name="imgref" select="string-join($img/((@id,f:generate-pretty-id(.,$all-ids))[1]),' ')"/>
+        </xsl:if>
+        <xsl:call-template name="f:attrs">
+            <xsl:with-param name="except" tunnel="yes"
+                            select="if ($transform-longdesc-to='imgref' and exists($img)) then 'id' else ()"/>
+        </xsl:call-template>
     </xsl:template>
 
     <xsl:template match="html:thead">

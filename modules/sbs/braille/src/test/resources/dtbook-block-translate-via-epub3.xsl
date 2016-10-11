@@ -26,6 +26,9 @@
 	<xsl:variable name="generate-ids" select="false()"/>
 	
 	<!-- @Override -->
+	<xsl:variable name="transform-longdesc-to" select="'imgref'"/>
+	
+	<!-- @Override -->
 	<xsl:template name="f:attrs" xmlns:f="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/dtbook-to-epub3.xsl">
 		<xsl:call-template name="f:coreattrs"/>
 		<xsl:call-template name="f:i18n"/>
