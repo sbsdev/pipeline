@@ -1522,7 +1522,7 @@
             <x:context>
                 <dtbook:p id="paragraph">
                     <dtbook:span>A</dtbook:span>
-                    <dtbook:list/>
+                    <dtbook:list type="pl"/>
                     <dtbook:span>B</dtbook:span>
                     <dtbook:dl/>
                     <dtbook:span>C</dtbook:span>
@@ -1533,7 +1533,7 @@
                     <html:p>
                         <html:span>A</html:span>
                     </html:p>
-                    <html:ol id="..." class="list-style-type-none"/>
+                    <html:ol id="..." class="list-style-type-none preformatted"/>
                     <html:p>
                         <html:span>B</html:span>
                     </html:p>
@@ -2334,7 +2334,7 @@
     <x:scenario label="when processing a list element">
         <x:scenario label="which has a headline">
             <x:context>
-                <dtbook:list>
+                <dtbook:list type="pl">
                     <dtbook:hd>TEXT</dtbook:hd>
                 </dtbook:list>
             </x:context>
@@ -2360,10 +2360,10 @@
                     <dtbook:li>TEXT</dtbook:li>
                 </dtbook:list>
             </x:context>
-            <x:expect label="the resulting element should be a ol (the type attribute is ignored since it is disallowed in nordic guidelines)">
-                <html:ol id="..." class="list-style-type-none">
+            <x:expect label="the resulting element should be a ul">
+                <html:ul id="..." class="list-style-type-none">
                     <html:li id="...">TEXT</html:li>
-                </html:ol>
+                </html:ul>
             </x:expect>
         </x:scenario>
         <x:scenario label="which is preformatted">
@@ -2373,7 +2373,7 @@
                 </dtbook:list>
             </x:context>
             <x:expect label="the resulting element should be a ol">
-                <html:ol id="..." class="list-style-type-none">
+                <html:ol id="..." class="list-style-type-none preformatted">
                     <html:li id="...">TEXT</html:li>
                 </html:ol>
             </x:expect>
@@ -2390,10 +2390,10 @@
                 </dtbook:list>
             </x:context>
             <x:expect label="the result should be one span and one nested list">
-                <html:ol id="..." class="list-style-type-none">
+                <html:ol id="..." class="list-style-type-none preformatted">
                     <html:li id="...">
                         <html:span>TEXT</html:span>
-                        <html:ol id="..." class="list-style-type-none">
+                        <html:ol id="..." class="list-style-type-none preformatted">
                             <html:li id="...">TEXT</html:li>
                         </html:ol>
                     </html:li>
@@ -2414,12 +2414,12 @@
                 </dtbook:list>
             </x:context>
             <x:expect label="the result should be the contents of the lic and one nested list">
-                <html:ol id="..." class="list-style-type-none">
+                <html:ol id="..." class="list-style-type-none preformatted">
                     <html:li id="...">
                         <html:span class="lic">
                             <html:span>TEXT</html:span>
                         </html:span>
-                        <html:ol id="..." class="list-style-type-none">
+                        <html:ol id="..." class="list-style-type-none preformatted">
                             <html:li id="...">TEXT</html:li>
                         </html:ol>
                     </html:li>
@@ -2443,7 +2443,7 @@
                 </dtbook:list>
             </x:context>
             <x:expect label="the result should be two lics and one nested list">
-                <html:ol id="..." class="list-style-type-none">
+                <html:ol id="..." class="list-style-type-none preformatted">
                     <html:li id="...">
                         <html:span class="lic">
                             <html:span>TEXT</html:span>
@@ -2451,7 +2451,7 @@
                         <html:span class="lic">
                             <html:span>TEXT</html:span>
                         </html:span>
-                        <html:ol id="..." class="list-style-type-none">
+                        <html:ol id="..." class="list-style-type-none preformatted">
                             <html:li id="...">TEXT</html:li>
                         </html:ol>
                     </html:li>
@@ -2468,7 +2468,7 @@
             </dtbook:list>
         </x:context>
         <x:expect label="the resulting list should be wrapped in a section element">
-            <html:ol id="..." start="1" class="list-style-type-none">
+            <html:ol id="..." start="1" class="list-style-type-none preformatted">
                 <html:li id="...">TEXT</html:li>
             </html:ol>
         </x:expect>
@@ -2493,9 +2493,9 @@
                 </dtbook:list>
             </x:context>
             <x:expect label="the result should become ul and the bullets should be removed">
-                <html:ul id="...">
+                <html:ul id="..." class="preformatted">
                     <html:li id="li_814"><html:p>TEXT1 <html:em>TEXT2</html:em> TEXT3</html:p>
-                        <html:ul id="list_213">
+                        <html:ul id="list_213" class="preformatted">
                             <html:li id="li_815">TEXT4 <html:em>TEXT5 </html:em> TEXT6</html:li>
                         </html:ul>
                     </html:li>
@@ -2516,9 +2516,9 @@
                 </dtbook:list>
             </x:context>
             <x:expect label="the ul should become list, bullets should be added to text or block content as necessary">
-                <html:ol id="...">
+                <html:ol id="..." class="preformatted">
                     <html:li id="li_814" value="1"><html:p>TEXT1 <html:em>TEXT2</html:em> TEXT3</html:p>
-                        <html:ol id="list_213">
+                        <html:ol id="list_213" class="preformatted">
                             <html:li id="li_815" value="1">TEXT4 <html:em>TEXT5 </html:em> TEXT6</html:li>
                         </html:ol>
                     </html:li>
@@ -2552,23 +2552,23 @@
                 </dtbook:list>
             </x:context>
             <x:expect label="the type of list should be detected, and the list markers removed">
-                <html:ol id="...">
+                <html:ol id="..." class="preformatted">
                     <html:li id="..." value="1">ONE</html:li>
                     <html:li id="..." value="2">TWO</html:li>
                 </html:ol>
-                <html:ol id="..." type="a">
+                <html:ol id="..." type="a" class="preformatted">
                     <html:li id="..." value="1">ONE</html:li>
                     <html:li id="..." value="2">TWO</html:li>
                 </html:ol>
-                <html:ol id="..." type="A">
+                <html:ol id="..." type="A" class="preformatted">
                     <html:li id="..." value="1">ONE</html:li>
                     <html:li id="..." value="2">TWO</html:li>
                 </html:ol>
-                <html:ol id="..." type="i">
+                <html:ol id="..." type="i" class="preformatted">
                     <html:li id="..." value="1">ONE</html:li>
                     <html:li id="..." value="2">TWO</html:li>
                 </html:ol>
-                <html:ol id="..." type="I">
+                <html:ol id="..." type="I" class="preformatted">
                     <html:li id="..." value="1">ONE</html:li>
                     <html:li id="..." value="2">TWO</html:li>
                 </html:ol>
@@ -2584,7 +2584,7 @@
                 </dtbook:list>
             </x:context>
             <x:expect label="the result should be 10, 9, 5, 4">
-                <html:ol id="...">
+                <html:ol id="..." class="preformatted">
                     <html:li id="..." value="10">ONE</html:li>
                     <html:li id="..." value="9">TWO</html:li>
                     <html:li id="..." value="5">THREE</html:li>
@@ -3483,7 +3483,7 @@
             </dtbook:list>
         </x:context>
         <x:expect label="the letters should be correctly parsed">
-            <html:ol id="..." type="a">
+            <html:ol id="..." type="a" class="preformatted">
                 <html:li id="..." value="27">ONE</html:li>
                 <html:li id="..." value="1406">TWO</html:li>
             </html:ol>
@@ -3599,7 +3599,7 @@
             </dtbook:list>
         </x:context>
         <x:expect label="the result should be as expected">
-            <html:ol id="..." class="list-style-type-none">
+            <html:ol id="..." class="list-style-type-none preformatted">
                 <html:li id="..."><html:strong>Totalt antal häckande par</html:strong> 49 024 037–101 782 306</html:li>
                 <html:li id="..."><html:strong>Antal ökande arter</html:strong> 64</html:li>
                 <html:li id="..."><html:strong>Procentandel ökande arter</html:strong> 26%</html:li>
@@ -3679,7 +3679,7 @@
             </dtbook:list>
         </x:context>
         <x:expect label="the lic elements should be direct children of li and the a should become spans inside the lics">
-            <html:ol class="list-style-type-none" id="...">
+            <html:ol class="list-style-type-none preformatted" id="...">
                 <html:li id="...">
                     <html:span class="lic">
                         <html:a id="id1" href="mtm06350-1.xhtml#d130172e14">Chapter 1</html:a>
@@ -3695,7 +3695,7 @@
                     <html:span class="lic">
                         <html:a href="mtm06350-1.xhtml#d130172e14" id="...">2</html:a>
                     </html:span>
-                    <html:ol class="list-style-type-none" id="...">
+                    <html:ol class="list-style-type-none preformatted" id="...">
                         <html:li id="...">
                             <html:span class="lic">Chapter 2.1</html:span>
                             <html:span class="lic">3</html:span>
@@ -3715,7 +3715,7 @@
                     </html:span>
                     <html:span>non-lic</html:span>
                     <html:span>span</html:span>
-                    <html:ol class="list-style-type-none" id="...">
+                    <html:ol class="list-style-type-none preformatted" id="...">
                         <html:li id="...">
                             <html:span class="lic">Chapter 4.1</html:span>
                             <html:span class="lic">4</html:span>
@@ -3995,19 +3995,19 @@
         </x:context>
         <x:expect label="all the tocs should be converted and placed in the matter they occured in the DTBook">
             <html:section epub:type="frontmatter toc" id="...">
-                <html:ol class="list-style-type-none" id="..."/>
+                <html:ol class="list-style-type-none preformatted" id="..."/>
             </html:section>
             <html:section epub:type="frontmatter toc" id="...">
                 <html:ol id="..."/>
             </html:section>
             <html:section epub:type="bodymatter toc" id="...">
-                <html:ol class="list-style-type-none" id="..."/>
+                <html:ol class="list-style-type-none preformatted" id="..."/>
             </html:section>
             <html:section epub:type="bodymatter toc" id="...">
                 <html:ol id="..."/>
             </html:section>
             <html:section epub:type="backmatter toc" id="...">
-                <html:ol class="list-style-type-none" id="..."/>
+                <html:ol class="list-style-type-none preformatted" id="..."/>
             </html:section>
             <html:section epub:type="backmatter toc" id="...">
                 <html:ol id="..."/>

@@ -10,6 +10,8 @@
     <xsl:output indent="yes" exclude-result-prefixes="#all"/>
 
     <xsl:param name="generate-ids" select="true()"/>
+    <xsl:param name="supported-list-types" select="('ol','ul','pl')"/>
+    <xsl:param name="parse-list-marker" select="true()"/>
 
     <xsl:template match="comment()">
         <xsl:copy-of select="."/>
@@ -1345,6 +1347,9 @@
     </xsl:template>
 
     <xsl:template name="f:list.content">
+        <xsl:if test="not(@type=$supported-list-types)">
+            <xsl:message terminate="yes">Error</xsl:message>
+        </xsl:if>
         <xsl:apply-templates select="dtbook:pagenum[not(preceding-sibling::dtbook:li)]">
             <xsl:with-param name="pagenum.parent" tunnel="yes" select="parent::*"/>
         </xsl:apply-templates>
@@ -1353,7 +1358,7 @@
             select="if (starts-with($first-marker-text,'•')) then '•' else if (matches($first-marker-text,'^[0-9a-zA-Z]+\.')) then replace($first-marker-text,'^([0-9a-zA-Z]+)\..*','$1') else ''"/>
         <xsl:variable name="first-marker-type"
             select="if (not($first-marker)) then '' else if ($first-marker='•') then '•' else if (string(number($first-marker)) != 'NaN') then '1' else if ($first-marker='i') then 'i' else if ($first-marker='I') then 'I' else if ($first-marker=lower-case($first-marker)) then 'a' else 'A'"/>
-        <xsl:element name="{if ($first-marker-type='•') then 'ul' else 'ol'}">
+        <xsl:element name="{if (@type=('ol','ul')) then @type else if ($parse-list-marker and $first-marker-type='•') then 'ul' else 'ol'}">
             <xsl:call-template name="f:attlist.list">
                 <xsl:with-param name="marker-type" select="$first-marker-type"/>
             </xsl:call-template>
@@ -1369,38 +1374,63 @@
     <xsl:template name="f:attlist.list">
         <xsl:param name="marker-type" select="''"/>
         <xsl:call-template name="f:attrs">
-            <xsl:with-param name="classes" select="if ($marker-type='' and not(ancestor-or-self::dtbook:list[f:classes(.)='toc'])) then 'list-style-type-none' else ()" tunnel="yes"/>
+            <xsl:with-param name="classes" tunnel="yes"
+                            select="if (ancestor-or-self::dtbook:list[f:classes(.)='toc']) then ()
+                                    else (if (not($parse-list-marker) or $marker-type='') then ('list-style-type-none') else (),
+                                          if (@type='pl') then 'preformatted' else ())" />
             <xsl:with-param name="except-types" select="if (ancestor-or-self::dtbook:list[f:classes(.)='toc']) then 'toc' else ()" tunnel="yes"/>
         </xsl:call-template>
         <!-- @depth is implicit; ignore it -->
-        <!--<xsl:if test="@enum">
-            <xsl:attribute name="type" select="@enum"/>
-        </xsl:if>-->
-        <xsl:if test="$marker-type=('a','A','i','I')">
-            <xsl:attribute name="type" select="$marker-type"/>
+        <!-- NOTE: type attribute is actually deprecated; list styles should be handled through CSS -->
+        <xsl:choose>
+            <xsl:when test="@type=('ol','ul')">
+                <xsl:if test="@enum">
+                    <xsl:attribute name="type" select="@enum"/>
+                </xsl:if>
+            </xsl:when>
+            <xsl:when test="not($parse-list-marker)"/>
+            <xsl:when test="$marker-type='•'">
+                <!-- <xsl:attribute name="type" select="'disc'"/> -->
+            </xsl:when>
+            <xsl:when test="$marker-type=('a','A','i','I')">
+                <xsl:attribute name="type" select="$marker-type"/>
+            </xsl:when>
+        </xsl:choose>
+        <!-- NOTE: start attribute is actually deprecated -->
+        <xsl:if test="@type='ol' or not($parse-list-marker and $marker-type='•')">
+            <xsl:copy-of select="@start"/>
         </xsl:if>
-        <xsl:copy-of select="@start"/>
     </xsl:template>
 
     <xsl:template match="dtbook:li">
         <xsl:param name="marker-type" select="''"/>
         <xsl:apply-templates select="preceding-sibling::comment() intersect preceding-sibling::*[1]/following-sibling::comment()"/>
         <li>
-            <xsl:variable name="marker-text" select="(text() | dtbook:p/text())[normalize-space()][1]"/>
-            <xsl:variable name="marker"
-                select="if (starts-with($marker-text,'•')) then '•' else if (matches($marker-text,'^[0-9a-zA-Z]+\.')) then replace($marker-text,'^([0-9a-zA-Z]+)\..*','$1') else ()"/>
-            <xsl:variable name="marker-type"
-                select="if (not($marker)) then '' else if ($marker='•') then '•' else if (string(number($marker)) != 'NaN') then '1' else parent::*/dtbook:li[1]/(text()[normalize-space()]|dtbook:p/text()[normalize-space()])[1]/(if (starts-with(.,'i.')) then 'i' else if (starts-with(.,'I.')) then 'I' else if (substring(.,1,1)=lower-case(substring(.,1,1))) then 'a' else 'A')"/>
-            <!-- NOTE: list is assumed to be preformatted; a generic script would calculate implicit value based on start attribute etc. -->
-            <xsl:variable name="marker-value"
-                select="if ($marker-type=('a','A')) then f:numeric-alpha-to-decimal(lower-case($marker)) else if ($marker-type=('i','I')) then pf:numeric-roman-to-decimal(lower-case($marker)) else $marker"/>
-
-            <xsl:call-template name="f:attlist.li">
-                <xsl:with-param name="li-value" select="$marker-value"/>
-            </xsl:call-template>
-
+            <xsl:choose>
+                <xsl:when test="parent::*/@type=('ol','ul') or not($parse-list-marker)">
+                    <xsl:call-template name="f:attlist.li"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:variable name="marker-text" select="(text() | dtbook:p/text())[normalize-space()][1]"/>
+                    <xsl:variable name="marker"
+                                  select="if (starts-with($marker-text,'•')) then '•' else if (matches($marker-text,'^[0-9a-zA-Z]+\.')) then replace($marker-text,'^([0-9a-zA-Z]+)\..*','$1') else ()"/>
+                    <xsl:variable name="marker-type"
+                                  select="if (not($marker)) then '' else if ($marker='•') then '•' else if (string(number($marker)) != 'NaN') then '1' else parent::*/dtbook:li[1]/(text()[normalize-space()]|dtbook:p/text()[normalize-space()])[1]/(if (starts-with(.,'i.')) then 'i' else if (starts-with(.,'I.')) then 'I' else if (substring(.,1,1)=lower-case(substring(.,1,1))) then 'a' else 'A')"/>
+                    <!-- NOTE: list is assumed to be preformatted; a generic script would calculate implicit value based on start attribute etc. -->
+                    <xsl:variable name="marker-value"
+                                  select="if ($marker-type=('a','A')) then f:numeric-alpha-to-decimal(lower-case($marker)) else if ($marker-type=('i','I')) then pf:numeric-roman-to-decimal(lower-case($marker)) else $marker"/>
+                    
+                    <xsl:call-template name="f:attlist.li">
+                        <xsl:with-param name="li-value" select="$marker-value"/>
+                    </xsl:call-template>
+                </xsl:otherwise>
+            </xsl:choose>
+            
             <xsl:for-each select="node()">
                 <xsl:choose>
+                    <xsl:when test="parent::*/@type=('ol','ul') or not($parse-list-marker)">
+                        <xsl:apply-templates select="."/>
+                    </xsl:when>
                     <xsl:when
                         test="self::dtbook:* and not(preceding-sibling::node()[self::* or self::text()[normalize-space()]]) and not(text()[1]/preceding-sibling::*) and matches(text()[1],'^(\w+\.|•)')">
                         <xsl:if test="* or normalize-space(replace(text()[1],'^(\w+\.|•) ','')) != ''">

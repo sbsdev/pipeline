@@ -10,6 +10,9 @@
     <xsl:param name="allow-links" select="false()"/>
     <xsl:param name="normalize-space-in-h" select="true()"/>
     <xsl:param name="generate-ids" select="true()"/>
+    <xsl:param name="supported-list-types" select="('pl')"/>
+    <xsl:param name="add-list-depth" select="true()"/>
+    <xsl:param name="add-lic" select="true()"/>
 
     <!--
         * imgref:
@@ -1144,17 +1147,31 @@
     </xsl:template>
 
     <xsl:template name="f:attlist.list">
-        <!-- Only 'pl' is allowed in nordic DTBook, markers will be inlined. A generic script would set type to ul or ol (i.e. select="local-name()"). -->
-        <xsl:attribute name="type" select="'pl'"/>
-        <xsl:call-template name="f:attrs"/>
-        <!--
-        list is always preformatted so enum and start is not included in the result
-        <xsl:copy-of select="@start"/>
-        <xsl:if test="@type">
-            <xsl:attribute name="enum" select="@type"/>
+        <xsl:choose>
+            <xsl:when test="local-name()=$supported-list-types and not(f:classes(.)='preformatted')">
+                <xsl:attribute name="type" select="local-name()"/>
+            </xsl:when>
+            <xsl:when test="not('pl'=$supported-list-types)">
+                <xsl:message terminate="yes">Error</xsl:message>
+            </xsl:when>
+            <xsl:otherwise>
+                <!-- Only 'pl' is allowed in nordic DTBook, markers will be inlined. -->
+                <xsl:attribute name="type" select="'pl'"/>
+            </xsl:otherwise>
+        </xsl:choose>
+        <xsl:call-template name="f:attrs">
+            <xsl:with-param name="except-classes" tunnel="yes" select="'preformatted'"/>
+        </xsl:call-template>
+        <xsl:if test="local-name()=$supported-list-types and not(f:classes(.)='preformatted')">
+            <xsl:copy-of select="@start"/>
+            <xsl:if test="@type">
+                <xsl:attribute name="enum" select="@type"/>
+            </xsl:if>
         </xsl:if>
-        -->
-        <xsl:attribute name="depth" select="count(ancestor::html:li[not(f:types(.)=('rearnote','footnote'))])+1"/>
+        <!-- depth attribute is redundant -->
+        <xsl:if test="$add-list-depth">
+            <xsl:attribute name="depth" select="count(ancestor::html:li[not(f:types(.)=('rearnote','footnote'))])+1"/>
+        </xsl:if>
     </xsl:template>
 
     <!-- Only 'pl' is allowed in nordic DTBook; prepend markers ("• " for ul, "1. " for numbered, etc) to all list items. -->
@@ -1166,6 +1183,8 @@
 
             <xsl:variable name="marker">
                 <xsl:choose>
+                    <xsl:when test="parent::html:*/local-name(.)=$supported-list-types
+                                    and not(parent::html:*/f:classes(.)='preformatted')"/>
                     <xsl:when test="parent::html:*/f:classes(.)='list-style-type-none'"/>
                     <xsl:when test="(ancestor::html:section[1], ancestor::html:body)[1][f:types(.)='toc']"/>
                     <xsl:when test="parent::html:ul">
@@ -1212,7 +1231,7 @@
                 <xsl:when test="$is-block-except-list">
                     <xsl:apply-templates select="node()"/>
                 </xsl:when>
-                <xsl:when test="(html:ol or html:ul)">
+                <xsl:when test="$add-lic and (html:ol or html:ul)">
                     <xsl:for-each-group select="node() except text()[not(normalize-space())]"
                         group-adjacent="not(self::html:ol or self::html:ul or self::html:a[html:span[f:classes(.)='lic']] or self::html:span[f:classes(.)='lic'])">
                         <xsl:choose>
