@@ -1219,12 +1219,9 @@
         <x:context>
             <html:q cite="#"/>
         </x:context>
-        <x:expect label="the resulting element should be a span with a class of 'quote'; the cite attribute is dropped">
-            <dtbook:span class="quote"/>
-        </x:expect>
-        <!--<x:expect label="the resulting element should be a q">
+        <x:expect label="the resulting element should be a q">
             <dtbook:q cite="#"/>
-        </x:expect>-->
+        </x:expect>
     </x:scenario>
 
     <!-- attlist.q -->

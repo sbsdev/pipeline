@@ -862,21 +862,16 @@
         <xsl:copy-of select="@type"/>-->
     </xsl:template>
 
-    <!-- <q> is not allowed in nordic DTBook. Replacing with span. -->
     <xsl:template match="html:q">
-        <xsl:message select="'&lt;q&gt; is not allowed in nordic DTBook. Replacing with span and a &quot;quote&quot; class.'"/>
-        <span>
+        <q>
             <xsl:call-template name="f:attlist.q"/>
             <xsl:apply-templates select="node()"/>
-        </span>
+        </q>
     </xsl:template>
 
-    <!-- <q> is not allowed in nordic DTBook. Replacing with span and a "quote" class. -->
     <xsl:template name="f:attlist.q">
-        <xsl:call-template name="f:attrs">
-            <xsl:with-param name="classes" select="'quote'" tunnel="yes"/>
-        </xsl:call-template>
-        <!--        <xsl:copy-of select="@cite"/>-->
+        <xsl:call-template name="f:attrs"/>
+        <xsl:copy-of select="@cite"/>
     </xsl:template>
 
     <xsl:template match="html:img">
