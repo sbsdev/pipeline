@@ -44,6 +44,9 @@
 	<xsl:variable name="add-lic" select="false()"/>
 	
 	<!-- @Override -->
+	<xsl:variable name="add-tbody" select="false()"/>
+	
+	<!-- @Override -->
 	<xsl:template name="f:attrs" xmlns:f="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/dtbook-to-epub3.xsl">
 		<xsl:call-template name="f:coreattrs"/>
 		<xsl:call-template name="f:i18n"/>

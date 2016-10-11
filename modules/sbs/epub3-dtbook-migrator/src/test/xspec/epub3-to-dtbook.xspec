@@ -2396,13 +2396,15 @@
         </x:context>
         <x:expect label="all the pagebreaks should become pagenums and be placed in front of the table row">
             <dtbook:table>
-                <dtbook:tr><dtbook:td>CONTENT</dtbook:td></dtbook:tr>
-                <dtbook:pagenum page="normal" id="page-26">26</dtbook:pagenum>
-                <dtbook:pagenum page="normal" id="page-27">27</dtbook:pagenum>
-                <dtbook:tr>
-                    <dtbook:td>CONTENT 1CONTENT 2</dtbook:td>
-                    <dtbook:td>CONTENT 3</dtbook:td>
-                </dtbook:tr>
+                <dtbook:tbody>
+                    <dtbook:tr><dtbook:td>CONTENT</dtbook:td></dtbook:tr>
+                    <dtbook:pagenum page="normal" id="page-26">26</dtbook:pagenum>
+                    <dtbook:pagenum page="normal" id="page-27">27</dtbook:pagenum>
+                    <dtbook:tr>
+                        <dtbook:td>CONTENT 1CONTENT 2</dtbook:td>
+                        <dtbook:td>CONTENT 3</dtbook:td>
+                    </dtbook:tr>
+                </dtbook:tbody>
             </dtbook:table>
             <dtbook:table>
                 <dtbook:tr><dtbook:td>CONTENT</dtbook:td></dtbook:tr>

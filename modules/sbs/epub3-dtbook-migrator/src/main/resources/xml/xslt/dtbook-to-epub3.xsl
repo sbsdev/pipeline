@@ -12,6 +12,7 @@
     <xsl:param name="generate-ids" select="true()"/>
     <xsl:param name="supported-list-types" select="('ol','ul','pl')"/>
     <xsl:param name="parse-list-marker" select="true()"/>
+    <xsl:param name="add-tbody" select="true()"/>
 
     <xsl:template match="comment()">
         <xsl:copy-of select="."/>
@@ -1537,9 +1538,16 @@
             </xsl:for-each>
             <xsl:apply-templates select="dtbook:thead | dtbook:tfoot | dtbook:tbody"/>
             <xsl:if test="not(dtbook:tbody) and dtbook:tr">
-                <tbody>
-                    <xsl:apply-templates select="dtbook:tr"/>
-                </tbody>
+                <xsl:choose>
+                    <xsl:when test="$add-tbody">
+                        <tbody>
+                            <xsl:apply-templates select="dtbook:tr"/>
+                        </tbody>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:apply-templates select="dtbook:tr"/>
+                    </xsl:otherwise>
+                </xsl:choose>
             </xsl:if>
         </table>
 

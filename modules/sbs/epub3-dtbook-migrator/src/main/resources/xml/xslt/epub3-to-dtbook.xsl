@@ -1319,13 +1319,13 @@
             </xsl:for-each>
             <xsl:apply-templates select="html:colgroup"/>
 
-            <xsl:apply-templates select="html:thead/html:tr"/>
-            <xsl:apply-templates select="html:tbody/html:tr | html:tr"/>
-            <xsl:apply-templates select="html:tfoot/html:tr"/>
+            <!-- <xsl:apply-templates select="html:thead/html:tr"/> -->
+            <!-- <xsl:apply-templates select="html:tbody/html:tr | html:tr"/> -->
+            <!-- <xsl:apply-templates select="html:tfoot/html:tr"/> -->
 
-            <!--<xsl:apply-templates select="html:thead"/>
+            <xsl:apply-templates select="html:thead"/>
             <xsl:apply-templates select="html:tfoot"/>
-            <xsl:apply-templates select="html:tbody | html:tr"/>-->
+            <xsl:apply-templates select="html:tbody | html:tr"/>
         </table>
     </xsl:template>
 
