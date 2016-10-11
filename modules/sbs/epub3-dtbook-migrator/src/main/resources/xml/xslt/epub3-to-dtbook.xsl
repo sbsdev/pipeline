@@ -963,7 +963,8 @@
 
     <xsl:template match="html:hr"/>
 
-    <xsl:template match="html:h1[f:types(.)='fulltitle' and parent::html:header[parent::html:body]]">
+    <xsl:template match="html:h1[f:types(.)='fulltitle' and parent::html:header[parent::html:body]]|
+                         html:p[f:types(.)='fulltitle']">
         <doctitle>
             <xsl:call-template name="f:attlist.doctitle"/>
             <xsl:apply-templates select="node()"/>
