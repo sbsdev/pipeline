@@ -413,7 +413,8 @@
     </xsl:copy>
   </xsl:template>
 
-  <xsl:template match="dtb:img">
+  <xsl:template match="dtb:img|
+                       html:img">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:call-template name="translate">
