@@ -820,7 +820,7 @@
             <html:span class="dateline"/>
         </x:context>
         <x:expect label="the resulting element should be a dateline and the dateline class should be removed">
-            <dtbook:span class="dateline"/>
+            <dtbook:dateline/>
         </x:expect>
     </x:scenario>
 

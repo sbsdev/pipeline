@@ -503,19 +503,16 @@
         </xsl:call-template>
     </xsl:template>
 
-    <!-- <dateline> is not allowed in nordic DTBook. Using span instead. -->
     <xsl:template match="html:span[f:classes(.)='dateline']">
-        <xsl:message select="'&lt;dateline&gt; is not allowed in nordic DTBook. Using span instead with a dateline class.'"/>
-        <span>
+        <dateline>
             <xsl:call-template name="f:attlist.dateline"/>
             <xsl:apply-templates select="node()"/>
-        </span>
+        </dateline>
     </xsl:template>
 
-    <!-- <dateline> is not allowed in nordic DTBook. Using span instead with a dateline class. -->
     <xsl:template name="f:attlist.dateline">
         <xsl:call-template name="f:attrs">
-            <!--            <xsl:with-param name="except-classes" select="'dateline'" tunnel="yes"/>-->
+            <xsl:with-param name="except-classes" select="'dateline'" tunnel="yes"/>
         </xsl:call-template>
     </xsl:template>
 
