@@ -969,8 +969,8 @@
         <x:context>
             <html:kbd/>
         </x:context>
-        <x:expect label="the resulting element should be a code">
-            <dtbook:code xml:space="preserve" class="keyboard"/>
+        <x:expect label="the resulting element should be a kbd">
+            <dtbook:kbd/>
         </x:expect>
     </x:scenario>
 

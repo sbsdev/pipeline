@@ -625,21 +625,15 @@
         <xsl:call-template name="f:attrs"/>
     </xsl:template>
 
-    <!-- <kbd> is not allowed in nordic DTBook. Replacing with code. -->
     <xsl:template match="html:kbd">
-        <xsl:message select="'&lt;kbd&gt; is not allowed in Nordic DTBook. Replacing with &lt;code&gt; and a &quot;keyboard&quot; class.'"/>
-        <code>
+        <kbd>
             <xsl:call-template name="f:attlist.kbd"/>
             <xsl:apply-templates select="node()"/>
-        </code>
+        </kbd>
     </xsl:template>
 
-    <!-- <kbd> is not allowed in nordic DTBook. Replacing with code and a "keyboard" class. -->
     <xsl:template name="f:attlist.kbd">
-        <xsl:attribute name="xml:space" select="'preserve'"/>
-        <xsl:call-template name="f:attrs">
-            <xsl:with-param name="classes" select="'keyboard'" tunnel="yes"/>
-        </xsl:call-template>
+        <xsl:call-template name="f:attrs"/>
     </xsl:template>
 
     <xsl:template match="html:code">
