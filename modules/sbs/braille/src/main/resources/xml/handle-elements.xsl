@@ -54,7 +54,8 @@
   <!-- ======= -->
 
   <!-- bei brl:select wird kein Zeichen gesetzt -->
-  <xsl:template match="dtb:sup[descendant::brl:select]">
+  <xsl:template match="dtb:sup[descendant::brl:select]|
+                       html:sup[descendant::brl:select]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
@@ -62,7 +63,8 @@
   </xsl:template>
 
   <!-- Ziffern bekommen das Exponentzeichen und werden tiefgestellt -->
-  <xsl:template match="dtb:sup[matches(., '^[-]*\d+$')]">
+  <xsl:template match="dtb:sup[matches(., '^[-]*\d+$')]|
+                       html:sup[matches(., '^[-]*\d+$')]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:call-template name="translate">
@@ -77,7 +79,8 @@
   </xsl:template>
 
   <!-- alles andere bekommt das Zeichen für den oberen Index -->
-  <xsl:template match="dtb:sup">
+  <xsl:template match="dtb:sup|
+                       html:sup">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:call-template name="translate">
@@ -88,7 +91,8 @@
   </xsl:template>
 
   <!-- bei brl:select wird kein Zeichen gesetzt -->
-  <xsl:template match="dtb:sub[descendant::brl:select]">
+  <xsl:template match="dtb:sub[descendant::brl:select]|
+                       html:sub[descendant::brl:select]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates/>
@@ -96,7 +100,8 @@
   </xsl:template>
 
   <!-- Ziffern bekommen das Zeichen für den unteren Index und werden tiefgestellt -->
-  <xsl:template match="dtb:sub[matches(., '^[-]*\d+$')]">
+  <xsl:template match="dtb:sub[matches(., '^[-]*\d+$')]|
+                       html:sub[matches(., '^[-]*\d+$')]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:call-template name="translate">
@@ -111,7 +116,8 @@
   </xsl:template>
 
   <!-- alles andere bekommt das Zeichen für den unteren Index -->
-  <xsl:template match="dtb:sub">
+  <xsl:template match="dtb:sub|
+                       html:sub">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:call-template name="translate">
@@ -873,7 +879,7 @@
   <!-- Comma after ordinals, fraction and sub/sup -->
   <!-- ========================================== -->
   <xsl:template
-      match="text()[(preceding::* intersect my:preceding-textnode-within-block(.)/(ancestor::brl:num[@role=('ordinal','fraction','mixed')]|ancestor::dtb:sub|ancestor::dtb:sup)) and matches(string(), '^,')]"
+      match="text()[(preceding::* intersect my:preceding-textnode-within-block(.)/(ancestor::brl:num[@role=('ordinal','fraction','mixed')]|ancestor::*:sub|ancestor::*:sup)) and matches(string(), '^,')]"
       priority="61">
     <xsl:call-template name="translate">
       <xsl:with-param name="text" select="concat('&#x256C;',string())"/>
