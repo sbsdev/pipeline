@@ -35,16 +35,12 @@ dist-deb : compile
 	mv modules/sbs/braille/target/*.deb .
 
 .PHONY : run
-run : compile
-	cd assembly && \
-	$(MVN) clean package -Pdev-launcher | $(MVN_LOG)
-	rm assembly/target/dev-launcher/etc/*windows*
-	if [ "$$(uname)" == Darwin ]; then \
-		rm assembly/target/dev-launcher/etc/*linux*; \
-	else \
-		rm assembly/target/dev-launcher/etc/*mac*; \
-	fi
-	assembly/target/dev-launcher/bin/pipeline2
+run : assembly/target/dev-launcher/bin/pipeline2
+	$<
+
+.PHONY : run-gui
+run-gui : assembly/target/dev-launcher/bin/pipeline2
+	$< gui
 
 .PHONY : check
 check : gradle-test maven-test
@@ -56,6 +52,16 @@ check-sbs : compile
 
 .PHONY : compile
 compile : gradle-install maven-install
+
+assembly/target/dev-launcher/bin/pipeline2 : compile
+	cd assembly && \
+	$(MVN) clean package -Pdev-launcher | $(MVN_LOG)
+	rm assembly/target/dev-launcher/etc/*windows*
+	if [ "$$(uname)" == Darwin ]; then \
+		rm assembly/target/dev-launcher/etc/*linux*; \
+	else \
+		rm assembly/target/dev-launcher/etc/*mac*; \
+	fi
 
 .PHONY: maven-test
 maven-test : .maven-modules-test
@@ -314,6 +320,8 @@ help :
 	echo "	Incrementally compile code and package into a DEB"                                      >&2
 	echo "make run:"                                                                                >&2
 	echo "	Incrementally compile code and run locally"                                             >&2
+	echo "make run-gui:"                                                                            >&2
+	echo "	Incrementally compile code and run GUI locally"                                         >&2
 
 ifndef VERBOSE
 .SILENT:
