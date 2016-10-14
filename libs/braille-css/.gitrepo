@@ -4,7 +4,7 @@
 ; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
 ;
 [subrepo]
-	remote = https://github.com/snaekobbi/braille-css
+	remote = git@github.com:daisy/braille-css.git
 	branch = master
 	commit = 4c0991b01b3438f1bc0662e3c269cc05039d88d9
 	parent = 3aadd08c6fcdd726ed62f36ffaf0f484af6763ea

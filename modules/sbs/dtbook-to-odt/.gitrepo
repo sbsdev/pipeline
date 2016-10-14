@@ -4,7 +4,7 @@
 ; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
 ;
 [subrepo]
-	remote = https://github.com/sbsdev/dtbook-to-odt
+	remote = git@github.com:sbsdev/dtbook-to-odt.git
 	branch = master
 	commit = ebca3877e7ab14607c2c7779ba3b2c7b7f42ff33
 	parent = d4371704f4f02e8a98891a1793c27199070d94fd

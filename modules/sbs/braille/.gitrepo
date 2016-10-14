@@ -4,7 +4,7 @@
 ; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
 ;
 [subrepo]
-	remote = https://github.com/sbsdev/pipeline-mod-sbs
+	remote = git@github.com:sbsdev/pipeline-mod-sbs.git
 	branch = master
 	commit = 458e3cb07c8a66ae46463b8e51c3e6d4ab3906a0
 	parent = ade0cf660df2b2cbb9abc94c81ed41b00fccd34c
