@@ -8,15 +8,6 @@
   <x:param name="contraction-grade">2</x:param>
   <x:param name="ascii-braille">yes</x:param>
 
-    <x:scenario label="title">
-      <x:context>
-        <dtb:title xml:lang="de">foo</dtb:title>
-      </x:context>
-      <x:expect label="braille">
-        <dtb:title xml:lang="de">FOO</dtb:title>
-      </x:expect>
-    </x:scenario>
-
     <x:scenario label="title inside poem">
       <x:context>
         <dtb:poem xml:lang="de">

@@ -1420,8 +1420,12 @@
             <book>
               <bodymatter>
                 <level1>
-                  <h3>Level 3</h3>
-                  <p>Bla bla bla</p>
+                  <level2>
+                    <level3>
+                      <h3>Level 3</h3>
+                      <p>Bla bla bla</p>
+                    </level3>
+                  </level2>
                 </level1>
               </bodymatter>
             </book>

@@ -109,19 +109,27 @@
 
     <x:scenario label="Translation of author">
       <x:context>
-        <dtb:author xml:lang="de">Hans</dtb:author>
+        <dtb:poem xml:lang="de">
+          <dtb:author>Hans</dtb:author>
+        </dtb:poem>
       </x:context>
       <x:expect label="braille">
-        <dtb:author xml:lang="de">H+S</dtb:author>
+        <dtb:poem  xml:lang="de">
+          <dtb:author>H+S</dtb:author>
+        </dtb:poem>
       </x:expect>
     </x:scenario>
 
     <x:scenario label="Translation of author with brl:class attr">
       <x:context>
-        <dtb:author xml:lang="de" brl:class="foo">Hans</dtb:author>
+        <dtb:poem xml:lang="de">
+          <dtb:author brl:class="foo">Hans</dtb:author>
+        </dtb:poem>
       </x:context>
       <x:expect label="braille">
-        <dtb:author xml:lang="de" brl:class="foo">H+S</dtb:author>
+        <dtb:poem xml:lang="de">
+          <dtb:author brl:class="foo">H+S</dtb:author>
+        </dtb:poem>
       </x:expect>
     </x:scenario>
 

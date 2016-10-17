@@ -10,10 +10,18 @@
 
     <x:scenario label="covertitle">
       <x:context>
-        <dtb:covertitle xml:lang="de">foo</dtb:covertitle>
+        <dtb:book>
+          <dtb:frontmatter>
+            <dtb:covertitle xml:lang="de">foo</dtb:covertitle>
+          </dtb:frontmatter>
+        </dtb:book>
       </x:context>
       <x:expect label="braille">
-	<dtb:covertitle xml:lang="de">FOO</dtb:covertitle>
+        <dtb:book>
+          <dtb:frontmatter>
+	    <dtb:covertitle xml:lang="de">FOO</dtb:covertitle>
+          </dtb:frontmatter>
+        </dtb:book>
       </x:expect>
     </x:scenario>
 

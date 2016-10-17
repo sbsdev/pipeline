@@ -63,24 +63,24 @@
 
     <x:scenario label="Mixed p some some with span class linenum">
       <x:context>
-        <dtb:level6 xml:lang="de">
+        <stub xml:lang="de">
 	  <dtb:p><dtb:span class="linenum">5</dtb:span>foo</dtb:p>
 	  <dtb:p>bar</dtb:p>
 	  <dtb:p><dtb:span class="linenum">10</dtb:span>baz</dtb:p>
-	</dtb:level6>
+	</stub>
       </x:context>
       <x:expect label="braille">
-        <dtb:level6 xml:lang="de">
+        <stub xml:lang="de">
 	  <dtb:p><dtb:span class="linenum">#E</dtb:span>FOO</dtb:p>
 	  <dtb:p>BAR</dtb:p>
 	  <dtb:p><dtb:span class="linenum">#AJ</dtb:span>BAZ</dtb:p>
-	</dtb:level6>
+	</stub>
       </x:expect>
     </x:scenario>
 
     <x:scenario label="Mixed p some some with span class linenum">
       <x:context>
-        <dtb:level6 xml:lang="de">
+        <stub xml:lang="de">
 	  <dtb:p><dtb:span class="linenum">5</dtb:span>foo</dtb:p>
 	  <dtb:blockquote>haha</dtb:blockquote>
 	  <dtb:p>bar</dtb:p>
@@ -88,10 +88,10 @@
 	  <dtb:blockquote>hehe</dtb:blockquote>
 	  <dtb:p>fuz</dtb:p>
 	  <dtb:p><dtb:span class="linenum">10</dtb:span>buz</dtb:p>
-	</dtb:level6>
+	</stub>
       </x:context>
       <x:expect label="braille">
-        <dtb:level6 xml:lang="de">
+        <stub xml:lang="de">
 	  <dtb:p><dtb:span class="linenum">#E</dtb:span>FOO</dtb:p>
 	  <dtb:blockquote>HAHA</dtb:blockquote>
 	  <dtb:p>BAR</dtb:p>
@@ -99,7 +99,7 @@
 	  <dtb:blockquote>HEHE</dtb:blockquote>
 	  <dtb:p>FUZ</dtb:p>
 	  <dtb:p><dtb:span class="linenum">#AJ</dtb:span>BUZ</dtb:p>
-	</dtb:level6>
+	</stub>
       </x:expect>
     </x:scenario>
 
