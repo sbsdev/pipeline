@@ -26,6 +26,7 @@
 
 @namespace xml url(http://www.w3.org/XML/1998/namespace);
 @namespace brl url(http://www.daisy.org/z3986/2009/braille/);
+@namespace epub url(http://www.idpf.org/2007/ops);
 
 /* Page layout
  *
@@ -972,7 +973,8 @@ imggroup > caption, imggroup > img {
 }
 
 if $include-production-notes {
-    prodnote {
+    prodnote,
+    aside[epub|type~='z3998:production'] {
         display:inline;
     }
     imggroup > prodnote {
