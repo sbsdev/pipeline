@@ -23,11 +23,11 @@
 
     <x:scenario label="inline after inline">
       <x:context>
-        <stub xml:lang="de"><dtb:p><dtb:span grade="2">Quark</dtb:span> <dtb:span grade="2">Quark</dtb:span></dtb:p></stub>
+        <stub xml:lang="de"><dtb:p><dtb:span brl:grade="2">Quark</dtb:span> <dtb:span brl:grade="2">Quark</dtb:span></dtb:p></stub>
       </x:context>
       <x:expect label="braille">
         <stub xml:lang="de">
-	  <dtb:p><dtb:span grade="2">'QU)K</dtb:span> <dtb:span grade="2">'QU)K</dtb:span></dtb:p>
+	  <dtb:p><dtb:span brl:grade="2">'QU)K</dtb:span> <dtb:span brl:grade="2">'QU)K</dtb:span></dtb:p>
 	</stub>
       </x:expect>
     </x:scenario>
