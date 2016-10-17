@@ -794,7 +794,7 @@
             <html:aside epub:type="epigraph"/>
         </x:context>
         <x:expect label="the resulting element should be a epigraph">
-            <dtbook:p class="epigraph"/>
+            <dtbook:epigraph/>
         </x:expect>
     </x:scenario>
 

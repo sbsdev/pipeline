@@ -474,19 +474,17 @@
         </xsl:call-template>
     </xsl:template>
 
-    <!-- <epigraph> is not allowed in nordic DTBook. Using p instead. -->
-    <xsl:template match="html:aside[f:types(.)='epigraph']">
-        <xsl:message select="'&lt;epigraph&gt; is not allowed in nordic DTBook. Using p instead with a epigraph class.'"/>
-        <p>
+    <xsl:template match="html:aside[f:types(.)='epigraph']|
+                         html:p[f:types(.)='epigraph']">
+        <epigraph>
             <xsl:call-template name="f:attlist.epigraph"/>
             <xsl:apply-templates select="node()"/>
-        </p>
+        </epigraph>
     </xsl:template>
 
-    <!-- <epigraph> is not allowed in nordic DTBook. Using p instead with a epigraph class. -->
     <xsl:template name="f:attlist.epigraph">
         <xsl:call-template name="f:attrs">
-            <xsl:with-param name="classes" select="'epigraph'" tunnel="yes"/>
+            <xsl:with-param name="except-classes" select="'epigraph'" tunnel="yes"/>
         </xsl:call-template>
     </xsl:template>
 
