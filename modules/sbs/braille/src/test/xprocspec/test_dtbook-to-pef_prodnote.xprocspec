@@ -31,12 +31,11 @@
     </x:context>
     <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
       <x:document type="inline">
-	<pef xmlns="http://www.daisy.org/ns/2008/pef" xml:lang="de" version="2008-1">
+	<pef xmlns="http://www.daisy.org/ns/2008/pef" version="2008-1">
 	  <head>
-            <meta>
-              <dc:format xmlns:dc="http://purl.org/dc/elements/1.1/">application/x-pef+xml</dc:format>
-              <dc:identifier xmlns:dc="http://purl.org/dc/elements/1.1/">identifier?</dc:identifier>
-              <dc:date xmlns:dc="http://purl.org/dc/elements/1.1/">2016-04-14</dc:date>
+            <meta xmlns:dc="http://purl.org/dc/elements/1.1/">
+              <dc:format>application/x-pef+xml</dc:format>
+              <dc:language>de</dc:language>
 	    </meta>
  	  </head>
 	  <body>
@@ -111,12 +110,11 @@
     </x:context>
     <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
       <x:document type="inline">
-	<pef xmlns="http://www.daisy.org/ns/2008/pef" xml:lang="de" version="2008-1">
+	<pef xmlns="http://www.daisy.org/ns/2008/pef" version="2008-1">
 	  <head>
-            <meta>
-              <dc:format xmlns:dc="http://purl.org/dc/elements/1.1/">application/x-pef+xml</dc:format>
-              <dc:identifier xmlns:dc="http://purl.org/dc/elements/1.1/">identifier?</dc:identifier>
-              <dc:date xmlns:dc="http://purl.org/dc/elements/1.1/">2016-04-14</dc:date>
+            <meta xmlns:dc="http://purl.org/dc/elements/1.1/">
+              <dc:format>application/x-pef+xml</dc:format>
+              <dc:language>de</dc:language>
 	    </meta>
  	  </head>
 	  <body>

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<pef xmlns="http://www.daisy.org/ns/2008/pef" version="2008-1" xml:lang="de">
+<pef xmlns="http://www.daisy.org/ns/2008/pef" version="2008-1">
    <head>
       <meta xmlns:dc="http://purl.org/dc/elements/1.1/"
             xmlns:generator="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/transformers/org_pef_dtbook2pef/">
          <dc:format>application/x-pef+xml</dc:format>
-         <dc:identifier>identifier?</dc:identifier>
-         <dc:date>2015-10-02</dc:date>
          <dc:title>PRODSERVER1</dc:title>
          <dc:creator>HAFECHÄS</dc:creator>
          <dc:language>de</dc:language>

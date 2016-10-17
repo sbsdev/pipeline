@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pef version="2008-1" xmlns="http://www.daisy.org/ns/2008/pef" xml:lang="de">
+<pef version="2008-1" xmlns="http://www.daisy.org/ns/2008/pef">
   <head>
     <meta xmlns:dc="http://purl.org/dc/elements/1.1/">
       <dc:format>application/x-pef+xml</dc:format>
-      <dc:identifier>identifier?</dc:identifier>
-      <dc:date>2016-07-28</dc:date>
       <dc:title>PRODSERVER1</dc:title>
       <dc:creator>HAFECHÄS</dc:creator>
       <dc:language>de</dc:language>

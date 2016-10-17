@@ -117,7 +117,7 @@
         </px:transform>
     </p:viewport>
     
-    <px:message message="[progress px:dtbook-to-pef.convert 84 px:dtbook-to-pef.convert.choose-transform] Transforming from XML to PEF" cx:depends-on="parameters"/>
+    <px:message message="[progress px:dtbook-to-pef.convert 85 px:dtbook-to-pef.convert.choose-transform] Transforming from XML to PEF" cx:depends-on="parameters"/>
     <p:choose name="transform">
         <p:when test="$include-obfl='true'">
             <p:output port="pef" primary="true"/>
@@ -203,18 +203,5 @@
             <p:pipe step="metadata" port="result"/>
         </p:input>
     </pef:add-metadata>
-    
-    <p:choose>
-        <p:when test="not($lang='und')">
-            <px:message message="[progress px:dtbook-to-pef.convert 1 p:add-attribute] Adding language attribute to PEF"/>
-            <p:add-attribute match="/*" attribute-name="xml:lang">
-                <p:with-option name="attribute-value" select="$lang"/>
-            </p:add-attribute>
-        </p:when>
-        <p:otherwise>
-            <px:message message="[progress px:dtbook-to-pef.convert 1 p:identity]"/>
-            <p:identity/>
-        </p:otherwise>
-    </p:choose>
     
 </p:declare-step>
