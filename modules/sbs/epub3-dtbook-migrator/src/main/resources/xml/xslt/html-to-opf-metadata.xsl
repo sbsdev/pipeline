@@ -13,6 +13,12 @@
 
             <dc:format id="format">EPUB3</dc:format>
 
+            <xsl:if test="not(/html:html/html:head/html:meta[lower-case(@name)='dc:language'])">
+                <dc:language>
+                    <xsl:value-of select="(/*/@xml:lang,'und')[1]"/>
+                </dc:language>
+            </xsl:if>
+
             <xsl:if test="not(/html:html/html:head/html:meta[lower-case(@name)='dc:title'])">
                 <dc:title>
                     <xsl:value-of select="/html:html/html:head/html:title/text()"/>
