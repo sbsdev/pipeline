@@ -971,12 +971,13 @@ imggroup > caption, imggroup > img {
     margin-bottom:1;
 }
 
-imggroup > prodnote {
-    display:block;
-}
-
-prodnote {
-    display:inline;
+if $include-production-notes {
+    prodnote {
+        display:inline;
+    }
+    imggroup > prodnote {
+        display:block;
+    }
 }
 
 epigraph {

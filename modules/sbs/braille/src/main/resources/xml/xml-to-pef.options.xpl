@@ -33,6 +33,7 @@
     <p:option name="page-width" select="'28'"/>
     <p:option name="page-height" select="'28'"/>
     <p:option name="document-identifier" select="''"/>
+    <p:option name="include-production-notes" select="'true'"/>
     
     <!--
         inherit defaults and documentation for other options
@@ -60,7 +61,6 @@
     <p:option name="include-line-groups"/>
     <p:option name="text-level-formatting"/>
     <p:option name="include-note-references"/>
-    <p:option name="include-production-notes"/>
     <p:option name="show-braille-page-numbers"/>
     <p:option name="show-print-page-numbers"/>
     <p:option name="force-braille-page-break"/>
