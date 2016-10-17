@@ -19,41 +19,28 @@
 	
 	<xsl:import href="epub3-dtbook-migrator.xsl"/>
 	
-	<!-- @Override -->
+	<!-- @Override (epub3-to-dtbook.xsl) -->
 	<xsl:variable name="normalize-space-in-h" select="false()"/>
 	
-	<!-- @Override -->
+	<!-- @Override (epub3-to-dtbook.xsl) -->
 	<xsl:variable name="allow-links" select="true()"/>
 	
-	<!-- @Override -->
+	<!-- @Override (epub3-to-dtbook.xsl) -->
 	<xsl:variable name="generate-ids" select="false()"/>
 	
-	<!-- @Override -->
+	<!-- @Override (epub3-to-dtbook.xsl) -->
 	<xsl:variable name="transform-longdesc-to" select="'imgref'"/>
 	
-	<!-- @Override -->
+	<!-- @Override (epub3-to-dtbook.xsl) -->
 	<xsl:variable name="supported-list-types" select="('ol','ul','pl')"/>
 	
-	<!-- @Override -->
-	<xsl:variable name="parse-list-marker" select="false()"/>
-	
-	<!-- @Override -->
+	<!-- @Override (epub3-to-dtbook.xsl) -->
 	<xsl:variable name="add-list-depth" select="false()"/>
 	
-	<!-- @Override -->
+	<!-- @Override (epub3-to-dtbook.xsl) -->
 	<xsl:variable name="add-lic" select="false()"/>
 	
-	<!-- @Override -->
-	<xsl:variable name="add-tbody" select="false()"/>
-	
-	<!-- @Override -->
-	<xsl:template name="f:attrs" xmlns:f="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/dtbook-to-epub3.xsl">
-		<xsl:call-template name="f:coreattrs"/>
-		<xsl:call-template name="f:i18n"/>
-		<xsl:copy-of select="@brl:*"/>
-	</xsl:template>
-	
-	<!-- @Override -->
+	<!-- @Override (epub3-to-dtbook.xsl) -->
 	<xsl:template name="f:attrs" xmlns:f="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/epub3-to-dtbook.xsl">
 		<xsl:call-template name="f:coreattrs"/>
 		<xsl:call-template name="f:i18n"/>

@@ -5,7 +5,7 @@
                 xmlns:html="http://www.w3.org/1999/xhtml"
                 xmlns:brl="http://www.daisy.org/z3986/2009/braille/">
 	
-	<xsl:import href="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/dtbook-to-epub3.xsl"/>
+	<xsl:import href="../../main/resources/xml/dtbook-to-epub3.xsl"/>
 	
 	<xsl:include href="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/epub3-to-dtbook.xsl"/>
 	

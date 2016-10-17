@@ -30,6 +30,10 @@
         <p:pipe port="result" step="status"/>
     </p:output>
 
+    <p:input port="xslt">
+        <p:document href="../../xslt/dtbook-to-epub3.xsl"/>
+    </p:input>
+
     <p:option name="fail-on-error" required="true"/>
     <p:option name="temp-dir" required="true"/>
 
@@ -89,7 +93,7 @@
                     <p:empty/>
                 </p:input>
                 <p:input port="stylesheet">
-                    <p:document href="../../xslt/dtbook-to-epub3.xsl"/>
+                    <p:pipe step="main" port="xslt"/>
                 </p:input>
             </p:xslt>
 
