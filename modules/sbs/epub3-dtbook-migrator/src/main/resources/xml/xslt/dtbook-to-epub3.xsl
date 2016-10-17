@@ -957,7 +957,7 @@
     <xsl:template name="f:attlist.pagenum">
         <xsl:call-template name="f:attrsrqd">
             <xsl:with-param name="types" select="'pagebreak'" tunnel="yes"/>
-            <xsl:with-param name="classes" select="concat('page-',(@page,if (normalize-space(.)='') then 'special' else 'normal')[1])" tunnel="yes"/>
+            <xsl:with-param name="classes" select="if (@page) then concat('page-',@page) else if (normalize-space(.)='') then 'page-special' else ()" tunnel="yes"/>
         </xsl:call-template>
     </xsl:template>
 

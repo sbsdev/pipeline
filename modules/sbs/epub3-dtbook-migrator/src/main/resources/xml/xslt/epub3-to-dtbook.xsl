@@ -836,7 +836,10 @@
             <xsl:with-param name="except" select="'title'" tunnel="yes"/>
             <xsl:with-param name="except-classes" select="('page-front','page-normal','page-special','pagebreak')" tunnel="yes"/>
         </xsl:call-template>
-        <xsl:attribute name="page" select="replace((f:classes(.)[starts-with(.,'page-')],'page-normal')[1], '^page-', '')"/>
+        <xsl:variable name="page-class" as="xs:string?" select="f:classes(.)[starts-with(.,'page-')][1]"/>
+        <xsl:if test="$page-class">
+            <xsl:attribute name="page" select="replace($page-class, '^page-', '')"/>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="html:a[f:types(.)='noteref']">

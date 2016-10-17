@@ -1175,11 +1175,11 @@
                 </html:p>
             </html:div>
         </x:context>
-        <x:expect label="the resulting element should be a pagenum and the page attribute should default to 'normal'">
+        <x:expect label="the resulting element should be a pagenum">
             <dtbook:div>
-                <dtbook:pagenum page="normal">1</dtbook:pagenum>
+                <dtbook:pagenum>1</dtbook:pagenum>
                 <dtbook:p>
-                    <dtbook:pagenum page="normal">2</dtbook:pagenum>
+                    <dtbook:pagenum>2</dtbook:pagenum>
                 </dtbook:p>
             </dtbook:div>
         </x:expect>
@@ -2365,7 +2365,7 @@
             <dtbook:book>
                 <dtbook:bodymatter>
                     <dtbook:level1>
-                        <dtbook:pagenum id="page-26" page="normal">26</dtbook:pagenum>
+                        <dtbook:pagenum id="page-26">26</dtbook:pagenum>
                         <dtbook:h1>3. Rättskällorna</dtbook:h1>
                         <dtbook:level2>
                             <dtbook:h2>3.1 Lag</dtbook:h2>
@@ -2400,8 +2400,8 @@
             <dtbook:table>
                 <dtbook:tbody>
                     <dtbook:tr><dtbook:td>CONTENT</dtbook:td></dtbook:tr>
-                    <dtbook:pagenum page="normal" id="page-26">26</dtbook:pagenum>
-                    <dtbook:pagenum page="normal" id="page-27">27</dtbook:pagenum>
+                    <dtbook:pagenum id="page-26">26</dtbook:pagenum>
+                    <dtbook:pagenum id="page-27">27</dtbook:pagenum>
                     <dtbook:tr>
                         <dtbook:td>CONTENT 1CONTENT 2</dtbook:td>
                         <dtbook:td>CONTENT 3</dtbook:td>
@@ -2410,8 +2410,8 @@
             </dtbook:table>
             <dtbook:table>
                 <dtbook:tr><dtbook:td>CONTENT</dtbook:td></dtbook:tr>
-                <dtbook:pagenum page="normal" id="page-26">26</dtbook:pagenum>
-                <dtbook:pagenum page="normal" id="page-27">27</dtbook:pagenum>
+                <dtbook:pagenum id="page-26">26</dtbook:pagenum>
+                <dtbook:pagenum id="page-27">27</dtbook:pagenum>
                 <dtbook:tr>
                     <dtbook:td>CONTENT 1CONTENT 2</dtbook:td>
                     <dtbook:td>CONTENT 3</dtbook:td>
