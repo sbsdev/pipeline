@@ -12,11 +12,15 @@
 	<p:input port="source" primary="true"/>
 	<p:input port="parameters" kind="parameter" primary="false"/>
 	
+	<!--
+	    Stylesheets apply to EPUB3 but are resolved relative to DTBook
+	-->
+	<p:option name="stylesheet"/>
+	
 	<p:option name="pef-output-dir"/>
 	<p:option name="brf-output-dir"/>
 	<p:option name="preview-output-dir"/>
 	<p:option name="temp-dir"/>
-	<p:option name="stylesheet"/>
 	<p:option name="contraction-grade"/>
 	<p:option name="ascii-file-format"/>
 	<p:option name="include-preview"/>
@@ -130,7 +134,11 @@
 		<p:with-option name="pef-output-dir" select="$pef-output-dir"/>
 		<p:with-option name="brf-output-dir" select="$brf-output-dir"/>
 		<p:with-option name="preview-output-dir" select="$preview-output-dir"/>
-		<p:with-option name="stylesheet" select="$stylesheet"/>
+		<p:with-option name="stylesheet" select="string-join(
+		                                           for $s in tokenize($stylesheet,'\s+')[not(.='')] return resolve-uri($s,base-uri(/*)),
+		                                           ' ')">
+			<p:pipe step="main" port="source"/>
+		</p:with-option>
 		<p:with-option name="contraction-grade" select="$contraction-grade"/>
 		<p:with-option name="ascii-file-format" select="$ascii-file-format"/>
 		<p:with-option name="include-preview" select="$include-preview"/>
