@@ -43,20 +43,6 @@
       </x:expect>
     </x:scenario>
 
-    <x:scenario label="Wrong SBSForm-Macroname Bug #1539">
-      <x:context>
-        <stub xml:lang="de"><dtb:p><dtb:list brl:class="name" type="pl"><dtb:li>bla</dtb:li></dtb:list></dtb:p></stub>
-      </x:context>
-      <x:expect label="braille">
-        <stub xml:lang="de">
-	  <dtb:p><dtb:list brl:class="name" type="pl">
-	    <dtb:li>BLA</dtb:li>
-	  </dtb:list>
-	  </dtb:p>
-	</stub>
-      </x:expect>
-    </x:scenario>
-
     <x:scenario label="Wort &#34;ich&#34; am Ende von Inlines mit nachfolgendem Satzzeichen">
       <x:context>
         <stub xml:lang="de"><dtb:em>Ich</dtb:em>, <dtb:strong>ich</dtb:strong>; <brl:emph>ich</brl:emph>: <dtb:em>ich</dtb:em>? <dtb:strong>ich</dtb:strong>! (<brl:emph>ich</brl:emph>) »<brl:emph>ich</brl:emph>«.</stub>
