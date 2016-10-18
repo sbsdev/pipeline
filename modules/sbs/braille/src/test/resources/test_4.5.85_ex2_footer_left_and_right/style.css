@@ -16,10 +16,6 @@ bodymatter {
 	page: auto;
 }
 
-dtbook {
-	hyphens: none;
-}
-
 h1 {
 	padding-top: 3;
 	-obfl-underline: none;

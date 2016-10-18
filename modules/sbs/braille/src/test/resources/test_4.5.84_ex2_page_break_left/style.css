@@ -4,10 +4,6 @@
 	}
 }
 
-dtbook {
-	hyphens: none;
-}
-
 /* left is not supported for now */
 bodymatter > level1:not(:first-child) {
 	page-break-before: left;

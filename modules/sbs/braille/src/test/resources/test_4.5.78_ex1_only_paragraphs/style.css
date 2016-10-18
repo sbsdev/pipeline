@@ -7,10 +7,6 @@
 	}
 }
 
-dtbook {
-	hyphens: none;
-}
-
 [brl|class~=break_before] {
 	display: block;
 	text-align: left;

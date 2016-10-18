@@ -7,6 +7,7 @@
     <x:call step="sbs:dtbook-to-pef">
       <x:option name="stylesheet" select="'http://www.sbs.ch/pipeline/modules/braille/default.scss
                                            style.css'"/>
+      <x:option name="hyphenation" select="false()"/>
       <x:option name="include-brf" select="true()"/>
     </x:call>
   

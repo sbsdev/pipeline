@@ -39,10 +39,6 @@
 }
 */
 
-dtbook {
-	hyphens: none;
-}
-
 bodymatter {
 	counter-set: page 33;
 }
