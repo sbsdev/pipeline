@@ -149,7 +149,7 @@
 			<xsl:call-template name="css:computed-properties">
 				<xsl:with-param name="properties" select="$text-properties"/>
 				<xsl:with-param name="context" select="$dummy-element"/>
-				<xsl:with-param name="cascaded-properties" tunnel="yes" select="$style/css:property"/>
+				<xsl:with-param name="cascaded-properties" tunnel="yes" select="$style[not(@selector)]/css:property"/>
 				<xsl:with-param name="parent-properties" tunnel="yes" select="$source-style"/>
 			</xsl:call-template>
 		</xsl:variable>
@@ -157,7 +157,7 @@
 			<xsl:call-template name="css:computed-properties">
 				<xsl:with-param name="properties" select="$text-properties"/>
 				<xsl:with-param name="context" select="$dummy-element"/>
-				<xsl:with-param name="cascaded-properties" tunnel="yes" select="$translated-style/css:property"/>
+				<xsl:with-param name="cascaded-properties" tunnel="yes" select="$translated-style[not(@selector)]/css:property"/>
 				<xsl:with-param name="parent-properties" tunnel="yes" select="$result-style"/>
 			</xsl:call-template>
 		</xsl:variable>
