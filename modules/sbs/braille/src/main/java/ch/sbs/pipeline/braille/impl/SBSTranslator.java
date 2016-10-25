@@ -293,7 +293,10 @@ public interface SBSTranslator {
 											return translateVolumeNumber(s.getText()); }
 										else if (tt.equals("volumes")) {
 											failIfOtherStyleAttached(style, values);
-											return translateVolumesCount(s.getText()); }}}}}}
+											return translateVolumesCount(s.getText()); }
+										else if (tt.equals("linenum")) {
+											failIfOtherStyleAttached(style, values);
+											return Optional.of(translateLineNumber(s.getText())).asSet(); }}}}}}
 					return translator.transform(styledText);
 				}
 			};
@@ -421,6 +424,19 @@ public interface SBSTranslator {
 				    return Optional.of(translateNaturalNumber(Integer.parseInt(number))).asSet();
 				}
 				return translator.transform(Optional.of(new CSSStyledText(ret)).asSet());
+			}
+			
+			private final static int LINENUM_WIDTH = 2;
+			
+			private String translateLineNumber(String number) {
+				StringBuilder b = new StringBuilder();
+				b.append(translateNaturalNumber(Integer.parseInt(number), false));
+				int l = b.length();
+				if (l > LINENUM_WIDTH)
+					throw new RuntimeException("Line number may not be longer than " + LINENUM_WIDTH + " digits.");
+				for (int i = l; l < LINENUM_WIDTH; l++)
+					b.insert(0, " ");
+				return b.toString();
 			}
 			
 			private String translateNaturalNumber(int number) {

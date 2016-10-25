@@ -9,6 +9,17 @@
  * See also Braille CSS: http://snaekobbi.github.io/braille-css-spec/master/index.html *
  ***************************************************************************************/
 
+/* Helper functions */
+
+/* http://stackoverflow.com/a/38713737 */
+@function repeat($char, $n) {
+    $c:"";
+    @for $i from 1 through $n {
+        $c: $c + $char;
+    }
+    @return $c;
+}
+
 /* General rules */
 
 /* Namespaces */
@@ -618,25 +629,72 @@ blockquote {
 
 poem {
     display: block;
-    margin-top:1;
-    margin-bottom:1;
-    margin-left:2;
+    margin-top: 1;
+    margin-bottom: 1;
+    margin-left: 2;
+    line {
+        display: block;
+        margin-left: 2;
+        text-indent: -2;
+        page-break-inside: avoid;
+    }
 }
 
+$linenum-space: 4;
+$linenum-width: 2;
+
 linegroup {
+    $margin-left: 2;
+    $text-indent: -2;
     display: block;
+    line {
+        display: block;
+        margin-left: $margin-left;
+        text-indent: $text-indent;
+        page-break-inside: avoid;
+    }
+    &:has(linenum) line {
+        margin-left: $margin-left + $linenum-space;
+        &:has(linenum) {
+            text-indent: - $margin-left - $linenum-space;
+            linenum {
+                text-transform: linenum;
+                &::after {
+                    content: repeat(" ", $linenum-space - $linenum-width + $margin-left + $text-indent - 1) " ";
+                    text-transform: none;
+                    hyphens: initial;
+                }
+            }
+        }
+    }
 }
 
 linegroup + linegroup {
-    margin-top:1;
-    display: block;
+    margin-top: 1;
 }
 
-line {
-    display: block;
-    margin-left:2;
-    text-indent:-2;
-    page-break-inside: avoid;
+/* Depends on group-starting-with-linenum.xsl (splits p in .line spans when it contains .linenum spans) */
+p:has(.line) {
+    margin-left: $linenum-space;
+    .line {
+        display: block;
+        .linenum {
+            text-transform: linenum;
+            &::before {
+                display: block;
+                content: none;
+            }
+            &::after {
+                content: repeat(" ", $linenum-space - $linenum-width - 1) " ";
+                text-transform: none;
+                hyphens: initial;
+            }
+        }
+        &:first-child .linenum::after {
+            /* "+2" is for p's text-indent */
+            content: repeat(" ", $linenum-space - $linenum-width + 2 - 1) " ";
+        }
+    }
 }
 
 author, byline {
