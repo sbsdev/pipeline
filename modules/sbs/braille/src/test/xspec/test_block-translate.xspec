@@ -3,7 +3,6 @@
                stylesheet="../../main/resources/xml/block-translate.xsl">
   
   <x:param name="contraction-grade">0</x:param>
-  <x:param name="hyphenator">(locale:de)</x:param>
   
   <x:scenario label="simple test">
     <x:context mode="identify-blocks">

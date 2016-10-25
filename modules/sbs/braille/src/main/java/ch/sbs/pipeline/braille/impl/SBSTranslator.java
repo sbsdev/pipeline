@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Objects.ToStringHelper;
 import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -37,6 +38,7 @@ import static org.daisy.pipeline.braille.common.AbstractTransformProvider.util.l
 import org.daisy.pipeline.braille.common.BrailleTranslator;
 import org.daisy.pipeline.braille.common.BrailleTranslatorProvider;
 import org.daisy.pipeline.braille.common.CSSStyledText;
+import org.daisy.pipeline.braille.common.Hyphenator;
 import org.daisy.pipeline.braille.common.Query;
 import org.daisy.pipeline.braille.common.Query.Feature;
 import org.daisy.pipeline.braille.common.Query.MutableQuery;
@@ -56,6 +58,9 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.ComponentContext;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public interface SBSTranslator {
 	
@@ -114,44 +119,93 @@ public interface SBSTranslator {
 		 */
 		protected final Iterable<BrailleTranslator> _get(Query query) {
 			final MutableQuery q = mutableQuery(query);
-			for (Feature f : q.removeAll("input"))
-				if (!supportedInput.contains(f.getValue().get()))
+			for (Feature f : q.removeAll("input")) {
+				String input = f.getValue().get();
+				if (!supportedInput.contains(input))
+					return empty; }
+			boolean forceBraille = false;
+			for (Feature f : q.removeAll("output")) {
+				String output = f.getValue().get();
+				if (!supportedOutput.contains(output))
 					return empty;
-			for (Feature f : q.removeAll("output"))
-				if (!supportedOutput.contains(f.getValue().get()))
-					return empty;
+				if ("braille".equals(output))
+					forceBraille = true; }
 			if (q.containsKey("locale"))
 				if (!"de".equals(parseLocale(q.removeOnly("locale").getValue().get()).getLanguage()))
 					return empty;
 			if (q.containsKey("translator"))
-				if ("sbs".equals(q.removeOnly("translator").getValue().get()))
+				if ("sbs".equals(q.removeOnly("translator").getValue().get())) {
 					if (q.containsKey("grade")) {
-						String v = q.removeOnly("grade").getValue().get();
-						final int grade;
-						if (v.equals("0"))
-							grade = 0;
-						else if (v.equals("1"))
-							grade = 1;
-						else if (v.equals("2"))
-							grade = 2;
-						else
-							return empty;
-						if (q.isEmpty()) {
-							Iterable<LibhyphenHyphenator> hyphenators = logSelect(hyphenTable, libhyphenHyphenatorProvider);
-							final Query liblouisTable = grade == 2 ? grade2Table : grade == 1 ? grade1Table : grade0Table;
-							return concat(
-								transform(
-									hyphenators,
-									new Function<LibhyphenHyphenator,Iterable<BrailleTranslator>>() {
-										public Iterable<BrailleTranslator> _apply(final LibhyphenHyphenator h) {
-											final Query hyphenatorQuery = mutableQuery().add("hyphenator", h.getIdentifier());
-											final Query translatorQuery = mutableQuery(liblouisTable).addAll(hyphenatorQuery);
-											return Iterables.transform(
-												logSelect(translatorQuery, liblouisTranslatorProvider),
-												new Function<LiblouisTranslator,BrailleTranslator>() {
-													public BrailleTranslator _apply(LiblouisTranslator translator) {
-														return __apply(logCreate(new TransformImpl(grade, translator, hyphenatorQuery.toString()))); }}); }})); }}
+						if (q.containsKey("liblouis-table")) {
+							logger.warn("A query with both 'grade' and 'liblouis-table' never matches anything");
+							return empty; }
+						int grade; {
+							String v = q.removeOnly("grade").getValue().get();
+							if (v.equals("0"))
+								grade = 0;
+							else if (v.equals("1"))
+								grade = 1;
+							else if (v.equals("2"))
+								grade = 2;
+							else
+								return empty; }
+						if (q.isEmpty())
+							return getImpl(grade, hyphenTable); }
+					else if (q.containsKey("liblouis-table")) {
+						
+						// assumed to be coming from the XProc implementation
+						Query liblouisTable = mutableQuery().add("liblouis-table",
+								virtualDisTable + ",http://www.sbs.ch/pipeline/liblouis/tables/" +
+								q.removeOnly("liblouis-table").getValue().get());
+						MutableQuery translatorQuery = mutableQuery(liblouisTable);
+						if (q.containsKey("hyphenator")) {
+							translatorQuery.add(q.removeOnly("hyphenator"));
+							if (q.isEmpty())
+								return getImpl(translatorQuery); }
+						else {
+							if (q.isEmpty())
+								return getImpl(translatorQuery, hyphenTable); }}
+					else
+						logger.warn("A query must have either 'grade' or 'liblouis-table'"); // Note: not strictly needed for print-page, toc-page, etc.
+					}
 			return empty;
+		}
+		
+		private Iterable<BrailleTranslator> getImpl(Query liblouisTranslatorQuery) {
+			return Iterables.transform(
+				logSelect(liblouisTranslatorQuery, liblouisTranslatorProvider),
+				new Function<LiblouisTranslator,BrailleTranslator>() {
+					public BrailleTranslator _apply(LiblouisTranslator translator) {
+						return __apply(logCreate(new TransformImpl(translator))); }});
+		}
+		
+		private Iterable<BrailleTranslator> getImpl(int grade, Query hyphenTable) {
+			return getImpl(grade, grade == 2 ? grade2Table : grade == 1 ? grade1Table : grade0Table, hyphenTable);
+		}
+		
+		private Iterable<BrailleTranslator> getImpl(Query liblouisTable, Query hyphenTable) {
+			return getImpl(null, liblouisTable, hyphenTable);
+		}
+		
+		private Iterable<BrailleTranslator> getImpl(final Integer grade, final Query liblouisTable, Query hyphenTable) {
+			return concat(
+				transform(
+					logSelect(hyphenTable, libhyphenHyphenatorProvider),
+					new Function<LibhyphenHyphenator,Iterable<BrailleTranslator>>() {
+						public Iterable<BrailleTranslator> _apply(final LibhyphenHyphenator h) {
+							return getImpl(grade, liblouisTable, h); }}));
+		}
+		
+		private Iterable<BrailleTranslator> getImpl(final Integer grade, final Query liblouisTable, Hyphenator hyphenator) {
+			final Query hyphenatorQuery = mutableQuery().add("hyphenator", hyphenator.getIdentifier());
+			Query translatorQuery = mutableQuery(liblouisTable).addAll(hyphenatorQuery);
+			return Iterables.transform(
+				logSelect(translatorQuery, liblouisTranslatorProvider),
+				new Function<LiblouisTranslator,BrailleTranslator>() {
+					public BrailleTranslator _apply(LiblouisTranslator translator) {
+						return __apply(logCreate(grade == null ?
+						                         new TransformImpl(translator) :
+						                         new TransformImpl(grade, translator, hyphenatorQuery.toString()))); }});
 		}
 		
 		private final static Pattern PRINT_PAGE_NUMBER = Pattern.compile("(?<first>[0-9]+)?(?:/(?<last>[0-9]+))?");
@@ -164,21 +218,41 @@ public interface SBSTranslator {
 		private class TransformImpl extends AbstractBrailleTranslator {
 			
 			private final XProc xproc;
-			private final int grade;
+			private final Integer grade;
 			private final FromStyledTextToBraille translator;
+			private final String liblouisTable;
+			
+			private TransformImpl(LiblouisTranslator translator) {
+				this.xproc = null;
+				this.grade = null;
+				this.translator = translator.fromStyledTextToBraille();
+				this.liblouisTable = translator.asLiblouisTable().toString();
+			}
 			
 			private TransformImpl(int grade, LiblouisTranslator translator, String hyphenatorQuery) {
 				Map<String,String> options = ImmutableMap.of(
 					"contraction-grade", ""+grade,
-					"virtual.dis-uri", virtualDisTable.toASCIIString(),
-					"hyphenator", hyphenatorQuery);
-				xproc = new XProc(href, null, options);
+					"text-transform-query-base", "(input:text-css)(output:braille)(translator:sbs)" + hyphenatorQuery);
+				this.xproc = new XProc(href, null, options);
 				this.grade = grade;
 				this.translator = translator.fromStyledTextToBraille();
+				this.liblouisTable = translator.asLiblouisTable().toString();
+			}
+			
+			@Override
+			public String toString() {
+				ToStringHelper s = Objects.toStringHelper(SBSTranslator.class.getSimpleName());
+				if (grade != null)
+					s.add("grade", grade);
+				else
+					s.add("liblouis-table", liblouisTable);
+				return s.toString();
 			}
 			
 			@Override
 			public XProc asXProc() {
+				if (xproc == null)
+					throw new UnsupportedOperationException();
 				return xproc;
 			}
 			
@@ -363,13 +437,6 @@ public interface SBSTranslator {
 					number = number / 10; }
 				return b.toString();
 			}
-			
-			@Override
-			public String toString() {
-				return Objects.toStringHelper(SBSTranslator.class.getSimpleName())
-					.add("grade", grade)
-					.toString();
-			}
 		}
 		
 		@Reference(
@@ -422,5 +489,8 @@ public interface SBSTranslator {
 			directory.mkdirs();
 			return directory;
 		}
+		
+		private static final Logger logger = LoggerFactory.getLogger(SBSTranslator.class);
+		
 	}
 }

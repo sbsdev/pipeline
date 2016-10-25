@@ -6,7 +6,6 @@
 	       preserve-space="dtb:p dtb:byline dtb:author dtb:li dtb:lic dtb:doctitle dtb:docauthor dtb:span dtb:em dtb:strong brl:emph dtb:line dtb:h1 dtb:h2 dtb:h3 dtb:h4 dtb:h5 dtb:h6">
 
   <x:param name="contraction-grade">2</x:param>
-  <x:param name="hyphenator">(locale:de)</x:param>
   <x:param name="ascii-braille">yes</x:param>
 
     <x:scenario label="Code">

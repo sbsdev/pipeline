@@ -6,8 +6,7 @@
             exclude-inline-prefixes="#all">
 
 	<p:option name="contraction-grade" required="true"/>
-	<p:option name="virtual.dis-uri" required="true"/>
-	<p:option name="hyphenator" required="true"/>
+	<p:option name="text-transform-query-base" required="true"/>
 
 	<p:import href="http://www.daisy.org/pipeline/modules/braille/css-utils/library.xpl"/>
 
@@ -48,8 +47,7 @@
 			<p:document href="block-translate.xsl"/>
 		</p:input>
 		<p:with-param name="contraction-grade" select="$contraction-grade"/>
-		<p:with-param name="virtual.dis-uri" select="$virtual.dis-uri"/>
-		<p:with-param name="hyphenator" select="$hyphenator"/>
+		<p:with-param name="text-transform-query-base" select="$text-transform-query-base"/>
 		<p:with-param name="hyphenation" select="'true'"/>
 	</p:xslt>
 	

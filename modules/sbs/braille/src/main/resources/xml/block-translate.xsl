@@ -14,11 +14,7 @@
 	<xsl:import href="select-braille-table.xsl"/>
 	<xsl:import href="handle-elements.xsl"/>
 	
-	<xsl:param name="virtual.dis-uri" select="resolve-uri('../liblouis/virtual.dis')"/> <!-- must be file URI -->
-	<xsl:param name="hyphenator" required="yes"/>
-	
-	<xsl:variable name="TABLE_BASE_URI"
-	              select="concat($virtual.dis-uri,',http://www.sbs.ch/pipeline/liblouis/tables/')"/>
+	<xsl:param name="text-transform-query-base" select="'(input:text-css)(output:braille)(translator:sbs)(locale:de)'"/>
 	
 	<xsl:template match="css:block" mode="#default before after">
 		<xsl:apply-templates/>
@@ -35,7 +31,7 @@
 		</xsl:variable>
 		<xsl:variable name="unicode-braille"
 			      select="pf:text-transform(
-		                      concat('(liblouis-table:&quot;',$table,'&quot;)',$hyphenator),
+		                      concat($text-transform-query-base,'(liblouis-table:&quot;',$table,'&quot;)'),
 		                      $text,
 		                      css:serialize-declaration-list($inline-style))"/>
 		<xsl:choose>

@@ -18,7 +18,6 @@
   <xsl:param name="accented-letters">de-accents-ch</xsl:param>
   <xsl:param name="use_local_dictionary" select="false()"/>
   <xsl:param name="document-identifier"></xsl:param>
-  <xsl:param name="TABLE_BASE_URI"></xsl:param>
   
   <xsl:template name="my:get-contraction" as="xs:string">
     <xsl:param name="context" as="node()"/>
@@ -51,8 +50,7 @@
     </xsl:variable>
     <xsl:variable name="result">
     <xsl:value-of
-	select="concat($TABLE_BASE_URI,
-		string-join((
+	select="string-join((
 		'sbs.dis',
 		'sbs-de-core6.cti',
 		'sbs-de-accents.cti',
@@ -65,7 +63,7 @@
 		if ($context != 'date_month' and $context != 'date_day') then 'sbs-de-core.mod' else '',
 		if ($context = 'name_capitalized' or $context = 'num_roman' or ($context = 'abbr' and not(my:containsDot($ctx))) or ($actual_contraction &lt;= '1' and $context != 'date_day' and $context != 'date_month')) then 'sbs-de-g0-core.mod' else '',
 		if ($actual_contraction = '1' and $context != 'num_roman' and ($context != 'name_capitalized' and ($context != 'abbr' or my:containsDot($ctx)) and $context != 'date_month' and $context != 'date_day')) then string-join((if ($use_local_dictionary = true()) then concat('sbs-de-g1-white-',$document-identifier,'.mod,') else '', 'sbs-de-g1-white.mod', 'sbs-de-g1-core.mod')[. != ''],',') else ''
-		)[. != ''], ','))"/>
+		)[. != ''], ',')"/>
     <xsl:text>,</xsl:text>
     <xsl:if test="$actual_contraction = '2' and $context != 'num_roman'">
       <xsl:if test="$context = 'place'">
