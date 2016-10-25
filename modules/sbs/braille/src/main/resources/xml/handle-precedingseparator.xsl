@@ -8,7 +8,9 @@
     <dtb:div style="display: block;
                     text-align: center;
                     margin-top: 1;
-                    margin-bottom: 1">
+                    margin-bottom: 1;
+                    text-transform: none;
+                    hyphens: initial">
       ⠒⠒⠒⠒⠒⠒
     </dtb:div>
     <xsl:next-match/>

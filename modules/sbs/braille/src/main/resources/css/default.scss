@@ -219,6 +219,8 @@ brl|volume[brl|grade='#{$contraction-grade}'] {
     content: '⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒';
     margin-top:1;
     margin-bottom:1;
+    text-transform: none;
+    hyphens: initial;
 }
 
 #generated-volume-toc li,
@@ -229,6 +231,7 @@ brl|volume[brl|grade='#{$contraction-grade}'] {
 #generated-volume-toc li a::after,
 #generated-document-toc li a::after {
     content: " " leader('⠄') " ";
+    hyphens: initial;
     &::after {
         &::before {
             content: target-string(attr(href), print-page);
@@ -659,7 +662,9 @@ tbody, tfoot {
 }
 
 td + td::before, th + th::before {
-		     content:" ⠒⠒ ";
+    content:" ⠒⠒ ";
+    text-transform: none;
+    hyphens: initial;
 }
 
 caption{
@@ -751,6 +756,8 @@ list[type=ol] > li {
     &::before {
         display: inline;
         content: "⠼" counter(list-item, symbols(numeric "⠴" "⠂" "⠆" "⠒" "⠲" "⠢" "⠖" "⠶" "⠦" "⠔")) " ";
+        text-transform: none;
+        hyphens: initial;
     }
 }
 
@@ -797,6 +804,8 @@ sidebar::before {
     margin-top:1;
     margin-left:-1;
     content:"⠏⠉⠉⠉";
+    text-transform: none;
+    hyphens: initial;
 }
 
 sidebar::after {
@@ -804,6 +813,8 @@ sidebar::after {
     margin-bottom:1;
     margin-left:-1;
     content:"⠧⠤⠤⠤";
+    text-transform: none;
+    hyphens: initial;
 }
 
 div {
