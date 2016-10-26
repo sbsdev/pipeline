@@ -51,6 +51,7 @@ import org.ops4j.pax.exam.util.PathUtils;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemPackage;
+import static org.ops4j.pax.exam.CoreOptions.vmOption;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -158,6 +159,7 @@ public class SBSTest {
 	@Configuration
 	public Option[] config() {
 		return options(
+			vmOption("-Xmx8g"),
 			logbackConfigFile(),
 			calabashConfigFile(),
 			domTraversalPackage(),
