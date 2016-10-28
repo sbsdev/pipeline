@@ -1093,38 +1093,45 @@ dd::after {
     content: '\A';
 }
 
-list {
+list, ol, ul {
     margin-left: 2;
     text-indent: -2;
     margin-bottom: 1;
     counter-reset: list-item;
-}
-
-list list {
-    margin-bottom: 0;
+    list, ol, ul {
+        margin-bottom: 0;
+    }
 }
 
 li {
     display:list-item;
 }
 
-list[type=ul], list list list[type=ul] {
+list[type=ul], ul {
     list-style-type: '⠠⠤';
 }
 
-list list[type=ul] {
-    list-style-type: '⠐⠤';
+list, ul, ol {
+    list[type=ul], ul {
+        list-style-type: '⠐⠤';
+    }
+    list, ul, ol {
+        list[type=ul], ul {
+            list-style-type: '⠠⠤';
+        }
+    }
 }
 
-
-list[type=ol] > li { 
-    display: block;
-    counter-increment: list-item;
-    &::before {
-        display: inline;
-        content: "⠼" counter(list-item, symbols(numeric "⠴" "⠂" "⠆" "⠒" "⠲" "⠢" "⠖" "⠶" "⠦" "⠔")) " ";
-        text-transform: none;
-        hyphens: initial;
+list[type=ol], ol {
+    > li { 
+        display: block;
+        counter-increment: list-item;
+        &::before {
+            display: inline;
+            content: "⠼" counter(list-item, symbols(numeric "⠴" "⠂" "⠆" "⠒" "⠲" "⠢" "⠖" "⠶" "⠦" "⠔")) " ";
+            text-transform: none;
+            hyphens: initial;
+        }
     }
 }
 
@@ -1135,23 +1142,28 @@ list[type=ol] > li {
     }
 }
 
-list[type=ol][enum="1"] {
+list[type=ol][enum="1"],
+ol[type="1"] {
     list-style-type: decimal;
 }
 
-list[type=ol][enum=A] {
+list[type=ol][enum=A],
+ol[type=A] {
     list-style-type: upper-latin;
 }
 
-list[type=ol][enum=I] {
+list[type=ol][enum=I],
+ol[type=I] {
     list-style-type: upper-roman;
 }
 
-list[type=ol][enum=a] {
+list[type=ol][enum=a],
+ol[type=a] {
     list-style-type: lower-latin;
 }
 
-list[type=ol][enum=i] {
+list[type=ol][enum=i],
+ol[type=i] {
     list-style-type: lower-roman;
 }
 
