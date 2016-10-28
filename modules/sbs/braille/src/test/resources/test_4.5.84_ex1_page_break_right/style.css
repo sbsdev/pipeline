@@ -1,9 +1,12 @@
+@namespace epub url(http://www.idpf.org/2007/ops);
+
 @page bodymatter:right {
 	@bottom-left {
 		content: none;
 	}
 }
 
-bodymatter > level1:not(:first-child) {
+bodymatter > level1,
+[epub|type~='bodymatter'] {
 	page-break-before: right;
 }

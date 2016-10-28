@@ -104,16 +104,19 @@
 
 @for $level from 1 through 6 {
     @if $levels-in-footer >= $level {
-        bodymatter h#{$level} {
-            &:not(:has(> brl|select)) {
-                string-set: running-footer-body content();
-            }
-            > brl|select {
-                &:not(:has(> brl|running-line)) > brl|otherwise {
+        bodymatter,
+        /*body|section*/ [epub|type~='bodymatter'] {
+            h#{$level} {
+                &:not(:has(> brl|select)) {
                     string-set: running-footer-body content();
                 }
-                > brl|running-line {
-                    string-set: running-footer-body content();
+                > brl|select {
+                    &:not(:has(> brl|running-line)) > brl|otherwise {
+                        string-set: running-footer-body content();
+                    }
+                    > brl|running-line {
+                        string-set: running-footer-body content();
+                    }
                 }
             }
         }
@@ -526,22 +529,27 @@ frontmatter > level1:not(#cover-recto, #cover-verso) {
     page-break-before: right;
 }
 
-frontmatter > level1:has(> level2){
+/*body|section*/[epub|type~='frontmatter']:not(#cover-recto, #cover-verso) {
+    page-break-before: right;
+}
+
+frontmatter > level1:has(> level2),
+/*body|section*/[epub|type~='frontmatter']:has(> section) {
     string-set: running-footer-front "Klappentexte";
 }
 
-frontmatter > level1.toc {
+frontmatter > level1.toc,
+/*body|section*/[epub|type~='frontmatter'].toc {
     display: none;
 }
 
 
-bodymatter > level1:not(:first-child),
-rearmatter > level1:not(:first-child) {
+bodymatter > level1,
+rearmatter > level1 {
     page-break-before:always;
 }
 
-/* :not(:first-child) needed to make specificity high enough */
-brl|volume + level1:not(:first-child) {
+brl|volume + level1 {
     page-break-before: auto;
 }
 
@@ -568,31 +576,59 @@ level4, level5, level6 {
     orphans:4;
 }
 
-bodymatter, rearmatter {
+/*body|section*/[epub|type~='frontmatter'],
+/*body|section*/[epub|type~='bodymatter'],
+/*body|section*/[epub|type~='rearmatter'] {
+    page-break-before: always;
+    > section {
+        display: block;
+        margin-top:2;
+        orphans:10;
+        > section {
+            display: block;
+            margin-top:1;
+            orphans:7;
+            section {
+                display: block;
+                margin-top:1;
+                orphans:4;
+            }
+        }
+    }   
+}
+
+bodymatter,
+rearmatter,
+/*body|section*/[epub|type~='bodymatter'],
+/*body|section*/[epub|type~='rearmatter'] {
     display: block;
 }
 
-frontmatter {
+frontmatter,
+/*body|section*/[epub|type~='frontmatter'] {
     display: none;
 }
 
 /* doctitle and docauthor are skipped, #cover-recto, #cover-verso and.titlepage are moved
  * to the "cover" flow. If the frontmatter has no other child elements, skip it.
  */
-frontmatter:has(> *:not(doctitle, docauthor, #cover-recto, #cover-verso, .titlepage)) {
-    display: block;
-    page: frontmatter;
-    flow: frontmatter;
+frontmatter,
+/*body|section*/[epub|type~='frontmatter'] {
+    &:has(> *:not(doctitle, docauthor, #cover-recto, #cover-verso, .titlepage)) {
+        display: block;
+        page: frontmatter;
+        flow: frontmatter;
+    }
 }
 
-frontmatter level2 {
+frontmatter level2,
+/*body|section*/[epub|type~='frontmatter'] section {
     display: block;
     margin-top:1;
     orphans:4;
-}
-
-frontmatter level2:first-child h2 {
-    padding-top:1;
+    &:first-child h2 {
+        padding-top:1;
+    }
 }
 
 /* Cover Page */
@@ -736,6 +772,14 @@ frontmatter > .titlepage > level2:first-child::before {
 bodymatter {
     page: bodymatter;
     counter-set: page 1;
+}
+
+/*body|section*/[epub|type~='bodymatter'] {
+    page: bodymatter;
+    counter-set: page 1;
+    ~ /*body|section*/[epub|type~='bodymatter'] {
+        counter-set: none;
+    }
 }
 
 /* Paragraphs
