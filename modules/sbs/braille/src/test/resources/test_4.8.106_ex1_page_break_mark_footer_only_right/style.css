@@ -1,3 +1,5 @@
+@namespace epub url(http://www.idpf.org/2007/ops);
+
 @page {
 	margin-left: 2;
 	@left {
@@ -9,6 +11,7 @@ h1 {
 	-obfl-underline: none;
 }
 
-pagenum {
+pagenum,
+[epub|type='pagebreak'] {
 	-obfl-marker: pagenum;
 }

@@ -832,6 +832,13 @@ pagenum {
     }
 }
 
+[epub|type='pagebreak'] {
+    display: none;
+    @if $show-print-page-numbers {
+        string-set: print-page attr(title), print-page-slash attr(title) '/';
+    }
+}
+
 blockquote {
     margin-top:1;
     margin-bottom:1;
