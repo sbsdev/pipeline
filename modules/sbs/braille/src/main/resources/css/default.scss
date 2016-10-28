@@ -318,12 +318,14 @@ head {
     display: none;
 }
 
-doctitle {
+doctitle,
+header > h1[epub|type~='fulltitle'] {
     display: none;
     string-set: doctitle content();
 }
 
-docauthor {
+docauthor,
+header > p[epub|type~='z3998:author'] {
     display: none;
     string-set: docauthor content();
 }

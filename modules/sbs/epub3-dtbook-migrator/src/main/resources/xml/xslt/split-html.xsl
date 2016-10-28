@@ -49,11 +49,24 @@
                     <body>
                         <xsl:apply-templates select="$body/(@* except @xml:base)"/>
                         <xsl:if test="$body[self::header]">
-                            <xsl:attribute name="epub:type" select="string-join(('frontmatter','titlepage',tokenize($body/@epub:type,'\s+')),' ')"/>
+                            <xsl:attribute name="epub:type" select="string-join(('frontmatter',tokenize($body/@epub:type,'\s+')),' ')"/>
                         </xsl:if>
                         <xsl:text>
 </xsl:text>
-                        <xsl:apply-templates select="$body/*"/>
+                        <xsl:choose>
+                            <xsl:when test="$body[self::header]">
+                                <header>
+                                    <xsl:text>
+</xsl:text>
+                                    <xsl:apply-templates select="$body/*"/>
+                                    <xsl:text>
+</xsl:text>
+                                </header>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:apply-templates select="$body/*"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
                         <xsl:text>
 </xsl:text>
                     </body>

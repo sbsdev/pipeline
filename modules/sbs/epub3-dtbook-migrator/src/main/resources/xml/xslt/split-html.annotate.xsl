@@ -11,7 +11,7 @@
             select="('abstract','acknowledgments','afterword','answers','appendix','assessment','assessments','bibliography','z3998:biographical-note','case-study','chapter','colophon','conclusion','contributors','copyright-page','credits','dedication','z3998:discography','division','z3998:editorial-note','epigraph','epilogue','errata','z3998:filmography','footnotes','foreword','glossary','z3998:grant-acknowledgment','halftitlepage','imprimatur','imprint','index','index-group','index-headnotes','index-legend','introduction','keywords','landmarks','loa','loi','lot','lov','notice','other-credits','page-list','part','practices','preamble','preface','prologue','z3998:promotional-copy','z3998:published-works','z3998:publisher-address','qna','rearnotes','revision-history','z3998:section','seriespage','subchapter','z3998:subsection','titlepage','toc','toc-brief','z3998:translator-note','volume')"/>
         <xsl:variable name="identifier" select="(//html/head/meta[@name='dc:identifier']/string(@content))[1]"/>
         <xsl:variable name="padding-size"
-            select="string-length(string(count(/*/body/( section | article | section[f:types(.)='part']/(section|article) | (section|article)[f:types(.)='bodymatter']/section[f:types(.)='rearnotes'] ))))"/>
+            select="string-length(string(count(/*/body/( header | section | article | section[f:types(.)='part']/(section|article) | (section|article)[f:types(.)='bodymatter']/section[f:types(.)='rearnotes'] ))))"/>
 
         <xsl:copy>
             <xsl:copy-of select="@*"/>
@@ -20,20 +20,22 @@
             <xsl:for-each select="body">
                 <xsl:copy>
                     <xsl:copy-of select="@*"/>
-                    <xsl:variable name="top-level-sections" select="section | article"/>
+                    <xsl:variable name="top-level-sections" select="header | section | article"/>
                     <xsl:variable name="part-sections" select="$top-level-sections[f:types(.)='part']/(section | article)"/>
                     <xsl:variable name="bodymatter-rearnotes" select="($top-level-sections, $part-sections)[not(f:types(.)=('cover','frontmatter','backmatter'))]/section[f:types(.)='rearnotes']"/>
                     <xsl:for-each select="$top-level-sections | $part-sections | $bodymatter-rearnotes">
                         <xsl:copy>
                             <xsl:variable name="types" select="f:types(.)"/>
-                            <xsl:variable name="partition" select="((ancestor-or-self::*/f:types(.)[.=$partition-types]), 'bodymatter')[1]"/>
-                            <xsl:variable name="division" select="if (count($types[.=$division-types])) then ($types[.=$division-types])[1] else if ($partition='bodymatter') then 'chapter' else ()"/>
+                            <xsl:variable name="partition" select="if (self::header) then 'frontmatter' else ((ancestor-or-self::*/f:types(.)[.=$partition-types]), 'bodymatter')[1]"/>
+                            <xsl:variable name="division" select="if (self::header) then 'header' else if (count($types[.=$division-types])) then ($types[.=$division-types])[1] else if ($partition='bodymatter') then 'chapter' else ()"/>
                             <xsl:variable name="filename"
                                 select="concat($identifier,'-',f:zero-pad(string(position()),$padding-size),'-',if ($division) then tokenize($division,':')[last()] else $partition)"/>
 
                             <xsl:copy-of select="@*"/>
                             <xsl:attribute name="xml:base" select="concat($output-dir,$filename,'.xhtml')"/>
-                            <xsl:attribute name="epub:type" select="string-join(($partition, $division, $types[not(.=($partition-types,$division-types))]),' ')"/>
+                            <xsl:if test="not(self::header)">
+                                <xsl:attribute name="epub:type" select="string-join(($partition, $division, $types[not(.=($partition-types,$division-types))]),' ')"/>
+                            </xsl:if>
 
                             <xsl:choose>
                                 <xsl:when test="$division='part'">
