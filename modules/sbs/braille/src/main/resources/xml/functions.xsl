@@ -3,6 +3,7 @@
     version="2.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
+    xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:epub="http://www.idpf.org/2007/ops"
     xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
     xmlns:my="http://my-functions"
@@ -23,7 +24,7 @@
     <xsl:sequence select="false()"/>
   </xsl:template>
   
-  <xsl:template match="dtb:*|math:*" as="xs:boolean" mode="is-block-element" priority="11">
+  <xsl:template match="dtb:*|html:*|math:*" as="xs:boolean" mode="is-block-element" priority="11">
     <xsl:sequence select="false()"/>
   </xsl:template>
   
@@ -32,6 +33,10 @@
   </xsl:template>
 
   <xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6|dtb:p|dtb:list|dtb:li|dtb:author|dtb:byline|dtb:line|dtb:imggroup|dtb:blockquote" as="xs:boolean" mode="is-block-element" priority="12">
+    <xsl:sequence select="true()"/>
+  </xsl:template>
+
+  <xsl:template match="html:h1|html:p|html:byline" as="xs:boolean" mode="is-block-element" priority="12">
     <xsl:sequence select="true()"/>
   </xsl:template>
 

@@ -259,7 +259,8 @@
   <!-- STRONG, EM, BRL:EMPH, DFN -->
   <!-- ========================= -->
 
-  <xsl:template match="dtb:strong|dtb:em|brl:emph|dtb:dfn">
+  <xsl:template match="dtb:strong|dtb:em|brl:emph|dtb:dfn|
+                       html:strong[not(@class='title')]|html:em|html:dfn">
     <xsl:variable name="braille_tables">
       <xsl:call-template name="my:get-tables"/>
     </xsl:variable>
@@ -928,7 +929,7 @@
   <!-- Single word mixed emphasis, mixed emphasis before-->
   <!-- ================================================= -->
   <xsl:template
-      match="text()[my:starts-with-word(string()) and my:ends-with-word(string(my:preceding-textnode-within-block(.)[ancestor::dtb:em]))]"
+      match="text()[my:starts-with-word(string()) and my:ends-with-word(string(my:preceding-textnode-within-block(.)[ancestor::*:em]))]"
       priority="60">
     <xsl:call-template name="translate">
       <xsl:with-param name="text" select="concat('&#x250A;',string())"/>
@@ -939,7 +940,7 @@
   <!-- Single word mixed emphasis, mixed emphasis after -->
   <!-- ================================================ -->
   <xsl:template
-      match="text()[my:ends-with-word(string()) and my:starts-with-word(string(my:following-textnode-within-block(.)[ancestor::dtb:em]))]"
+      match="text()[my:ends-with-word(string()) and my:starts-with-word(string(my:following-textnode-within-block(.)[ancestor::*:em]))]"
       priority="60">
     <xsl:call-template name="translate">
       <xsl:with-param name="text" select="concat(string(),'&#x250A;')"/>

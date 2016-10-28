@@ -3,6 +3,7 @@
                 xmlns="http://www.daisy.org/z3986/2005/dtbook/"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
+                xmlns:html="http://www.w3.org/1999/xhtml"
                 xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
                 xmlns:my="http://my-functions"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -168,11 +169,15 @@
     <xsl:function name="my:is-inline-element">
         <xsl:param name="element"/>
         <xsl:sequence select="boolean($element[self::dtb:span or
+                                               self::html:span or
                                                self::dtb:abbr or
+                                               self::html:abbr or
                                                self::brl:num or
                                                self::brl:emph or
                                                self::dtb:em or
-                                               self::dtb:strong])"/>
+                                               self::html:em or
+                                               self::dtb:strong or
+                                               self::html:strong])"/>
     </xsl:function>
     
 </xsl:stylesheet>

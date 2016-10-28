@@ -197,8 +197,8 @@
       <x:document type="inline">
         <p xmlns="http://www.w3.org/1999/xhtml" xml:lang="de"
            style="@text-transform downgrade { system: -sbs-indicators; open: &quot;-.&quot;; close: &quot;'.&quot;; single-word: &quot;'.&quot; }">
-          ⠫ ⠎⠏⠗⠼⠺⠢⠞⠒ <span brl:grade="0" xml:lang="fr">⠤⠄⠞⠕⠥⠞ ⠧⠊⠑⠝⠞ ⠈⠷ ⠏⠕⠊⠝⠞ ⠈⠷ ⠟⠥⠊ ⠎⠁⠊⠞
-          ⠁⠞⠞⠑⠝⠙⠗⠑⠠⠄</span> ⠶⠵ ⠷⠂ ⠗ ⠺⠴⠞⠉ ⠅⠂ ⠅⠭⠞ ⠁⠿ ⠞ ⠗ ⠵⠞⠶⠄
+          ⠫ ⠎⠏⠗⠼⠺⠢⠞⠒ ⠤⠄<span brl:grade="0" xml:lang="fr">⠞⠕⠥⠞ ⠧⠊⠑⠝⠞ ⠈⠷ ⠏⠕⠊⠝⠞ ⠈⠷ ⠟⠥⠊ ⠎⠁⠊⠞
+          ⠁⠞⠞⠑⠝⠙⠗⠑</span>⠠⠄ ⠶⠵ ⠷⠂ ⠗ ⠺⠴⠞⠉ ⠅⠂ ⠅⠭⠞ ⠁⠿ ⠞ ⠗ ⠵⠞⠶⠄
         </p>
       </x:document>
     </x:expect>

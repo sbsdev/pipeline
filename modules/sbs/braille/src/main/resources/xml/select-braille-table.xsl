@@ -22,8 +22,8 @@
   <xsl:template name="my:get-contraction" as="xs:string">
     <xsl:param name="context" as="node()"/>
     <xsl:sequence
-	select="if ($context/ancestor-or-self::dtb:span[@brl:grade and @brl:grade &lt; $contraction-grade])
-		then $context/ancestor-or-self::dtb:span/@brl:grade
+	select="if ($context/ancestor-or-self::*:span[@brl:grade and @brl:grade &lt; $contraction-grade])
+		then $context/ancestor-or-self::*:span/@brl:grade
 		else if (lang('de',$context))
 		then string($contraction-grade)
 		else '0'"/>
@@ -106,10 +106,10 @@
     </xsl:choose>
     <xsl:if test="$context != 'date_month' and $context != 'date_day'">
       <xsl:choose>
-        <xsl:when test="$ctx/ancestor-or-self::dtb:span[@brl:accents = 'reduced']">
+        <xsl:when test="$ctx/ancestor-or-self::*:span[@brl:accents = 'reduced']">
           <xsl:text>sbs-de-accents-reduced.mod,</xsl:text>
         </xsl:when>
-        <xsl:when test="$ctx/ancestor-or-self::dtb:span[@brl:accents = 'detailed']">
+        <xsl:when test="$ctx/ancestor-or-self::*:span[@brl:accents = 'detailed']">
           <xsl:text>sbs-de-accents.mod,</xsl:text>
         </xsl:when>
         <xsl:otherwise>
