@@ -39,4 +39,24 @@
     </x:expect>
   </x:scenario>
   
+  <x:scenario label="pagenum elements should end up in the correct range, also when headings are present">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="file" href="../resources/test_print_page_numbers_end_of_spread/test_print_page_numbering_headings.xml"/>
+      </x:input>
+      <x:option name="contraction-grade" select="0"/>
+      <x:option name="levels-in-footer" select="0"/>
+      <x:option name="include-brf" select="true()"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_print_page_numbers_end_of_spread/')"/>
+      <x:option name="brf-output-dir" select="concat($temp-dir,'output-dir/test_print_page_numbers_end_of_spread/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_print_page_numbers_end_of_spread/test_print_page_numbering_headings.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_print_page_numbers_end_of_spread/output_expected/test_print_page_numbering_headings.pef"/>
+    </x:expect>
+  </x:scenario>
+  
 </x:description>
