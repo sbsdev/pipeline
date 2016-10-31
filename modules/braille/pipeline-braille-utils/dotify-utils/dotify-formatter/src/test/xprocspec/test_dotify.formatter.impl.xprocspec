@@ -7779,11 +7779,9 @@
   </x:call>
 </x:scenario>
 
-<x:scenario label="manual-volume-breaking-toc" pending="xfail (Exception)">
+<x:scenario label="manual-volume-breaking-toc">
   <x:documentation>
     Tests manual volume breaking in combination with table of contents.
-    
-    Broken: Failed to complete volume division.
   </x:documentation>
   <x:call step="pxi:test">
     <x:input port="source">
@@ -7845,7 +7843,7 @@
           <volume cols="15" rows="15" rowgap="0" duplex="true">
             <section>
               <page>
-                <row>⠼⠃</row>
+                <row>⠼⠉</row>
               </page>
             </section>
             <section>
