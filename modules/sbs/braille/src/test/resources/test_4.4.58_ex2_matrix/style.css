@@ -1,0 +1,19 @@
+table {
+	display: table;
+	render-table-by: column;
+	-obfl-table-col-spacing: 2;
+}
+
+th {
+	border-bottom: ⠒;
+}
+
+tr:not(:last-child) > td::after {
+	content: " " leader("⠄");
+}
+
+/* reset rules in default.scss */
+
+td + td::before, th + th::before {
+	content: none;
+}

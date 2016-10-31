@@ -1,0 +1,58 @@
+pMULTIPLIKATIONSTABELLE
+
+ MAL  #A   #B   #C   #D   #E
+ :::  :::  :::  :::  :::  :::
+ #A   #A   #B   #C   #D   #E
+ #B   #B   #D   #F   #H   #AJ
+ #C   #C   #F   #I   #AB  #AE
+ #D   #D   #H   #AB  #AF  #BJ
+ #E   #E   #AJ  #AE  #BJ  #BE
+ #F   #F   #AB  #AH  #BD  #CJ
+ #G   #G   #AD  #BA  #BH  #CE
+ #H   #H   #AF  #BD  #CB  #DJ
+ #I   #I   #AH  #BG  #CF  #DE
+ #AJ  #AJ  #BJ  #CJ  #DJ  #EJ
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           #A
+p
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+p
+p

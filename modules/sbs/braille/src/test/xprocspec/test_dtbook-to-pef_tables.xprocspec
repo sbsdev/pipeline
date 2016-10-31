@@ -37,6 +37,76 @@
     </x:expect>
   </x:scenario>
   
+  <x:scenario label="4.4.58_ex1_matrix">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="file" href="../resources/test_4.4.58_ex1_matrix/test_4.4.58.xml"/>
+      </x:input>
+      <x:option name="contraction-grade" select="0"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.4.58_ex1_matrix/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_4.4.58_ex1_matrix/test_4.4.58.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_4.4.58_ex1_matrix/output_expected/test_4.4.58.pef"/>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="4.4.58_ex2_matrix" pending="leader should have minimal length of 1">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="file" href="../resources/test_4.4.58_ex2_matrix/test_4.4.58.xml"/>
+      </x:input>
+      <x:option name="contraction-grade" select="0"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.4.58_ex2_matrix/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_4.4.58_ex2_matrix/test_4.4.58.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_4.4.58_ex2_matrix/output_expected/test_4.4.58.pef"/>
+    </x:expect>
+  </x:scenario>
+  
+  <x:scenario label="4.4.62_ex1_rowspan">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="file" href="../resources/test_4.4.62_ex1_rowspan/test_4.4.62.xml"/>
+      </x:input>
+      <x:option name="contraction-grade" select="0"/>
+      <x:option name="show-braille-page-numbers" select="false()"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.4.62_ex1_rowspan/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_4.4.62_ex1_rowspan/test_4.4.62.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_4.4.62_ex1_rowspan/output_expected/test_4.4.62.pef"/>
+    </x:expect>
+  </x:scenario>
+  
+  <x:scenario label="4.4.62_ex2_colspan">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="file" href="../resources/test_4.4.62_ex2_colspan/test_4.4.62.xml"/>
+      </x:input>
+      <x:option name="contraction-grade" select="0"/>
+      <x:option name="show-braille-page-numbers" select="false()"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.4.62_ex2_colspan/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_4.4.62_ex2_colspan/test_4.4.62.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_4.4.62_ex2_colspan/output_expected/test_4.4.62.pef"/>
+    </x:expect>
+  </x:scenario>
+  
   <x:scenario label="foo" pending="TODO: Mischa: verify result">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
