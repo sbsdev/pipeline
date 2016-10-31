@@ -13,6 +13,7 @@
       </p:output>
       <p:option name="text-transform" select="''"/>
       <p:option name="skip-margin-top-of-page" select="'false'"/>
+      <p:variable name="allow-text-overflow-trimming" select="'true'"/>
       <p:import href="../../main/resources/xml/css-to-obfl.xpl"/>
       <p:import href="../../main/resources/xml/obfl-normalize-space.xpl"/>
       <p:import href="http://www.daisy.org/pipeline/modules/braille/dotify-utils/library.xpl"/>
@@ -24,6 +25,7 @@
       <p:for-each><p:identity/></p:for-each>
       <dotify:obfl-to-pef locale="und">
         <p:with-option name="mode" select="concat($text-transform,'(input:text-css)(output:braille)')"/>
+        <p:with-param port="parameters" name="allow-text-overflow-trimming" select="$allow-text-overflow-trimming"/>
       </dotify:obfl-to-pef>
     </p:declare-step>
   </x:script>
@@ -10400,6 +10402,7 @@
   
   <x:scenario label="test_95">
     <x:documentation>
+      Tests truncating of long footer lines.
     </x:documentation>
     <x:call step="dotify:format">
       <x:input port="source">

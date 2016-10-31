@@ -4,9 +4,11 @@
             xmlns:px="http://www.daisy.org/ns/pipeline/xproc"
             xmlns:dotify="http://code.google.com/p/dotify/"
             xmlns:pxi="http://www.daisy.org/ns/pipeline/xproc/internal"
-            exclude-inline-prefixes="#all">
+            exclude-inline-prefixes="#all"
+            name="main">
 	
 	<p:option name="text-transform" required="true"/>
+	<p:input port="parameters" kind="parameter" primary="false"/>
 	
 	<p:import href="../obfl-normalize-space.xpl"/>
 	<p:import href="http://www.daisy.org/pipeline/modules/braille/dotify-utils/library.xpl"/>
@@ -15,6 +17,9 @@
 	
 	<dotify:obfl-to-pef locale="und">
 		<p:with-option name="mode" select="$text-transform"/>
+		<p:input port="parameters">
+			<p:pipe step="main" port="parameters"/>
+		</p:input>
 	</dotify:obfl-to-pef>
 	
 </p:pipeline>

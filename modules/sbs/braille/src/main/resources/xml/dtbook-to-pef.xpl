@@ -103,6 +103,7 @@
                                            temp-dir"/>
     <px:add-parameters>
         <p:with-param name="skip-margin-top-of-page" select="'true'"/>
+        <p:with-param name="allow-text-overflow-trimming" select="'true'"/>
     </px:add-parameters>
     <p:identity name="input-options"/>
     <p:sink/>
