@@ -446,14 +446,32 @@
   <xsl:template match="dtb:span[@class=('answer','box')]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
-      <xsl:text>---</xsl:text>
+      <xsl:choose>
+        <xsl:when test="$ascii-braille='yes'">
+          <xsl:text>---</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="decode">
+            <xsl:with-param name="text" select="'---'"/>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:copy>
   </xsl:template>
 
   <xsl:template match="dtb:span[@class='answer_1']">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
-      <xsl:text>-</xsl:text>
+      <xsl:choose>
+        <xsl:when test="$ascii-braille='yes'">
+          <xsl:text>-</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="decode">
+            <xsl:with-param name="text" select="'-'"/>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:copy>
   </xsl:template>
 
