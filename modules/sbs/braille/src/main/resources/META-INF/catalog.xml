@@ -14,6 +14,8 @@
        https://github.com/daisy/pipeline-mod-braille/pull/79#discussion-diff-54276962 -->
   <uri name="http://www.sbs.ch/pipeline/modules/braille/internal/group-starting-with-linenum.xsl"
        uri="../xml/group-starting-with-linenum.xsl"/>
+  <uri name="http://www.sbs.ch/pipeline/modules/braille/internal/handle-toc-line.xsl"
+       uri="../xml/handle-toc-line.xsl"/>
   <uri name="http://www.sbs.ch/pipeline/modules/braille/internal/insert-boilerplate.xsl"
        uri="../xml/insert-boilerplate.xsl"/>
   

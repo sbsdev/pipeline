@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <x:description xmlns:x="http://www.daisy.org/ns/xprocspec"
                xmlns:sbs="http://www.sbs.ch"
+               xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
                script="http://www.sbs.ch/pipeline/modules/braille/dtbook-to-pef.xpl">
   
   <x:scenario label="list-numbering">
@@ -857,6 +858,137 @@
         </x:document>
       </x:expect>
     </x:scenario>
+  </x:scenario>
+  
+  <x:scenario label="toc-line">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="inline">
+          <dtbook xml:lang="de" xmlns="http://www.daisy.org/z3986/2005/dtbook/">
+            <book>
+              <frontmatter>
+                <level1>
+                  <h1>Title</h1>
+                </level1>
+              </frontmatter>
+              <bodymatter>
+                <level1>
+                  <pagenum id="page-1" page="normal">1</pagenum>
+                  <h1>Level 1</h1>
+                  <p>Bla bla bla</p>
+                  <p>Bla bla bla</p>
+                  <p>Bla bla bla</p>
+                  <level2>
+                    <pagenum id="page-2" page="normal">2</pagenum>
+                    <h2>
+                      Long title that we don't want to put in its entirety in the table of contents
+                      <brl:toc-line>Level 2</brl:toc-line>
+                    </h2>
+                    <p>Bla bla bla</p>
+                    <p>Bla bla bla</p>
+                    <p>Bla bla bla</p>
+                  </level2>
+                </level1>
+              </bodymatter>
+            </book>
+          </dtbook>
+        </x:document>
+      </x:input>
+      <x:option name="contraction-grade" select="0"/>
+      <x:option name="toc-depth" select="2"/>
+      <x:param port="parameters" name="generate-titlepage" select="false()"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/toc-line/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/toc-line/test_dtbook-to-pef.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="inline">
+        <pef xmlns="http://www.daisy.org/ns/2008/pef" xml:lang="de" version="2008-1">
+          <head>
+            <meta xmlns:dc="http://purl.org/dc/elements/1.1/">
+              <dc:format>application/x-pef+xml</dc:format>
+            </meta>
+          </head>
+          <body>
+            <volume cols="28" rows="28" rowgap="0" duplex="true">
+              <section>
+                <page>
+                  <row/>
+                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠞⠊⠞⠇⠑</row>
+                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤</row>
+                </page>
+              </section>
+              <section>
+                <page>
+                  <row/>
+                  <row>⠀⠀⠀⠀⠀⠊⠝⠓⠁⠇⠞⠎⠧⠑⠗⠵⠑⠊⠉⠓⠝⠊⠎</row>
+                  <row>⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤</row>
+                  <row/>
+                  <row>⠇⠑⠧⠑⠇⠀⠼⠁⠀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠀⠼⠂⠁</row>
+                  <row>⠀⠀⠇⠑⠧⠑⠇⠀⠼⠃⠀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠀⠼⠆⠁</row>
+                  <row/>
+                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒</row>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row>⠀⠀⠀⠀⠊⠝⠓⠁⠇⠞⠎⠧⠑⠗⠵⠑⠊⠉⠓⠝⠊⠎⠀⠀⠀⠀⠘⠊</row>
+                </page>
+              </section>
+              <section>
+                <page>
+                  <row/>
+                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠇⠑⠧⠑⠇⠀⠼⠁</row>
+                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤⠤⠤⠤</row>
+                  <row/>
+                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                  <row/>
+                  <row/>
+                  <row>⠇⠕⠝⠛⠀⠞⠊⠞⠇⠑⠀⠞⠓⠁⠞⠀⠺⠑⠀⠙⠕⠝⠠⠞</row>
+                  <row>⠺⠁⠝⠞⠀⠞⠕⠀⠏⠥⠞⠀⠊⠝⠀⠊⠞⠎</row>
+                  <row>⠑⠝⠞⠊⠗⠑⠞⠽⠀⠊⠝⠀⠞⠓⠑⠀⠞⠁⠃⠇⠑⠀⠕⠋</row>
+                  <row>⠉⠕⠝⠞⠑⠝⠞⠎</row>
+                  <row>⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒</row>
+                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row>⠸⠼⠁⠆⠀⠀⠀⠀⠀⠀⠀⠇⠑⠧⠑⠇⠀⠼⠁⠀⠀⠀⠀⠀⠀⠀⠼⠁</row>
+                </page>
+              </section>
+            </volume>
+          </body>
+        </pef>
+      </x:document>
+    </x:expect>
   </x:scenario>
   
   <x:scenario label="underline-h3">

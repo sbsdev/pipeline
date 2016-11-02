@@ -235,23 +235,34 @@ brl|volume[brl|grade='#{$contraction-grade}'] {
     hyphens: initial;
 }
 
-#generated-volume-toc li,
-#generated-document-toc li {
-    display: block;
-}
-
-#generated-volume-toc li a::after,
-#generated-document-toc li a::after {
-    content: " " leader('⠄') " ";
-    hyphens: initial;
-    &::after {
-        &::before {
-            content: target-string(attr(href), print-page);
-            text-transform: toc-print-page;
-        }
-        &::after {
-            content: target-counter(attr(href), page);
-            text-transform: toc-page;
+#generated-volume-toc,
+#generated-document-toc {
+    li {
+        display: block;
+        a {
+            &:has(brl|toc-line) {
+                brl|toc-line {
+                    display: inline;
+                }
+                /* Depends on handle-toc-line.xsl (see below) */
+                brl|otherwise {
+                    display: none;
+                }
+            }
+            &::after {
+                content: " " leader('⠄') " ";
+                hyphens: initial;
+                &::after {
+                    &::before {
+                        content: target-string(attr(href), print-page);
+                        text-transform: toc-print-page;
+                    }
+                    &::after {
+                        content: target-counter(attr(href), page);
+                        text-transform: toc-page;
+                    }
+                }
+            }
         }
     }
 }
@@ -322,6 +333,35 @@ brl|literal{
 
 brl|otherwise{
     display: none;
+}
+
+/*
+ * Depends on handle-toc-line.xsl, which wraps a brl:toc-line element
+ * in a brl:select, and in addition wraps the surrounding nodes in a
+ * brl:otherwise within the same brl:select:
+ * ~~~
+ * <h1>
+ *   blah blah blah blah blah blah blah
+ *   <brl:toc-line>blah</brl:toc-line>
+ * </h1>
+ * ~~~
+ * in the input becomes:
+ * ~~~
+ * <h1>
+ *   <brl:select>
+ *     <brl:toc-line>blah</brl:toc-line>
+ *     <brl:otherwise>
+ *       blah blah blah blah blah blah blah
+ *     </brl:otherwise>
+ *   </brl:select>
+ * </h1>
+ * ~~~
+ * before any CSS is applied.
+ */
+h1, h2, h3, h4, h5, h6 {
+    brl|toc-line ~ brl|otherwise {
+        display: inline;
+    }
 }
 
 /* Headings */
