@@ -689,7 +689,25 @@ linegroup + linegroup {
     margin-top: 1;
 }
 
-/* Depends on group-starting-with-linenum.xsl (splits p in .line spans when it contains .linenum spans) */
+/*
+ * Depends on group-starting-with-linenum.xsl, which splits a p in .line spans
+ * when it contains .linenum spans:
+ * ~~~
+ * <p>
+ *   blah blah <span class="linenum">1</span> blah blah blah <span
+ *   class="linenum">2</span> blah blah
+ * </p>
+ * ~~~
+ * in the input becomes:
+ * ~~~
+ * <p>
+ *   <span class="line">blah blah</span
+ *   <span class="line"><span class="linenum">1</span> blah blah blah</span>
+ *   <span class="line"><span class="linenum">2</span> blah blah</span>
+ * </p>
+ * ~~~
+ * before any CSS is applied.
+ */
 p:has(.line) {
     margin-left: $linenum-space;
     .line {
