@@ -16,7 +16,6 @@ import org.daisy.maven.xspec.XSpecRunner;
 import org.daisy.pipeline.braille.common.BrailleTranslator.FromStyledTextToBraille;
 import org.daisy.pipeline.braille.common.CSSStyledText;
 import static org.daisy.pipeline.braille.common.Query.util.query;
-import org.daisy.pipeline.braille.liblouis.LiblouisTranslator;
 
 import static org.daisy.pipeline.pax.exam.Options.brailleModule;
 import static org.daisy.pipeline.pax.exam.Options.calabashConfigFile;
@@ -52,36 +51,16 @@ import static org.ops4j.pax.exam.CoreOptions.systemPackage;
 public class SBSTest {
 	
 	@Inject
-	private LiblouisTranslator.Provider provider;
-	
-	@Inject
 	private XSpecRunner xspecRunner;
-	
-	@Test
-	public void runXSpec() throws Exception {
-		File baseDir = new File(PathUtils.getBaseDir());
-		File testsDir = new File(baseDir, "src/test/xspec");
-		File reportsDir = new File(baseDir, "target/surefire-reports");
-		reportsDir.mkdirs();
-		TestResults result = xspecRunner.run(testsDir, reportsDir);
-		assertEquals("Number of failures and errors should be zero", 0L, result.getFailures() + result.getErrors());
-	}
-	
-	@Inject
-	private Integer2TextFactoryMakerService int2textFactory;
-	
-	// @Test // XFAIL
-	public void testInt2textFactory() throws Exception {
-		assertEquals("zwölf", int2textFactory.newInteger2Text("de").intToText(12));
-	}
 	
 	@Inject
 	private XProcSpecRunner xprocspecRunner;
 	
 	@Test
-	public void runXProcSpec() throws Exception {
+	public void runXSpecAndXProcSpec() throws Exception {
 		File baseDir = new File(PathUtils.getBaseDir());
-		Map<String,File> tests = new HashMap<String,File>();
+		File xspecTestsDir = new File(baseDir, "src/test/xspec");
+		Map<String,File> xprocspecTests = new HashMap<String,File>();
 		for (String test : new String[]{
 			"test_translator",
 			"test_dtbook-to-pef_prodnote",
@@ -92,14 +71,39 @@ public class SBSTest {
 			"test_dtbook-to-pef_titlepage",
 			"test_dtbook-to-pef_print_page_numbers"
 		    })
-		    tests.put(test, new File(baseDir, "src/test/xprocspec/" + test + ".xprocspec"));
-		boolean success = xprocspecRunner.run(tests,
-		                                      new File(baseDir, "target/xprocspec-reports"),
-		                                      new File(baseDir, "target/surefire-reports"),
-		                                      new File(baseDir, "target/xprocspec"),
-		                                      null,
-		                                      new XProcSpecRunner.Reporter.DefaultReporter());
-		assertTrue("XProcSpec tests should run with success", success);
+		    xprocspecTests.put(test, new File(baseDir, "src/test/xprocspec/" + test + ".xprocspec"));
+		boolean xspecHasFocus = xspecRunner.hasFocus(xspecTestsDir);
+		boolean xprocspecHasFocus = xprocspecRunner.hasFocus(xprocspecTests.values());
+		List<AssertionError> errors = new ArrayList<AssertionError>();
+		if (xspecHasFocus || !xprocspecHasFocus) {
+			File xspecReportsDir = new File(baseDir, "target/surefire-reports");
+			xspecReportsDir.mkdirs();
+			TestResults result = xspecRunner.run(xspecTestsDir, xspecReportsDir);
+			try {
+				assertEquals("Number of XSpec failures and errors should be zero", 0L, result.getFailures() + result.getErrors()); }
+			catch (AssertionError e) {
+				errors.add(e); }}
+		if (xprocspecHasFocus || !xspecHasFocus) {
+			boolean success = xprocspecRunner.run(xprocspecTests,
+			                                      new File(baseDir, "target/xprocspec-reports"),
+			                                      new File(baseDir, "target/surefire-reports"),
+			                                      new File(baseDir, "target/xprocspec"),
+			                                      null,
+			                                      new XProcSpecRunner.Reporter.DefaultReporter());
+			try {
+				assertTrue("XProcSpec tests should run with success", success); }
+			catch (AssertionError e) {
+				errors.add(e); }}
+		for (AssertionError e : errors)
+			throw e;
+	}
+	
+	@Inject
+	private Integer2TextFactoryMakerService int2textFactory;
+	
+	// @Test // XFAIL
+	public void testInt2textFactory() throws Exception {
+		assertEquals("zwölf", int2textFactory.newInteger2Text("de").intToText(12));
 	}
 	
 	@Configuration
