@@ -612,6 +612,21 @@ p {
     margin-top:1;
 }
 
+p.precedingseparator {
+    $separator-width: 6;
+    text-indent: 0;
+    &::before {
+        content: "\A"                                            /* empty line */
+                 repeat(" ", ($page-width - $separator-width)/2) /* centering */
+                 repeat("⠒", $separator-width) "\A"              /* separator */
+                 "\A"                                            /* empty line */
+                 "  ";                                           /* text indent */
+        white-space: pre-line;
+        text-transform: none;
+        hyphens: initial;
+    }
+}
+
 .noindent {
     display: block;
     text-indent: 0;
