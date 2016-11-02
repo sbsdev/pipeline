@@ -52,7 +52,8 @@
 	content: "Inhaltsverzeichnis";
     }
     @bottom-right {
-	content: "⠘" counter(page, roman);
+	content: counter(page, upper-roman);
+	text-transform: roman-num;
     }
 }
 

@@ -365,11 +365,11 @@
     </x:call>
     <x:scenario label="single-volume">
       <x:call>
-        <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/document-toc/')"/>
+        <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/toc/single-volume/')"/>
         <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
       </x:call>
       <x:context label="result">
-        <x:document type="file" base-uri="temp-dir" href="output-dir/document-toc/test_dtbook-to-pef.pef"/>
+        <x:document type="file" base-uri="temp-dir" href="output-dir/toc/single-volume/test_dtbook-to-pef.pef"/>
       </x:context>
       <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
         <x:document type="inline">
@@ -518,11 +518,11 @@
     <x:scenario label="multiple-volumes">
       <x:call>
         <x:option name="maximum-number-of-sheets" select="3"/>
-        <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/volume-toc/')"/>
+        <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/toc/multiple-volumes/')"/>
         <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
       </x:call>
       <x:context label="result">
-        <x:document type="file" base-uri="temp-dir" href="output-dir/volume-toc/test_dtbook-to-pef.pef"/>
+        <x:document type="file" base-uri="temp-dir" href="output-dir/toc/multiple-volumes/test_dtbook-to-pef.pef"/>
       </x:context>
       <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
         <x:document type="inline">
@@ -696,6 +696,159 @@
                     <row/>
                     <row/>
                     <row>⠸⠼⠙⠢⠀⠀⠀⠀⠀⠀⠀⠇⠑⠧⠑⠇⠀⠼⠃⠀⠀⠀⠀⠀⠀⠀⠼⠉</row>
+                  </page>
+                </section>
+              </volume>
+            </body>
+          </pef>
+        </x:document>
+      </x:expect>
+    </x:scenario>
+    <x:scenario label="grade-2">
+      <x:call>
+        <x:option name="contraction-grade" select="2"/>
+        <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/toc/grade-2/')"/>
+        <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+      </x:call>
+      <x:context label="result">
+        <x:document type="file" base-uri="temp-dir" href="output-dir/toc/grade-2/test_dtbook-to-pef.pef"/>
+      </x:context>
+      <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+        <x:document type="inline">
+          <pef xmlns="http://www.daisy.org/ns/2008/pef" xml:lang="de" version="2008-1">
+            <head>
+              <meta xmlns:dc="http://purl.org/dc/elements/1.1/">
+                <dc:format>application/x-pef+xml</dc:format>
+              </meta>
+            </head>
+            <body>
+              <volume cols="28" rows="28" rowgap="0" duplex="true">
+                <section>
+                  <page>
+                    <row/>
+                    <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠞⠊⠞⠇⠑</row>
+                    <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤</row>
+                  </page>
+                </section>
+                <section>
+                  <page>
+                    <row/>
+                    <row>⠀⠀⠀⠀⠀⠀⠀⠀⠔⠓⠒⠞⠎⠧⠻⠵⠩⠹⠭</row>
+                    <row>⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤</row>
+                    <row/>
+                    <row>⠇⠑⠧⠽⠀⠼⠁⠀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠀⠼⠂⠁</row>
+                    <row>⠀⠀⠇⠑⠧⠽⠀⠼⠃⠀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠀⠼⠆⠁</row>
+                    <row>⠀⠀⠇⠑⠧⠽⠀⠼⠃⠀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠀⠼⠒⠃</row>
+                    <row>⠀⠀⠇⠑⠧⠽⠀⠼⠃⠀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠀⠼⠲⠉</row>
+                    <row/>
+                    <row>⠀⠀⠀⠀⠀⠀⠀⠀⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒</row>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row>⠀⠀⠀⠀⠀⠀⠀⠀⠔⠓⠒⠞⠎⠧⠻⠵⠩⠹⠭⠀⠀⠀⠀⠀⠀⠀⠘⠊</row>
+                  </page>
+                </section>
+                <section>
+                  <page>
+                    <row/>
+                    <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠇⠑⠧⠽⠀⠼⠁</row>
+                    <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤⠤⠤</row>
+                    <row/>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row/>
+                    <row/>
+                    <row>⠇⠑⠧⠽⠀⠼⠃</row>
+                    <row>⠒⠒⠒⠒⠒⠒⠒</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠸⠼⠁⠆⠀⠀⠀⠀⠀⠀⠀⠀⠇⠑⠧⠽⠀⠼⠁⠀⠀⠀⠀⠀⠀⠀⠼⠁</row>
+                  </page>
+                  <page>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row/>
+                    <row/>
+                    <row>⠇⠑⠧⠽⠀⠼⠃</row>
+                    <row>⠒⠒⠒⠒⠒⠒⠒</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                  </page>
+                  <page>
+                    <row>⠇⠑⠧⠽⠀⠼⠃</row>
+                    <row>⠒⠒⠒⠒⠒⠒⠒</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row>⠸⠼⠃⠢⠀⠀⠀⠀⠀⠀⠀⠀⠇⠑⠧⠽⠀⠼⠃⠀⠀⠀⠀⠀⠀⠀⠼⠉</row>
                   </page>
                 </section>
               </volume>
