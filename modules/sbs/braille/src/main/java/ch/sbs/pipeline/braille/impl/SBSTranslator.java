@@ -2,6 +2,7 @@ package ch.sbs.pipeline.braille.impl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import static com.google.common.collect.Iterables.size;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.transformValues;
 
 import cz.vutbr.web.css.CSSProperty;
 import cz.vutbr.web.css.Term;
@@ -47,6 +49,7 @@ import org.daisy.pipeline.braille.common.TransformProvider;
 import static org.daisy.pipeline.braille.common.TransformProvider.util.dispatch;
 import static org.daisy.pipeline.braille.common.TransformProvider.util.memoize;
 import static org.daisy.pipeline.braille.common.util.Files.unpack;
+import static org.daisy.pipeline.braille.common.util.Iterables.combinations;
 import static org.daisy.pipeline.braille.common.util.Locales.parseLocale;
 import static org.daisy.pipeline.braille.common.util.URIs.asURI;
 import org.daisy.pipeline.braille.libhyphen.LibhyphenHyphenator;
@@ -77,6 +80,9 @@ public interface SBSTranslator {
 		private Query grade0Table;
 		private Query grade1Table;
 		private Query grade2Table;
+		private Map<String,Query> grade0SubTables;
+		private Map<String,Query> grade1SubTables;
+		private Map<String,Query> grade2SubTables;
 		private URI virtualDisTable;
 		
 		@Activate
@@ -85,21 +91,33 @@ public interface SBSTranslator {
 			File f = new File(makeUnpackDir(context), "virtual.dis");
 			unpack(context.getBundleContext().getBundle().getEntry("/liblouis/virtual.dis"), f);
 			virtualDisTable = asURI(f);
-			grade0Table = mutableQuery().add("liblouis-table", virtualDisTable +
-				",http://www.sbs.ch/pipeline/liblouis/tables/" +
-				"sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti,sbs-numsign.mod," +
-				"sbs-litdigit-upper.mod,sbs-de-core.mod,sbs-de-g0-core.mod,sbs-de-hyph-none.mod,sbs-de-accents-ch.mod," +
-				"sbs-special.mod");
-			grade1Table = mutableQuery().add("liblouis-table", virtualDisTable +
-				",http://www.sbs.ch/pipeline/liblouis/tables/" +
-				"sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti,sbs-numsign.mod," +
-				"sbs-litdigit-upper.mod,sbs-de-core.mod,sbs-de-g0-core.mod,sbs-de-g1-white.mod,sbs-de-g1-core.mod," +
-				"sbs-de-hyph-none.mod,sbs-de-accents-ch.mod,sbs-special.mod");
-			grade2Table = mutableQuery().add("liblouis-table", virtualDisTable +
-				",http://www.sbs.ch/pipeline/liblouis/tables/" +
-				"sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti,sbs-de-letsign.mod," +
-				"sbs-numsign.mod,sbs-litdigit-upper.mod,sbs-de-core.mod,sbs-de-g2-white.mod,sbs-de-g2-core.mod," +
-				"sbs-de-hyph-none.mod,sbs-de-accents-ch.mod,sbs-special.mod");
+			grade0Table = liblouisTable("sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti," + // no sbs-whitespace.mod
+			                            "sbs-numsign.mod,sbs-litdigit-upper.mod,sbs-de-core.mod,sbs-de-g0-core.mod," +
+			                            "sbs-de-hyph-none.mod,sbs-de-accents-ch.mod,sbs-special.mod");
+			grade1Table = liblouisTable("sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti," + // no sbs-whitespace.mod
+			                            "sbs-numsign.mod,sbs-litdigit-upper.mod,sbs-de-core.mod,sbs-de-g0-core.mod," +
+			                            "sbs-de-g1-white.mod,sbs-de-g1-core.mod,sbs-de-hyph-none.mod,sbs-de-accents-ch.mod," +
+			                            "sbs-special.mod");
+			grade2Table = liblouisTable("sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti," + // no sbs-whitespace.mod
+			                            "sbs-de-letsign.mod,sbs-numsign.mod,sbs-litdigit-upper.mod,sbs-de-core.mod," +
+			                            "sbs-de-g2-white.mod,sbs-de-g2-core.mod,sbs-de-hyph-none.mod,sbs-de-accents-ch.mod," +
+			                            "sbs-special.mod");
+			Query romanNumberTable = liblouisTable("sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti," + // no sbs-whitespace.mod
+			                                       "sbs-numsign.mod,sbs-litdigit-upper.mod,sbs-de-core.mod,sbs-de-g0-core.mod," +
+			                                       "sbs-de-hyph-none.mod,sbs-de-accents-ch.mod,sbs-special.mod");
+			grade0SubTables = new HashMap<String,Query>(); {
+				grade0SubTables.put("roman-num", romanNumberTable);
+			}
+			grade1SubTables = new HashMap<String,Query>(); {
+				grade1SubTables.put("roman-num", romanNumberTable);
+			}
+			grade2SubTables = new HashMap<String,Query>(); {
+				grade2SubTables.put("roman-num", romanNumberTable);
+			}
+		}
+		
+		private Query liblouisTable(String table) {
+			return mutableQuery().add("liblouis-table", virtualDisTable + ",http://www.sbs.ch/pipeline/liblouis/tables/" + table);
 		}
 		
 		private final static Query hyphenTable = mutableQuery().add("libhyphen-table", "http://www.sbs.ch/pipeline/hyphen/hyph_de_DE.dic");
@@ -154,9 +172,7 @@ public interface SBSTranslator {
 					else if (q.containsKey("liblouis-table")) {
 						
 						// assumed to be coming from the XProc implementation
-						Query liblouisTable = mutableQuery().add("liblouis-table",
-								virtualDisTable + ",http://www.sbs.ch/pipeline/liblouis/tables/" +
-								q.removeOnly("liblouis-table").getValue().get());
+						Query liblouisTable = liblouisTable(q.removeOnly("liblouis-table").getValue().get());
 						MutableQuery translatorQuery = mutableQuery(liblouisTable);
 						if (q.containsKey("hyphenator")) {
 							translatorQuery.add(q.removeOnly("hyphenator"));
@@ -172,7 +188,7 @@ public interface SBSTranslator {
 		}
 		
 		private Iterable<BrailleTranslator> getImpl(Query liblouisTranslatorQuery) {
-			return Iterables.transform(
+			return transform(
 				logSelect(liblouisTranslatorQuery, liblouisTranslatorProvider),
 				new Function<LiblouisTranslator,BrailleTranslator>() {
 					public BrailleTranslator _apply(LiblouisTranslator translator) {
@@ -180,32 +196,55 @@ public interface SBSTranslator {
 		}
 		
 		private Iterable<BrailleTranslator> getImpl(int grade, Query hyphenTable) {
-			return getImpl(grade, grade == 2 ? grade2Table : grade == 1 ? grade1Table : grade0Table, hyphenTable);
+			return getImpl(grade,
+			               grade == 2 ? grade2Table : grade == 1 ? grade1Table : grade0Table,
+			               grade == 2 ? grade2SubTables : grade == 1 ? grade1SubTables : grade0SubTables,
+			               hyphenTable);
 		}
 		
 		private Iterable<BrailleTranslator> getImpl(Query liblouisTable, Query hyphenTable) {
-			return getImpl(null, liblouisTable, hyphenTable);
+			return getImpl(null, liblouisTable, Collections.<String,Query>emptyMap(), hyphenTable);
 		}
 		
-		private Iterable<BrailleTranslator> getImpl(final Integer grade, final Query liblouisTable, Query hyphenTable) {
+		private Iterable<BrailleTranslator> getImpl(final Integer grade,
+		                                            final Query mainLiblouisTable,
+		                                            final Map<String,Query> subLiblouisTables,
+		                                            Query hyphenTable) {
 			return concat(
 				transform(
 					logSelect(hyphenTable, libhyphenHyphenatorProvider),
 					new Function<LibhyphenHyphenator,Iterable<BrailleTranslator>>() {
 						public Iterable<BrailleTranslator> _apply(final LibhyphenHyphenator h) {
-							return getImpl(grade, liblouisTable, h); }}));
+							return getImpl(grade, mainLiblouisTable, subLiblouisTables, h); }}));
 		}
 		
-		private Iterable<BrailleTranslator> getImpl(final Integer grade, final Query liblouisTable, Hyphenator hyphenator) {
+		private Iterable<BrailleTranslator> getImpl(final Integer grade,
+		                                            Query mainLiblouisTable,
+		                                            Map<String,Query> subLiblouisTables,
+		                                            Hyphenator hyphenator) {
 			final Query hyphenatorQuery = mutableQuery().add("hyphenator", hyphenator.getIdentifier());
-			Query translatorQuery = mutableQuery(liblouisTable).addAll(hyphenatorQuery);
-			return Iterables.transform(
-				logSelect(translatorQuery, liblouisTranslatorProvider),
-				new Function<LiblouisTranslator,BrailleTranslator>() {
-					public BrailleTranslator _apply(LiblouisTranslator translator) {
-						return __apply(logCreate(grade == null ?
-						                         new TransformImpl(translator) :
-						                         new TransformImpl(grade, translator, hyphenatorQuery.toString()))); }});
+			Query mainTranslatorQuery = mutableQuery(mainLiblouisTable).addAll(hyphenatorQuery);
+			final Iterable<LiblouisTranslator> mainTranslator = logSelect(mainTranslatorQuery, liblouisTranslatorProvider);
+			return concat(
+				transform(
+					combinations( // TODO: AbstractTransformProvider.util.Iterables.combinations
+						transformValues( // TODO: AbstractTransformProvider.util.Iterables.transformValues
+							subLiblouisTables,
+							new com.google.common.base.Function<Query,java.lang.Iterable<LiblouisTranslator>>() {
+								public java.lang.Iterable<LiblouisTranslator> apply(Query liblouisTable) {
+									return logSelect(mutableQuery(liblouisTable).addAll(hyphenatorQuery), liblouisTranslatorProvider).apply(logger); }})),
+					new Function<Map<String,LiblouisTranslator>,Iterable<BrailleTranslator>>() {
+						public Iterable<BrailleTranslator> _apply(final Map<String,LiblouisTranslator> subTranslators) {
+							return transform(
+								mainTranslator,
+								new Function<LiblouisTranslator,BrailleTranslator>() {
+									public BrailleTranslator _apply(LiblouisTranslator translator) {
+										return __apply(logCreate(grade == null ?
+										                         new TransformImpl(translator) :
+										                         new TransformImpl(grade,
+										                                           translator,
+										                                           subTranslators,
+										                                           hyphenatorQuery.toString()))); }}); }}));
 		}
 		
 		private final static Pattern PRINT_PAGE_NUMBER = Pattern.compile("(?<first>[0-9]+)?(?:/(?<last>[0-9]+))?");
@@ -220,23 +259,33 @@ public interface SBSTranslator {
 			private final XProc xproc;
 			private final Integer grade;
 			private final FromStyledTextToBraille translator;
+			private final FromStyledTextToBraille romanNumberTranslator;
 			private final String liblouisTable;
 			
 			private TransformImpl(LiblouisTranslator translator) {
 				this.xproc = null;
 				this.grade = null;
 				this.translator = translator.fromStyledTextToBraille();
+				this.romanNumberTranslator = this.translator;
 				this.liblouisTable = translator.asLiblouisTable().toString();
 			}
 			
-			private TransformImpl(int grade, LiblouisTranslator translator, String hyphenatorQuery) {
+			private TransformImpl(int grade,
+			                      LiblouisTranslator mainTranslator,
+			                      Map<String,LiblouisTranslator> subTranslators,
+			                      String hyphenatorQuery) {
 				Map<String,String> options = ImmutableMap.of(
 					"contraction-grade", ""+grade,
 					"text-transform-query-base", "(input:text-css)(output:braille)(translator:sbs)" + hyphenatorQuery);
 				this.xproc = new XProc(href, null, options);
 				this.grade = grade;
-				this.translator = translator.fromStyledTextToBraille();
-				this.liblouisTable = translator.asLiblouisTable().toString();
+				this.translator = mainTranslator.fromStyledTextToBraille();
+				this.romanNumberTranslator = (
+					subTranslators.containsKey("roman-num") ?
+					subTranslators.get("roman-num") :
+					mainTranslator
+				).fromStyledTextToBraille();
+				this.liblouisTable = mainTranslator.asLiblouisTable().toString();
 			}
 			
 			@Override
@@ -296,7 +345,10 @@ public interface SBSTranslator {
 											return translateVolumesCount(s.getText()); }
 										else if (tt.equals("linenum")) {
 											failIfOtherStyleAttached(style, values);
-											return Optional.of(translateLineNumber(s.getText())).asSet(); }}}}}}
+											return Optional.of(translateLineNumber(s.getText())).asSet(); }
+										else if (tt.equals("roman-num")) {
+											failIfOtherStyleAttached(style, values);
+											return translateRomanNumber(s.getText()); }}}}}}
 					return translator.transform(styledText);
 				}
 			};
@@ -452,6 +504,13 @@ public interface SBSTranslator {
 					b.insert(0, table[number % 10]);
 					number = number / 10; }
 				return b.toString();
+			}
+			
+			private java.lang.Iterable<String> translateRomanNumber(String number) {
+				if (Character.isUpperCase(number.charAt(0))) // we assume that if the first char is uppercase the rest is also uppercase
+					return romanNumberTranslator.transform(Optional.of(new CSSStyledText("\u2566" + number)).asSet());
+				else // presumably the roman number is in lower case
+					return romanNumberTranslator.transform(Optional.of(new CSSStyledText("\u2569" + number)).asSet());
 			}
 		}
 		
