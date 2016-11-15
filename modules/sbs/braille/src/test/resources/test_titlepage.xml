@@ -26,64 +26,6 @@
         <frontmatter>
             <doctitle>Titel</doctitle>
             <docauthor>Autor</docauthor>
-            <level1 class="titlepage">
-                <level2>
-                    <p>Untertitel / Roman / ...</p>
-                    <p class="sourcePublisher">Originalverlag</p>
-                </level2>
-                <level2>
-                    <p>Impressum</p>
-                    <p>Bla bla bla bla bla bla bla bla bla ...</p>
-                </level2>
-            </level1>
-            <level1>
-                <level2>
-                    <h2>Klappentext 1</h2>
-                    <p>Bla bla bla bla bla bla bla bla bla ...</p>
-                </level2>
-                <level2>
-                    <h2>Klappentext 2</h2>
-                    <p>Bla bla bla bla bla bla bla bla bla ...</p>
-                </level2>
-                <level2>
-                    <h2>Zum Autor</h2>
-                    <p>Bla bla bla bla bla bla bla bla bla ...</p>
-                </level2>
-            </level1>
-            <level1 class="toc">
-                <list type="pl">
-                    <li><lic/></li>
-                </list>
-            </level1>
         </frontmatter>
-        <bodymatter>
-            <level1> 
-                <pagenum id="page-7" page="normal">7</pagenum>
-                <h1>Kapitel 1</h1>
-                <p>Bla bla bla bla bla bla bla bla bla ...</p>
-                <pagenum id="page-8" page="normal">8</pagenum>
-            </level1>
-            <level1> 
-                <pagenum id="page-9" page="normal">9</pagenum>
-                <h1>Kapitel 2</h1>
-                <p>Bla bla bla bla bla bla bla bla bla ...</p>
-                <pagenum id="page-10" page="normal">10</pagenum>
-            </level1>
-            <brl:volume brl:grade="0"/>
-            <brl:volume brl:grade="1"/>
-            <brl:volume brl:grade="2"/>
-            <level1> 
-                <pagenum id="page-11" page="normal">11</pagenum>
-                <h1>Kapitel 3</h1>
-                <p>Bla bla bla bla bla bla bla bla bla ...</p>
-                <pagenum id="page-12" page="normal">12</pagenum>
-            </level1>
-            <level1> 
-                <pagenum id="page-13" page="normal">13</pagenum>
-                <h1>Kapitel 4</h1>
-                <p>Bla bla bla bla bla bla bla bla bla ...</p>
-                <pagenum id="page-14" page="normal">14</pagenum>
-            </level1>
-        </bodymatter>
     </book>
 </dtbook>
