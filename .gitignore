@@ -5,6 +5,8 @@
 .gradle-to-test
 .maven-effective-pom.xml
 .maven-snapshot-dependencies
+.maven-test
+.maven-test-dependents
 .maven-to-install
 .maven-to-test
 .maven-to-test-dependents
