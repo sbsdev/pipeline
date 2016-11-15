@@ -633,7 +633,7 @@ frontmatter > #cover-recto > .series-ppp {
 frontmatter > #cover-verso > .series-ppp {
     display: block;
     text-indent: 0;
-    -obfl-vertical-position:19;
+    -obfl-vertical-position:18;
 }
 
 frontmatter > #cover-recto > .series-sjw {
@@ -648,7 +648,7 @@ frontmatter > #cover-recto > .series-sjw {
 frontmatter > level1 > .how-many-volumes {
     display: block;
     text-indent: 0;
-    margin-top: 4;
+    -obfl-vertical-position:16;
 }
 
 frontmatter > level1 > .which-volume {
@@ -657,7 +657,8 @@ frontmatter > level1 > .which-volume {
 
 frontmatter > #cover-recto > .publisher {
     display: block;
-    -obfl-vertical-position:24;
+    -obfl-vertical-align: before;
+    -obfl-vertical-position: 27;
 }
 
 #cover-verso {
@@ -681,14 +682,16 @@ frontmatter > #cover-recto > .publisher {
 #publisher-blurb {
     display: block;
     text-indent: 0;
-    -obfl-vertical-position:21;
+    -obfl-vertical-align: before;
+    /* FIXME: This seems weird: We really want the vertical position to be 25, */
+    /* as we have another two lines below */
+    -obfl-vertical-position: 27;
 }
 
 #cover-year {
     display: block;
     text-indent: 0;
     margin-top: 1;
-    padding-bottom: 1;
 }
 
 frontmatter > .titlepage {
