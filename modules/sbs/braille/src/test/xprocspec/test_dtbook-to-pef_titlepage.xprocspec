@@ -4,8 +4,7 @@
                script="http://www.sbs.ch/pipeline/modules/braille/dtbook-to-pef.xpl">
 
   <!-- a few smaller layout tweaks do not work yet -->
-  <x:scenario label="titlepage_normal_g0"
-	      xfail="true">
+  <x:scenario label="titlepage_normal_g0">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_titlepage.xml"/>
@@ -22,8 +21,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_normal_g1"
-	      xfail="true">
+  <x:scenario label="titlepage_normal_g1">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_titlepage.xml"/>
@@ -40,8 +38,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_normal_g2"
-	      xfail="true">
+  <x:scenario label="titlepage_normal_g2">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_titlepage.xml"/>
@@ -58,108 +55,102 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_rucksack_g0"
-	      xfail="true">
+  <x:scenario label="titlepage_rucksack_g0">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
-        <x:document type="file" href="../resources/test_titlepage.xml"/>
+        <x:document type="file" href="../resources/test_titlepage_rucksack.xml"/>
       </x:input>
       <x:option name="contraction-grade" select="0"/>
       <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_titlepage_rucksack_g0/')"/>
       <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
     </x:call>
     <x:context label="result">
-      <x:document type="file" base-uri="temp-dir" href="output-dir/test_titlepage_rucksack_g0/test_titlepage.pef"/>
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_titlepage_rucksack_g0/test_titlepage_rucksack.pef"/>
     </x:context>
     <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
       <x:document type="file" href="../resources/test_titlepage_rucksack_g0/output_expected/ruck_g0.pef"/>
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_rucksack_g1"
-	      xfail="true">
+  <x:scenario label="titlepage_rucksack_g1">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
-        <x:document type="file" href="../resources/test_titlepage.xml"/>
+        <x:document type="file" href="../resources/test_titlepage_rucksack.xml"/>
       </x:input>
       <x:option name="contraction-grade" select="1"/>
       <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_titlepage_rucksack_g1/')"/>
       <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
     </x:call>
     <x:context label="result">
-      <x:document type="file" base-uri="temp-dir" href="output-dir/test_titlepage_rucksack_g1/test_titlepage.pef"/>
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_titlepage_rucksack_g1/test_titlepage_rucksack.pef"/>
     </x:context>
     <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
       <x:document type="file" href="../resources/test_titlepage_rucksack_g1/output_expected/ruck_g1.pef"/>
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_rucksack_g2"
-	      xfail="true">
+  <x:scenario label="titlepage_rucksack_g2">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
-        <x:document type="file" href="../resources/test_titlepage.xml"/>
+        <x:document type="file" href="../resources/test_titlepage_rucksack.xml"/>
       </x:input>
       <x:option name="contraction-grade" select="2"/>
       <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_titlepage_rucksack_g2/')"/>
       <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
     </x:call>
     <x:context label="result">
-      <x:document type="file" base-uri="temp-dir" href="output-dir/test_titlepage_rucksack_g2/test_titlepage.pef"/>
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_titlepage_rucksack_g2/test_titlepage_rucksack.pef"/>
     </x:context>
     <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
       <x:document type="file" href="../resources/test_titlepage_rucksack_g2/output_expected/ruck_g2.pef"/>
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_sjw_g0"
-	      xfail="true">
+  <x:scenario label="titlepage_sjw_g0">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
-        <x:document type="file" href="../resources/test_titlepage.xml"/>
+        <x:document type="file" href="../resources/test_titlepage_sjw.xml"/>
       </x:input>
       <x:option name="contraction-grade" select="0"/>
       <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_titlepage_sjw_g0/')"/>
       <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
     </x:call>
     <x:context label="result">
-      <x:document type="file" base-uri="temp-dir" href="output-dir/test_titlepage_sjw_g0/test_titlepage.pef"/>
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_titlepage_sjw_g0/test_titlepage_sjw.pef"/>
     </x:context>
     <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
       <x:document type="file" href="../resources/test_titlepage_sjw_g0/output_expected/sjw_g0.pef"/>
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_sjw_g1"
-	      xfail="true">
+  <x:scenario label="titlepage_sjw_g1">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
-        <x:document type="file" href="../resources/test_titlepage.xml"/>
+        <x:document type="file" href="../resources/test_titlepage_sjw.xml"/>
       </x:input>
       <x:option name="contraction-grade" select="1"/>
       <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_titlepage_sjw_g1/')"/>
       <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
     </x:call>
     <x:context label="result">
-      <x:document type="file" base-uri="temp-dir" href="output-dir/test_titlepage_sjw_g1/test_titlepage.pef"/>
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_titlepage_sjw_g1/test_titlepage_sjw.pef"/>
     </x:context>
     <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
       <x:document type="file" href="../resources/test_titlepage_sjw_g1/output_expected/sjw_g1.pef"/>
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_sjw_g2"
-	      xfail="true">
+  <x:scenario label="titlepage_sjw_g2">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
-        <x:document type="file" href="../resources/test_titlepage.xml"/>
+        <x:document type="file" href="../resources/test_titlepage_sjw.xml"/>
       </x:input>
       <x:option name="contraction-grade" select="2"/>
       <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_titlepage_sjw_g2/')"/>
       <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
     </x:call>
     <x:context label="result">
-      <x:document type="file" base-uri="temp-dir" href="output-dir/test_titlepage_sjw_g2/test_titlepage.pef"/>
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_titlepage_sjw_g2/test_titlepage_sjw.pef"/>
     </x:context>
     <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
       <x:document type="file" href="../resources/test_titlepage_sjw_g2/output_expected/sjw_g2.pef"/>
