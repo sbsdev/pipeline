@@ -21,7 +21,7 @@
   </xsl:variable>
 
   <xsl:variable name="series-number"
-		select="//meta[@name='prod:seriesNumberprod:series']/@content"/>
+		select="//meta[@name='prod:seriesNumber']/@content"/>
 
   <xsl:template match="frontmatter/docauthor">
     <xsl:copy>
@@ -55,7 +55,7 @@
 
       <!-- Series -->
       <xsl:if test="$series = 'sjw'">
-	<p class="series-sjw">SJW-Heft NR. <xsl:value-of select="$series-number"/></p>
+	<p class="series-sjw">SJW-Heft NR.<xsl:value-of select="$series-number"/></p>
       </xsl:if>
 
       <!-- Volumes -->
@@ -71,7 +71,7 @@
       
       <!-- Series -->
       <xsl:if test="$series = 'rucksack'">
-	    <p class="series-ppp">Rucksackbuch Nr. <xsl:value-of select="$series-number"/></p>
+	    <p class="series-ppp">Rucksackbuch Nr.<xsl:value-of select="$series-number"/></p>
       </xsl:if>
 
       <!-- Publisher -->
@@ -92,22 +92,24 @@
       <xsl:choose>
 	<xsl:when test="$series = 'sjw'">
 	  <p id="sjw-blurb">Brailleausgabe mit freundlicher Genehmigung des
-	  <abbr>SJW</abbr> Schweizerischen Jugend-Schriftenwerks, Zürich. Wir
+	  <abbr>SJW</abbr> Schweizerischen Jugendschriftenwerks, Zürich. Wir
 	  danken dem <abbr>SJW</abbr>-Verlag für die Bereitstellung der
 	  Daten.</p>
 	</xsl:when>
 	<xsl:otherwise>
-	  <p id="copyright-blurb">Dieses Braillebuch ist die ausschliesslich für
-	  die Nutzung durch Seh- und Lesebehinderte Menschen bestimmte
-	  zugängliche Version eines urheberrechtlich geschützten Werks. Sie
-	  können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es
-	  aber nicht weiter verbreiten oder öffentlich zugänglich machen</p>
+	  <p id="copyright-blurb">Dieses Braillebuch ist die
+	  ausschließlich für die Nutzung durch Seh- und
+	  Lesebehinderte Menschen bestimmte zugängliche Version eines
+	  urheberrechtlich geschützten Werks.
+	  <brl:v-form>Sie</brl:v-form> können es im Rahmen des
+	  Urheberrechts persönlich nutzen, dürfen es aber nicht weiter
+	  verbreiten oder öffentlich zugänglich machen.</p>
 	</xsl:otherwise>
       </xsl:choose>
 
       <!-- Series -->
       <xsl:if test="$series = 'rucksack'">
-	    <p class="series-ppp">Rucksackbuch Nr. <xsl:value-of select="$series-number"/></p>
+	    <p class="series-ppp">Rucksackbuch Nr.<xsl:value-of select="$series-number"/></p>
       </xsl:if>
 
       <!-- Publisher long -->
@@ -123,7 +125,7 @@
 	  <brl:computer>www.sbs.ch</brl:computer></p>
 	</xsl:when>
 	<xsl:otherwise>
-	  <p id="publisher-blurb"> <br/>Verlag, Satz und Druck<br/>
+	  <p id="publisher-blurb">Verlag, Satz und Druck<br/>
 	  <abbr>SBS</abbr> Schweizerische Bibliothek<br/> für Blinde, Seh- und Lesebehinderte, Zürich<br/>
 	  <brl:computer>www.sbs.ch</brl:computer></p>
 	</xsl:otherwise>
