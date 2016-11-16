@@ -610,20 +610,6 @@ frontmatter level2:first-child h2 {
                            p#cover-author, p.series, p.how-many-volumes, etc.) */
 }
 
-#number-of-volumes::after {
-    content: -obfl-evaluate('(round $volumes)');
-    text-transform: volumes;
-}
-
-#number-of-volumes-label::after {
-    content: -obfl-evaluate('(if (> $volumes 1) "Braillebänden" "Brailleband")');
-}
-
-#current-volume::after {
-    content: -obfl-evaluate('(round $volume)');
-    text-transform: volume;
-}
-
 frontmatter > #cover-recto > .series-ppp {
     display: block;
     text-indent: 0;
@@ -642,16 +628,33 @@ frontmatter > #cover-recto > .series-sjw {
     -obfl-vertical-position:12;
 }
 
-/* FIXME: this block ("In ... Braillebänden") and the next ("Erster Band")
- * should only be displayed when the book has more than 1 volumes.
- * The same applies to "Erster Band" in the TOC */
+/* Only display this block ("In ... Braillebänden") and the next
+   ("Erster Band") when the book has more than 1 volumes.
+   The same applies to "Erster Band" in the TOC */
 frontmatter > level1 > .how-many-volumes {
+    &::before {
+	content: -obfl-evaluate('(if (= $volumes 1) "" "In ")');
+    }
+    &::after {
+	&::before {
+	    content: -obfl-evaluate('(if (= $volumes 1) "" (round $volumes))');
+	    text-transform: volumes;
+	}
+	content: -obfl-evaluate('(if (= $volumes 1) "" " Braillebänden")');;
+    }
     display: block;
     text-indent: 0;
     -obfl-vertical-position:16;
 }
 
 frontmatter > level1 > .which-volume {
+    &::after {
+	&::before {
+	    content: -obfl-evaluate('(if (= $volumes 1) "" (round $volume))');
+	    text-transform: volume;
+	}
+	content: -obfl-evaluate('(if (= $volumes 1) "" " Band")');;
+    }
     display: block;
 }
 
