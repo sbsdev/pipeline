@@ -90,7 +90,7 @@
     <level1 id="cover-verso">
       <xsl:choose>
 	<xsl:when test="$series = 'sjw'">
-	  <p id="sjw-blurb">Brailleausgabe mit freundlicher Genehmigung des
+	  <p id="sjw-blurb">Brailleausgabe mit <span style="hyphens:manual">freund­licher</span> Genehmigung des
 	  <abbr>SJW</abbr> Schweizerischen Jugendschriftenwerks, Zürich. Wir
 	  danken dem <abbr>SJW</abbr>-Verlag für die Bereitstellung der
 	  Daten.</p>
