@@ -60,13 +60,12 @@
 
       <!-- Volumes -->
       <!-- How many Volumes -->
-      <p class="how-many-volumes">In <span id="number-of-volumes"/> <span id="number-of-volumes-label"/></p>
+      <p class="how-many-volumes"></p>
 
       <!-- Current Volume -->
       <p class="which-volume">
 	<!-- FIXME: if there are more than 12 volumes we want just the -->
 	<!-- number but downshifted as with ordinals -->
-	<span id="current-volume"/> Band
       </p>
       
       <!-- Series -->
