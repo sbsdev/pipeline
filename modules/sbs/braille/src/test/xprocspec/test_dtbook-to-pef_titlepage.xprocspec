@@ -88,7 +88,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_rucksack_g2">
+  <x:scenario label="titlepage_rucksack_g2" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_titlepages/rucksack.xml"/>
@@ -105,7 +105,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_sjw_g0">
+  <x:scenario label="titlepage_sjw_g0" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_titlepages/sjw.xml"/>
