@@ -258,6 +258,23 @@
     </x:expect>
   </x:scenario>
 
+  <x:scenario label="titlepage_sjw_g0_multi_volume">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="file" href="../resources/test_titlepages_multi_volume/sjw.xml"/>
+      </x:input>
+      <x:option name="contraction-grade" select="0"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/multi_volume_sjw_g0/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/multi_volume_sjw_g0/sjw.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_titlepages_multi_volume/sjw_g0.pef"/>
+    </x:expect>
+  </x:scenario>
+
   <x:scenario label="br-in-doctitle">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
