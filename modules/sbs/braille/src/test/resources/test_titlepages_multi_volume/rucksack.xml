@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dtbook version="2005-3-sbs-full" xml:lang="de" xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
+    xmlns="http://www.daisy.org/z3986/2005/dtbook/">
+    <head>
+        <meta name="dc:Title" content="Ein Titel"/>
+        <meta name="dc:Creator" content="Herr Niemand"/>
+        <meta name="dc:Subject" content=""/>
+        <meta name="dc:Description" content=""/>
+        <meta name="dc:Publisher"
+            content="Swiss Library for the Blind, Visually Impaired and Print Disabled"/>
+        <meta name="dc:Date" content="2012-01-05"/>
+        <meta name="dc:Type" content="Text"/>
+        <meta name="dc:Format" content="ANSI/NISO Z39.86-2005"/>
+        <meta name="dc:Identifier" content="ch-sbs-0d63eb29-566a-4061-a8bf-b279c69699ed"/>
+        <meta name="dc:Source" content=""/>
+        <meta name="dc:Language" content="de"/>
+        <meta name="dc:Rights" content=""/>
+        <meta name="dtb:uid" content="ch-sbs-0d63eb29-566a-4061-a8bf-b279c69699ed"/>
+        <meta name="dtb:sourceEdition" content=""/>
+        <meta name="dtb:sourcePublisher" content=""/>
+        <meta name="dtb:sourceRights" content=""/>
+        <meta name="prod:series" content="PPP"/>
+        <meta name="prod:seriesNumber" content="16"/>
+    </head>
+    <book>
+        <frontmatter>
+            <doctitle>Titel</doctitle>
+            <docauthor>Autor</docauthor>
+        </frontmatter>
+	<bodymatter>
+	  <level1><p/></level1>
+	  <brl:volume brl:grade="0"/>
+	  <brl:volume brl:grade="1"/>
+	  <brl:volume brl:grade="2"/>
+	  <level1><p/></level1>
+	</bodymatter>
+    </book>
+</dtbook>
