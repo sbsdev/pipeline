@@ -167,12 +167,6 @@
                 <doctitle>Titel<br/>titel titel</doctitle>
                 <docauthor>Autor</docauthor>
               </frontmatter>
-              <bodymatter>
-                <level1>
-                  <h1>Kapitel 1</h1>
-                  <p>Bla bla bla bla bla bla bla bla bla ...</p>
-                </level1>
-              </bodymatter>
             </book>
           </dtbook>
         </x:document>
@@ -192,6 +186,8 @@
           <head>
             <meta xmlns:dc="http://purl.org/dc/elements/1.1/">
               <dc:format>application/x-pef+xml</dc:format>
+              <dc:identifier>identifier?</dc:identifier>
+              <dc:date>2016-11-15</dc:date>
             </meta>
           </head>
           <body>
@@ -213,6 +209,7 @@
                   <row/>
                   <row/>
                   <row/>
+                  <row/>
                   <row>⠀⠀⠀⠀⠀⠀⠀⠔⠀⠫⠷⠀⠃⠗⠁⠊⠟⠑⠃⠖⠙</row>
                   <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⠾⠻⠀⠃⠖⠙</row>
                   <row/>
@@ -230,11 +227,10 @@
                   <row>⠬⠿⠀⠃⠗⠁⠊⠟⠑⠃⠥⠹⠀⠾⠀⠬⠀⠌⠱⠮⠸⠀⠋⠀⠬</row>
                   <row>⠝⠵⠥⠀⠹⠀⠎⠶⠤⠀⠥⠀⠇⠿⠑⠆⠓⠔⠙⠻⠦⠀⠍⠉⠱⠉</row>
                   <row>⠆⠾⠊⠭⠦⠀⠂⠵⠛⠜⠝⠛⠸⠑⠀⠧⠻⠎⠚⠀⠫⠿⠀⠥⠗⠓⠑⠤</row>
-                  <row>⠃⠻⠗⠞⠸⠀⠯⠱⠳⠞⠵⠞⠉⠀⠺⠻⠅⠎⠄⠀⠎⠀⠂⠅⠉⠀⠿</row>
+                  <row>⠃⠻⠗⠞⠸⠀⠯⠱⠳⠞⠵⠞⠉⠀⠺⠻⠅⠎⠄⠀⠨⠎⠀⠂⠅⠉⠀⠿</row>
                   <row>⠤⠀⠗⠁⠓⠍⠉⠀⠄⠀⠥⠗⠓⠑⠃⠻⠗⠞⠎⠀⠐⠏⠝⠸</row>
                   <row>⠝⠵⠉⠂⠀⠂⠙⠉⠀⠿⠀⠁⠀⠝⠀⠺⠞⠻⠀⠤⠃⠗⠩⠞⠉⠀⠕</row>
-                  <row>⠪⠸⠀⠂⠵⠛⠜⠝⠛⠸⠀⠍⠰⠉</row>
-                  <row/>
+                  <row>⠪⠸⠀⠂⠵⠛⠜⠝⠛⠸⠀⠍⠰⠉⠄</row>
                   <row/>
                   <row/>
                   <row/>
@@ -253,39 +249,12 @@
                   <row>⠋⠀⠃⠇⠑⠂⠀⠎⠶⠤⠀⠥⠀⠇⠿⠑⠆⠓⠔⠙⠻⠦⠂⠀⠵⠳⠗⠼</row>
                   <row>⠠⠨⠺⠺⠺⠄⠎⠃⠎⠄⠉⠓</row>
                   <row/>
-                  <row>⠘⠎⠃⠎</row>
+		  <row>⠘⠎⠃⠎⠀</row>
                 </page>
               </section>
               <section>
                 <page>
                   <row/>
-                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠅⠁⠏⠊⠞⠽⠀⠼⠁</row>
-                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤⠤⠤⠤⠤</row>
-                  <row/>
-                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
-                  <row>⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁⠀⠄⠄⠄</row>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠅⠁⠏⠊⠞⠽⠀⠼⠁⠀⠀⠀⠀⠀⠀⠀⠀⠼⠁</row>
                 </page>
               </section>
             </volume>
