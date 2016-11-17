@@ -112,6 +112,9 @@
       <!-- Make sure Rucksack series and publisher blurb are flush with the bottom of the page -->
       <div class="flush-bottom">
 	<!-- Series -->
+	<xsl:if test="$series = 'rucksack'">
+	  <p class="series-ppp">Rucksackbuch Nr.<xsl:value-of select="$series-number"/></p>
+	</xsl:if>
 
 	<!-- Publisher long -->
 	<xsl:choose>
