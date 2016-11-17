@@ -362,8 +362,8 @@
                   <row/>
                   <row/>
                   <row/>
-                  <row>⠀⠀⠀⠀⠀⠀⠀⠔⠀⠫⠷⠀⠃⠗⠁⠊⠟⠑⠃⠖⠙</row>
-                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⠾⠻⠀⠃⠖⠙</row>
+                  <row/>
+                  <row/>
                   <row/>
                   <row/>
                   <row/>
@@ -405,9 +405,7 @@
                 </page>
               </section>
               <section>
-                <page>
-                  <row/>
-                </page>
+                <page></page>
               </section>
             </volume>
           </body>
