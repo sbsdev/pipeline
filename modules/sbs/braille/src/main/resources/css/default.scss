@@ -610,16 +610,10 @@ frontmatter level2:first-child h2 {
                            p#cover-author, p.series, p.how-many-volumes, etc.) */
 }
 
-frontmatter > #cover-recto > .series-ppp {
+.series-ppp {
     display: block;
     text-indent: 0;
-    -obfl-vertical-position:22;
-}
-
-frontmatter > #cover-verso > .series-ppp {
-    display: block;
-    text-indent: 0;
-    -obfl-vertical-position:18;
+    margin-bottom:1;
 }
 
 frontmatter > #cover-recto > .series-sjw {
@@ -658,10 +652,9 @@ frontmatter > level1 > .which-volume {
     display: block;
 }
 
-frontmatter > #cover-recto > .publisher {
+.publisher {
     display: block;
-    -obfl-vertical-align: before;
-    -obfl-vertical-position: 27;
+    text-indent: 0;
 }
 
 #cover-verso {
@@ -682,12 +675,10 @@ frontmatter > #cover-recto > .publisher {
     -obfl-vertical-position:1;
 }
 
-#publisher-blurb {
+.flush-bottom {
     display: block;
     text-indent: 0;
     -obfl-vertical-align: before;
-    /* FIXME: This seems weird: We really want the vertical position to be 25, */
-    /* as we have another two lines below */
     -obfl-vertical-position: 27;
 }
 

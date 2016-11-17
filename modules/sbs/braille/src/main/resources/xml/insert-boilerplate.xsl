@@ -68,23 +68,26 @@
 	<!-- number but downshifted as with ordinals -->
       </p>
       
-      <!-- Series -->
-      <xsl:if test="$series = 'rucksack'">
-	    <p class="series-ppp">Rucksackbuch Nr.<xsl:value-of select="$series-number"/></p>
-      </xsl:if>
+      <!-- Make sure Rucksack series and publisher blurb are flush with the bottom of the page -->
+      <div class="flush-bottom">
+	<!-- Series -->
+	<xsl:if test="$series = 'rucksack'">
+	  <p class="series-ppp">Rucksackbuch Nr.<xsl:value-of select="$series-number"/></p>
+	</xsl:if>
 
-      <!-- Publisher -->
-      <xsl:choose>
-	<xsl:when test="$contraction-grade = '0'">
-	  <p class="publisher"><abbr>SBS</abbr> Schweiz. Bibliothek<br/> Für Blinde, Seh- und<br/> Lesebehinderte</p>
-	</xsl:when>
-	<xsl:when test="$contraction-grade = '1'">
-	  <p class="publisher"><abbr>SBS</abbr> Schweizerische Bibliothek<br/> Für Blinde, Seh- und<br/> Lesebehinderte</p>
-	</xsl:when>
-	<xsl:otherwise>
-	  <p class="publisher"><abbr>SBS</abbr> Schweizerische Bibliothek<br/> Für Blinde, Seh- und Lesebehinderte</p>
-	</xsl:otherwise>
-      </xsl:choose>
+	<!-- Publisher -->
+	<xsl:choose>
+	  <xsl:when test="$contraction-grade = '0'">
+	    <p class="publisher"><abbr>SBS</abbr> Schweiz. Bibliothek<br/> Für Blinde, Seh- und<br/> Lesebehinderte</p>
+	  </xsl:when>
+	  <xsl:when test="$contraction-grade = '1'">
+	    <p class="publisher"><abbr>SBS</abbr> Schweizerische Bibliothek<br/> Für Blinde, Seh- und<br/> Lesebehinderte</p>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <p class="publisher"><abbr>SBS</abbr> Schweizerische Bibliothek<br/> Für Blinde, Seh- und Lesebehinderte</p>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </div>
 
     </level1>
     <level1 id="cover-verso">
@@ -106,29 +109,29 @@
 	</xsl:otherwise>
       </xsl:choose>
 
-      <!-- Series -->
-      <xsl:if test="$series = 'rucksack'">
-	    <p class="series-ppp">Rucksackbuch Nr.<xsl:value-of select="$series-number"/></p>
-      </xsl:if>
+      <!-- Make sure Rucksack series and publisher blurb are flush with the bottom of the page -->
+      <div class="flush-bottom">
+	<!-- Series -->
 
-      <!-- Publisher long -->
-      <xsl:choose>
-	<xsl:when test="$contraction-grade = '0'">
-	  <p id="publisher-blurb">Verlag, Satz und Druck<br/>
-	  <abbr>SBS</abbr> Schweiz. Bibliothek<br/> für Blinde, Seh- und<br/> Lesebehinderte, Zürich<br/>
-	  <brl:computer>www.sbs.ch</brl:computer></p>
-	</xsl:when>
-	<xsl:when test="$contraction-grade = '1'">
-	  <p id="publisher-blurb">Verlag, Satz und Druck<br/>
-	  <abbr>SBS</abbr> Schweizerische Bibliothek<br/> für Blinde, Seh- und<br/> Lesebehinderte, Zürich<br/>
-	  <brl:computer>www.sbs.ch</brl:computer></p>
-	</xsl:when>
-	<xsl:otherwise>
-	  <p id="publisher-blurb">Verlag, Satz und Druck<br/>
-	  <abbr>SBS</abbr> Schweizerische Bibliothek<br/> für Blinde, Seh- und Lesebehinderte, Zürich<br/>
-	  <brl:computer>www.sbs.ch</brl:computer></p>
-	</xsl:otherwise>
-      </xsl:choose>
+	<!-- Publisher long -->
+	<xsl:choose>
+	  <xsl:when test="$contraction-grade = '0'">
+	    <p class="publisher">Verlag, Satz und Druck<br/>
+	    <abbr>SBS</abbr> Schweiz. Bibliothek<br/> für Blinde, Seh- und<br/> Lesebehinderte, Zürich<br/>
+	    <brl:computer>www.sbs.ch</brl:computer></p>
+	  </xsl:when>
+	  <xsl:when test="$contraction-grade = '1'">
+	    <p class="publisher">Verlag, Satz und Druck<br/>
+	    <abbr>SBS</abbr> Schweizerische Bibliothek<br/> für Blinde, Seh- und<br/> Lesebehinderte, Zürich<br/>
+	    <brl:computer>www.sbs.ch</brl:computer></p>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <p class="publisher">Verlag, Satz und Druck<br/>
+	    <abbr>SBS</abbr> Schweizerische Bibliothek<br/> für Blinde, Seh- und Lesebehinderte, Zürich<br/>
+	    <brl:computer>www.sbs.ch</brl:computer></p>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </div>
 
       <xsl:variable name="date" select="//meta[@name = 'dc:Date']/@content"/>
       <p id="cover-year"><abbr>SBS</abbr> <xsl:value-of select="format-date($date, '[Y]')"/>
