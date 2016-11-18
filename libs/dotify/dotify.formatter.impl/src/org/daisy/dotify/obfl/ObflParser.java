@@ -56,6 +56,7 @@ import org.daisy.dotify.api.formatter.MarkerIndicatorRegion;
 import org.daisy.dotify.api.formatter.MarkerReferenceField;
 import org.daisy.dotify.api.formatter.MarkerReferenceField.MarkerSearchDirection;
 import org.daisy.dotify.api.formatter.MarkerReferenceField.MarkerSearchScope;
+import org.daisy.dotify.api.formatter.NoField;
 import org.daisy.dotify.api.formatter.NumeralStyle;
 import org.daisy.dotify.api.formatter.PageAreaBuilder;
 import org.daisy.dotify.api.formatter.PageAreaProperties;
@@ -483,6 +484,9 @@ public class ObflParser extends XMLParserBase {
 			} else {
 				report(event);
 			}
+		}
+		if (compound.isEmpty()) {
+			compound.add(NoField.getInstance());
 		}
 		return compound;
 	}
