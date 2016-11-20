@@ -1,0 +1,37 @@
+@import "http://www.sbs.ch/pipeline/modules/braille/default.scss";
+
+table {
+    
+    @extend %table-reset;
+    
+    display: block;
+    render-table-by: row-group, row;
+    
+    &::list-item {
+        display: block;
+        border-top: ⠒;
+        margin-left: 0;
+        &:first-child {
+            border-top: none;
+        }
+    }
+    
+    &::table-by(row) {
+        display: block;
+        text-indent: -2;
+        margin-left: 2;
+        &::list-item {
+            &::before {
+                content: " ⠒⠒ ";
+            }
+            &:first-child::before {
+                content: none;
+            }
+        }
+    }
+    
+    caption {
+        display: block;
+        margin-bottom: 1;
+    }
+}

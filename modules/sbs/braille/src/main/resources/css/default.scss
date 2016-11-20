@@ -776,38 +776,65 @@ author, byline {
     text-align: right;
 }
 
+%table-default {
+    display: block;
+    margin-top: 1;
+    margin-bottom: 1;
+    tr {
+        display: block;
+        text-indent: -2;
+        margin-left: 2;
+    }
+    tbody, tfoot {
+        display: block;
+        border-top: ⠒;
+    }
+    td + td::before,
+    th + th::before {
+        content:" ⠒⠒ ";
+        text-transform: none;
+        hyphens: initial;
+    }
+    caption{
+        display: block;
+        margin-bottom: 1;
+    }
+}
+
 table {
-    display:block;
-    margin-top:1;
-    margin-bottom:1;
+    @extend %table-default;
 }
 
-tr {
-    display:block;
-    text-indent:-2;
-    margin-left:2;
-}
-
-tbody, tfoot {
-    display:block;
-    border-top: ⠒;
-}
-
-td + td::before, th + th::before {
-    content:" ⠒⠒ ";
-    text-transform: none;
-    hyphens: initial;
-}
-
-caption{
-    display:block;
-    margin-bottom:1;
+%table-reset {
+    display: initial;
+    margin-top: initial;
+    margin-bottom: initial;
+    tr {
+        display: initial;
+        text-indent: inherit;
+        margin-left: initial;
+    }
+    tbody, tfoot {
+        display: initial;
+        border-top: initial;
+    }
+    td + td::before,
+    th + th::before {
+        content: initial;
+        text-transform: inherit;
+        hyphens: inherit;
+    }
+    caption{
+        display: initial;
+        margin-bottom: initial;
+    }
 }
 
 imggroup > caption, imggroup > img {
     display:block;
     text-indent:-2;
     margin-left:2;
+    margin-bottom:1;
 }
 
 imggroup > prodnote {

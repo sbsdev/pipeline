@@ -115,6 +115,9 @@
                          @css:table-caption|
                          @css:table-cell"/>
     
+    <!--
+        FIXME: display-table: warning when style != default, error when unexpected elements
+    -->
     <xsl:template match="@*|
                          text()|
                          css:white-space|
@@ -144,7 +147,9 @@
     </xsl:template>
     
     <xsl:template match="@css:display" mode="display-table">
-        <xsl:message select="concat('&quot;display&quot; property on &quot;',name(parent::*),'&quot; element not supported.')"/>
+        <xsl:if test="not(.='inline')">
+            <xsl:message select="concat('&quot;display&quot; property on &quot;',name(parent::*),'&quot; element ignored.')"/>
+        </xsl:if>
     </xsl:template>
     
 </xsl:stylesheet>

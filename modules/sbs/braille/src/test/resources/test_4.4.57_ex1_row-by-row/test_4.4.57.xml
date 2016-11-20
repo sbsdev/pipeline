@@ -21,7 +21,6 @@
     <meta name="dtb:sourceRights" content=""/>
     <meta name="prod:series" content=""/>
     <meta name="prod:seriesNumber" content=""/>
-    <link rel="stylesheet" media="embossed" type="text/css" href="style.css"/>
   </head>
   <book>
     <bodymatter>
@@ -30,10 +29,10 @@
           <caption>Fünf Länder im Vergleich</caption>
           <thead>
             <tr>
-              <th>Land</th>
-              <th>Hauptstadt</th>
-              <th>Währung</th>
-              <th>Amtssprache</th>
+              <td>Land</td>
+              <td>Hauptstadt</td>
+              <td>Währung</td>
+              <td>Amtssprache</td>
             </tr>
           </thead>
           <tfoot>
@@ -71,7 +70,7 @@
             </tr>
             <tr>
               <td>Brasilien</td>
-              <td>Brasília</td>
+              <td><span brl:accents="reduced">Brasília</span></td>
               <td>Real</td>
               <td>Portugiesisch</td>
             </tr>
