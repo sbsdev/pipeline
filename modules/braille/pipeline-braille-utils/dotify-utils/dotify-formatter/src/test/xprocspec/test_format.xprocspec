@@ -2113,6 +2113,7 @@
                 <toc>
                   <entry ref="chapter_1" style="::after {
                                                   display: block;
+                                                  text-transform: auto;
                                                   content: target-text(attr(ref))
                                                            ' ⠄⠄⠄⠄⠄⠄⠄ '
                                                            target-string(attr(ref), print-page)
@@ -2120,6 +2121,7 @@
                                                            target-counter(attr(ref), page); }"/>
                   <entry ref="chapter_2" style="::after {
                                                   display: block;
+                                                  text-transform: auto;
                                                   content: target-text(attr(ref))
                                                            ' ⠄⠄⠄⠄⠄⠄ '
                                                            target-string(attr(ref), print-page)
@@ -2127,6 +2129,7 @@
                                                            target-counter(attr(ref), page); }"/>
                   <entry ref="chapter_3" style="::after {
                                                   display: block;
+                                                  text-transform: auto;
                                                   content: target-text(attr(ref))
                                                            ' ⠄⠄⠄⠄ '
                                                            target-string(attr(ref), print-page)
@@ -2169,19 +2172,19 @@
             </default-template>
           </layout-master>
           <sequence master="body">
-            <block>
+            <block translate="">
               ⠿
               ⠄⠄⠄⠄⠄⠄⠄
               ⠤
               <page-number ref-id="chapter_1" number-format="default"/>
             </block>
-            <block>
+            <block translate="">
               ⠿⠿
               ⠄⠄⠄⠄⠄⠄
               ⠤
               <page-number ref-id="chapter_2" number-format="default"/>
             </block>
-            <block>
+            <block translate="">
               ⠿⠿⠿
               ⠄⠄⠄⠄
               ⠤⠤
@@ -2295,11 +2298,13 @@
                 <toc>
                   <entry ref="chapter_1" style="::after {
                                                   display: block;
+                                                  text-transform: auto;
                                                   content: target-text(attr(ref))
                                                            ' ⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄ '
                                                            target-counter(attr(ref), page); }"/>
                   <entry ref="chapter_2" style="::after {
                                                   display: block;
+                                                  text-transform: auto;
                                                   content: target-text(attr(ref))
                                                            ' ⠄⠄⠄⠄⠄⠄⠄⠄⠄ '
                                                            target-counter(attr(ref), page); }"/>
@@ -2316,16 +2321,19 @@
                 <index>
                   <entry ref="x" style="::after {
                                           display: block;
+                                          text-transform: auto;
                                           content: target-text(attr(ref))
                                                    ' ⠄⠄⠄⠄⠄⠄⠄⠄ '
                                                    target-counter(attr(ref), page); }"/>
                   <entry ref="y" style="::after {
                                           display: block;
+                                          text-transform: auto;
                                           content: target-text(attr(ref))
                                                    ' ⠄⠄⠄⠄⠄⠄⠄⠄ '
                                                    target-counter(attr(ref), page); }"/>
                   <entry ref="z" style="::after {
                                           display: block;
+                                          text-transform: auto;
                                           content: target-text(attr(ref))
                                                    ' ⠄⠄⠄⠄⠄⠄⠄⠄ '
                                                    target-counter(attr(ref), page); }"/>
@@ -2356,12 +2364,12 @@
             </default-template>
           </layout-master>
           <sequence master="body">
-            <block>
+            <block translate="">
               ⠿
               ⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄
               <page-number ref-id="chapter_1" number-format="default"/>
             </block>
-            <block>
+            <block translate="">
               ⠿⠿
               ⠄⠄⠄⠄⠄⠄⠄⠄⠄
               <page-number ref-id="chapter_2" number-format="default"/>
@@ -2389,17 +2397,17 @@
               </block>
             </block>
             <block break-before="page">
-              <block>
+              <block translate="">
                 ⠤⠤⠤
                 ⠄⠄⠄⠄⠄⠄⠄⠄
                 <page-number ref-id="x" number-format="default"/>
               </block>
-              <block>
+              <block translate="">
                 ⠤⠤⠤
                 ⠄⠄⠄⠄⠄⠄⠄⠄
                 <page-number ref-id="y" number-format="default"/>
               </block>
-              <block>
+              <block translate="">
                 ⠤⠤⠤
                 ⠄⠄⠄⠄⠄⠄⠄⠄
                 <page-number ref-id="z" number-format="default"/>
@@ -9584,6 +9592,10 @@
               1<span style="::after {
                               text-transform: downshift;
                               content: -obfl-evaluate('(round $volumes)') }"/>
+              <p style="::after {
+                          display: block;
+                          text-transform: downshift;
+                          content: -obfl-evaluate('(round $volume)') }"/>
             </titlepage>
             <body style="display: block">
               ⠤⠤⠤⠤⠤
@@ -9609,9 +9621,16 @@
             <pre-content>
               <sequence master="main">
                 <block translate="">
-                  1<style name="text-transform: downshift">
-                  <evaluate expression="(round $volumes)"/>
+                  <block>
+                    1<style name="text-transform: downshift">
+                    <evaluate expression="(round $volumes)"/>
                   </style>
+                  </block>
+                  <block>
+                    <style name="text-transform: downshift">
+                      <evaluate expression="(round $volume)"/>
+                    </style>
+                  </block>
                 </block>
               </sequence>
             </pre-content>
@@ -9640,6 +9659,7 @@
               <section>
                 <page>
                   <row>⠼⠁⠂</row>
+                  <row>⠂</row>
                 </page>
               </section>
               <section>
