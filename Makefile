@@ -53,9 +53,7 @@ run-webui :
 check : assembly/.gradle-test-dependencies assembly/.maven-test-dependencies
 
 .PHONY : check-sbs
-check-sbs : modules/sbs/braille/.gradle-install-dependencies modules/sbs/braille/.maven-install-dependencies
-	cd modules/sbs/braille && \
-	$(MVN) clean test | $(MVN_LOG)
+check-sbs : check-modules/sbs/braille
 
 .PHONY : compile
 compile : assembly/.gradle-install-dependencies assembly/.maven-install-dependencies
@@ -79,6 +77,14 @@ $(addprefix compile-,$(MAVEN_MODULES)) : compile-% : %/.gradle-install-dependenc
 	$(MVN) clean install -DskipTests | $(MVN_LOG) && \
 	if [ -e .maven-to-install ]; then \
 		mv .maven-to-install .maven-to-test-dependents; \
+	fi
+
+.PHONY : $(addprefix check-,$(MAVEN_MODULES))
+$(addprefix check-,$(MAVEN_MODULES)) : check-% : %/.gradle-install-dependencies %/.maven-install-dependencies
+	cd $(dir $<) && \
+	$(MVN) clean test && \
+	if [ -e .maven-to-test ]; then \
+		rm .maven-to-test; \
 	fi
 
 .PHONY : $(addsuffix /.maven-test-dependencies,assembly $(MAVEN_MODULES))
