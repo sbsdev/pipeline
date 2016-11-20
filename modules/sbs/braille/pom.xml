@@ -207,9 +207,6 @@
               ch.sbs.pipeline.braille.impl.SBSTranslator$Provider,
               ch.sbs.pipeline.braille.impl.GermanInteger2TextFactoryService
             </_dsannotations>
-            <Private-Package>
-              org.daisy.pipeline.modules.impl;-split-package:=first
-            </Private-Package>
           </instructions>
         </configuration>
         <executions>
