@@ -226,7 +226,7 @@ brl|volume[brl|grade='#{$contraction-grade}'] {
     margin-top:1;
     margin-bottom:1;
     &::before {
-	content: -obfl-evaluate('(if (> $volumes 1) (round $started-volume-number) "")');
+	content: -obfl-evaluate('(if (> $volumes 1) $started-volume-number "")');
 	text-transform: volume;
     }
 }
@@ -238,7 +238,7 @@ brl|volume[brl|grade='#{$contraction-grade}'] {
     margin-top:1;
     margin-bottom:1;
     &::before {
-        content: -obfl-evaluate('(if (> $volumes 1) (round $volume) "")');
+        content: -obfl-evaluate('(if (> $volumes 1) $volume "")');
         text-transform: volume;
     }
 }
@@ -640,7 +640,7 @@ frontmatter > level1 > .how-many-volumes {
     }
     &::after {
 	&::before {
-	    content: -obfl-evaluate('(if (= $volumes 1) "" (round $volumes))');
+	    content: -obfl-evaluate('(if (= $volumes 1) "" $volumes)');
 	    text-transform: volumes;
 	}
 	content: -obfl-evaluate('(if (= $volumes 1) "" " Braillebänden")');;
@@ -653,7 +653,7 @@ frontmatter > level1 > .how-many-volumes {
 frontmatter > level1 > .which-volume {
     &::after {
 	&::before {
-	    content: -obfl-evaluate('(if (= $volumes 1) "" (round $volume))');
+	    content: -obfl-evaluate('(if (= $volumes 1) "" $volume)');
 	    text-transform: volume;
 	}
 	content: -obfl-evaluate('(if (= $volumes 1) "" " Band")');;
