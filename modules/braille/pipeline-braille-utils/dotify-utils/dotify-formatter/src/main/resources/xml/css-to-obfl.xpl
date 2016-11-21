@@ -494,10 +494,10 @@
             <px:message message="[progress for-each-6.iteration 1/3 propagate-page-break] Propagage page breaks"/>
             <pxi:propagate-page-break>
                 <p:documentation>
-                    Propagate css:page-break-before, css:page-break-after, css:page-break-inside,
-                    css:page, css:counter-set-page, css:volume and css:volume-break-before
-                    attributes,so that splitting can be performed without creating empty boxes. <!--
-                    depends on make-anonymous-block-boxes -->
+                    Propagate css:page-break-before, css:page-break-after, css:volume-break-before
+                    and css:volume-break-after attributes, so that splitting can be performed
+                    without creating empty boxes, and also insert forced page breaks to satisfy the
+                    'page' and 'volume' properties. <!-- depends on make-anonymous-block-boxes -->
                 </p:documentation>
             </pxi:propagate-page-break>
             <px:message message="[progress for-each-6.iteration 1/3] Convert css:page-break-after=&quot;right&quot; to a css:page-break-before on the following sibling, and css:volume-break-after=&quot;always&quot; to a css:volume-break-before on the following sibling."/>
@@ -554,17 +554,21 @@
                 <p:delete match="/*//*/@css:counter-set-page"/>
                 <p:delete match="/*//*/@css:volume"/>
             </p:group>
+            <p:delete match="css:box[@part[not(.='first')]]/@css:page-break-before"/>
+            <p:delete match="css:box[@part[not(.='last')]]/@css:page-break-after"/>
             <p:group>
                 <p:documentation>
                     Move around and change page breaking related properties so that they can be mapped
                     one-to-one on OBFL properties.
                 </p:documentation>
-                <px:message message="[progress for-each-7.iteration 1/4 propagate-page-break] Propagate css:page-break-before, css:page-break-after, css:page-break-inside, css:page, css:counter-set-page, css:volume and css:volume-break-before attributes."/>
+                <px:message message="[progress for-each-7.iteration 1/4 propagate-page-break] Propagage page breaks"/>
                 <pxi:propagate-page-break>
                     <p:documentation>
-                        Propagate css:page-break-before, css:page-break-after, css:page-break-inside,
-                        css:page, css:counter-set-page, css:volume and css:volume-break-before
-                        attributes.
+                        Propagate css:page-break-before, css:page-break-after,
+                        css:page-break-inside, css:volume-break-before and css:volume-break-after
+                        attributes. (Needs to be done a second time because the box tree has been
+                        broken up by css:split. css:page-break-before='right' will now be propagated
+                        all the wait to the root box.)
                     </p:documentation>
                 </pxi:propagate-page-break>
                 <px:message message="[progress for-each-7.iteration 1/4] Convert css:page-break-before=&quot;avoid&quot; to a css:page-break-after on the preceding sibling and css:page-break-after=&quot;always|right|left&quot; to a css:page-break-before on the following sibling."/>

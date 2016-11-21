@@ -1374,6 +1374,13 @@
     </xsl:template>
     
     <!--
+        ignore page-break-before on first box of sequence
+    -->
+    <xsl:template mode="block-attr
+                        table-attr"
+                  match="css:box[@type='block'][not(parent::css:box) and not(preceding-sibling::*)]/@css:page-break-before[.='always']"/>
+    
+    <!--
         FIXME: 'left' not supported, treating as 'always'
     -->
     <xsl:template mode="block-attr"
