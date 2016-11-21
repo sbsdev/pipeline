@@ -805,8 +805,9 @@ p {
     margin-top:1;
 }
 
+$separator-width: 6;
+
 p.precedingseparator {
-    $separator-width: 6;
     text-indent: 0;
     &::before {
         content: "\A"                                            /* empty line */
@@ -815,6 +816,17 @@ p.precedingseparator {
                  "\A"                                            /* empty line */
                  "  ";                                           /* text indent */
         white-space: pre-line;
+        text-transform: none;
+        hyphens: initial;
+    }
+}
+
+hr.separator {
+    display: block;
+    text-align: center;
+    margin: 1 0;
+    &::before {
+        content: repeat("⠒", $separator-width);
         text-transform: none;
         hyphens: initial;
     }
