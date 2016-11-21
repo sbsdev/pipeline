@@ -1497,28 +1497,34 @@
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="inline">
-          <level1 xml:lang="de" xmlns="http://www.daisy.org/z3986/2005/dtbook/">
-            <p>bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla</p>
-            <linegroup>
-              <line><linenum>5</linenum> Er wollte nur noch nach Hause. Dort</line>
-              <line>wartete bestimmt sein Vater auf</line>
-              <line>ihn. Alles war noch voller Blut. Später</line>
-              <line>wurde er etwas nachdenklich. Das Ganze</line>
-              <line>tat ihm plötzlich sehr leid.</line>
-              <line><linenum>10</linenum> Doch er musste nun die Leiche</line>
-              <line>beseitigen. Er hatte dies schon unzählige</line>
-              <line>Male getan. Und er wusste worauf es ankam.</line>
-              <line>Also machte er sich ans Werk. Er</line>
-              <line>durfte keine Zeit mehr verlieren.</line>
-              <line><linenum>15</linenum> Während er den Boden reinigte, öffnete</line>
-              <line>sich plötzlich die Tür. Ein Nachbar</line>
-              <line>hatte Lärm gehört und wollte nach</line>
-              <line>dem Rechten sehen. Er fragte sogar,</line>
-              <line>ob er behilflich sein könne.</line>
-              <line><linenum>20</linenum> Plötzlich ...</line>
-            </linegroup>
-            <p>bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla</p>
-          </level1>
+          <dtbook xml:lang="de" xmlns="http://www.daisy.org/z3986/2005/dtbook/">
+            <book>
+              <bodymatter>
+                <level1>
+                  <p>bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla</p>
+                  <linegroup>
+                    <line><linenum>5</linenum> Er wollte nur noch nach Hause. Dort</line>
+                    <line>wartete bestimmt sein Vater auf</line>
+                    <line>ihn. Alles war noch voller Blut. Später</line>
+                    <line>wurde er etwas nachdenklich. Das Ganze</line>
+                    <line>tat ihm plötzlich sehr leid.</line>
+                    <line><linenum>10</linenum> Doch er musste nun die Leiche</line>
+                    <line>beseitigen. Er hatte dies schon unzählige</line>
+                    <line>Male getan. Und er wusste worauf es ankam.</line>
+                    <line>Also machte er sich ans Werk. Er</line>
+                    <line>durfte keine Zeit mehr verlieren.</line>
+                    <line><linenum>15</linenum> Während er den Boden reinigte, öffnete</line>
+                    <line>sich plötzlich die Tür. Ein Nachbar</line>
+                    <line>hatte Lärm gehört und wollte nach</line>
+                    <line>dem Rechten sehen. Er fragte sogar,</line>
+                    <line>ob er behilflich sein könne.</line>
+                    <line><linenum>20</linenum> Plötzlich ...</line>
+                  </linegroup>
+                  <p>bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla</p>
+                </level1>
+              </bodymatter>
+            </book>
+          </dtbook>
         </x:document>
       </x:input>
       <x:option name="include-brf" select="true()"/>
@@ -1595,20 +1601,26 @@
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="inline">
-          <level1 xml:lang="de" xmlns="http://www.daisy.org/z3986/2005/dtbook/">
-            <p>bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla</p>
-            <p><span class="linenum">5</span> Er wollte nur noch nach Hause. Dort wartete bestimmt sein
-            Vater auf ihn.</p>
-            <p>Alles war noch voller Blut. Später wurde er etwas nachdenklich. Das Ganze tat ihm
-            plötzlich sehr leid. <span class="linenum">10</span> Doch er musste nun die Leiche
-            beseitigen. Er hatte dies schon unzählige Male getan. Und er wusste worauf es ankam. Also
-            machte er sich ans Werk. Er durfte keine Zeit mehr verlieren.</p>
-            <p class="precedingemptyline"><span class="linenum">15</span> Während er den Boden reinigte,
-            öffnete sich plötzlich die Tür. Ein Nachbar hatte Lärm gehört und wollte nach dem Rechten
-            sehen. Er fragte sogar, ob er behilflich sein könne.</p>
-            <p class="precedingemptyline"><span class="linenum">20</span> Plötzlich ...</p>
-            <p>bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla</p>
-          </level1>
+          <dtbook xml:lang="de" xmlns="http://www.daisy.org/z3986/2005/dtbook/">
+            <book>
+              <bodymatter>
+                <level1>
+                  <p>bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla</p>
+                  <p><span class="linenum">5</span> Er wollte nur noch nach Hause. Dort wartete bestimmt sein
+                  Vater auf ihn.</p>
+                  <p>Alles war noch voller Blut. Später wurde er etwas nachdenklich. Das Ganze tat ihm
+                  plötzlich sehr leid. <span class="linenum">10</span> Doch er musste nun die Leiche
+                  beseitigen. Er hatte dies schon unzählige Male getan. Und er wusste worauf es ankam. Also
+                  machte er sich ans Werk. Er durfte keine Zeit mehr verlieren.</p>
+                  <p class="precedingemptyline"><span class="linenum">15</span> Während er den Boden reinigte,
+                  öffnete sich plötzlich die Tür. Ein Nachbar hatte Lärm gehört und wollte nach dem Rechten
+                  sehen. Er fragte sogar, ob er behilflich sein könne.</p>
+                  <p class="precedingemptyline"><span class="linenum">20</span> Plötzlich ...</p>
+                  <p>bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla</p>
+                </level1>
+              </bodymatter>
+            </book>
+          </dtbook>
         </x:document>
       </x:input>
       <x:option name="show-braille-page-numbers" select="false()"/>
@@ -1660,9 +1672,9 @@
                   <row>⠀⠀⠀⠀⠝⠁⠉⠓⠃⠁⠗⠀⠓⠁⠞⠞⠑⠀⠇⠜⠗⠍⠀⠛⠑⠤</row>
                   <row>⠀⠀⠀⠀⠓⠪⠗⠞⠀⠥⠝⠙⠀⠺⠕⠇⠇⠞⠑⠀⠝⠁⠉⠓⠀⠙⠑⠍</row>
                   <row>⠀⠀⠀⠀⠗⠑⠉⠓⠞⠑⠝⠀⠎⠑⠓⠑⠝⠄⠀⠑⠗⠀⠋⠗⠁⠛⠞⠑</row>
-                  <row>⠀⠀⠀⠀⠎⠕⠛⠁⠗⠂⠀⠕⠃⠀⠑⠗⠀⠃⠑⠓⠊⠇⠋⠇⠊⠉⠓</row>
                 </page>
                 <page>
+                  <row>⠀⠀⠀⠀⠎⠕⠛⠁⠗⠂⠀⠕⠃⠀⠑⠗⠀⠃⠑⠓⠊⠇⠋⠇⠊⠉⠓</row>
                   <row>⠀⠀⠀⠀⠎⠑⠊⠝⠀⠅⠪⠝⠝⠑⠄</row>
                   <row/>
                   <row>⠃⠚⠀⠀⠀⠀⠏⠇⠪⠞⠵⠇⠊⠉⠓⠀⠄⠄⠄</row>

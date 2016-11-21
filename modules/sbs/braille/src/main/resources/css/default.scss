@@ -888,11 +888,13 @@ div.linegroup,
         text-indent: $text-indent;
         page-break-inside: avoid;
     }
-    &:has(linenum) line {
+    &:has(linenum) line,
+    &:has(.linenum) p.line {
         margin-left: $margin-left + $linenum-space;
-        &:has(linenum) {
+        &:has(linenum, .linenum) {
             text-indent: - $margin-left - $linenum-space;
-            linenum {
+            linenum,
+            .linenum {
                 text-transform: linenum;
                 &::after {
                     content: repeat(" ", $linenum-space - $linenum-width + $margin-left + $text-indent - 1) " ";

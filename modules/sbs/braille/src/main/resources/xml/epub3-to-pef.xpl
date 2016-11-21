@@ -133,6 +133,7 @@
             <p:pipe step="temp-dir" port="result"/>
         </p:with-option>
         <p:with-option name="stylesheet" select="string-join((
+                                                   'http://www.sbs.ch/pipeline/modules/braille/internal/group-starting-with-linenum.xsl',
                                                    'http://www.sbs.ch/pipeline/modules/braille/internal/insert-boilerplate.xsl',
                                                    $stylesheet),' ')"/>
         <p:with-option name="transform" select="concat('(formatter:dotify)(translator:sbs)(grade:',$contraction-grade,')')"/>
