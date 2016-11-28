@@ -79,7 +79,9 @@
 	}
     }
     @else {
-	/* TODO: insert code for flow-into-footer style (not yet implemented) */
+        @page bodymatter:right {
+            margin-bottom: 0;
+        }
     }
 }
 

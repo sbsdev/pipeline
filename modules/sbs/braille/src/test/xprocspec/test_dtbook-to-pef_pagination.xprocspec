@@ -209,11 +209,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="4.5.83_ex1_footer_flowing_text" xfail="true">
-    <x:documentation>
-      Broken:
-      - flow into footer not supported yet
-    </x:documentation>
+  <x:scenario label="4.5.83_ex1_footer_flowing_text">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_4.5.83_ex1_footer_flowing_text/test_4.5.83.xml"/>
@@ -236,7 +232,7 @@
   <x:scenario label="4.5.83_ex2_header_flowing_text" xfail="true">
     <x:documentation>
       Broken:
-      - flow into header not supported yet
+      - flow into header not supported yet (not required)
     </x:documentation>
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
@@ -367,11 +363,7 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="4.8.105_ex1_page_break_line_draft" xfail="true">
-    <x:documentation>
-      Broken:
-      - flow into footer not supported yet
-    </x:documentation>
+  <x:scenario label="4.8.105_ex1_page_break_line_draft">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_4.8.105_ex1_page_break_line_draft/test_4.8.105.xml"/>
