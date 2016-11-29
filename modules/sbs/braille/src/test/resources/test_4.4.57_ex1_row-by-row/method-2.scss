@@ -1,6 +1,10 @@
 @import "http://www.sbs.ch/pipeline/modules/braille/default.scss";
 
-table {
+/*
+ * The `:not([class])` is needed to make the specificity high enough
+ * so that the default (linearized) is overwritten.
+ */
+table:not([class]) {
     
     @extend %table-reset;
     

@@ -776,7 +776,8 @@ author, byline {
     text-align: right;
 }
 
-%table-default {
+table.table-linearized,
+table:not([class]) {
     display: block;
     margin-top: 1;
     margin-bottom: 1;
@@ -801,11 +802,41 @@ author, byline {
     }
 }
 
-table {
-    @extend %table-default;
+table.table-matrix {
+    display: table;
+    -obfl-table-col-spacing: 2;
+    th {
+	border-bottom: ⠒;
+    }
+    caption {
+	display: block;
+	margin-bottom: 1;
+    }
 }
 
-%table-reset {
+table.table-matrix-transposed {
+    display: table;
+    -obfl-table-col-spacing: 2;
+    render-table-by: column;
+    caption {
+	display: block;
+	margin-bottom: 1;
+    }
+}
+
+/*
+ * It should normally not be necessary to use this rule because if you
+ * add a class attribute on your table not equal to
+ * "table-linearized", "table-matrix" or "table-matrix-transposed"
+ * there is nothing to be reset. When you do need to use it make sure
+ * the specificity of your rule is hight enough so that it overrides
+ * the default rules. For example:
+ *
+ *     table:not([class]) {
+ *        extend %table-reset
+ *     }
+ */
+table%table-reset {
     display: initial;
     margin-top: initial;
     margin-bottom: initial;
@@ -818,13 +849,16 @@ table {
         display: initial;
         border-top: initial;
     }
+    th {
+        border-bottom: none;
+    }
     td + td::before,
     th + th::before {
         content: initial;
         text-transform: inherit;
         hyphens: inherit;
     }
-    caption{
+    caption {
         display: initial;
         margin-bottom: initial;
     }

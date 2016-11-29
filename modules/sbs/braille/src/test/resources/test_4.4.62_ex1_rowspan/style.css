@@ -1,0 +1,7 @@
+@page {
+	size: 50 28;
+}
+
+table {
+	-obfl-preferred-empty-space: 0;
+}

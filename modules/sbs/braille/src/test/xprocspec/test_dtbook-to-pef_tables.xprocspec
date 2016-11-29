@@ -3,7 +3,7 @@
                xmlns:sbs="http://www.sbs.ch"
                script="http://www.sbs.ch/pipeline/modules/braille/dtbook-to-pef.xpl">
   
-  <x:scenario label="4.4.57_ex1_row-by-row_method_1" pending="tfoot before tbody">
+  <x:scenario label="4.4.57_ex1_row-by-row">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_4.4.57_ex1_row-by-row/test_4.4.57.xml"/>
@@ -11,35 +11,32 @@
       <x:option name="contraction-grade" select="0"/>
       <x:option name="hyphenation" select="false()"/>
       <x:option name="show-braille-page-numbers" select="false()"/>
-      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.4.57_ex1_row-by-row/method_1/')"/>
-      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
     </x:call>
-    <x:context label="result">
-      <x:document type="file" base-uri="temp-dir" href="output-dir/test_4.4.57_ex1_row-by-row/method_1/test_4.4.57.pef"/>
-    </x:context>
-    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
-      <x:document type="file" href="../resources/test_4.4.57_ex1_row-by-row/output_expected/test_4.4.57.pef"/>
-    </x:expect>
-  </x:scenario>
-  
-  <x:scenario label="4.4.57_ex1_row-by-row_method_2">
-    <x:call step="sbs:dtbook-to-pef">
-      <x:input port="source">
-        <x:document type="file" href="../resources/test_4.4.57_ex1_row-by-row/test_4.4.57.xml"/>
-      </x:input>
-      <x:option name="stylesheet" select="'style.scss'"/>
-      <x:option name="contraction-grade" select="0"/>
-      <x:option name="hyphenation" select="false()"/>
-      <x:option name="show-braille-page-numbers" select="false()"/>
-      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.4.57_ex1_row-by-row/method_2/')"/>
-      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
-    </x:call>
-    <x:context label="result">
-      <x:document type="file" base-uri="temp-dir" href="output-dir/test_4.4.57_ex1_row-by-row/method_2/test_4.4.57.pef"/>
-    </x:context>
-    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
-      <x:document type="file" href="../resources/test_4.4.57_ex1_row-by-row/output_expected/test_4.4.57.pef"/>
-    </x:expect>
+    <x:scenario label="method-1" pending="tfoot before tbody">
+      <x:call>
+        <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.4.57_ex1_row-by-row/method-1/')"/>
+        <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+      </x:call>
+      <x:context label="result">
+        <x:document type="file" base-uri="temp-dir" href="output-dir/test_4.4.57_ex1_row-by-row/method-1/test_4.4.57.pef"/>
+      </x:context>
+      <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+        <x:document type="file" href="../resources/test_4.4.57_ex1_row-by-row/output_expected/test_4.4.57.pef"/>
+      </x:expect>
+    </x:scenario>
+    <x:scenario label="method-2">
+      <x:call>
+        <x:option name="stylesheet" select="'method-2.scss'"/>
+        <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.4.57_ex1_row-by-row/method-2/')"/>
+        <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+      </x:call>
+      <x:context label="result">
+        <x:document type="file" base-uri="temp-dir" href="output-dir/test_4.4.57_ex1_row-by-row/method-2/test_4.4.57.pef"/>
+      </x:context>
+      <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+        <x:document type="file" href="../resources/test_4.4.57_ex1_row-by-row/output_expected/test_4.4.57.pef"/>
+      </x:expect>
+    </x:scenario>
   </x:scenario>
   
   <x:scenario label="4.4.57_ex2_row_as_sublist_axes" pending="input and expected output are actually different tables">
@@ -64,7 +61,6 @@
       <x:input port="source">
         <x:document type="file" href="../resources/test_4.4.58_ex1_matrix/test_4.4.58.xml"/>
       </x:input>
-      <x:option name="stylesheet" select="'style.scss'"/>
       <x:option name="contraction-grade" select="0"/>
       <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.4.58_ex1_matrix/')"/>
       <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
@@ -94,12 +90,31 @@
     </x:expect>
   </x:scenario>
   
+  <x:scenario label="4.4.60_ex1_matrix-transposed">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="file" href="../resources/test_4.4.60_ex1_matrix-transposed/test_4.4.60.xml"/>
+      </x:input>
+      <x:option name="contraction-grade" select="0"/>
+      <x:option name="show-braille-page-numbers" select="false()"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.4.60_ex1_matrix-transposed/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_4.4.60_ex1_matrix-transposed/test_4.4.60.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_4.4.60_ex1_matrix-transposed/output_expected/test_4.4.60.pef"/>
+    </x:expect>
+  </x:scenario>
+  
   <x:scenario label="4.4.62_ex1_rowspan">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_4.4.62_ex1_rowspan/test_4.4.62.xml"/>
       </x:input>
-      <x:option name="stylesheet" select="'style.scss'"/>
+      <x:option name="stylesheet" select="'http://www.sbs.ch/pipeline/modules/braille/default.scss
+                                           style.css'"/>
       <x:option name="contraction-grade" select="0"/>
       <x:option name="show-braille-page-numbers" select="false()"/>
       <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.4.62_ex1_rowspan/')"/>
@@ -118,7 +133,6 @@
       <x:input port="source">
         <x:document type="file" href="../resources/test_4.4.62_ex2_colspan/test_4.4.62.xml"/>
       </x:input>
-      <x:option name="stylesheet" select="'style.scss'"/>
       <x:option name="contraction-grade" select="0"/>
       <x:option name="show-braille-page-numbers" select="false()"/>
       <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.4.62_ex2_colspan/')"/>
