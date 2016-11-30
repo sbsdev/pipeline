@@ -11364,13 +11364,13 @@
             <default-template>
               <header/>
               <footer>
-                <field/>
+                <field allow-text-flow="true"/>
                 <field>
                   <string value="⠤⠤"/>
                 </field>
               </footer>
               <footer>
-                <field/>
+                <field allow-text-flow="true"/>
                 <field>
                   <string value="⠤⠤"/>
                 </field>
@@ -11459,7 +11459,7 @@
             <default-template>
               <header/>
               <footer>
-                <field/>
+                <field allow-text-flow="true"/>
                 <field>
                   <string value="⠤⠤"/>
                 </field>

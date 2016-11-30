@@ -21,7 +21,7 @@
     </xsl:variable>
     
     <xsl:variable name="text-flow-area" as="element()">
-        <field/>
+        <field allow-text-flow="true"/>
     </xsl:variable>
     
     <xsl:function name="obfl:generate-layout-master">
