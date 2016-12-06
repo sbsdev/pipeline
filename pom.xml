@@ -16,6 +16,7 @@
   <packaging>pom</packaging>
   
   <modules>
+    <module>utils/xprocspec</module>
     <module>utils/xproc-maven-plugin</module>
     <module>utils/xspec-maven-plugin</module>
     <module>utils/project-version-maven-plugin</module>
