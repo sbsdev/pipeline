@@ -10,10 +10,10 @@
     <relativePath>../parent/</relativePath>
   </parent>
 
-  <artifactId>xproc-engine-calabash</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <artifactId>xproc-engine-morgana</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
-  <name>xproc-engine-calabash</name>
+  <name>xproc-engine-morgana</name>
   
   <dependencies>
     <dependency>
@@ -22,59 +22,42 @@
       <version>1.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.daisy.libs</groupId>
-      <artifactId>com.xmlcalabash</artifactId>
-      <version>1.0.18</version>
+      <groupId>xml-project</groupId>
+      <artifactId>MorganaXProc</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/lib/MorganaXProc.jar</systemPath>
     </dependency>
+    <!--
+        dependencies of MorganaXProc
+    -->
     <dependency>
-      <groupId>net.sf.saxon</groupId>
-      <artifactId>Saxon-HE</artifactId>
-      <version>9.5.1-5</version>
-    </dependency>
-    <dependency>
-      <groupId>com.thaiopensource</groupId>
-      <artifactId>jing</artifactId>
-      <version>20091111</version>
-      <exclusions>
-        <exclusion>
-          <groupId>net.sf.saxon</groupId>
-          <artifactId>saxon</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>14.0</version>
+      <groupId>com.io7m.xom</groupId>
+      <artifactId>xom</artifactId>
+      <version>1.2.10</version>
     </dependency>
     <dependency>
       <groupId>xml-resolver</groupId>
       <artifactId>xml-resolver</artifactId>
       <version>1.2</version>
     </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <version>4.3.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <version>4.3.0</version>
-      <scope>provided</scope>
-    </dependency>
+    <!--
+        test dependencies
+    -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>14.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+  
   <build>
     <plugins>
       <plugin>
@@ -88,4 +71,5 @@
       </plugin>
     </plugins>
   </build>
+  
 </project>
