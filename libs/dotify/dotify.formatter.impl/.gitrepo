@@ -4,7 +4,7 @@
 ; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
 ;
 [subrepo]
-	remote = https://github.com/brailleapps/dotify.formatter.impl
+	remote = git@github.com:sbsdev/dotify.formatter.impl.git
 	branch = master
 	commit = 9f4d3d9796b8ce374c47a24c771305831577e211
 	parent = 2e84fe0244823062d1a382e3c86470c543e24306

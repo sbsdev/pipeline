@@ -4,7 +4,7 @@
 ; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
 ;
 [subrepo]
-	remote = https://github.com/brailleapps/dotify.api
+	remote = git@github.com:sbsdev/dotify.api.git
 	branch = master
 	commit = 33471e47e048e5d673fdfd31329844efc948cbe7
 	parent = 324a44a23bb2476bdc2f5793f12988a18e715190
