@@ -41,10 +41,8 @@ dist-exe : assembly/.dependencies | .maven-init
 	mv assembly/target/*.exe .
 
 .PHONY : dist-zip-linux
-dist-zip-linux : assembly/.dependencies | .maven-init
-	cd assembly && \
-	$(MVN) clean package -Plinux | $(MVN_LOG)
-	mv assembly/target/*.zip .
+dist-zip-linux : assembly/.install-linux.zip | .maven-init
+	cp $(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/assembly/$(assembly/VERSION)/assembly-$(assembly/VERSION)-linux.zip .
 
 .PHONY : dist-zip-minimal
 dist-zip-minimal : assembly/.dependencies | .maven-init
@@ -136,7 +134,7 @@ assembly/target/dev-launcher/bin/pipeline2 : assembly/pom.xml assembly/.dependen
 .PHONY : benchmark
 benchmark : it/sbs-benchmark/.dependencies
 	MVN_OPTS="--settings '$(CURDIR)/settings.xml' -Dworkspace='$(CURDIR)/$(MVN_WORKSPACE)' -Dcache='$(CURDIR)/$(MVN_CACHE)'" \
-	it/sbs-benchmark/run.sh
+	it/sbs-benchmark/run.sh --native
 
 it/sbs-benchmark/.deps.mk : it/sbs-benchmark/conf
 	while true; do \
@@ -145,7 +143,7 @@ it/sbs-benchmark/.deps.mk : it/sbs-benchmark/conf
 		source $< && \
 		if [[ $$MOD_SBS_VERSION == *-SNAPSHOT ]]; then \
 			echo " \\" && \
-			echo -n "	\$$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/modules/braille/mod-sbs/$$MOD_SBS_VERSION/mod-sbs-$$MOD_SBS_VERSION-all.deb"; \
+			echo -n "	\$$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/modules/braille/mod-sbs/$$MOD_SBS_VERSION/mod-sbs-$$MOD_SBS_VERSION.jar"; \
 		fi && \
 		if [[ $$CLI_VERSION == *-SNAPSHOT ]]; then \
 			echo " \\" && \
@@ -157,7 +155,11 @@ it/sbs-benchmark/.deps.mk : it/sbs-benchmark/conf
 		fi && \
 		if [[ $$ASSEMBLY_VERSION == *-SNAPSHOT ]]; then \
 			echo " \\" && \
-			echo -n "	\$$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/assembly/$$ASSEMBLY_VERSION/assembly-$$ASSEMBLY_VERSION-all.deb"; \
+			if [ "$$(uname)" == Darwin ]; then \
+				echo -n "	\$$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/assembly/$$ASSEMBLY_VERSION/assembly-$$ASSEMBLY_VERSION-mac.zip"; \
+			else \
+				echo -n "	\$$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/assembly/$$ASSEMBLY_VERSION/assembly-$$ASSEMBLY_VERSION-linux.zip"; \
+			fi; \
 		fi && \
 		echo "" && \
 		break; \
@@ -166,6 +168,14 @@ it/sbs-benchmark/.deps.mk : it/sbs-benchmark/conf
 .SECONDARY : assembly/.install-all.deb
 assembly/.install-all.deb : %/.install-all.deb : %/pom.xml %/.dependencies $(call rwildcard,assembly/src/main/,*) | .maven-init .group-eval
 	+$(call eval-if-unix,bash -c 'cd assembly && $(MVN) clean install -Pdeb | $(MVN_LOG)')
+
+.SECONDARY : assembly/.install-linux.zip
+assembly/.install-linux.zip : %/.install-linux.zip : %/pom.xml %/.dependencies $(call rwildcard,assembly/src/main/,*) | .maven-init .group-eval
+	+$(call eval-if-unix,bash -c 'cd assembly && $(MVN) clean install -Plinux | $(MVN_LOG)')
+
+.SECONDARY : assembly/.install-mac.zip
+assembly/.install-mac.zip : %/.install-mac.zip : %/pom.xml %/.dependencies $(call rwildcard,assembly/src/main/,*) | .maven-init .group-eval
+	+$(call eval-if-unix,bash -c 'cd assembly && $(MVN) clean install -Pzip-mac | $(MVN_LOG)')
 
 .SECONDARY : modules/sbs/braille/.install-all.deb
 modules/sbs/braille/.install-all.deb : modules/sbs/braille/.install

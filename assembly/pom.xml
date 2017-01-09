@@ -1372,6 +1372,10 @@
                 </goals>
                 <configuration>
                   <attach>false</attach>
+                  <formats>
+                    <format>dir</format>
+                    <format>zip</format>
+                  </formats>
                   <descriptors>
                     <descriptor>src/main/assembly/dist-minimal.xml</descriptor>
                   </descriptors>
@@ -1441,13 +1445,16 @@
             <artifactId>maven-assembly-plugin</artifactId>
             <executions>
               <execution>
-                <id>dist-mac</id>
+                <id>dist-mac-dir</id>
                 <phase>package</phase>
                 <goals>
                   <goal>single</goal>
                 </goals>
                 <configuration>
                   <attach>false</attach>
+                  <formats>
+                    <format>dir</format>
+                  </formats>
                   <descriptors>
                     <descriptor>src/main/assembly/dist-mac.xml</descriptor>
                   </descriptors>
@@ -1576,7 +1583,113 @@
         </plugins>
       </build>
     </profile>
-
+    
+    <profile>
+      <id>zip-mac</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack-cli-mac</id>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.daisy.pipeline</groupId>
+                      <artifactId>cli</artifactId>
+                      <type>zip</type>
+                      <classifier>darwin_386</classifier>
+                      <outputDirectory>${project.build.directory}/cli/mac32</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+              <execution>
+                <id>unpack-updater-mac</id>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.daisy.pipeline</groupId>
+                      <artifactId>updater</artifactId>
+                      <type>zip</type>
+                      <classifier>darwin_386</classifier>
+                      <outputDirectory>${project.build.directory}/updater/mac32</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>dist-mac-zip</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <attach>true</attach>
+                  <formats>
+                    <format>zip</format>
+                  </formats>
+                  <descriptors>
+                    <descriptor>src/main/assembly/dist-mac.xml</descriptor>
+                  </descriptors>
+                  <filters>
+                    <filter>src/main/assembly/dist.properties</filter>
+                    <filter>src/main/assembly/dist-nix.properties</filter>
+                  </filters>
+                  <appendAssemblyId>true</appendAssemblyId>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-app-package</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install-node</id>
+                <phase>none</phase>
+              </execution>
+              <execution>
+                <id>install-appdmg</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>exec-appdmg</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
     <profile>
       <id>linux</id>
       <activation>
@@ -1651,6 +1764,9 @@
                 </goals>
                 <configuration>
                   <attach>false</attach>
+                  <formats>
+                    <format>zip</format>
+                  </formats>
                   <descriptors>
                     <descriptor>src/main/assembly/dist-linux.xml</descriptor>
                   </descriptors>
@@ -1663,7 +1779,11 @@
                 </configuration>
               </execution>
               <execution>
-                <id>dist-mac</id>
+                <id>dist-mac-dir</id>
+                <phase>none</phase>
+              </execution>
+              <execution>
+                <id>dist-mac-zip</id>
                 <phase>none</phase>
               </execution>
               <execution>
@@ -1790,6 +1910,9 @@
                 </goals>
                 <configuration>
                   <attach>false</attach>
+                  <formats>
+                    <format>dir</format>
+                  </formats>
                   <descriptors>
                     <descriptor>src/main/assembly/dist-win.xml</descriptor>
                   </descriptors>
@@ -2087,7 +2210,7 @@
             <artifactId>maven-assembly-plugin</artifactId>
             <executions>
               <execution>
-                <id>dist-mac</id>
+                <id>dist-mac-dir</id>
                 <phase>none</phase>
               </execution>
               <execution>
@@ -2533,7 +2656,7 @@
             <artifactId>maven-assembly-plugin</artifactId>
             <executions>
               <execution>
-                <id>dist-mac</id>
+                <id>dist-mac-dir</id>
                 <phase>none</phase>
               </execution>
               <execution>
@@ -2623,7 +2746,7 @@
                 </configuration>
               </execution>
               <execution>
-                <id>dist-mac</id>
+                <id>dist-mac-dir</id>
                 <phase>none</phase>
               </execution>
               <execution>

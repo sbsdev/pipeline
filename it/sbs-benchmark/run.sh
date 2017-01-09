@@ -3,8 +3,16 @@
 set -e
 set -x
 
+RUNNER=DOCKER
+
 while test ${#} -gt 0; do
     case $1 in
+        --native)
+            RUNNER=NATIVE
+            ;;
+        --docker)
+            RUNNER=DOCKER
+            ;;
         *)
             echo "Unsupported argument: $arg" >&2
             exit 1
@@ -19,6 +27,7 @@ source $CURDIR/conf
 
 # FIXME: make cross-platform
 CLI_PLATFORM=darwin_386
+SERVER_PLATFORM=mac
 
 # IMPORTANT: If you are using boot2docker make sure that port 8181 is forwarded.
 # For example, if the machine is called "default":
@@ -30,31 +39,59 @@ WS_HOST=localhost
 WS_PORT=8181
 
 test ! -e $CURDIR/cli
-test ! -e $CURDIR/debs
+test ! -e $CURDIR/docker/debs
+test ! -e $CURDIR/native
 test ! -e $CURDIR/tmp
 
-# Fetch assembly and mod-sbs debs from Maven
-cd $CURDIR
-mkdir -p debs
-eval mvn $MVN_OPTS \
-         org.apache.maven.plugins:maven-dependency-plugin:3.0.0:copy \
-         -Dartifact=org.daisy.pipeline:assembly:$ASSEMBLY_VERSION:deb:all \
-         -DoutputDirectory=debs
-eval mvn $MVN_OPTS \
-         org.apache.maven.plugins:maven-dependency-plugin:3.0.0:copy \
-         -Dartifact=org.daisy.pipeline.modules.braille:mod-sbs:$MOD_SBS_VERSION:deb:all \
-         -DoutputDirectory=debs
+# Fetch assembly and mod-sbs from Maven and build pipeline server
+if [ $RUNNER = DOCKER ]; then
+    cd $CURDIR
+    mkdir -p docker/debs
+    eval mvn $MVN_OPTS \
+             org.apache.maven.plugins:maven-dependency-plugin:3.0.0:copy \
+             -Dartifact=org.daisy.pipeline:assembly:$ASSEMBLY_VERSION:deb:all \
+             -DoutputDirectory=docker/debs
+    eval mvn $MVN_OPTS \
+             org.apache.maven.plugins:maven-dependency-plugin:3.0.0:copy \
+             -Dartifact=org.daisy.pipeline.modules.braille:mod-sbs:$MOD_SBS_VERSION:deb:all \
+             -DoutputDirectory=docker/debs
+    
+    # Build docker image
+    docker build docker
+    IMAGE_ID=$(docker build docker | tail -n 1 | sed 's/.* //')
+    rm -r docker/debs
 
-# Build docker image with these debs
-cd $CURDIR
-docker build .
-IMAGE_ID=$(docker build . | tail -n 1 | sed 's/.* //')
-rm -r debs
+else # $RUNNER = NATIVE
+    cd $CURDIR
+    mkdir -p native && cd $_
+    eval mvn $MVN_OPTS \
+             org.apache.maven.plugins:maven-dependency-plugin:3.0.0:copy \
+             -Dartifact=org.daisy.pipeline:assembly:$ASSEMBLY_VERSION:zip:$SERVER_PLATFORM \
+             -DoutputDirectory=.
+    unzip *.zip
+    eval mvn $MVN_OPTS \
+             org.apache.maven.plugins:maven-dependency-plugin:3.0.0:copy \
+             -Dartifact=org.daisy.pipeline.modules.braille:mod-sbs:$MOD_SBS_VERSION:jar \
+             -DoutputDirectory=daisy-pipeline/modules/
+    eval mvn $MVN_OPTS \
+             org.apache.maven.plugins:maven-dependency-plugin:3.0.0:copy \
+             -Dartifact=ch.sbs.pipeline:sbs-braille-tables:$SBS_BRAILLE_TABLES_VERSION:jar \
+             -DoutputDirectory=daisy-pipeline/modules/
+    eval mvn $MVN_OPTS \
+             org.apache.maven.plugins:maven-dependency-plugin:3.0.0:copy \
+             -Dartifact=ch.sbs.pipeline:sbs-hyphenation-tables:$SBS_HYPHENATION_TABLES_VERSION:jar \
+             -DoutputDirectory=daisy-pipeline/modules/
+fi
 
-# Launch pipeline in container and wait for the web service it to be up
+# Launch pipeline and wait for the web service it to be up
 function pipeline_launch {
     echo "Launching pipeline" >&2
-    CONTAINER_ID=$(docker run -d -p 0.0.0.0:$WS_PORT:8181 $IMAGE_ID)
+    if [ $RUNNER = "DOCKER" ]; then
+        CONTAINER_ID=$(docker run -d -p 0.0.0.0:$WS_PORT:8181 $IMAGE_ID)
+    else
+        $CURDIR/native/daisy-pipeline/bin/pipeline2 >$CURDIR/tmp/log &
+        SERVER_PID=$!
+    fi
     sleep 5
     while ! curl $WS_HOST:$WS_PORT/ws/alive >/dev/null 2>/dev/null; do
         echo "Waiting for web service to be up..." >&2
@@ -65,8 +102,12 @@ function pipeline_launch {
 # Shutdown pipeline and remove container
 function pipeline_shutdown {
     echo "Shutting down pipeline" >&2
-    docker stop $CONTAINER_ID
-    docker rm $CONTAINER_ID
+    if [ $RUNNER = "DOCKER" ]; then
+        docker stop $CONTAINER_ID
+        docker rm $CONTAINER_ID
+    else
+        kill $SERVER_PID
+    fi
 }
 
 # Fetch the cli from Maven
@@ -123,12 +164,17 @@ cd $CURDIR
 mkdir tmp
 EXIT_VALUE=0
 find dtbooks -name '*.xml' | while read BOOK; do
-    BOOK_ZIPPED="tmp/$(basename $BOOK).zip"
-    zip -r "$BOOK_ZIPPED" "$BOOK"
     pipeline_launch
     timer_start "$BOOK (filesize: $(ls -lh $BOOK | awk '{print $5}'))"
-    $CLI_PATH --host http://$WS_HOST --port $WS_PORT \
-              sbs:dtbook-to-pef --data "$BOOK_ZIPPED" --persistent --source "$BOOK" --output tmp
+    if [ $RUNNER = "DOCKER" ]; then
+        BOOK_ZIPPED="tmp/$(basename $BOOK).zip"
+        zip -r "$BOOK_ZIPPED" "$BOOK"
+        $CLI_PATH --host http://$WS_HOST --port $WS_PORT \
+                  sbs:dtbook-to-pef --data "$BOOK_ZIPPED" --persistent --source "$BOOK" --output tmp
+    else
+        $CLI_PATH --host http://$WS_HOST --port $WS_PORT \
+                  sbs:dtbook-to-pef --persistent --source "$BOOK" --output tmp
+    fi
     sleep 1 # why is this needed?
     STATUS="$(pipeline_status)"
     timer_end "$STATUS"
