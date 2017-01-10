@@ -50,6 +50,10 @@
       <artifactId>dotify.api</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.compendium</artifactId>
       <scope>provided</scope>
@@ -205,7 +209,8 @@
           <instructions>
             <_dsannotations>
               ch.sbs.pipeline.braille.impl.SBSTranslator$Provider,
-              ch.sbs.pipeline.braille.impl.GermanInteger2TextFactoryService
+              ch.sbs.pipeline.braille.impl.GermanInteger2TextFactoryService,
+              ch.sbs.pipeline.braille.pef.impl.SBSFileFormat$Provider
             </_dsannotations>
           </instructions>
         </configuration>

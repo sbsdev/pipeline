@@ -42,7 +42,7 @@
       </p:documentation>
     </p:option>
 
-    <p:option name="ascii-file-format" select="'(table:&quot;http://www.sbs.ch/pipeline/liblouis/tables/sbs.dis&quot;)(file-extension:&quot;.brl&quot;)'"/>
+    <p:option name="ascii-file-format" select="'(id:&quot;ch.sbs.pipeline.braille.pef.impl.SBSFileFormat&quot;)'"/>
     <p:option name="include-preview"/>
     <p:option name="include-brf"/>
 
