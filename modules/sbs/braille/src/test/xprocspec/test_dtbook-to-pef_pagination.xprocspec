@@ -216,6 +216,8 @@
       </x:input>
       <x:option name="contraction-grade" select="2"/>
       <x:option name="show-print-page-numbers" select="false()"/>
+	  <x:option name="hyphenation" select="false()"/>
+	  <x:option name="levels-in-footer" select="0"/>
       <x:option name="include-brf" select="true()"/>
       <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.5.83_ex1_footer_flowing_text/')"/>
       <x:option name="brf-output-dir" select="concat($temp-dir,'output-dir/test_4.5.83_ex1_footer_flowing_text/')"/>
@@ -370,6 +372,8 @@
       </x:input>
       <x:option name="contraction-grade" select="0"/>
       <x:option name="show-print-page-numbers" select="false()"/>
+	  <x:option name="hyphenation" select="false()"/>
+	  <x:option name="levels-in-footer" select="0"/>
       <x:option name="include-brf" select="true()"/>
       <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.8.105_ex1_page_break_line_draft/')"/>
       <x:option name="brf-output-dir" select="concat($temp-dir,'output-dir/test_4.8.105_ex1_page_break_line_draft/')"/>

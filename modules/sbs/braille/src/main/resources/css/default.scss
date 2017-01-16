@@ -88,7 +88,12 @@
 @if $show-braille-page-numbers {
     @page bodymatter:right {
         @bottom-right {
-            content: counter(page);
+            @if $levels-in-footer == 0 {
+                content: "     " counter(page);
+            }
+            @else {
+                content: counter(page);
+            }     
         }
     }
 }
