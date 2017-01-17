@@ -101,15 +101,19 @@
 
 @for $level from 1 through 6 {
     @if $levels-in-footer >= $level {
-	bodymatter h#{$level} {
-        string-set: running-footer-body content();
-        &:has(> brl|running-line) {
-            string-set: none;
+        bodymatter h#{$level} {
+            &:not(:has(> brl|select)) {
+                string-set: running-footer-body content();
+            }
+            > brl|select {
+                &:not(:has(> brl|running-line)) > brl|otherwise {
+                    string-set: running-footer-body content();
+                }
+                > brl|running-line {
+                    string-set: running-footer-body content();
+                }
+            }
         }
-        > brl|running-line {
-            string-set: running-footer-body content();
-        }
-    }
     }
 }
 
@@ -250,10 +254,10 @@ brl|volume[brl|grade='#{$contraction-grade}'] {
             &:has(brl|toc-line) {
                 brl|toc-line {
                     display: inline;
-                }
-                /* Depends on handle-toc-line.xsl (see below) */
-                brl|otherwise {
-                    display: none;
+                    /* Depends on handle-toc-and-running-line.xsl (see below) */
+                    ~ brl|otherwise {
+                        display: none;
+                    }
                 }
             }
             &::after {
@@ -343,13 +347,15 @@ brl|otherwise{
 }
 
 /*
- * Depends on handle-toc-line.xsl, which wraps a brl:toc-line element
- * in a brl:select, and in addition wraps the surrounding nodes in a
- * brl:otherwise within the same brl:select:
+ * Depends on handle-toc-and-running-line.xsl, which wraps
+ * brl:toc-line and brl:running-line elements in a brl:select, and in
+ * addition wraps the surrounding nodes in a brl:otherwise within the
+ * same brl:select:
  * ~~~
  * <h1>
  *   blah blah blah blah blah blah blah
  *   <brl:toc-line>blah</brl:toc-line>
+ *   <brl:running-line>blah</brl:running-line>
  * </h1>
  * ~~~
  * in the input becomes:
@@ -357,6 +363,7 @@ brl|otherwise{
  * <h1>
  *   <brl:select>
  *     <brl:toc-line>blah</brl:toc-line>
+ *     <brl:running-line>blah</brl:running-line>
  *     <brl:otherwise>
  *       blah blah blah blah blah blah blah
  *     </brl:otherwise>
@@ -366,9 +373,9 @@ brl|otherwise{
  * before any CSS is applied.
  */
 h1, h2, h3, h4, h5, h6 {
-    brl|toc-line ~ brl|otherwise {
+    brl|toc-line, brl|running-line { ~ brl|otherwise {
         display: inline;
-    }
+    }}
 }
 
 /* Headings */

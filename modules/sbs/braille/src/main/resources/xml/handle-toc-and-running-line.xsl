@@ -4,13 +4,13 @@
                 xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
                 exclude-result-prefixes="#all">
   
-  <xsl:template match="*[brl:toc-line]">
+  <xsl:template match="*[brl:toc-line or brl:running-line]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <brl:select>
-        <xsl:apply-templates select="brl:toc-line"/>
+        <xsl:apply-templates select="brl:toc-line|brl:running-line"/>
         <brl:otherwise>
-          <xsl:apply-templates select="node() except brl:toc-line"/>
+          <xsl:apply-templates select="node() except (brl:toc-line|brl:running-line)"/>
         </brl:otherwise>
       </brl:select>
     </xsl:copy>
