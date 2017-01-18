@@ -12,6 +12,7 @@
                 xmlns:opf="http://www.idpf.org/2007/opf"
                 xmlns:dc="http://purl.org/dc/elements/1.1/"
                 xmlns:dcterms="http://purl.org/dc/terms/"
+                xmlns:css="http://www.daisy.org/ns/pipeline/braille-css"
                 exclude-inline-prefixes="#all"
                 name="main">
     
@@ -47,6 +48,7 @@
     <p:import href="http://www.daisy.org/pipeline/modules/braille/common-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/braille/xml-to-pef/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl"/>
+    <p:import href="http://www.daisy.org/pipeline/modules/braille/css-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/fileset-utils/library.xpl"/>
     
@@ -115,11 +117,6 @@
         </p:add-attribute>
         
         <px:message>
-            <p:with-option name="message" select="concat('Deleting CSS that is not for embossed media from ',replace(base-uri(/*),'.*/',''),'')"/>
-        </px:message>
-        <p:delete match="//@style | //html:link[@rel='stylesheet' and not(string(@media)='embossed')] | //html:style[not(string(@media)='embossed')]"/>
-        
-        <px:message>
             <p:with-option name="message" select="concat('[progress px:epub3-to-pef.convert.apply-document-specific-stylesheets 1/',p:iteration-size(),' px:apply-stylesheets]')"/>
         </px:message>
         <p:choose>
@@ -127,23 +124,17 @@
                 <px:message>
                     <p:with-option name="message" select="concat('Inlining document-specific CSS for ',replace(base-uri(/*),'.*/',''),'')"/>
                 </px:message>
-                <p:group>
-                    <!-- <link> not supported in css:inline so we provide the URIs to them explicitly -->
-                    <p:variable name="linked-stylesheets" select="string-join(//html:link[@rel='stylesheet' and @media='embossed']/resolve-uri(@href,base-uri(/*)), ' ')"/>
-                    <p:delete match="//html:link[@rel='stylesheet' and @media='embossed']"/>
-                    <px:apply-stylesheets>
-                        <p:with-option name="stylesheets" select="$linked-stylesheets"/>
-                        <p:input port="parameters">
-                            <p:pipe port="result" step="parameters"/>
-                        </p:input>
-                    </px:apply-stylesheets>
-                </p:group>
+                <px:apply-stylesheets>
+                    <p:input port="parameters">
+                        <p:pipe step="parameters" port="result"/>
+                    </p:input>
+                </px:apply-stylesheets>
             </p:when>
             <p:otherwise>
-                <p:delete match="//html:link[@rel='stylesheet' and @media='embossed']"/>
+                <p:delete match="@style"/>
             </p:otherwise>
         </p:choose>
-        
+        <css:delete-stylesheets/>
         <p:filter select="/*/html:body"/>
         
         <!-- xml:base attribute is required for resolving cross-references between different bodies -->
