@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<p:pipeline type="px:dotify-obfl-to-pef" version="1.0"
-            xmlns:p="http://www.w3.org/ns/xproc"
-            xmlns:px="http://www.daisy.org/ns/pipeline/xproc"
-            xmlns:dotify="http://code.google.com/p/dotify/"
-            xmlns:pxi="http://www.daisy.org/ns/pipeline/xproc/internal"
-            exclude-inline-prefixes="#all"
-            name="main">
+<p:declare-step type="px:dotify-obfl-to-pef" version="1.0"
+                xmlns:p="http://www.w3.org/ns/xproc"
+                xmlns:px="http://www.daisy.org/ns/pipeline/xproc"
+                xmlns:dotify="http://code.google.com/p/dotify/"
+                xmlns:pxi="http://www.daisy.org/ns/pipeline/xproc/internal"
+                exclude-inline-prefixes="#all"
+                name="main">
+	
+	<p:input port="source"/>
+	<p:output port="result"/>
 	
 	<p:option name="text-transform" required="true"/>
 	<p:input port="parameters" kind="parameter" primary="false"/>
@@ -22,4 +25,4 @@
 		</p:input>
 	</dotify:obfl-to-pef>
 	
-</p:pipeline>
+</p:declare-step>
