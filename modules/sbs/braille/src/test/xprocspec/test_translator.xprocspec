@@ -38,7 +38,7 @@
       </x:context>
       <x:expect label="result" type="compare">
         <x:document type="inline">
-          <div xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+          <div xmlns="http://www.w3.org/1999/xhtml" xml:lang="de-Brai">
             <p style="display: block">⠋⠕⠕­⠃⠁⠗</p>
           </div>
         </x:document>
@@ -53,7 +53,7 @@
       </x:context>
       <x:expect label="result" type="compare">
         <x:document type="inline">
-          <div xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+          <div xmlns="http://www.w3.org/1999/xhtml" xml:lang="de-Brai">
             <p style="display: block">⠋⠕⠕­⠃⠁⠗</p>
           </div>
         </x:document>
@@ -68,7 +68,7 @@
       </x:context>
       <x:expect label="result" type="compare">
         <x:document type="inline">
-          <div xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+          <div xmlns="http://www.w3.org/1999/xhtml" xml:lang="de-Brai">
             <p style="display: block">⠋⠕⠕­⠃⠁⠗</p>
           </div>
         </x:document>
@@ -105,7 +105,7 @@
     </x:context>
     <x:expect label="result" type="compare">
       <x:document type="inline">
-        <div xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+        <div xmlns="http://www.w3.org/1999/xhtml" xml:lang="de-Brai">
           <div>
             <div>
               <div>⠋⠕⠕</div>
@@ -145,7 +145,7 @@
       </x:context>
       <x:expect label="result" type="compare">
         <x:document type="inline">
-          <p xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+          <p xmlns="http://www.w3.org/1999/xhtml" xml:lang="de-Brai">
             <span>⠕­⠇⠽⠍­⠏⠊­⠑⠗</span>
             <span>⠕­⠇⠽⠍⠏⠊⠑⠗</span>
             <span style="hyphens: none">⠕⠇⠽⠍⠏⠊⠑⠗</span>
@@ -162,7 +162,7 @@
       </x:context>
       <x:expect label="result" type="compare">
         <x:document type="inline">
-          <p xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+          <p xmlns="http://www.w3.org/1999/xhtml" xml:lang="de-Brai">
             <span>⠕⠇⠠⠽⠍­⠏⠊­⠻</span>
             <span>⠕⠇⠠⠽⠍⠏⠊⠻</span>
             <span style="hyphens: none">⠕⠇⠠⠽⠍⠏⠊⠻</span>
@@ -172,6 +172,9 @@
     </x:scenario>
   </x:scenario>
   
+  <!--
+	  FIXME: xml:lang="fr" should be translated to xml:lang="fr-Brai"
+  -->
   <x:scenario label="downgrade">
     <x:call step="pxi:transform">
       <x:input port="source">
@@ -195,7 +198,7 @@
     </x:context>
     <x:expect label="result" type="compare">
       <x:document type="inline">
-        <p xmlns="http://www.w3.org/1999/xhtml" xml:lang="de"
+        <p xmlns="http://www.w3.org/1999/xhtml" xml:lang="de-Brai"
            style="@text-transform downgrade { system: -sbs-indicators; open: &quot;-.&quot;; close: &quot;'.&quot;; single-word: &quot;'.&quot; }">
           ⠫ ⠎⠏⠗⠼⠺⠢⠞⠒ ⠤⠄<span brl:grade="0" xml:lang="fr">⠞⠕⠥⠞ ⠧⠊⠑⠝⠞ ⠈⠷ ⠏⠕⠊⠝⠞ ⠈⠷ ⠟⠥⠊ ⠎⠁⠊⠞
           ⠁⠞⠞⠑⠝⠙⠗⠑</span>⠠⠄ ⠶⠵ ⠷⠂ ⠗ ⠺⠴⠞⠉ ⠅⠂ ⠅⠭⠞ ⠁⠿ ⠞ ⠗ ⠵⠞⠶⠄
