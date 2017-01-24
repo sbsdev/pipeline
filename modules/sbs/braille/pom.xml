@@ -9,7 +9,7 @@
     <!--
         depends on branch develop
     -->
-    <version>1.9.16-SNAPSHOT</version>
+    <version>1.9.17-SNAPSHOT</version>
     <relativePath />
   </parent>
 
