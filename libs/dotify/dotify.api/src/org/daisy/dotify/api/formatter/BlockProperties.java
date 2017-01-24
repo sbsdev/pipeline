@@ -18,7 +18,6 @@ public class BlockProperties implements Cloneable {
 	private final NumeralStyle listNumberFormat;
 	private final String defaultListLabel;
 	private final String listItemLabel;
-	private int listIterator;
 	private final BreakBefore breakBefore;
 	private final Keep keep;
 	private final int orphans;
@@ -266,30 +265,57 @@ public class BlockProperties implements Cloneable {
 			return this;
 		}
 		
+		/**
+		 * Sets the keep with previous sheets property for the block.
+		 * In other words, the number of previous sheets to keep in the
+		 * same volume as the end of this block.
+		 * @param keepWithPreviousSheets the number of sheets
+		 * @return returns this object
+		 */
 		public Builder keepWithPreviousSheets(int keepWithPreviousSheets) {
 			this.keepWithPreviousSheets = keepWithPreviousSheets;
 			return this;
 		}
 		
+		/**
+		 * Sets the keep with next sheets property for the block.
+		 * In other words, the number of following sheets to keep in
+		 * the same volume as the start of this block.
+		 * @param keepWithNextSheets the number of sheets
+		 * @return returns this object
+		 */
 		public Builder keepWithNextSheets(int keepWithNextSheets) {
 			this.keepWithNextSheets = keepWithNextSheets;
 			return this;
 		}
 		
+		/**
+		 * Sets the vertical position for this block. This behavior is similar to 
+		 * leader but in a vertical orientation. If the position has already been
+		 * passed when this block is rendered, it is ignored. 
+		 * @param position the position
+		 * @return returns this object
+		 */
 		public Builder verticalPosition(Position position) {
 			verticalPosition = position;
 			return this;
 		}
 
+		/**
+		 * Sets the vertical alignment for this block. This will only have have an
+		 * effect if vertical position is also set.
+		 * @param alignment the alignment
+		 * @return returns this object
+		 */
 		public Builder verticalAlignment(BlockPosition.VerticalAlignment alignment) {
 			verticalAlignment = alignment;
 			return this;
 		}
 		
 		/**
-		 * 
-		 * @param value
-		 * @return returns the row spacing
+		 * Sets the row spacing for the block
+		 * @param value the row spacing
+		 * @return returns this builder
 		 */
 		public Builder rowSpacing(float value) {
 			this.textBlockPropsBuilder.rowSpacing(value);
@@ -324,8 +350,8 @@ public class BlockProperties implements Cloneable {
 		}
 		
 		/**
-		 * 
-		 * @param identifier
+		 * Sets the identifier for the block
+		 * @param identifier the identifier
 		 * @return returns "this" object
 		 */
 		public Builder identifier(String identifier) {
@@ -333,6 +359,11 @@ public class BlockProperties implements Cloneable {
 			return this;
 		}
 
+		/**
+		 * Sets the text border style for the block.
+		 * @param value the text border
+		 * @return returns this object
+		 */
 		public Builder textBorderStyle(TextBorderStyle value) {
 			this.textBorderStyle = value;
 			return this;
@@ -397,7 +428,6 @@ public class BlockProperties implements Cloneable {
 		listNumberFormat = builder.listNumberFormat;
 		defaultListLabel = builder.defaultListLabel;
 		listItemLabel = builder.listItemLabel;
-		listIterator = 0;
 		breakBefore = builder.breakBefore;
 		keep = builder.keep;
 		orphans = builder.orphans;
@@ -432,26 +462,6 @@ public class BlockProperties implements Cloneable {
 	 */
 	public BlockSpacing getPadding() {
 		return padding;
-	}
-	
-	/**
-	 * Get text indent, in characters
-	 * @return returns the text indent
-	 * @deprecated use <code>getTextBlockProperties</code>
-	 */
-	@Deprecated
-	public int getTextIndent() {
-		return textBlockProps.getTextIndent();
-	}
-	
-	/**
-	 * Get first line indent, in characters
-	 * @return returns the first line indent
-	 * @deprecated use <code>getTextBlockProperties</code>
-	 */
-	@Deprecated
-	public int getFirstLineIndent() {
-		return textBlockProps.getFirstLineIndent();
 	}
 	
 	/**
@@ -501,27 +511,6 @@ public class BlockProperties implements Cloneable {
 	public String getListItemLabel() {
 		return listItemLabel;
 	}
-	
-	/**
-	 * Increments the list iterator and returns the current list number
-	 * @return returns the current list number
-	 * @deprecated keep state outside of this object
-	 */
-	@Deprecated
-	public int nextListNumber() {
-		listIterator++;
-		return listIterator;
-	}
-	
-	/**
-	 * Get current list number
-	 * @return returns the current list number
-	 * @deprecated keep state outside of this object
-	 */
-	@Deprecated
-	public int getListNumber() {
-		return listIterator;
-	}
 
 	/**
 	 * Get break before type
@@ -538,16 +527,6 @@ public class BlockProperties implements Cloneable {
 	public FormattingTypes.Keep getKeepType() {
 		return keep;
 	}
-	
-	/**
-	 * Gets the alignment
-	 * @return returns the alignment
-	 * @deprecated use <code>getTextBlockProperties</code>
-	 */
-	@Deprecated
-	public FormattingTypes.Alignment getAlignment() {
-		return textBlockProps.getAlignment();
-	}
 
 	/**
 	 * Get the number of rows containing text in the next block that must be on the same page as this block
@@ -556,44 +535,43 @@ public class BlockProperties implements Cloneable {
 	public int getKeepWithNext() {
 		return keepWithNext;
 	}
-	
+
+	/**
+	 * Gets the number of previous sheets to keep in the same volume as this block
+	 * @return returns the number of sheets
+	 */
 	public int getKeepWithPreviousSheets() {
 		return keepWithPreviousSheets;
 	}
 	
+	/**
+	 * Gets the number of next sheets to keep in the same volume as this block
+	 * @return returns the number of sheets
+	 */
 	public int getKeepWithNextSheets() {
 		return keepWithNextSheets;
 	}
-	
-	/**
-	 * 
-	 * @return the identifier
-	 * @deprecated use <code>getTextBlockProperties</code>
-	 */
-	@Deprecated
-	public String getIdentifier() {
-		return textBlockProps.getIdentifier();
-	}
 
+	/**
+	 * Gets the vertical position for this block
+	 * @return returns the vertical position
+	 */
 	public BlockPosition getVerticalPosition() {
 		return verticalPosition;
 	}
-	
-	/**
-	 * 
-	 * @return returns the row spacing
-	 * @deprecated use <code>getTextBlockProperties</code>
-	 */
-	@Deprecated
-	public Float getRowSpacing() {
-		return textBlockProps.getRowSpacing();
-	}
 
-	
+	/**
+	 * Gets the text border style for this block
+	 * @return returns the text border style
+	 */
 	public TextBorderStyle getTextBorderStyle() {
 		return textBorderStyle;
 	}
 	
+	/**
+	 * Gets the underline pattern for this block
+	 * @return returns the underline pattern
+	 */
 	public String getUnderlineStyle() {
 		return underlineStyle;
 	}
@@ -616,6 +594,10 @@ public class BlockProperties implements Cloneable {
 		return widows;
 	}
 	
+	/**
+	 * Gets the text block properties for this block
+	 * @return returns the text block properties
+	 */
 	public TextBlockProperties getTextBlockProperties() {
 		return textBlockProps;
 	}
