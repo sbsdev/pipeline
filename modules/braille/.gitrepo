@@ -6,6 +6,6 @@
 [subrepo]
 	remote = git@github.com:daisy/pipeline-mod-braille.git
 	branch = master
-	commit = 07b9ea8d8cd0fe704b06661ae697c93292dcf8c6
-	parent = 476e5c69665b2e68d9d4f007a101fef75df5eddf
+	commit = 416babd57b1a4219e0706f9956d1a7cdc8c48a0e
+	parent = c28c40916e76df7429e187f395bafe3ebdf394a5
 	cmdver = 0.3.0
