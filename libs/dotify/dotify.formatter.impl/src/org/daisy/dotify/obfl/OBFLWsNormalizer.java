@@ -19,6 +19,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.XMLEvent;
 
+/**
+ * Provides a whitespace normalizer for OBFL-files.
+ * @author Joel Håkansson
+ */
 public class OBFLWsNormalizer extends XMLParserBase {
 	private final XMLEventReader input;
 	private final OutputStream out;
@@ -29,11 +33,10 @@ public class OBFLWsNormalizer extends XMLParserBase {
 	/**
 	 * Creates a new OBFLWsNormalizer. 
 	 * @param input the input XMLEventReader. Note that the underlying stream might not be closed after parsing, due to limitations in the StaX implementation.
-	 * @param eventFactory
+	 * @param eventFactory the xml event factory
 	 * @param out the output stream
-	 * @throws XMLStreamException
 	 */
-	public OBFLWsNormalizer(XMLEventReader input, XMLEventFactory eventFactory, OutputStream out) throws XMLStreamException {
+	public OBFLWsNormalizer(XMLEventReader input, XMLEventFactory eventFactory, OutputStream out) {
 		this.input = input;
 		this.writer = null;
 		this.out = out;
@@ -41,6 +44,11 @@ public class OBFLWsNormalizer extends XMLParserBase {
 		this.writingOften = false;
 	}
 
+	/**
+	 * Parses for whitespace.
+	 * @param outputFactory an xml output factory
+	 */
+	//FIXME: this argument doesn't make sense from a user's perspective
 	public void parse(XMLOutputFactory outputFactory) {
 		XMLEvent event;
 		while (input.hasNext()) {
@@ -91,10 +99,19 @@ public class OBFLWsNormalizer extends XMLParserBase {
 		}
 	}
 
+	/**
+	 * Returns true if the output stream is updated often.
+	 * @return true if the output stream is updated often, false otherwise
+	 */
 	public boolean isWritingOften() {
 		return writingOften;
 	}
 
+	/**
+	 * Sets an intention to write to the output stream often, if true.
+	 * Since this can affect performance, it is configurable. 
+	 * @param writingOften pass true to write often, false otherwise
+	 */
 	public void setWritingOften(boolean writingOften) {
 		this.writingOften = writingOften;
 	}
@@ -277,7 +294,7 @@ public class OBFLWsNormalizer extends XMLParserBase {
 	}
 
 	/**
-	 * @param args
+	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
 		try {

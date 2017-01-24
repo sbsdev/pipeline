@@ -23,8 +23,9 @@ import org.daisy.dotify.api.translator.BrailleTranslatorFactoryMakerService;
 import org.daisy.dotify.api.translator.MarkerProcessorFactoryMakerService;
 import org.daisy.dotify.api.translator.TextBorderFactoryMakerService;
 import org.daisy.dotify.api.writer.PagedMediaWriter;
-import org.daisy.dotify.common.io.StateObject;
 import org.daisy.dotify.formatter.impl.DefaultContext.Space;
+import org.daisy.dotify.writer.impl.Volume;
+import org.daisy.dotify.writer.impl.WriterHandler;
 
 
 /**
@@ -37,8 +38,8 @@ public class FormatterImpl implements Formatter {
 	private final HashMap<String, TableOfContentsImpl> tocs;
 	private final Stack<VolumeTemplate> volumeTemplates;
 	private final Logger logger;
-	
-	private final StateObject state;
+
+	private boolean unopened;
 	private final Stack<BlockSequence> blocks;
 	
 	//CrossReferenceHandler
@@ -48,12 +49,17 @@ public class FormatterImpl implements Formatter {
 	private LazyFormatterContext context;
 
 	/**
-	 * Creates a new formatter
+	 * Creates a new formatter.
+	 * @param translatorFactory a braille translator factory maker service
+	 * @param tbf a text border factory maker service
+	 * @param mpf a marker processor factory maker service
+	 * @param locale a locale
+	 * @param mode a braille mode
 	 */
 	public FormatterImpl(BrailleTranslatorFactoryMakerService translatorFactory, TextBorderFactoryMakerService tbf, MarkerProcessorFactoryMakerService mpf, String locale, String mode) {
 		this.context = new LazyFormatterContext(translatorFactory, tbf, mpf, FormatterConfiguration.with(locale, mode).build());
 		this.blocks = new Stack<>();
-		this.state = new StateObject();
+		this.unopened = true;
 		this.tocs = new HashMap<>();
 		this.volumeTemplates = new Stack<>();
 		
@@ -74,13 +80,15 @@ public class FormatterImpl implements Formatter {
 	@Override
 	public void setConfiguration(FormatterConfiguration config) {
 		//TODO: we require unopened at the moment due to limitations in the implementation
-		state.assertUnopened();
+		if (!unopened) {
+			throw new IllegalStateException("Configuration must happen before use.");
+		}
 		context.setConfiguration(config);
 	}
 	
 	@Override
 	public FormatterSequence newSequence(SequenceProperties p) {
-		state.assertOpen();
+		unopened = false;
 		BlockSequence currentSequence = new BlockSequence(context.getFormatterContext(), p, context.getFormatterContext().getMasters().get(p.getMasterName()));
 		blocks.push(currentSequence);
 		return currentSequence;
@@ -89,26 +97,13 @@ public class FormatterImpl implements Formatter {
 	@Override
 	public LayoutMasterBuilder newLayoutMaster(String name,
 			LayoutMasterProperties properties) {
+		unopened = false;
 		return context.getFormatterContext().newLayoutMaster(name, properties);
 	}
 
 	@Override
-	public void open() {
-		state.assertUnopened();
-		state.open();
-	}
-	
-	@Override
-	public void close() throws IOException {
-		if (state.isClosed()) {
-			return;
-		}
-		state.assertOpen();
-		state.close();
-	}
-
-	@Override
 	public VolumeTemplateBuilder newVolumeTemplate(VolumeTemplateProperties props) {
+		unopened = false;
 		VolumeTemplate template = new VolumeTemplate(context.getFormatterContext(), tocs, props.getCondition(), props.getSplitterMax());
 		volumeTemplates.push(template);
 		return template;
@@ -116,6 +111,7 @@ public class FormatterImpl implements Formatter {
 
 	@Override
 	public TableOfContents newToc(String tocName) {
+		unopened = false;
 		TableOfContentsImpl toc = new TableOfContentsImpl(context.getFormatterContext());
 		tocs.put(tocName, toc);
 		return toc;
@@ -123,11 +119,13 @@ public class FormatterImpl implements Formatter {
 
 	@Override
 	public ContentCollection newCollection(String collectionId) {
+		unopened = false;
 		return context.getFormatterContext().newContentCollection(collectionId);
 	}
 	
 	@Override
 	public void write(PagedMediaWriter writer) {
+		unopened = false;
 		try (WriterHandler wh = new WriterHandler(writer)) {
 			wh.write(getVolumes());
 		} catch (IOException e) {
@@ -224,7 +222,6 @@ public class FormatterImpl implements Formatter {
 		 * Gets the volume max size based on the supplied information.
 		 * 
 		 * @param volumeNumber the volume number, one based
-		 * @param volumeCount the number of volumes
 		 * @return returns the maximum number of sheets in the volume
 		 */
 		public int getSplitterLimit(int volumeNumber) {

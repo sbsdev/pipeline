@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.daisy.dotify.api.engine.LayoutEngineException;
 import org.daisy.dotify.api.writer.PagedMediaWriterConfigurationException;
 import org.junit.Test;
+@SuppressWarnings("javadoc")
 public class XMLDataTest extends AbstractFormatterEngineTest {
 	
 	@Test
@@ -40,6 +41,11 @@ public class XMLDataTest extends AbstractFormatterEngineTest {
 	@Test
 	public void testXMLData_07() throws LayoutEngineException, IOException, PagedMediaWriterConfigurationException {
 		testPEF("resource-files/xml-data7-input.obfl", "resource-files/xml-data7-expected.pef", false);
+	}
+	
+	@Test
+	public void testXMLDataInBlock_01() throws LayoutEngineException, IOException, PagedMediaWriterConfigurationException {
+		testPEF("resource-files/xml-data-in-block-input.obfl", "resource-files/xml-data-in-block-expected.pef", false);
 	}
 
 }

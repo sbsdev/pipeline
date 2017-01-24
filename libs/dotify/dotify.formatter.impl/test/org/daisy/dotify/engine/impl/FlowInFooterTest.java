@@ -8,6 +8,7 @@ import org.daisy.dotify.api.writer.PagedMediaWriterConfigurationException;
 import org.junit.Ignore;
 import org.junit.Test;
 
+@SuppressWarnings("javadoc")
 public class FlowInFooterTest extends AbstractFormatterEngineTest {
 	
 	@Test
@@ -17,7 +18,8 @@ public class FlowInFooterTest extends AbstractFormatterEngineTest {
 		        false);
 	}
 	
-	// @Test // XFAIL
+	@Test
+	@Ignore
 	public void testFlowInFooterWithMarkerReference() throws LayoutEngineException, IOException, PagedMediaWriterConfigurationException {
 		testPEF("resource-files/flow-in-footer-with-marker-reference-input.obfl",
 		        "resource-files/flow-in-footer-with-marker-reference-expected.pef",

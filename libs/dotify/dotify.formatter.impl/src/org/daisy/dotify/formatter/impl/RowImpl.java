@@ -54,8 +54,6 @@ class RowImpl implements Row {
 	 */
 	RowImpl(RowImpl template) {
 		this.chars = template.chars;
-		this.leftMargin = template.leftMargin;
-		this.rightMargin = template.rightMargin;
 		this.markers = new ArrayList<>(template.markers);
 		this.anchors = new ArrayList<>(template.anchors);
 		this.leftMargin = template.leftMargin;
@@ -141,7 +139,7 @@ class RowImpl implements Row {
 
 	/**
 	 * Add a collection of markers to the Row
-	 * @param list
+	 * @param list the list of markers
 	 */
 	public void addMarkers(List<Marker> list) {
 		markers.addAll(list);
@@ -149,10 +147,13 @@ class RowImpl implements Row {
 	
 	/**
 	 * Add a collection of markers to the Row
-	 * @param list
+	 * @param index the position in the marker list to insert the markers
+	 * @param list the list of markers
+     * @throws IndexOutOfBoundsException if the index is out of range
+     *         (<tt>index &lt; 0 || index &gt; getMarkers().size()</tt>)
 	 */
 	public void addMarkers(int index, List<Marker> list) {
-		markers.addAll(0, list);
+		markers.addAll(index, list);
 	}
 
 	/**

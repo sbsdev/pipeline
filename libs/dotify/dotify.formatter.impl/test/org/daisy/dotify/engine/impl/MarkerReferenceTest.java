@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.daisy.dotify.api.engine.LayoutEngineException;
 import org.daisy.dotify.api.writer.PagedMediaWriterConfigurationException;
 import org.junit.Test;
+@SuppressWarnings("javadoc")
 public class MarkerReferenceTest extends AbstractFormatterEngineTest {
 
 	@Test
@@ -13,8 +14,18 @@ public class MarkerReferenceTest extends AbstractFormatterEngineTest {
 	}
 	
 	@Test
+	public void testPageContentMarker() throws LayoutEngineException, IOException, PagedMediaWriterConfigurationException {
+		testPEF("resource-files/marker-ref-page-content-input.obfl", "resource-files/marker-ref-page-content-expected.pef", false);
+	}
+	
+	@Test
 	public void testSpreadMarker() throws LayoutEngineException, IOException, PagedMediaWriterConfigurationException {
 		testPEF("resource-files/marker-ref-spread-input.obfl", "resource-files/marker-ref-spread-expected.pef", false);
+	}
+	
+	@Test
+	public void testSpreadContentMarker() throws LayoutEngineException, IOException, PagedMediaWriterConfigurationException {
+		testPEF("resource-files/marker-ref-spread-content-input.obfl", "resource-files/marker-ref-spread-content-expected.pef", false);
 	}
 	
 	@Test

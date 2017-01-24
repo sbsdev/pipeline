@@ -1,6 +1,5 @@
 package org.daisy.dotify.obfl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -80,9 +79,8 @@ import org.daisy.dotify.api.translator.TextBorderConfigurationException;
 import org.daisy.dotify.api.translator.TextBorderFactory;
 import org.daisy.dotify.api.translator.TextBorderStyle;
 import org.daisy.dotify.api.writer.MetaDataItem;
-import org.daisy.dotify.api.writer.PagedMediaWriter;
 import org.daisy.dotify.common.text.FilterLocale;
-import org.daisy.dotify.engine.impl.FactoryManager;
+import org.daisy.dotify.formatter.impl.FactoryManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -110,20 +108,13 @@ public class ObflParser extends XMLParserBase {
 	Map<String, Node> fileRefs = new HashMap<>();
 	Map<String, List<RendererInfo>> renderers = new HashMap<>();
 
+	/**
+	 * Creates a new obfl parser with the specified factory manager.
+	 * @param fm the factory manager
+	 */
 	public ObflParser(FactoryManager fm) {
 		this.fm = fm;
 		this.logger = Logger.getLogger(this.getClass().getCanonicalName());
-	}
-	/**
-	 * 
-	 * @param input
-	 * @throws XMLStreamException
-	 * @throws OBFLParserException
-	 * @deprecated use parse(input, formatter)
-	 */
-	@Deprecated
-	public void parse(XMLEventReader input) throws XMLStreamException, OBFLParserException {
-		parse(input, fm.getFormatterFactory().newFormatter(locale.toString(), mode));
 	}
 	
 	public void parse(XMLEventReader input, Formatter formatter) throws XMLStreamException, OBFLParserException {
@@ -132,9 +123,7 @@ public class ObflParser extends XMLParserBase {
 		this.locale = FilterLocale.parse(config.getLocale());
 		this.mode = config.getTranslationMode();
 		this.hyphGlobal = config.isHyphenating();
-		//this.masters = new HashMap<String, LayoutMaster>();
 		this.meta = new ArrayList<>();
-		formatter.open();
 		XMLEvent event;
 		TextProperties tp = new TextProperties.Builder(this.locale.toString()).translationMode(mode).hyphenate(hyphGlobal).build();
 		
@@ -169,12 +158,7 @@ public class ObflParser extends XMLParserBase {
 				report(event);
 			}
 		}
-		try {
-			input.close();
-			formatter.close();
-		} catch (IOException e) {
-			throw new OBFLParserException(e);
-		}
+		input.close();
 	}
 
 	private void parseMeta(XMLEvent event, XMLEventReader input) throws XMLStreamException {
@@ -1584,17 +1568,6 @@ public class ObflParser extends XMLParserBase {
 			}
 		}
 		return translate;
-	}
-	
-	/**
-	 * 
-	 * @param writer
-	 * @throws IOException
-	 * @deprecated use parse(input, formatter) and then formatter.write(writer)
-	 */
-	@Deprecated
-	public void writeResult(PagedMediaWriter writer) throws IOException {
-		formatter.write(writer);
 	}
 
 	public List<MetaDataItem> getMetaData() {

@@ -7,6 +7,7 @@ import org.daisy.dotify.api.writer.PagedMediaWriterConfigurationException;
 import org.junit.Ignore;
 import org.junit.Test;
 
+@SuppressWarnings("javadoc")
 public class TakenFromDP2Test extends AbstractFormatterEngineTest {
 	
 	@Test
@@ -138,7 +139,6 @@ public class TakenFromDP2Test extends AbstractFormatterEngineTest {
 		testPEF("resource-files/dp2/marker-reference-page-forward-backward-input.obfl",
 		        "resource-files/dp2/marker-reference-page-forward-backward-expected.pef", false);
 	}
-	@Ignore // issue https://github.com/joeha480/dotify/issues/150
 	@Test
 	public void testMarkerReferencePageContentForwardBackward() throws LayoutEngineException, IOException, PagedMediaWriterConfigurationException {
 		testPEF("resource-files/dp2/marker-reference-page-content-forward-backward-input.obfl",
@@ -169,14 +169,11 @@ public class TakenFromDP2Test extends AbstractFormatterEngineTest {
 		testPEF("resource-files/dp2/marker-reference-page-first-workaround-input.obfl",
 		        "resource-files/dp2/marker-reference-page-first-workaround-expected.pef", false);
 	}
-	@Ignore // issue https://github.com/joeha480/dotify/issues/150
 	@Test
 	public void testMarkerReferencePageStartWorkaround() throws LayoutEngineException, IOException, PagedMediaWriterConfigurationException {
 		testPEF("resource-files/dp2/marker-reference-page-start-workaround-input.obfl",
 		        "resource-files/dp2/marker-reference-page-start-workaround-expected.pef", true);
 	}
-	@Ignore // issue https://github.com/joeha480/dotify/issues/150
-	        // and no spread-content scope
 	@Test
 	public void testMarkerReferenceSpreadStartWorkaround() throws LayoutEngineException, IOException, PagedMediaWriterConfigurationException {
 		testPEF("resource-files/dp2/marker-reference-spread-start-workaround-input.obfl",
