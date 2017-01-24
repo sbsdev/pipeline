@@ -94,7 +94,7 @@ $(addsuffix /.maven-test-dependencies,assembly $(MAVEN_MODULES)) : %/.maven-test
 			echo "--> $$line"; \
 		done && \
 		modules=$$(cat $< |paste -sd , -) && \
-		$(MVN) --projects $$modules test package integration-test \
+		$(MVN) --projects $$modules clean test package integration-test \
 			org.codehaus.mojo:exec-maven-plugin:1.5.0:exec -Dexec.executable=sh -Dexec.args="-c 'rm .maven-to-test'" \
 		| $(MVN_LOG); \
 	else \
