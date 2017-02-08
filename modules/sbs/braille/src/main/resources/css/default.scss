@@ -533,6 +533,10 @@ rearmatter > level1:not(:first-child) {
     page-break-before:always;
 }
 
+/* :not(:first-child) needed to make specificity high enough */
+brl|volume + level1:not(:first-child) {
+    page-break-before: auto;
+}
 
 level1 {
     display: block;
