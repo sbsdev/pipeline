@@ -33,9 +33,11 @@
  * options, defaults in script). */
 
 @page {
-    @footnotes {
-	border-top: ⠒;
-	content: flow(footnotes);
+    @if ($footnotes-placement == 'standard') {
+        @footnotes {
+	    border-top: ⠒;
+	    content: flow(footnotes);
+        }
     }
 }
 
@@ -127,6 +129,12 @@ brl|volume[brl|grade='#{$contraction-grade}'] {
 	page:auto;
 	content: flow(cover) flow(volume-toc);
     }
+    @if ($footnotes-placement == 'end-of-volume') {
+        @end {
+            page: auto;
+            content: flow(volume-notes-title) flow(volume-notes, volume);
+        }
+    }
 }
 
 @volume:first {
@@ -134,7 +142,16 @@ brl|volume[brl|grade='#{$contraction-grade}'] {
 	content: flow(cover) flow(frontmatter) flow(document-toc);
     }
 }
-    
+
+@if ($footnotes-placement == 'end-of-book') {
+    @volume:last {
+        @end {
+            page: auto;
+            content: flow(endnotes-container);
+        }
+    }
+}
+
 /* Downgrading indicators */
 
 @text-transform downgrade {
@@ -278,10 +295,6 @@ brl|volume[brl|grade='#{$contraction-grade}'] {
     }
 }
 
-dtbook {
-    counter-reset: footnote 0;
-}
-
 /* Hidden elements
  *
  * These are not directly incldued in the output. */
@@ -300,6 +313,19 @@ docauthor {
     string-set: docauthor content();
 }
 
+/* Footnotes */
+
+dtbook {
+    counter-reset: footnote 0;
+}
+
+note {
+    display: none;
+}
+
+note p {
+    display: inline;
+}
 
 noteref {
     counter-increment: footnote;
@@ -311,21 +337,69 @@ noteref::after {
 }
 
 noteref::alternate {
-    flow: footnotes;
     display: block;
     content: '⠠⠔' counter(footnote) ' ' target-content(attr(idref));
     text-indent: -2;
-    margin-left: 2
+    margin-left: 2;
+    @if ($footnotes-placement == 'standard') {
+        flow: footnotes;
+    } @else if ($footnotes-placement == 'end-of-chapter') {
+        flow: chapter-notes;
+    } @else if ($footnotes-placement == 'end-of-volume') {
+        flow: volume-notes;
+    } @else if ($footnotes-placement == 'end-of-book') {
+        flow: endnotes;
+    }
 }
 
-note {
-    display: none;
+@if ($footnotes-placement == 'end-of-chapter') {
+    level1,
+    level2,
+    level3,
+    level4,
+    level5,
+    level6 {
+        &:has(noteref)::after {
+            content: flow(chapter-notes);
+            &::before {
+                display: block;
+                margin-top: 1;
+                -obfl-underline: ⠒;
+                content: 'Anmerkungen';
+                text-transform: auto;
+            }
+        }
+    }
+} @else if ($footnotes-placement == 'end-of-volume') {
+    book:has(noteref)::alternate {
+        flow: volume-notes-title;
+        display: block;
+        margin-top: 1;
+        -obfl-underline: ⠒;
+        content: 'Anmerkungen';
+        text-transform: auto;
+    }
+} @else if ($footnotes-placement == 'end-of-book') {
+    book:has(noteref)::alternate {
+        display: -obfl-list-of-references;
+        flow: endnotes-container;
+        content: -obfl-collection(endnotes);
+        hyphens: manual;
+        text-transform: none;
+        &::-obfl-on-volume-start {
+            display: block;
+            -obfl-underline: ⠒;
+            page-break-after: avoid;
+            content: 'Anmerkungen' -obfl-evaluate('(if (> $volumes 1) (concat " Band " $started-volume-number) "")');
+            text-transform: auto;
+        }
+        /* because skip-margin-top-of-page=true currently does not work for margin-top on -obfl-on-volume-start */
+        &::-obfl-on-volume-end {
+            display: block;
+            content: ' ';
+        }
+    }
 }
-
-note p {
-    display: inline;
-}
-
 
 .pageref {
     flow: null;

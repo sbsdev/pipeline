@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x:description xmlns:x="http://www.daisy.org/ns/xprocspec"
+               xmlns:sbs="http://www.sbs.ch"
+               xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
+               script="http://www.sbs.ch/pipeline/modules/braille/dtbook-to-pef.xpl">
+  
+  <x:scenario label="footnotes">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="file" href="../resources/test_4.4.66_footnotes/test_4.4.66.xml"/>
+      </x:input>
+      <x:option name="footnotes-placement" select="'standard'"/>
+      <x:option name="contraction-grade" select="0"/>
+      <x:option name="levels-in-footer" select="0"/>
+      <x:param port="parameters" name="generate-titlepage" select="false()"/>
+      <x:option name="include-brf" select="true()"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/footnotes/')"/>
+      <x:option name="brf-output-dir" select="concat($temp-dir,'output-dir/footnotes/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/footnotes/test_4.4.66.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_4.4.66_footnotes/output_expected/test_4.4.66.pef"/>
+    </x:expect>
+  </x:scenario>
+  
+  <x:scenario label="endnotes-chapter">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="file" href="../resources/test_4.4.67_endnotes_chapter/test_4.4.67.xml"/>
+      </x:input>
+      <x:option name="footnotes-placement" select="'end-of-chapter'"/>
+      <x:option name="contraction-grade" select="0"/>
+      <x:option name="levels-in-footer" select="0"/>
+      <x:param port="parameters" name="generate-titlepage" select="false()"/>
+      <x:option name="include-brf" select="true()"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/endnotes-chapter/')"/>
+      <x:option name="brf-output-dir" select="concat($temp-dir,'output-dir/endnotes-chapter/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/endnotes-chapter/test_4.4.67.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_4.4.67_endnotes_chapter/output_expected/test_4.4.67.pef"/>
+    </x:expect>
+  </x:scenario>
+  
+  <x:scenario label="endnotes-volume">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="file" href="../resources/test_4.4.67_endnotes_volume/test_4.4.67.xml"/>
+      </x:input>
+      <x:option name="footnotes-placement" select="'end-of-volume'"/>
+      <x:option name="contraction-grade" select="0"/>
+      <x:option name="levels-in-footer" select="0"/>
+      <x:param port="parameters" name="generate-titlepage" select="false()"/>
+      <x:option name="include-brf" select="true()"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/endnotes-volume/')"/>
+      <x:option name="brf-output-dir" select="concat($temp-dir,'output-dir/endnotes-volume/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/endnotes-volume/test_4.4.67.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_4.4.67_endnotes_volume/output_expected/test_4.4.67.pef"/>
+    </x:expect>
+  </x:scenario>
+  
+  <x:scenario label="endnotes-book">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="file" href="../resources/test_4.4.67_endnotes_book/test_4.4.67.xml"/>
+      </x:input>
+      <x:option name="footnotes-placement" select="'end-of-book'"/>
+      <x:option name="contraction-grade" select="0"/>
+      <x:option name="levels-in-footer" select="0"/>
+      <x:param port="parameters" name="generate-titlepage" select="false()"/>
+      <x:option name="include-brf" select="true()"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/endnotes-book/')"/>
+      <x:option name="brf-output-dir" select="concat($temp-dir,'output-dir/endnotes-book/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/endnotes-book/test_4.4.67.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_4.4.67_endnotes_book/output_expected/test_4.4.67.pef"/>
+    </x:expect>
+  </x:scenario>
+  
+  <x:scenario label="endnotes-book-group-by-volume">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="file" href="../resources/test_4.4.92_endnotes_book_group_by_volume/test_4.4.92.xml"/>
+      </x:input>
+      <x:option name="footnotes-placement" select="'end-of-book'"/>
+      <x:option name="contraction-grade" select="0"/>
+      <x:option name="levels-in-footer" select="0"/>
+      <x:param port="parameters" name="generate-titlepage" select="false()"/>
+      <x:option name="include-brf" select="true()"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/endnotes-book-group-by-volume/')"/>
+      <x:option name="brf-output-dir" select="concat($temp-dir,'output-dir/endnotes-book-group-by-volume/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/endnotes-book-group-by-volume/test_4.4.92.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_4.4.92_endnotes_book_group_by_volume/output_expected/test_4.4.92.pef"/>
+    </x:expect>
+  </x:scenario>
+  
+</x:description>

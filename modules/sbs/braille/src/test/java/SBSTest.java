@@ -69,7 +69,8 @@ public class SBSTest {
 			"test_dtbook-to-pef_tables",
 			"test_dtbook-to-pef_pagination",
 			"test_dtbook-to-pef_titlepage",
-			"test_dtbook-to-pef_print_page_numbers"
+			"test_dtbook-to-pef_print_page_numbers",
+			"test_dtbook-to-pef_notes"
 		    })
 		    xprocspecTests.put(test, new File(baseDir, "src/test/xprocspec/" + test + ".xprocspec"));
 		boolean xspecHasFocus = xspecRunner.hasFocus(xspecTestsDir);

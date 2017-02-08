@@ -24,15 +24,13 @@
     <p:option name="contraction-grade" required="false" select="'0'">
       <p:pipeinfo>
         <px:data-type>
-          <choice>
-            <documentation xmlns="http://relaxng.org/ns/compatibility/annotations/1.0" xml:lang="de">
-              <value>Basisschrift</value>
-              <value>Vollschrift</value>
-              <value>Kurzschrift</value>
-            </documentation>
+          <choice xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">
             <value>0</value>
+            <a:documentation xml:lang="de">Basisschrift</a:documentation>
             <value>1</value>
+            <a:documentation xml:lang="de">Vollschrift</a:documentation>
             <value>2</value>
+            <a:documentation xml:lang="de">Kurzschrift</a:documentation>
           </choice>
         </px:data-type>
       </p:pipeinfo>
@@ -70,7 +68,24 @@
     <p:option name="show-print-page-numbers"/>
     <p:option name="force-braille-page-break"/>
     <p:option name="toc-depth"/>
-    <p:option name="footnotes-placement"/>
+    
+    <p:option name="footnotes-placement" select="'standard'">
+      <p:pipeinfo>
+        <px:data-type>
+          <choice xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">
+            <value>standard</value>
+            <a:documentation xml:lang="en">Standard (bottom of page)</a:documentation>
+            <value>end-of-chapter</value>
+            <a:documentation xml:lang="en">End of level 1-6</a:documentation>
+            <value>end-of-volume</value>
+            <a:documentation xml:lang="en">End of volume</a:documentation>
+            <value>end-of-book</value>
+            <a:documentation xml:lang="en">End of last volume</a:documentation>
+          </choice>
+        </px:data-type>
+      </p:pipeinfo>
+    </p:option>
+    
     <p:option name="colophon-metadata-placement"/>
     <p:option name="rear-cover-placement"/>
     <p:option name="number-of-sheets"/>

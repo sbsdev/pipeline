@@ -1,0 +1,24 @@
+@volume:last {
+   @end {
+      content: flow(endnotes-container);
+   }
+}
+
+book::alternate {
+   display: -obfl-list-of-references;
+   flow: endnotes-container;
+   content: -obfl-collection(endnotes);
+   hyphens: manual;
+   text-transform: none;
+   &::-obfl-on-volume-start {
+      display: block;
+      margin-top: 1;
+      -obfl-underline: ⠒;
+      content: 'Band ' -obfl-evaluate('(round $started-volume-number)');
+      text-transform: auto;
+   }
+}
+
+noteref::alternate {
+   flow: endnotes;
+}
