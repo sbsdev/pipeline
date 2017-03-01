@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = git@github.com:daisy/xmlcalabash1.git
+	branch = org.daisy.libs
+	commit = beb1f42d6faec8c7743bc3669b5b2d23ad0218fb
+	parent = 6f90a277dbcf0e28b322e7d46c4a558783a3830d
+	cmdver = 0.3.0
