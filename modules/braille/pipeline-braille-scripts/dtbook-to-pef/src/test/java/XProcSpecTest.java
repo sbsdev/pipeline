@@ -67,6 +67,8 @@ public class XProcSpecTest {
 				pipelineModule("validation-utils"),
 				// logging
 				logbackClassic(),
+				mavenBundle("org.daisy.pipeline:logging-appender:?"),
+				mavenBundle("org.daisy.pipeline:logging-activator:?"),
 				// xprocspec
 				xprocspec(),
 				mavenBundle("org.daisy.maven:xproc-engine-daisy-pipeline:?"))
