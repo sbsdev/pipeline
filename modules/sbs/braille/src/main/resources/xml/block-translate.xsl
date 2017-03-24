@@ -51,7 +51,7 @@
 		<xsl:variable name="ascii-braille" as="xs:string*">
 	      <xsl:analyze-string regex="[\s&#x00A0;&#x00AD;&#x200B;]+" select="$text">
 			<xsl:matching-substring>
-			  <xsl:sequence select="translate(.,'&#x00AD;&#x200B;','tm')"/>
+			  <xsl:sequence select="translate(.,'&#x00A0;&#x00AD;&#x200B;','btm')"/>
 			</xsl:matching-substring>
 			<xsl:non-matching-substring>
 			  <xsl:value-of select="pef:encode('(liblouis-table:&quot;sbs.dis&quot;)', .)"/>
@@ -64,9 +64,9 @@
 	<xsl:template name="decode" as="text()">
 		<xsl:param name="text" as="xs:string" required="no" select="string()"/>
 		<xsl:variable name="unicode-braille" as="xs:string*">
-	      <xsl:analyze-string regex="[\s&#x00A0;tm]+" select="$text">
+	      <xsl:analyze-string regex="[\s&#x00A0;btm]+" select="$text">
 			<xsl:matching-substring>
-			  <xsl:sequence select="translate(.,'tm','&#x00AD;&#x200B;')"/>
+			  <xsl:sequence select="translate(.,'btm','&#x00A0;&#x00AD;&#x200B;')"/>
 			</xsl:matching-substring>
 			<xsl:non-matching-substring>
 			  <xsl:value-of select="pef:decode('(liblouis-table:&quot;sbs.dis&quot;)', .)"/>
