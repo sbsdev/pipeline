@@ -1474,4 +1474,93 @@
     </x:expect>
   </x:scenario>
   
+  <x:scenario label="pageref">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="inline">
+          <dtbook xml:lang="de" xmlns="http://www.daisy.org/z3986/2005/dtbook/">
+            <book>
+              <frontmatter>
+                ...
+                <p>Zeichnungen ab Seite <a class="pageref" href="#p-81">81</a></p>
+                ...
+              </frontmatter>
+              <bodymatter>
+                <p>...</p>
+                <pagenum id="page-81" page="normal">81</pagenum>
+                <a id="p-81"/>
+                <h2>Die Heilmittel</h2>
+                <p>...</p>
+              </bodymatter>
+            </book>
+          </dtbook>
+        </x:document>
+      </x:input>
+      <x:option name="show-braille-page-numbers" select="true()"/>
+      <x:option name="show-print-page-numbers" select="false()"/>
+      <x:option name="levels-in-footer" select="0"/>
+      <x:option name="include-brf" select="true()"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/pageref/')"/>
+      <x:option name="brf-output-dir" select="concat($temp-dir,'output-dir/pageref/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/pageref/test_dtbook-to-pef.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="inline">
+        <pef xmlns="http://www.daisy.org/ns/2008/pef" xml:lang="de" version="2008-1">
+          <head>
+            <meta xmlns:dc="http://purl.org/dc/elements/1.1/">
+              <dc:format>application/x-pef+xml</dc:format>
+            </meta>
+          </head>
+          <body>
+            <volume cols="28" rows="28" rowgap="0" duplex="true">
+              <section>
+                <page>
+                  <row>⠄⠄⠄</row>
+                  <row>⠀⠀⠵⠑⠊⠉⠓⠝⠥⠝⠛⠑⠝⠀⠁⠃⠀⠎⠑⠊⠞⠑⠀⠼⠁</row>
+                  <row>⠄⠄⠄</row>
+                </page>
+              </section>
+              <section>
+                <page>
+                  <row>⠀⠀⠄⠄⠄</row>
+                  <row>⠙⠊⠑⠀⠓⠑⠊⠇⠍⠊⠞⠞⠑⠇</row>
+                  <row>⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒</row>
+                  <row>⠀⠀⠄⠄⠄</row>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠼⠁</row>
+                </page>
+              </section>
+            </volume>
+          </body>
+        </pef>
+      </x:document>
+    </x:expect>
+  </x:scenario>
+  
 </x:description>

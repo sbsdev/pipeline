@@ -410,6 +410,10 @@ noteref::alternate {
     content: target-counter(attr(href), page);
 }
 
+a:empty {
+    display: none;
+}
+
 brl|select,
 brl|when-braille,
 brl|literal{
