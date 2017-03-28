@@ -24,13 +24,13 @@
     <dependency>
       <groupId>org.daisy.xprocspec</groupId>
       <artifactId>xprocspec</artifactId>
-      <version>1.1.1-SNAPSHOT</version>
+      <version>1.2.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>net.sf.saxon</groupId>
-      <artifactId>Saxon-HE</artifactId>
-      <version>9.5.1-1</version>
+      <groupId>org.daisy.libs</groupId>
+      <artifactId>saxon-he</artifactId>
+      <version>9.6.0.9-p1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
