@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #
 #    Licensed to the Apache Software Foundation (ASF) under one or more
 #    contributor license agreements.  See the NOTICE file distributed with
@@ -235,8 +235,8 @@ locateJava() {
 checkJavaVersion() {
     local VERSION
     VERSION=$( "$JAVA" -version 2>&1 | sed 's/[^ ]* version "\(.*\)\.\(.*\)\..*"/\1\2/; 1q' )
-    if [ "$VERSION" -lt "17" ]; then
-        die "Java version must be at least 1.7"
+    if [ "$VERSION" -lt "18" ]; then
+        die "Java version must be at least 1.8"
     fi
     return 0
 }
@@ -275,7 +275,8 @@ setupDebugOptions() {
 }
 
 setupDefaults() {
-    DEFAULT_JAVA_OPTS="-Xms$JAVA_MIN_MEM -Xmx$JAVA_MAX_MEM "
+    # add startOnFirstThread for the GUI
+    DEFAULT_JAVA_OPTS="-Xms$JAVA_MIN_MEM -Xmx$JAVA_MAX_MEM"
 
     #Set the JVM_VENDOR specific JVM flags
     if [ "$JVM_VENDOR" = "SUN" ]; then
@@ -371,6 +372,7 @@ run() {
     fi
     MAIN=org.apache.felix.main.Main
     OPTS="$PIPELINE2_LOCAL $PIPELINE2_AUTH"
+    MODE=" -Dorg.daisy.pipeline.main.mode=webservice"
 
     case "$1" in
         # 'stop')
@@ -408,6 +410,17 @@ run() {
             fi
             shift
             ;;
+        'gui')
+            if "$JAVA" -showversion 2>&1 | grep OpenJDK >/dev/null; then
+                warn "Your version of Java possibly does not support JavaFX, which is required to start the GUI. See http://daisy.github.io/pipeline/Get-Help/User-Guide/Installation/#javafx for more information."
+                if [ -t 0 ]; then
+                    echo "Will continue in 10s. Hit ^C to abort, or ENTER to continue now."
+                    read -t10
+                fi
+            fi
+            MODE=" -Dorg.daisy.pipeline.main.mode=gui"
+            shift
+            ;;
     esac
 
     JAVA_ENDORSED_DIRS="${JAVA_HOME}/jre/lib/endorsed:${JAVA_HOME}/lib/endorsed:${PIPELINE2_HOME}/lib/endorsed"
@@ -424,11 +437,11 @@ run() {
     fi
     cd "$PIPELINE2_BASE"
 
-    eval exec "\"$JAVA"\" "$JAVA_OPTS" -Djava.endorsed.dirs="\"${JAVA_ENDORSED_DIRS}"\" -Djava.ext.dirs="\"${JAVA_EXT_DIRS}"\"  -Dorg.daisy.pipeline.home="\"$PIPELINE2_HOME"\" -Dorg.daisy.pipeline.base="\"$PIPELINE2_BASE"\" -Dorg.daisy.pipeline.data="\"$PIPELINE2_DATA"\" -Dfelix.config.properties="\"file:$PIPELINE2_HOME/etc/config.properties"\" -Dfelix.system.properties="\"file:$PIPELINE2_CONFIG/system.properties"\" $FELIX_OPTS $PIPELINE2_OPTS $OPTS -classpath "\"$CLASSPATH"\" $MAIN "\"$@"\"
+    eval exec "\"$JAVA"\" "$JAVA_OPTS" -Djava.endorsed.dirs="\"${JAVA_ENDORSED_DIRS}"\" -Djava.ext.dirs="\"${JAVA_EXT_DIRS}"\"  -Dorg.daisy.pipeline.home="\"$PIPELINE2_HOME"\" -Dorg.daisy.pipeline.base="\"$PIPELINE2_BASE"\" -Dorg.daisy.pipeline.data="\"$PIPELINE2_DATA"\" -Dfelix.config.properties="\"file:$PIPELINE2_HOME/etc/config.properties"\" -Dfelix.system.properties="\"file:$PIPELINE2_CONFIG/system.properties"\" $FELIX_OPTS $PIPELINE2_OPTS $OPTS $MODE -classpath "\"$CLASSPATH"\" $MAIN "\"$@"\"
 }
 
 main() {
-    init
+    init "$@"
     run "$@"
 }
 
