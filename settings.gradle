@@ -1,2 +1,3 @@
 include 'libs/dotify:dotify.api'
 include 'libs/dotify:dotify.formatter.impl'
+include 'libs/com.xmlcalabash'

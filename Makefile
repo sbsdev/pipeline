@@ -238,7 +238,8 @@ $(addsuffix /.gradle-dependencies-to-test,assembly $(MAVEN_MODULES)) : %/.gradle
 $(addsuffix /.gradle-dependencies-to-install,assembly $(MAVEN_MODULES)) : %/.gradle-dependencies-to-install : %/.gradle-snapshot-dependencies
 	echo "Looking for changes..." >&2
 	for module in $$(cat $<); do \
-		v=$$(cat $$module/gradle.properties | grep '^version' | sed 's/^version=//') && \
+		v=$$((cat $$module/gradle.properties | grep '^distVersion' || \
+		      cat $$module/gradle.properties | grep '^version' ) | sed 's/.*=//') && \
 		a=$$(basename $$module) && \
 		g=$$(cat $$module/build.gradle | grep '^group' | sed "s/^group *= *['\"]\(.*\)['\"]/\1/") && \
 		dest="$(MVN_WORKSPACE)/$$(echo $$g |tr . /)/$$a/$$v" && \
@@ -259,7 +260,8 @@ $(addsuffix /.gradle-dependencies-to-install,assembly $(MAVEN_MODULES)) : %/.gra
 $(addsuffix /.gradle-snapshot-dependencies,assembly $(MAVEN_MODULES)) : %/.gradle-snapshot-dependencies : %/.maven-effective-pom.xml $(GRADLE_FILES)
 	cat settings.gradle | sed "s/^include  *'\(.*\)'/\1/" | tr : / \
 	| while read -r module; do \
-		v=$$(cat $$module/gradle.properties | grep '^version' | sed 's/^version=//') && \
+		v=$$((cat $$module/gradle.properties | grep '^distVersion' || \
+		      cat $$module/gradle.properties | grep '^version' ) | sed 's/.*=//') && \
 		if [[ "$$v" =~ -SNAPSHOT$$ ]]; then \
 			a=$$(basename $$module) && \
 			g=$$(cat $$module/build.gradle | grep '^group' | sed "s/^group *= *['\"]\(.*\)['\"]/\1/") && \
