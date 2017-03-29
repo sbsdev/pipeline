@@ -135,7 +135,7 @@ $(addsuffix /.maven-test-dependencies,assembly $(MAVEN_MODULES)) : %/.maven-test
 .PHONY : $(addsuffix /.gradle-install-dependencies,assembly $(MAVEN_MODULES))
 $(addsuffix /.gradle-install-dependencies,assembly $(MAVEN_MODULES)) : %/.gradle-install-dependencies : %/.gradle-dependencies-to-install
 	if [ -s $< ]; then \
-		$(GRADLE) install; \
+		$(GRADLE) install && \
 		for module in $$(cat $<); do \
 			rm $$module/.gradle-to-install ;\
 		done \
