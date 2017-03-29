@@ -313,6 +313,12 @@ public class XProcRuntime {
 
         initializeSteps();
     }
+    
+    public void resetExtensionFunctions() {
+        for (XProcExtensionFunctionDefinition xf : exFuncs) {
+            processor.registerExtensionFunction(xf);
+        }
+    }
 
     private void initializeSteps() {
         for (Class klass : config.implementations.values()) {
@@ -1065,7 +1071,7 @@ public class XProcRuntime {
                 transformer.setDestination(result);
                 transformer.transform();
 
-                Serializer serializer = getProcessor().newSerializer();
+                Serializer serializer = new Serializer();
                 serializer.setOutputProperty(Serializer.Property.INDENT, "yes");
 
                 OutputStream outstr = null;

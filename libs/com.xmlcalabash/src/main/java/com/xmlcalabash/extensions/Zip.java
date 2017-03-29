@@ -597,7 +597,7 @@ public class Zip extends DefaultStep {
     }
 
     public Serializer makeSerializer(Hashtable<QName,String> options) {
-        Serializer serializer = runtime.getProcessor().newSerializer();
+        Serializer serializer = new Serializer();
 
         if (options == null) {
             return serializer;

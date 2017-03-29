@@ -82,14 +82,14 @@ public class TreeWriter {
      */
     public TreeWriter(XProcRuntime xproc) {
         runtime = xproc;
-        pool = xproc.getProcessor().getUnderlyingConfiguration().getNamePool();
         controller = new Controller(runtime.getProcessor().getUnderlyingConfiguration());
+        pool = controller.getNamePool();
         xLocationProvider = new XProcLocationProvider();
     }
 
     public TreeWriter(Processor proc) {
-        pool = proc.getUnderlyingConfiguration().getNamePool();
         controller = new Controller(proc.getUnderlyingConfiguration());
+        pool = controller.getNamePool();
         xLocationProvider = new XProcLocationProvider();
 
     }

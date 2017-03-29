@@ -95,6 +95,9 @@ public class StepAvailable extends XProcExtensionFunctionDefinition {
 
             XProcRuntime runtime = registry.getRuntime(xdef);
             XStep step = runtime.getXProcData().getStep();
+            if (step == null) {
+                return BooleanValue.FALSE;
+            }
             // FIXME: this can't be the best way to do this...
             // step == null in use-when
             if (step != null && !(step instanceof XCompoundStep)) {
@@ -107,6 +110,7 @@ public class StepAvailable extends XProcExtensionFunctionDefinition {
                      lexicalQName,
                      false,
                      false,
+                     xPathContext.getConfiguration().getNameChecker(),
                      staticContext.getNamespaceResolver());
             } catch (XPathException e) {
                 // FIXME: bad formatting

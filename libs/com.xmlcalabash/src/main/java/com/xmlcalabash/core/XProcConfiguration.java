@@ -15,8 +15,10 @@ import net.sf.saxon.s9api.XdmNodeKind;
 import net.sf.saxon.s9api.XdmValue;
 import net.sf.saxon.value.Whitespace;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -29,6 +31,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.io.InputStream;
 import java.io.File;
 import java.util.jar.JarFile;
@@ -44,6 +47,8 @@ import javax.xml.transform.Source;
 
 import org.atteo.classindex.ClassFilter;
 import org.atteo.classindex.ClassIndex;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -270,8 +275,47 @@ public class XProcConfiguration {
         }
     }
 
+    private Iterable<Class<?>> findClasses(Class<?> type) {
+        Iterable<Class<?>> classes = null;
+        try {
+            classes = ClassFilter.only().from(ClassIndex.getAnnotated(XMLCalabash.class));
+        } catch (NoClassDefFoundError e) {
+            // org.atteo.classindex package does not exist
+        }
+        if (classes == null || !classes.iterator().hasNext()) {
+            // most likely this happened because we are in OSGi context
+            // fall back to finding annotations in current bundle only
+            HashSet<Class<?>> set = new HashSet<Class<?>>();
+            try {
+                Bundle bundle = FrameworkUtil.getBundle(XProcConfiguration.class);
+                String path = "META-INF/annotations/" + type.getCanonicalName();
+                URL url = bundle.getEntry(path);
+                if (url != null)
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
+                        String line = reader.readLine();
+                        while (line != null) {
+                            try {
+                                set.add(XProcConfiguration.class.getClassLoader().loadClass(line));
+                            } catch (ClassNotFoundException e) {
+                                throw new RuntimeException("coding error"); // META-INF/annotations/... is corrupt
+                            }
+                            line = reader.readLine();
+                        }
+                    }
+                else
+                    logger.warn("file " + path + " does not exist");
+            } catch (IOException e) {
+                throw new RuntimeException("coding error");
+            } catch (NoClassDefFoundError e) {
+                // not in OSGi context after all
+            }
+            return set;
+        }
+        return classes;
+    }
+
     private void findStepClasses() {
-        Iterable<Class<?>> classes = ClassFilter.only().from(ClassIndex.getAnnotated(XMLCalabash.class));
+        Iterable<Class<?>> classes = findClasses(XMLCalabash.class);
         for (Class<?> klass : classes) {
             XMLCalabash annotation = klass.getAnnotation(XMLCalabash.class);
             for (String clarkName: annotation.type().split("\\s+")) {
@@ -290,7 +334,7 @@ public class XProcConfiguration {
     }
 
     private void findExtensionFunctions() {
-        Iterable<Class<?>> classes = ClassIndex.getAnnotated(SaxonExtensionFunction.class);
+        Iterable<Class<?>> classes = findClasses(SaxonExtensionFunction.class);
         for (Class<?> klass : classes) {
             String name = klass.getCanonicalName();
             SaxonExtensionFunction annotation = klass.getAnnotation(SaxonExtensionFunction.class);

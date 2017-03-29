@@ -110,7 +110,7 @@ public class WritableDocument implements WritablePipe {
 
     public void write(final XdmNode doc) {
         try {
-            serializer = runtime.getProcessor().newSerializer();
+            serializer = new Serializer();
 
             serializer.setOutputProperty(Serializer.Property.BYTE_ORDER_MARK, serial.getByteOrderMark() ? "yes" : "no");
             // FIXME: support CDATA_SECTION_ELEMENTS

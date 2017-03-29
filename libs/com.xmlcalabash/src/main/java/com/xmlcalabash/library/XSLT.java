@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Hashtable;
 import java.util.Vector;
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -155,6 +156,10 @@ public class XSLT extends DefaultStep {
             version = getOption(_version).getString();
         }
         
+        if ("3.0".equals(version) && Configuration.softwareEdition.toLowerCase().equals("he")) {
+            throw XProcException.stepError(38, "XSLT version '" + version + "' is not supported (Saxon PE or EE processor required).");
+        }
+        
         // We used to check if the XSLT version was supported, but I've removed that check.
         // If it's not supported by Saxon, we'll get an error from Saxon. Otherwise, we'll
         // get the results we get.
@@ -203,6 +208,7 @@ public class XSLT extends DefaultStep {
         try {
             XsltCompiler compiler = runtime.getProcessor().newXsltCompiler();
             compiler.setSchemaAware(processor.isSchemaAware());
+            compiler.setErrorListener(new LogCompileErrors());
             XsltExecutable exec = compiler.compile(stylesheet.asSource());
             XsltTransformer transformer = exec.load();
 
@@ -414,6 +420,18 @@ public class XSLT extends DefaultStep {
 
             step.reportError(treeWriter.getResult());
             step.info(step.getNode(), content.toString());
+        }
+    }
+
+    class LogCompileErrors implements ErrorListener {
+        public void error(TransformerException exception) {
+            logger.error(exception.getMessage());
+        }
+        public void fatalError(TransformerException exception) {
+            logger.error(exception.getMessage());
+        }
+        public void warning(TransformerException exception) {
+            logger.warn(exception.getMessage());
         }
     }
 }

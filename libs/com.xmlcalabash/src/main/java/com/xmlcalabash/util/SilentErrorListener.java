@@ -19,15 +19,15 @@ public class SilentErrorListener extends StandardErrorListener {
         super();
     }
 
-    public void error(TransformerException exception) {
+    public void error(TransformerException exception) throws TransformerException {
         // what, me, worry?
     }
 
-    public void fatalError(TransformerException exception) {
+    public void fatalError(TransformerException exception) throws TransformerException {
         // what, me, worry?
     }
 
-    public void warning(TransformerException exception) {
+    public void warning(TransformerException exception) throws TransformerException {
         // what, me, worry?
     }
 }

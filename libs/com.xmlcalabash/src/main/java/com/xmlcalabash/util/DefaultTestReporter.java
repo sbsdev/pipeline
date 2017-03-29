@@ -159,7 +159,7 @@ public class DefaultTestReporter implements TestReporter {
 
     public String serializeAsXML(XdmNode node) {
         try {
-            Serializer serializer = runtime.getProcessor().newSerializer();
+            Serializer serializer = new Serializer();
 
             serializer.setOutputProperty(Serializer.Property.BYTE_ORDER_MARK, "no");
             serializer.setOutputProperty(Serializer.Property.ENCODING, "utf-8");

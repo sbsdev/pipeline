@@ -9,8 +9,6 @@ import com.xmlcalabash.core.XProcException;
 import com.xmlcalabash.runtime.XAtomicStep;
 import com.xmlcalabash.model.RuntimeValue;
 import com.xmlcalabash.util.TreeWriter;
-import com.xmlcalabash.util.URIUtils;
-
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
 
@@ -81,7 +79,7 @@ public class Tempfile extends DefaultStep {
         if (!"file".equals(uri.getScheme())) {
             throw new XProcException(step.getNode(), "Only file: scheme URIs are supported by the tempfile step.");
         } else {
-            file = URIUtils.toFile(uri);
+            file = new File(uri.getPath());
         }
 
         if (!file.isDirectory()) {

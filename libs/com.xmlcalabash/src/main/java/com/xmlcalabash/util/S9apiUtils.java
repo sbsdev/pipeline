@@ -232,7 +232,7 @@ public class S9apiUtils {
     // FIXME: THIS METHOD IS A GROTESQUE HACK!
     public static InputSource xdmToInputSource(XProcRuntime runtime, XdmNode node) throws SaxonApiException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Serializer serializer = runtime.getProcessor().newSerializer();
+        Serializer serializer = new Serializer();
         serializer.setOutputStream(out);
         serialize(runtime, node, serializer);
         InputSource isource = new InputSource(new ByteArrayInputStream(out.toByteArray()));

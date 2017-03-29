@@ -32,8 +32,9 @@ public class XProcLocationProvider implements SourceLocationProvider {
         }
     }
 
-    @Override
-    public String getSystemId(int locId) {
+
+    public String getSystemId(long locationId) {
+        int locId = (int) locationId;
         if (idMap.containsKey(locId)) {
             return idMap.get(locId);
         } else {
@@ -41,13 +42,11 @@ public class XProcLocationProvider implements SourceLocationProvider {
         }
     }
 
-    @Override
-    public int getLineNumber(int l) {
+    public int getLineNumber(long locationId) {
         return 0;
     }
 
-    @Override
-    public int getColumnNumber(int l) {
+    public int getColumnNumber(long locationId) {
         return 0;
     }
 }

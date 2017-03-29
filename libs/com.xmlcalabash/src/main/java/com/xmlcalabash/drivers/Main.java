@@ -186,7 +186,7 @@ public class Main {
             if (debug) {
                 System.err.println("Implicit pipeline:");
 
-                Serializer serializer = runtime.getProcessor().newSerializer();
+                Serializer serializer = new Serializer();
 
                 serializer.setOutputProperty(Serializer.Property.INDENT, "yes");
                 serializer.setOutputProperty(Serializer.Property.METHOD, "xml");

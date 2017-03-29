@@ -80,7 +80,7 @@ public class PrettyPrint extends DefaultStep {
         transformer.setInitialContextNode(source.read());
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Serializer serializer = runtime.getProcessor().newSerializer();
+        Serializer serializer = new Serializer();
         serializer.setOutputProperty(Serializer.Property.ENCODING, "utf-8");
         serializer.setOutputProperty(Serializer.Property.INDENT, "yes");
         serializer.setOutputProperty(Serializer.Property.OMIT_XML_DECLARATION, "yes");
