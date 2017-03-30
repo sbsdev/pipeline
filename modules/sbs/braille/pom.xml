@@ -6,10 +6,7 @@
   <parent>
     <groupId>org.daisy.pipeline.modules.braille</groupId>
     <artifactId>braille-modules-parent</artifactId>
-    <!--
-        depends on branch develop
-    -->
-    <version>1.9.17-SNAPSHOT</version>
+    <version>1.10.1-SNAPSHOT</version>
     <relativePath />
   </parent>
 
@@ -133,11 +130,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix.bundles</groupId>
-      <artifactId>org.apache.servicemix.bundles.xmlresolver</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.daisy.pipeline</groupId>
       <artifactId>saxon-adapter</artifactId>
       <scope>test</scope>
@@ -151,12 +143,6 @@
       <groupId>org.daisy.pipeline</groupId>
       <artifactId>logging-activator</artifactId>
       <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      <version>1.7.2</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.daisy.pipeline</groupId>

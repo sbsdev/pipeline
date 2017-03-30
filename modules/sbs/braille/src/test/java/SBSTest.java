@@ -115,6 +115,8 @@ public class SBSTest {
 			domTraversalPackage(),
 			felixDeclarativeServices(),
 			systemPackage("javax.xml.stream;version=\"1.0.1\""),
+			systemPackage("com.sun.org.apache.xml.internal.resolver"),
+			systemPackage("com.sun.org.apache.xml.internal.resolver.tools"),
 			thisBundle(),
 			junitBundles(),
 			mavenBundlesWithDependencies(
@@ -142,7 +144,6 @@ public class SBSTest {
 				mavenBundle("org.daisy.maven:xproc-engine-daisy-pipeline:?"),
 				// xspec
 				xspec(),
-				mavenBundle("org.apache.servicemix.bundles:org.apache.servicemix.bundles.xmlresolver:?"),
 				mavenBundle("org.daisy.pipeline:saxon-adapter:?"))
 		);
 	}
