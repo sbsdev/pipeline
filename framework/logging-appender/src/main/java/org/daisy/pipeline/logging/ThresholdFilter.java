@@ -49,11 +49,12 @@ public class ThresholdFilter extends Filter<ILoggingEvent> {
 		Level threshold = cache.get(logger);
 		if (threshold == null) {
 			threshold = rootLevel; {
+				int matchLen = 0;
 				if (loggerLevels != null)
 					for (String l : loggerLevels.keySet())
-						if (logger.startsWith(l)) {
+						if (l.length() > matchLen && logger.startsWith(l)) {
 							threshold = loggerLevels.get(l);
-							break; }}
+							matchLen = l.length(); }}
 			cache.put(logger, threshold); }
 		Level level = event.getLevel();
 		if (level.isGreaterOrEqual(threshold))
