@@ -26,6 +26,8 @@
     <module>libs/liblouis-java</module>
     <module>libs/osgi-libs</module>
     <module>framework</module>
+    <module>modules/common</module>
+    <module>modules/scripts-utils</module>
     <module>modules/braille</module>
     <module>modules/sbs/maven-parents/super-parent</module>
     <module>modules/sbs/maven-parents/modules-parent</module>
