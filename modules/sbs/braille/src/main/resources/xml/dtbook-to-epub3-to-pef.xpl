@@ -85,7 +85,7 @@
 			<p:pipe step="dtbook" port="in-memory.out"/>
 		</p:input>
 		<p:input port="xslt">
-			<p:document href="http://www.sbs.ch/pipeline/modules/braille/internal/dtbook-to-epub3.xsl"/>
+			<p:document href="dtbook-to-epub3.xsl"/>
 		</p:input>
 		<p:with-option name="temp-dir" select="concat($temp-dir,'dtbook-to-html/')"/>
 	</px:nordic-dtbook-to-html.step>
