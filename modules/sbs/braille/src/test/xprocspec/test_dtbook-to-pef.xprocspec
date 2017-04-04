@@ -1018,11 +1018,13 @@
         </x:document>
       </x:input>
       <x:option name="contraction-grade" select="0"/>
-      <x:option name="toc-depth" select="0"/>
+      <x:option name="toc-depth" select="2"/>
       <x:option name="show-print-page-numbers" select="false()"/>
       <x:option name="show-braille-page-numbers" select="false()"/>
       <x:param port="parameters" name="generate-titlepage" select="false()"/>
+      <x:option name="include-brf" select="true()"/>
       <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/running-line/')"/>
+      <x:option name="brf-output-dir" select="concat($temp-dir,'output-dir/running-line/')"/>
       <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
     </x:call>
     <x:context label="result">
@@ -1038,6 +1040,38 @@
           </head>
           <body>
             <volume cols="28" rows="28" rowgap="0" duplex="true">
+              <section>
+                <page>
+                  <row/>
+                  <row>⠀⠀⠀⠀⠀⠊⠝⠓⠁⠇⠞⠎⠧⠑⠗⠵⠑⠊⠉⠓⠝⠊⠎</row>
+                  <row>⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤</row>
+                  <row/>
+                  <row>⠼⠁⠀⠕⠗⠊⠛⠊⠝⠁⠇⠳⠃⠑⠗⠎⠉⠓⠗⠊⠋⠞⠀⠀⠼⠂⠴⠁</row>
+                  <row>⠼⠃⠀⠕⠗⠊⠛⠊⠝⠁⠇⠳⠃⠑⠗⠎⠉⠓⠗⠊⠋⠞⠀⠀⠼⠂⠂⠃</row>
+                  <row/>
+                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒</row>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row>⠀⠀⠀⠀⠊⠝⠓⠁⠇⠞⠎⠧⠑⠗⠵⠑⠊⠉⠓⠝⠊⠎⠀⠀⠀⠀⠘⠊</row>
+                </page>
+              </section>
               <section>
                 <page>
                   <row/>
