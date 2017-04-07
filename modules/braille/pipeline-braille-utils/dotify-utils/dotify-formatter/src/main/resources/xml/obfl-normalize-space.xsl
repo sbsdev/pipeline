@@ -71,4 +71,23 @@
         </xsl:if>
     </xsl:template>
     
+    <!--
+        This is not a bug in Dotify's white space normalization, but in its line breaking:
+        (see also https://github.com/brailleapps/dotify.api/issues/13)
+    -->
+    
+    <xsl:template match="text()[not(matches(.,'[\s&#x200B;]$')) and
+                                following-sibling::node()[1][self::obfl:evaluate
+                                                             or self::obfl:span and
+                                                                not(matches(string(.),'^[\s&#x200B;]'))]]|
+                         obfl:span[following-sibling::node()[1][self::obfl:evaluate
+                                                                or (self::obfl:span or self::text()) and
+                                                                   not(matches(string(.),'^[\s&#x200B;]'))]]
+                                                               /text()[not(matches(.,'[\s&#x200B;]$')) and
+                                                                       not(following-sibling::node())]"
+                  mode="#default normalize">
+        <xsl:next-match/>
+        <xsl:text>&#x2060;</xsl:text> <!-- WJ/ZWNBSP -->
+    </xsl:template>
+    
 </xsl:stylesheet>
