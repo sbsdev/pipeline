@@ -134,6 +134,7 @@
         </p:with-option>
         <p:with-option name="stylesheet" select="string-join((
                                                    resolve-uri('group-starting-with-linenum.xsl'),
+                                                   resolve-uri('handle-toc-and-running-line.xsl'),
                                                    resolve-uri('insert-boilerplate.xsl'),
                                                    $stylesheet),' ')">
             <p:inline>
