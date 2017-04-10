@@ -331,27 +331,28 @@ note p {
 }
 
 noteref {
+    flow: null;
     counter-increment: footnote;
-}
-
-noteref::after {
-    display: inline;
-    content: counter(footnote);
-}
-
-noteref::alternate {
-    display: block;
-    content: '⠠⠔' counter(footnote) ' ' target-content(attr(idref));
-    text-indent: -2;
-    margin-left: 2;
-    @if ($footnotes-placement == 'standard') {
-        flow: footnotes;
-    } @else if ($footnotes-placement == 'end-of-chapter') {
-        flow: chapter-notes;
-    } @else if ($footnotes-placement == 'end-of-volume') {
-        flow: volume-notes;
-    } @else if ($footnotes-placement == 'end-of-book') {
-        flow: endnotes;
+    
+    /* footnote-call doesn't work */
+    &::alternate {
+        display: inline;
+        content: '*' counter(footnote);
+        &::alternate {
+            display: block;
+            content: '⠠⠔' counter(footnote) ' ' target-content(attr(idref));
+            text-indent: -2;
+            margin-left: 2;
+            @if ($footnotes-placement == 'standard') {
+                flow: footnotes;
+            } @else if ($footnotes-placement == 'end-of-chapter') {
+                flow: chapter-notes;
+            } @else if ($footnotes-placement == 'end-of-volume') {
+                flow: volume-notes;
+            } @else if ($footnotes-placement == 'end-of-book') {
+                flow: endnotes;
+            }
+        }
     }
 }
 
