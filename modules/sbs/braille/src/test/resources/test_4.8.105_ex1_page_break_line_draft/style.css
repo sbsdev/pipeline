@@ -1,14 +1,22 @@
+@namespace epub url(http://www.idpf.org/2007/ops);
+
 h1 {
 	text-align: center;
 	-obfl-underline: none;
 }
 
-pagenum {
+pagenum,
+[epub|type='pagebreak'] {
 	display: block;
 	text-indent: 0;
 }
 
-pagenum::before {
+[epub|type='pagebreak']::after {
+	content: attr(title);
+}
+
+pagenum::before,
+[epub|type='pagebreak']::before {
 	content: leader('⠤') '⠸';
 }
 
@@ -18,10 +26,21 @@ pagenum:has(+ pagenum) {
 	            first-print-page content();
 }
 
+[epub|type='pagebreak']:has(+ [epub|type='pagebreak']) {
+	display: none;
+	string-set: print-page attr(title),
+	            first-print-page attr(title);
+}
+
 pagenum + pagenum {
 	string-set: print-page content();
 }
 
-pagenum + pagenum::before {
+[epub|type='pagebreak'] + [epub|type='pagebreak'] {
+	string-set: print-page attr(title);
+}
+
+pagenum + pagenum::before,
+[epub|type='pagebreak'] + [epub|type='pagebreak']::before {
 	content: leader('⠤') '⠸' string(first-print-page) '⠤⠸';
 }
