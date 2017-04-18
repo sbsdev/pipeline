@@ -369,6 +369,14 @@ clean : cache
 gradle-clean :
 	$(GRADLE) clean
 
+.PHONY : dump-maven-cmd
+dump-maven-cmd :
+	echo $(MVN)
+
+.PHONY : dump-gradle-cmd
+dump-gradle-cmd :
+	echo $(GRADLE)
+
 .PHONY : help
 help :
 	echo "make all:"                                                                                >&2
