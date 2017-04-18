@@ -1,21 +1,22 @@
 # Liblouis Python ctypes bindings
 #
-#  Copyright (C) 2009, 2010 James Teh <jamie@jantrid.net>
+# Copyright (C) 2009, 2010 James Teh <jamie@jantrid.net>
 #
-# This library is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Library General Public
-# License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
-#
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# Library General Public License for more details.
-#
-# You should have received a copy of the GNU Library General Public
-# License along with this library; if not, write to the
-# Free Software Foundation, Inc., Franklin Street, Fifth Floor,
-# Boston MA  02110-1301 USA.
+# This file is part of liblouis.
+# 
+# liblouis is free software: you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published
+# by the Free Software Foundation, either version 2.1 of the License, or
+# (at your option) any later version.
+# 
+# liblouis is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with liblouis. If not, see <http://www.gnu.org/licenses/>.
+# 
 
 """Liblouis Python ctypes bindings
 These bindings allow you to use the liblouis braille translator and back-translator library from within Python.
@@ -96,10 +97,11 @@ liblouis.lou_backTranslate.argtypes = (
 liblouis.lou_hyphenate.argtypes = (
          c_char_p, c_wchar_p, c_int, POINTER(c_char), c_int)
 
-liblouis.lou_getTable.argtypes = (c_char_p,)
-liblouis.lou_getTable.restype = c_void_p
+liblouis.lou_checkTable.argtypes = (c_char_p,)
 
 liblouis.lou_compileString.argtypes = (c_char_p, c_char_p)
+
+liblouis.lou_getTypeformForEmphClass.argtypes = (c_char_p, c_char_p)
 
 def version():
     """Obtain version information for liblouis.
@@ -285,11 +287,10 @@ def checkTable(tableList):
     @param tableList: A list of translation tables.
     @type tableList: list of str
     @raise RuntimeError: If compilation failed.
-    @see: lou_getTable in the liblouis documentation
+    @see: lou_checkTable in the liblouis documentation
     """
-    # TODO: Add this function to the C API and use that instead.
     tablesString = _createTablesString(tableList)
-    if not liblouis.lou_getTable(tablesString):
+    if not liblouis.lou_checkTable(tablesString):
         raise RuntimeError("Can't compile: tables %s"%tableList)
 
 def compileString(tableList, inString):
@@ -306,21 +307,32 @@ def compileString(tableList, inString):
     if not liblouis.lou_compileString(tablesString, inString):
         raise RuntimeError("Can't compile entry: tables %s, inString %s"%(tableList, inString))
 
+def getTypeformForEmphClass(tableList, emphClass):
+    """Get the typeform bit for the named emphasis class.
+    @param tableList: A list of translation tables.
+    @type tableList: list of str
+    @param emphClass: An emphasis class name.
+    @type emphClass: str
+    @see: lou_getTypeformForEmphClass in the liblouis documentation
+    """
+    tablesString = _createTablesString(tableList)
+    return liblouis.lou_getTypeformForEmphClass(tablesString, emphClass)
+
 #{ Typeforms
 plain_text = 0x0000
-italic = 0x0001
-underline = 0x0002
-bold = 0x0004
-computer_braille = 0x0008
-passage_break = 0x0010
-word_reset = 0x0020
-script = 0x0040
-trans_note = 0x0080
-trans_note_1 = 0x0100
-trans_note_2 = 0x0200
-trans_note_3 = 0x0400
-trans_note_4 = 0x0800
-trans_note_5 = 0x1000
+italic = 0x0001       # emph_1
+underline = 0x0002    # emph_2
+bold = 0x0004         # emph_3
+emph_4 = 0x0008
+emph_5 = 0x0010
+emph_6 = 0x0020
+emph_7 = 0x0040
+emph_8 = 0x0080
+emph_9 = 0x0100
+emph_10 = 0x0200
+computer_braille = 0x0400
+no_translate = 0x0800
+no_contract = 0x1000
 #}
 
 #{ Translation modes

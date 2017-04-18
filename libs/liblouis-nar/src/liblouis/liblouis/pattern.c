@@ -1,28 +1,23 @@
 /* liblouis Braille Translation and Back-Translation Library
 
-   Based on the Linux screenreader BRLTTY, copyright (C) 1999-2006 by
-   The BRLTTY Team
+Copyright (C) 2016 Mike Gray, American Printing House for the Blind
 
-   Copyright (C) Mike Gray
-   All rights reserved
+This file is part of liblouis.
 
-   This file is part of Liblouis.
+liblouis is free software: you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation, either version 2.1 of the License, or
+(at your option) any later version.
 
-   Liblouis is free software: you can redistribute it and/or modify it
-   under the terms of the GNU Lesser General Public License as
-   published by the Free Software Foundation, either version 3 of the
-   License, or (at your option) any later version.
+liblouis is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
 
-   Liblouis is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-   Lesser General Public License for more details.
+You should have received a copy of the GNU Lesser General Public
+License along with liblouis. If not, see <http://www.gnu.org/licenses/>.
 
-   You should have received a copy of the GNU Lesser General Public
-   License along with Liblouis. If not, see
-   <http://www.gnu.org/licenses/>.
-
-   */
+*/
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -36,6 +31,44 @@
 /////
 
 static const TranslationTableHeader *table;
+
+//TODO:  these functions are static and copied serveral times
+
+int translation_direction = 1;
+
+static TranslationTableCharacter *
+back_findCharOrDots (widechar c, int m)
+{
+/*Look up character or dot pattern in the appropriate  
+* table. */
+  static TranslationTableCharacter noChar =
+    { 0, 0, 0, CTC_Space, 32, 32, 32 };
+  static TranslationTableCharacter noDots =
+    { 0, 0, 0, CTC_Space, B16, B16, B16 };
+  TranslationTableCharacter *notFound;
+  TranslationTableCharacter *character;
+  TranslationTableOffset bucket;
+  unsigned long int makeHash = (unsigned long int) c % HASHNUM;
+  if (m == 0)
+    {
+      bucket = table->characters[makeHash];
+      notFound = &noChar;
+    }
+  else
+    {
+      bucket = table->dots[makeHash];
+      notFound = &noDots;
+    }
+  while (bucket)
+    {
+      character = (TranslationTableCharacter *) & table->ruleArea[bucket];
+      if (character->realchar == c)
+	return character;
+      bucket = character->next;
+    }
+  notFound->realchar = notFound->uppercase = notFound->lowercase = c;
+  return notFound;
+}
 
 static TranslationTableCharacter *
 findCharOrDots (widechar c, int m)
@@ -79,7 +112,10 @@ checkAttr (const widechar c, const TranslationTableCharacterAttributes
   static TranslationTableCharacterAttributes preva = 0;
   if (c != prevc)
     {
-      preva = (findCharOrDots (c, m))->attributes;
+		if(translation_direction)
+			preva = (findCharOrDots (c, 0))->attributes;
+		else
+			preva = (back_findCharOrDots (c, 1))->attributes;
       prevc = c;
     }
   return ((preva & a) ? 1 : 0);
@@ -939,7 +975,6 @@ static int pattern_compile_expression(const widechar *input,
 		return *expr_crs += 5;
 	}
 
-	return 0;
 }
 
 static int pattern_insert_alternate(const widechar *input,

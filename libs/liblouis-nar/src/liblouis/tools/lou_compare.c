@@ -339,39 +339,33 @@ int main(int argn, char **args)
 			return 1;
 		
 		if(!strncmp("~script", inputLine, 7))
-		if(inputEmphasis(script, scriptLine, scriptText, &scriptLen))
-			continue;
-		else
-			return 1;
-		
-		if(!strncmp("~word_reset", inputLine, 11))
-		if(inputEmphasis(word_reset, resetLine, resetText, &resetLen))
+		if(inputEmphasis(emph_4, scriptLine, scriptText, &scriptLen))
 			continue;
 		else
 			return 1;
 		
 		if(!strncmp("~trans_note_1", inputLine, 13))
-		if(inputEmphasis(trans_note_1, tnote1Line, tnote1Text, &tnote1Len))
+		if(inputEmphasis(emph_6, tnote1Line, tnote1Text, &tnote1Len))
 			continue;
 		else
 			return 1;
 		if(!strncmp("~trans_note_2", inputLine, 13))
-		if(inputEmphasis(trans_note_2, tnote2Line, tnote2Text, &tnote2Len))
+		if(inputEmphasis(emph_7, tnote2Line, tnote2Text, &tnote2Len))
 			continue;
 		else
 			return 1;
 		if(!strncmp("~trans_note_3", inputLine, 13))
-		if(inputEmphasis(trans_note_3, tnote3Line, tnote3Text, &tnote3Len))
+		if(inputEmphasis(emph_8, tnote3Line, tnote3Text, &tnote3Len))
 			continue;
 		else
 			return 1;
 		if(!strncmp("~trans_note_4", inputLine, 13))
-		if(inputEmphasis(trans_note_4, tnote4Line, tnote4Text, &tnote4Len))
+		if(inputEmphasis(emph_9, tnote4Line, tnote4Text, &tnote4Len))
 			continue;
 		else
 			return 1;
 		if(!strncmp("~trans_note_5", inputLine, 13))
-		if(inputEmphasis(trans_note_5, tnote5Line, tnote5Text, &tnote5Len))
+		if(inputEmphasis(emph_10, tnote5Line, tnote5Text, &tnote5Len))
 			continue;
 		else
 			return 1;
@@ -389,7 +383,7 @@ int main(int argn, char **args)
 			return 1;
 
 		if(!strncmp("~trans_note", inputLine, 11))
-		if(inputEmphasis(trans_note, tnoteLine, tnoteText, &tnoteLen))
+		if(inputEmphasis(emph_5, tnoteLine, tnoteText, &tnoteLen))
 			continue;
 		else
 			return 1;
@@ -471,8 +465,6 @@ int main(int argn, char **args)
 				outputEmphasis(outFile, 0, "~italic", italicText, italicLen);
 			if(scriptLen)
 				outputEmphasis(outFile, 0, "~script", scriptText, scriptLen);
-			if(resetLen)
-				outputEmphasis(outFile, 0, "~word_reset", resetText, resetLen);
 			if(tnoteLen)
 				outputEmphasis(outFile, 0, "~trans_note", tnoteText, tnoteLen);
 				

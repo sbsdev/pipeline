@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.68)
-AC_INIT([Liblouis], [3.0.0.alpha1], [liblouis-liblouisxml@freelists.org], [liblouis], [http://www.liblouis.org])
+AC_INIT([Liblouis], [3.0.0], [liblouis-liblouisxml@freelists.org], [liblouis], [http://www.liblouis.org])
 AC_CONFIG_SRCDIR([liblouis/lou_backTranslateString.c])
 AM_CONFIG_HEADER(liblouis/config.h)
 
@@ -51,7 +51,7 @@ AH_BOTTOM([
 ])
 
 # increment if the interface has additions, changes, removals.
-LIBLOUIS_CURRENT=11
+LIBLOUIS_CURRENT=12
 
 # increment any time the source changes; set to 0 if you increment
 # CURRENT
@@ -116,7 +116,7 @@ AC_PATH_PROG(PKG_CONFIG, pkg-config)
 
 AC_ARG_ENABLE(ucs4,
               AC_HELP_STRING(--enable-ucs4, Enable 4 byte-wide characters),
-              [AC_DEFINE([HAVE_UCS4], [1], [Define if widechars are ucs4])],
+              [AC_DEFINE([WIDECHARS_ARE_UCS4], [1], [Define if widechars are ucs4])],
               [enable_ucs4=no])
 
 AC_MSG_CHECKING([whether 4 byte-wide characters should be supported])
@@ -163,7 +163,6 @@ AC_CONFIG_FILES([
 	python/louis/Makefile
         tools/Makefile
         tools/gnulib/Makefile
-	gnulib/Makefile
-	m4/Makefile])
+	gnulib/Makefile])
 AC_OUTPUT
 

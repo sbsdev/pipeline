@@ -25,7 +25,9 @@ libbrlcheck_la_SOURCES =			\
 # following is needed to make sure the symbols are resolved from the
 # liblouis library. Otherwise we get missing symbol errors when
 # compiling the test suite, which depends on libbrlcheck.
-libbrlcheck_la_LIBADD = $(top_builddir)/liblouis/liblouis.la
+libbrlcheck_la_LIBADD =					\
+	$(top_builddir)/liblouis/liblouis.la		\
+	$(top_builddir)/tools/gnulib/libgnutools.la
 
 bin_PROGRAMS =					\
 	lou_allround				\
@@ -45,6 +47,3 @@ lou_translate_SOURCES =	lou_translate.c
 lou_trace_SOURCES = lou_trace.c
 lou_compare_SOURCES = lou_compare.c
 lou_checkyaml_SOURCES =	lou_checkyaml.c
-
-# distribute the harness generator but do not install it
-dist_bin_SCRIPTS = lou_harnessGenerator
