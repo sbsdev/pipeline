@@ -71,7 +71,7 @@
 							<overwrite>true</overwrite>
 							<resources>
 								<resource>
-									<directory>src/liblouis</directory>
+									<directory>src</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -116,20 +116,20 @@
 								#!/bin/sh
 								sed \
 								-e 's|^\(liblouis_la_LDFLAGS =\)\(.*\)$|\1 ${nar.install_name.option} ${nar.rpath.option} -avoid-version \2|' \
-								../../../src/liblouis/liblouis/Makefile.am > liblouis/Makefile.am
+								../../../src/liblouis/Makefile.am > liblouis/Makefile.am
 								sed \
 								-e 's|^\(AC_INIT(\[Liblouis\],\)[^,]*\(,.*\)$|\1 [${project.version}]\2|' \
 								-e '/^AC_INIT.*$/a\
 								CFLAGS="$CFLAGS ${nar.arch.option}"\
 								' \
-								../../../src/liblouis/configure.ac > configure.ac
+								../../../src/configure.ac > configure.ac
 								sed \
 								-e '/^prefix=/d' \
 								-e '/^exec_prefix=/d' \
 								-e '/^tablesdir=/d' \
 								-e 's|@libdir@|@NAR@/lib/${nar.aol}/shared|' \
 								-e 's|@includedir@|@NAR@/include|' \
-								../../../src/liblouis/liblouis.pc.in > liblouis.pc.in
+								../../../src/liblouis.pc.in > liblouis.pc.in
 								mkdir m4
 								touch m4/.keep
 							</script>
