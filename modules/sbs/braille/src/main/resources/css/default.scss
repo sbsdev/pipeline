@@ -771,7 +771,9 @@ p.precedingseparator {
 
 pagenum {
     display: none;
-    string-set: print-page content(), print-page-slash content() '/';
+    @if $show-print-page-numbers {
+        string-set: print-page content(), print-page-slash content() '/';
+    }
 }
 
 blockquote {
