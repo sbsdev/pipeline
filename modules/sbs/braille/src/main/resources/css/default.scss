@@ -281,7 +281,7 @@ brl|volume[brl|grade='#{$contraction-grade}'] {
                 }
             }
             &::after {
-                content: " " leader('⠄') " ";
+                content: " " leader('⠄') " ⠼";
                 hyphens: initial;
                 &::after {
                     &::before {

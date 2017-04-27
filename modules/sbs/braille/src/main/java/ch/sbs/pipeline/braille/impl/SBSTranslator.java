@@ -372,10 +372,7 @@ public interface SBSTranslator {
 			}
 			
 			private String translatePrintPageNumberInToc(String number) {
-				StringBuilder b = new StringBuilder();
-				b.append(NUMBER_SIGN);
-				b.append(translateNaturalNumber(Integer.parseInt(number), true));
-				return b.toString();
+				return translateNaturalNumber(Integer.parseInt(number), true);
 			}
 
 			private String translateBraillePageNumberInToc(String number) {
