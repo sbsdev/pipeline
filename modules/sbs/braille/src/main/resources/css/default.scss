@@ -522,7 +522,6 @@ sidebar > hd {
 /* Divisions */
 
 frontmatter > level1:not(#cover-recto, #cover-verso) {
-    display: block;
     page-break-before: right;
 }
 
@@ -537,7 +536,6 @@ frontmatter > level1.toc {
 
 bodymatter > level1:not(:first-child),
 rearmatter > level1:not(:first-child) {
-    display: block;
     page-break-before:always;
 }
 
