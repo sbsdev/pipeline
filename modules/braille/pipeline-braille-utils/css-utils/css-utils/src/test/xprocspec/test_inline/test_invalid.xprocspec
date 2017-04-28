@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <x:description xmlns:x="http://www.daisy.org/ns/xprocspec"
                xmlns:css="http://www.daisy.org/ns/pipeline/braille-css"
-               script="../resources/inline.xpl">
+               script="../../../main/resources/xml/inline.xpl">
   
   <x:scenario label="test-invalid-properties">
     <x:documentation>
