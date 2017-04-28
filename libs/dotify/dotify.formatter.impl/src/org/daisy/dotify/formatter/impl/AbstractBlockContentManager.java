@@ -17,6 +17,7 @@ abstract class AbstractBlockContentManager implements Iterable<RowImpl> {
 	protected final MarginProperties rightMargin;
 	protected final ArrayList<Marker> groupMarkers;
 	protected final ArrayList<String> groupAnchors;
+	protected final ArrayList<String> groupIdentifiers;
 	private final List<RowImpl> collapsiblePreContentRows;
 	private final List<RowImpl> innerPreContentRows;
 	private final List<RowImpl> postContentRows;
@@ -33,6 +34,7 @@ abstract class AbstractBlockContentManager implements Iterable<RowImpl> {
 		this.rdp = rdp;
 		this.groupMarkers = new ArrayList<>();
 		this.groupAnchors = new ArrayList<>();
+		this.groupIdentifiers = new ArrayList<>();
 		this.collapsiblePreContentRows = makeCollapsiblePreContentRows(rdp, leftParent, rightParent);	
 		this.innerPreContentRows = makeInnerPreContentRows();
 		this.postContentRows = new ArrayList<>();
@@ -168,4 +170,7 @@ abstract class AbstractBlockContentManager implements Iterable<RowImpl> {
 		return groupAnchors;
 	}
 	
+	ArrayList<String> getGroupIdentifiers() {
+		return groupIdentifiers;
+	}
 }

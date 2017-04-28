@@ -1114,9 +1114,11 @@
                       select="(@css:text-transform/string(),$pending-text-transform)[1]"/>
         <xsl:variable name="pending-hyphens" as="xs:string?"
                       select="(@css:hyphens/string(),$pending-hyphens)[1]"/>
+        <xsl:variable name="id" as="attribute()?" select="@css:id"/>
         <xsl:apply-templates mode="marker" select="@css:string-set|@css:_obfl-marker"/>
         <xsl:apply-templates mode="assert-nil-attr"
                              select="@* except (@type|
+                                                @css:id|
                                                 @css:string-set|
                                                 @css:_obfl-marker|
                                                 @css:text-transform|@css:hyphens)"/>
@@ -1127,6 +1129,7 @@
                                                               self::css:leader)">
             <xsl:choose>
                 <xsl:when test="current-grouping-key()">
+                    <xsl:apply-templates mode="#current" select="$id"/>
                     <xsl:apply-templates mode="#current" select="current-group()">
                         <xsl:with-param name="pending-text-transform" tunnel="yes" select="$pending-text-transform"/>
                         <xsl:with-param name="pending-hyphens" tunnel="yes" select="$pending-hyphens"/>
@@ -1134,6 +1137,7 @@
                 </xsl:when>
                 <xsl:when test="every $n in current-group() satisfies
                                 $n/self::text() and matches(string($n),'^[ \t\n\r&#x2800;&#x00AD;&#x200B;]*$')">
+                    <xsl:apply-templates mode="#current" select="$id"/>
                     <xsl:value-of select="."/>
                 </xsl:when>
                 <!--
@@ -1147,6 +1151,7 @@
                                         $n/descendant-or-self::css:counter|
                                         $n/descendant-or-self::css:leader|
                                         $n/descendant-or-self::css:custom-func)">
+                    <xsl:apply-templates mode="#current" select="$id"/>
                     <xsl:apply-templates mode="#current" select="current-group()"/>
                 </xsl:when>
                 <xsl:otherwise>
@@ -1163,6 +1168,7 @@
                     <xsl:choose>
                         <xsl:when test="exists($attrs)">
                             <span>
+                                <xsl:apply-templates mode="span-attr" select="$id"/>
                                 <xsl:sequence select="$attrs"/>
                                 <xsl:apply-templates mode="span" select="current-group()">
                                     <xsl:with-param name="pending-text-transform" tunnel="yes" select="()"/>
@@ -1173,6 +1179,7 @@
                             </span>
                         </xsl:when>
                         <xsl:otherwise>
+                          <xsl:apply-templates mode="#current" select="$id"/>
                             <xsl:apply-templates mode="#current" select="current-group()">
                                 <xsl:with-param name="pending-text-transform" tunnel="yes" select="()"/>
                                 <xsl:with-param name="pending-hyphens" tunnel="yes" select="()"/>
@@ -1846,31 +1853,31 @@
     <!-- IDs and anchors -->
     <!-- =============== -->
     
-    <!--
-        FIXME: don't add id attribute if block not referenced by any toc-entry or page-number
-    -->
-    <xsl:template mode="block-attr toc-entry-attr"
-                  match="css:box[@type='block']/@css:id">
+    <xsl:variable name="page-number-references" as="xs:string*"
+                  select="collection()//css:counter[@name='page']/@target"/>
+    
+    <xsl:variable name="toc-entry-references" as="xs:string*"
+                  select="collection()//css:box[@type='block' and @css:_obfl-toc]
+                          /((descendant::css:counter)/@target|
+                            (descendant::css:string)/@target|
+                            (descendant::css:box)/@css:anchor)"/>
+    
+    <xsl:template mode="block-attr toc-entry-attr span-attr"
+                  match="css:box[@type='block']/@css:id|
+                         css:box[@type='inline']/@css:id|
+                         css:box[@type='inline']/css:_/@css:id">
         <xsl:variable name="id" as="xs:string" select="."/>
-        <xsl:if test="not(ancestor::*/@css:flow[not(.='normal')])">
+        <xsl:if test="not(ancestor::*/@css:flow[not(.='normal')]) and $id=($page-number-references,$toc-entry-references)">
             <xsl:attribute name="id" select="$id"/>
         </xsl:if>
     </xsl:template>
     
-    <!--
-        FIXME: id attribute not supported on a span
-    -->
-    <xsl:template mode="block-attr assert-nil-attr"
+    <xsl:template mode="block toc-entry"
                   match="css:box[@type='inline']/@css:id|
                          css:box[@type='inline']/css:_/@css:id">
         <xsl:variable name="id" as="xs:string" select="."/>
-        <!--
-            FIXME: what about css:string[@target] and css:box[@css:anchor] ?
-        -->
-        <xsl:if test="collection()//css:counter[@name='page'][@target=$id]">
-            <xsl:call-template name="pf:error">
-                <xsl:with-param name="msg">target-counter(page) referencing inline elements not supported.</xsl:with-param>
-            </xsl:call-template>
+        <xsl:if test="not(ancestor::*/@css:flow[not(.='normal')]) and $id=($page-number-references,$toc-entry-references)">
+            <span id="{$id}"/>
         </xsl:if>
     </xsl:template>
     

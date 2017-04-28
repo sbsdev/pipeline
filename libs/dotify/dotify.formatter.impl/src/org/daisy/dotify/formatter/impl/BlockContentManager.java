@@ -186,6 +186,12 @@ class BlockContentManager extends AbstractBlockContentManager {
 					applyAfterLeader(as);
 					break;
 				}
+				case Identifier:
+				{
+					IdentifierSegment is = (IdentifierSegment)s;
+					applyAfterLeader(is);
+					break;
+				}
 			}
 		}
 		
@@ -195,6 +201,8 @@ class BlockContentManager extends AbstractBlockContentManager {
 		if (rows.size()>0) {
 			rows.get(0).addAnchors(0, groupAnchors);
 			groupAnchors.clear();
+			rows.get(0).addIdentifiers(0, groupIdentifiers);
+			groupIdentifiers.clear();
 			rows.get(0).addMarkers(0, groupMarkers);
 			groupMarkers.clear();
 			if (rdp.getUnderlineStyle() != null) {
@@ -222,7 +230,7 @@ class BlockContentManager extends AbstractBlockContentManager {
 		}
 	}
 	
-	// List of BrailleTranslatorResult or Marker or AnchorSegment
+	// List of BrailleTranslatorResult or Marker or AnchorSegment or IdentifierSegment
 	private List<Object> layoutOrApplyAfterLeader = null;
 	private String currentLeaderMode = null;
 	private boolean seenSegmentAfterLeader = false;
@@ -274,6 +282,21 @@ class BlockContentManager extends AbstractBlockContentManager {
 				groupAnchors.add(anchor.getReferenceID());
 			} else {
 				rows.peek().addAnchor(anchor.getReferenceID());
+			}
+		}
+	}
+	
+	private void applyAfterLeader(final IdentifierSegment identifier) {
+		if (currentLeader!=null) {
+			if (layoutOrApplyAfterLeader == null) {
+				layoutOrApplyAfterLeader = new ArrayList<Object>();
+			}
+			layoutOrApplyAfterLeader.add(identifier);
+		} else {
+			if (rows.isEmpty()) {
+				groupIdentifiers.add(identifier.getName());
+			} else {
+				rows.peek().addIdentifier(identifier.getName());
 			}
 		}
 	}
@@ -442,6 +465,7 @@ class BlockContentManager extends AbstractBlockContentManager {
 			AggregatedBrailleTranslatorResult abtr = ((AggregatedBrailleTranslatorResult)btr);
 			abtr.addMarkers(m.row);
 			abtr.addAnchors(m.row);
+			abtr.addIdentifiers(m.row);
 		}
 	}
 	
@@ -536,6 +560,8 @@ class BlockContentManager extends AbstractBlockContentManager {
 					pendingMarkers.add((Marker)o);
 				} else if (o instanceof AnchorSegment) {
 					pendingAnchors.add((AnchorSegment)o);
+				} else if (o instanceof IdentifierSegment) {
+					pendingIdentifiers.add((IdentifierSegment)o);
 				} else {
 					throw new RuntimeException("coding error");
 				}
@@ -582,6 +608,13 @@ class BlockContentManager extends AbstractBlockContentManager {
 			for (AnchorSegment a : pendingAnchors)
 				row.addAnchor(a.getReferenceID());
 			pendingAnchors.clear();
+		}
+
+		List<IdentifierSegment> pendingIdentifiers = new ArrayList<IdentifierSegment>();
+		private void addIdentifiers(RowImpl row) {
+			for (IdentifierSegment a : pendingIdentifiers)
+				row.addIdentifier(a.getName());
+			pendingIdentifiers.clear();
 		}
 
 		public boolean supportsMetric(String metric) {

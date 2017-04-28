@@ -43,6 +43,13 @@ public interface FormatterCore {
 	public void insertAnchor(String ref);
 	
 	/**
+	 * Insert an identifier at the current position in the flow
+	 * @param id identifier name
+	 * @throws IllegalStateException if the current state does not allow this call to be made
+	 */
+	public void insertIdentifier(String id);
+	
+	/**
 	 * Insert a leader at the current position in the flow
 	 * @param leader the leader to insert
 	 * @throws IllegalStateException if the current state does not allow this call to be made

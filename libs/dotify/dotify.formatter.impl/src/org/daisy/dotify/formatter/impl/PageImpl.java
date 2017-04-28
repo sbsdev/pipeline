@@ -203,6 +203,7 @@ class PageImpl implements Page, Cloneable {
 			}
 		}
 		anchors.addAll(r.getAnchors());
+		identifiers.addAll(r.getIdentifiers());
 	}
 	
 	/**

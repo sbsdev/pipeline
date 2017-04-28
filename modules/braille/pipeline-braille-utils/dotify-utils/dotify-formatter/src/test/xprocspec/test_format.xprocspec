@@ -2451,11 +2451,9 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="test_22" pending="xfail doesn't work because of error">
+  <x:scenario label="test_22">
     <x:documentation>
       Tests target-counter() referencing inline element.
-      
-      Broken: "Failed to complete volume division": is this a Dotify bug?
     </x:documentation>
     <x:call step="dotify:format">
       <x:input port="source">
@@ -2466,9 +2464,7 @@
             </p>
             <p style="display:block">
               ⠤⠤⠤⠤
-              <a id="foo">
-                ⠿
-              </a>
+              <a id="foo">⠿</a>
             </p>
             <p style="display:block">
               ⠤⠤⠤⠤
@@ -2495,9 +2491,7 @@
             </block>
             <block>
               ⠤⠤⠤⠤
-              <span id="foo">
-                ⠿
-              </span>
+              <span id="foo"/>⠿
             </block>
             <block>
               ⠤⠤⠤⠤
@@ -7890,7 +7884,7 @@
             </pre-content>
           </volume-template>
           <sequence master="main">
-            <block id="x">
+            <block>
               <block>⠤⠤⠤</block>
             </block>
             <block break-before="page"/>
@@ -7994,7 +7988,7 @@
             </pre-content>
           </volume-template>
           <sequence master="main">
-            <block translate="" id="x">
+            <block translate="">
               <block id="a">⠿⠿⠿ 1</block>
               <block>⠤⠤⠤</block>
             </block>
@@ -9038,7 +9032,7 @@
             </pre-content>
           </volume-template>
           <sequence master="main">
-            <block id="x">
+            <block>
               <block id="ch_1" translate=""> 1 </block>
               <block>
                 ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤
@@ -9206,7 +9200,7 @@
             </post-content>
           </volume-template>
           <sequence master="main">
-            <block id="x">
+            <block>
               <block id="ch_1" translate=""> 1 </block>
               <block>
                 ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤
@@ -9374,7 +9368,7 @@
             </pre-content>
           </volume-template>
           <sequence master="body">
-            <block id="x">
+            <block>
               ⠤⠤⠤⠤⠤
             </block>
           </sequence>
@@ -9533,7 +9527,7 @@
             </pre-content>
           </volume-template>
           <sequence master="main">
-            <block id="x">
+            <block>
               ⠤⠤⠤⠤⠤
             </block>
           </sequence>
@@ -9615,7 +9609,7 @@
             </pre-content>
           </volume-template>
           <sequence master="main">
-            <block id="x">
+            <block>
               ⠤⠤⠤⠤⠤
             </block>
           </sequence>
@@ -9756,7 +9750,7 @@
             </item>
           </collection>
           <sequence master="main">
-            <block id="x">
+            <block>
               ⠤⠤⠤ ⠶
               <anchor item="a"/>
               ⠤⠤⠤ ⠶⠶
@@ -11219,7 +11213,7 @@
             </item>
           </collection>
           <sequence master="main">
-            <block id="x">
+            <block>
               ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠶
               <anchor item="a"/>
               ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤ ⠤⠤⠤⠤⠤

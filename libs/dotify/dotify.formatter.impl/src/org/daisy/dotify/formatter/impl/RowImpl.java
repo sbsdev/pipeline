@@ -17,6 +17,7 @@ class RowImpl implements Row {
 	private String chars;
 	private List<Marker> markers;
 	private List<String> anchors;
+	private List<String> identifiers;
 	private MarginProperties leftMargin;
 	private MarginProperties rightMargin;
 	private Alignment alignment;
@@ -41,6 +42,7 @@ class RowImpl implements Row {
 		this.chars = chars;
 		this.markers = new ArrayList<>();
 		this.anchors = new ArrayList<>();
+		this.identifiers = new ArrayList<>();
 		this.leftMargin = leftMargin;
 		this.rightMargin = rightMargin;
 		this.alignment = Alignment.LEFT;
@@ -56,6 +58,7 @@ class RowImpl implements Row {
 		this.chars = template.chars;
 		this.markers = new ArrayList<>(template.markers);
 		this.anchors = new ArrayList<>(template.anchors);
+		this.identifiers = new ArrayList<>(template.identifiers);
 		this.leftMargin = template.leftMargin;
 		this.rightMargin = template.rightMargin;
 		this.alignment = template.alignment;
@@ -71,6 +74,7 @@ class RowImpl implements Row {
 		RowImpl ret = new RowImpl(r.chars);
 		ret.markers = r.markers;
 		ret.anchors = r.anchors;
+		ret.identifiers = r.identifiers;
 		ret.leftMargin = r.leftMargin;
 		ret.rightMargin = r.rightMargin;
 		ret.alignment = r.alignment;
@@ -182,6 +186,30 @@ class RowImpl implements Row {
 	}
 
 	/**
+	 * Add an identifier to the Row
+	 * @param ref
+	 */
+	public void addIdentifier(String ref) {
+		identifiers.add(ref);
+	}
+
+	public void addIdentifiers(List<String> refs) {
+		identifiers.addAll(refs);
+	}
+
+	public void addIdentifiers(int index, List<String> refs) {
+		identifiers.addAll(index, refs);
+	}
+
+	/**
+	 * Get all identifiers on this Row
+	 * @return returns an ArrayList of identifiers
+	 */
+	public List<String> getIdentifiers() {
+		return identifiers;
+	}
+
+	/**
 	 * Set the left margin
 	 * @param value the left margin, in characters
 	 */
@@ -253,6 +281,7 @@ class RowImpl implements Row {
 		result = prime * result + ((alignment == null) ? 0 : alignment.hashCode());
 		result = prime * result + (allowsBreakAfter ? 1231 : 1237);
 		result = prime * result + ((anchors == null) ? 0 : anchors.hashCode());
+		result = prime * result + ((identifiers == null) ? 0 : identifiers.hashCode());
 		result = prime * result + ((chars == null) ? 0 : chars.hashCode());
 		result = prime * result + leaderSpace;
 		result = prime * result + ((leftMargin == null) ? 0 : leftMargin.hashCode());
@@ -289,6 +318,13 @@ class RowImpl implements Row {
 				return false;
 			}
 		} else if (!anchors.equals(other.anchors)) {
+			return false;
+		}
+		if (identifiers == null) {
+			if (other.identifiers != null) {
+				return false;
+			}
+		} else if (!identifiers.equals(other.identifiers)) {
 			return false;
 		}
 		if (chars == null) {

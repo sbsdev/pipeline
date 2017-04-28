@@ -776,6 +776,10 @@ public class ObflParser extends XMLParserBase {
 	
 	private void parseSpan(XMLEvent event, XMLEventReader input, FormatterCore fc, TextProperties tp) throws XMLStreamException {
 		tp = getTextProperties(event, tp);
+		Attribute id = event.asStartElement().getAttributeByName(ObflQName.ATTR_ID);
+		if (id != null) {
+			fc.insertIdentifier(id.getValue());
+		}
 		while (input.hasNext()) {
 			event=input.nextEvent();
 			if (event.isCharacters()) {

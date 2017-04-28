@@ -279,6 +279,14 @@ class FormatterCoreImpl extends Stack<Block> implements FormatterCore, BlockGrou
 	}
 
 	@Override
+	public void insertIdentifier(String id) {
+		if (table!=null) {
+			throw new IllegalStateException("A table is open.");
+		}
+		getCurrentBlock().addSegment(new IdentifierSegment(id));
+	}
+	
+	@Override
 	public void insertLeader(Leader leader) {
 		if (table!=null) {
 			throw new IllegalStateException("A table is open.");

@@ -84,8 +84,18 @@ class PageSequenceBuilder2 {
 		this.dataGroups = new RowGroupBuilder(master, seq, blockContext, uai).getResult();
 	}
 
+	private void finishPage(PageImpl p) {
+		if (p != null) {
+			int pagenum = p.getPageIndex() + 1;
+			for (String id : p.getIdentifiers()) {
+				crh.setPageNumber(id, pagenum);
+			}
+		}
+	}
+
 	private PageImpl newPage() {
 		PageImpl buffer = state.current;
+		finishPage(buffer);
 		state.current = new PageImpl(master, context, state.pageCount+pageNumberOffset, staticAreaContent.getBefore(), staticAreaContent.getAfter(), uai);
 		state.current.setSequenceParent(target);
 		state.pageCount ++;
@@ -132,11 +142,6 @@ class PageSequenceBuilder2 {
 		currentPage().newRow(row);
 	}
 
-	private void insertIdentifier(String id) {
-		crh.setPageNumber(id, currentPage().getPageIndex() + 1);
-		currentPage().addIdentifier(id);
-	}
-	
 	boolean hasNext() {
 		return (nextPages != null && nextPages.hasNext()) || dataGroups.hasNext() || state.current!=null;
 	}
@@ -297,6 +302,7 @@ class PageSequenceBuilder2 {
 		}
 		//flush current page
 		PageImpl ret = state.current;
+		finishPage(ret);
 		state.current = null;
 		return ret;
 	}
@@ -360,7 +366,7 @@ class PageSequenceBuilder2 {
 	
 	private void addProperties(RowGroup rg) {
 		if (rg.getIdentifier()!=null) {
-			insertIdentifier(rg.getIdentifier());
+			currentPage().addIdentifier(rg.getIdentifier());
 		}
 		currentPage().addMarkers(rg.getMarkers());
 		//TODO: addGroupAnchors
