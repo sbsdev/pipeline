@@ -5,7 +5,7 @@
 
   <groupId>ch.sbs</groupId>
   <artifactId>super-parent</artifactId>
-  <version>1.5-SNAPSHOT</version>
+  <version>1.6-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>SBS Parent POM</name>
@@ -29,7 +29,7 @@
       <id>eglic</id>
       <name>Christian Egli</name>
       <email>christian.egli@sbs.ch</email>
-      <organization>SBS - Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte</organization>
+      <organization>Swiss Library for the Blind, Visually Impaired and Print Disabled</organization>
       <organizationUrl>http://www.sbs.ch/</organizationUrl>
       <roles>
 	<role>Developer</role>
@@ -40,7 +40,7 @@
       <id>bertfrees</id>
       <name>Bert Frees</name>
       <email>bertfrees@gmail.com</email>
-      <organization>SBS - Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte</organization>
+      <organization>Swiss Library for the Blind, Visually Impaired and Print Disabled</organization>
       <organizationUrl>http://www.sbs.ch/</organizationUrl>
       <roles>
 	<role>Developer</role>
@@ -49,35 +49,6 @@
     </developer>
   </developers>
 
-  <repositories>
-    <repository>
-      <id>sbs-nexus-snapshots</id>
-      <name>SBS Nexus Snapshots</name>
-      <url>http://repo:8081/nexus/content/repositories/snapshots/</url>
-      <releases>
-	<enabled>false</enabled>
-      </releases>
-      <snapshots>
-	<enabled>true</enabled>
-	<updatePolicy>always</updatePolicy>
-	<checksumPolicy>warn</checksumPolicy>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>sbs-nexus-releases</id>
-      <name>SBS Nexus Releases</name>
-      <url>http://repo:8081/nexus/content/repositories/releases/</url>
-      <releases>
-	<enabled>true</enabled>
-	<updatePolicy>never</updatePolicy>
-	<checksumPolicy>fail</checksumPolicy>
-      </releases>
-      <snapshots>
-	<enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-  
   <distributionManagement>
     <snapshotRepository>
       <id>sbs-nexus-snapshots</id>
@@ -122,7 +93,7 @@
 	<plugin>
 	  <groupId>com.github.maven-nar</groupId>
           <artifactId>nar-maven-plugin</artifactId>
-          <version>3.2.3</version>
+          <version>3.5.1</version>
 	</plugin>
 	<plugin>
 	  <artifactId>maven-dependency-plugin</artifactId>
