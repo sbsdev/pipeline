@@ -575,7 +575,10 @@ frontmatter {
     display: none;
 }
 
-frontmatter:has(> *:not(doctitle, docauthor, #cover-recto, #cover-verso)) {
+/* doctitle and docauthor are skipped, #cover-recto, #cover-verso and.titlepage are moved
+ * to the "cover" flow. If the frontmatter has no other child elements, skip it.
+ */
+frontmatter:has(> *:not(doctitle, docauthor, #cover-recto, #cover-verso, .titlepage)) {
     display: block;
     page: frontmatter;
     flow: frontmatter;
