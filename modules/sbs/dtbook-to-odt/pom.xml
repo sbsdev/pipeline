@@ -213,7 +213,7 @@
 		</resource>
 	      </resources>
 	      <filters>
-		<filter>target/filters/detailed-version.properties</filter>
+		<filter>${project.build.directory}/filters/detailed-version.properties</filter>
 	      </filters>
 	    </configuration>
 	  </execution>
