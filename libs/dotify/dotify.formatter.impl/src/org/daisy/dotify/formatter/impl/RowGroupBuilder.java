@@ -318,7 +318,11 @@ class RowGroupBuilder {
 								}
 							}
 						} catch (Exception e) {
-							rec.invalidateScenario(e);
+							if (currentScenario != null) {
+								rec.invalidateScenario(e);
+							} else {
+								throw new RuntimeException("Failed to render block", e);
+							}
 						}
 						state.nextBlock++;
 						if (currentScenario != null) {

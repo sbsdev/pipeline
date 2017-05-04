@@ -112,7 +112,10 @@ class BlockContentManager extends AbstractBlockContentManager {
 				case NewLine:
 				{
 					//flush
-					layoutLeader();
+					layout(pending, currentLeader);
+					pending = new ArrayList<>();
+					currentLeader = null;
+					currentLeaderMode = null;
 					MarginProperties ret = new MarginProperties(leftMargin.getContent()+StringTools.fill(fcontext.getSpaceCharacter(), rdp.getTextIndent()), leftMargin.isSpaceOnly());
 					addRow(new RowInfo("", createAndConfigureEmptyNewRow(ret)));
 					break;
@@ -120,7 +123,7 @@ class BlockContentManager extends AbstractBlockContentManager {
 				case Text:
 				{
 					TextSegment ts = (TextSegment)s;
-					layoutAfterLeader(
+					appendToPending(
 							Translatable.text(
 									fcontext.getConfiguration().isMarkingCapitalLetters()?
 									ts.getText():ts.getText().toLowerCase()
@@ -133,10 +136,10 @@ class BlockContentManager extends AbstractBlockContentManager {
 				}
 				case Leader:
 				{
-					if (currentLeader!=null) {
-						layoutLeader();
-					}
-					currentLeader= (Leader)s;
+					layout(pending, currentLeader);
+					pending = new ArrayList<>();
+					currentLeader = (Leader)s;
+					currentLeaderMode = null;
 					break;
 				}
 				case Reference:
@@ -149,10 +152,10 @@ class BlockContentManager extends AbstractBlockContentManager {
 					}
 					//TODO: translate references using custom language?
 					if (page==null) {
-						layoutAfterLeader(Translatable.text("??").locale(null).build(), null);
+						appendToPending(Translatable.text("??").locale(null).build(), null);
 					} else {
 						String txt = "" + rs.getNumeralStyle().format(page);
-						layoutAfterLeader(Translatable.text(
+						appendToPending(Translatable.text(
 								fcontext.getConfiguration().isMarkingCapitalLetters()?txt:txt.toLowerCase()
 								).locale(null).attributes(rs.getTextAttribute(txt.length())).build(), null);
 					}
@@ -165,7 +168,7 @@ class BlockContentManager extends AbstractBlockContentManager {
 					String txt = e.getExpression().render(context);
 					if (!txt.isEmpty()) // Don't create a new row if the evaluated expression is empty
 					                    // Note: this could be handled more generally (also for regular text) in layout().
-						layoutAfterLeader(
+						appendToPending(
 								Translatable.text(fcontext.getConfiguration().isMarkingCapitalLetters()?txt:txt.toLowerCase()).
 								locale(e.getTextProperties().getLocale()).
 								hyphenate(e.getTextProperties().isHyphenating()).
@@ -176,28 +179,45 @@ class BlockContentManager extends AbstractBlockContentManager {
 				}
 				case Marker:
 				{
-					Marker m = (Marker)s;
-					applyAfterLeader(m);
+					Marker marker = (Marker)s;
+					if (currentLeader != null || !pending.isEmpty()) {
+						pending.add(marker);
+					} else if (rows.isEmpty()) {
+						groupMarkers.add(marker);
+					} else {
+						rows.peek().addMarker(marker);
+					}
 					break;
 				}
 				case Anchor:
 				{
-					AnchorSegment as = (AnchorSegment)s;
-					applyAfterLeader(as);
+					AnchorSegment anchor = (AnchorSegment)s;
+					if (currentLeader != null || !pending.isEmpty()) {
+						pending.add(anchor);
+					} else if (rows.isEmpty()) {
+						groupAnchors.add(anchor.getReferenceID());
+					} else {
+						rows.peek().addAnchor(anchor.getReferenceID());
+					}
 					break;
 				}
 				case Identifier:
 				{
-					IdentifierSegment is = (IdentifierSegment)s;
-					applyAfterLeader(is);
+					IdentifierSegment identifier = (IdentifierSegment)s;
+					if (currentLeader != null || !pending.isEmpty()) {
+						pending.add(identifier);
+					} else if (rows.isEmpty()) {
+						groupIdentifiers.add(identifier.getName());
+					} else {
+						rows.peek().addIdentifier(identifier.getName());
+					}
 					break;
 				}
 			}
 		}
 		
-		if (currentLeader!=null || item!=null) {
-			layoutLeader();
-		}
+		layout(pending, currentLeader);
+		
 		if (rows.size()>0) {
 			rows.get(0).addAnchors(0, groupAnchors);
 			groupAnchors.clear();
@@ -231,86 +251,28 @@ class BlockContentManager extends AbstractBlockContentManager {
 	}
 	
 	// List of BrailleTranslatorResult or Marker or AnchorSegment or IdentifierSegment
-	private List<Object> layoutOrApplyAfterLeader = null;
+	private List<Object> pending = new ArrayList<>();
 	private String currentLeaderMode = null;
-	private boolean seenSegmentAfterLeader = false;
 	
-	private void layoutAfterLeader(Translatable spec, String mode) {
-		if (currentLeader!=null) {
-			if (layoutOrApplyAfterLeader == null) {
-				layoutOrApplyAfterLeader = new ArrayList<Object>();
-				// use the mode of the first following segment to translate the leader pattern (or
-				// the mode of the first preceding segment)
-				if (!seenSegmentAfterLeader) {
-					currentLeaderMode = mode;
-					seenSegmentAfterLeader = true;
-				}
-			}
-			try {
-				layoutOrApplyAfterLeader.add(fcontext.getTranslator(mode).translate(spec));
-			} catch (TranslationException e) {
-				throw new RuntimeException(e);
-			}
-		} else {
-			layout(spec, mode);
+	private void appendToPending(Translatable spec, String mode) {
+		// use the mode of the first following segment to translate the leader pattern (or
+		// the mode of the first preceding segment)
+		if (pending.isEmpty()) {
+			currentLeaderMode = mode;
+		}
+		try {
+			pending.add(fcontext.getTranslator(mode).translate(spec));
+		} catch (TranslationException e) {
+			throw new RuntimeException(e);
 		}
 	}
 	
-	private void applyAfterLeader(final Marker marker) {
-		if (currentLeader!=null) {
-			if (layoutOrApplyAfterLeader == null) {
-				layoutOrApplyAfterLeader = new ArrayList<Object>();
-			}
-			layoutOrApplyAfterLeader.add(marker);
+	private void layout(List<Object> pending, Leader leader) {
+		if (pending.isEmpty() && leader == null && item == null) {
+		} else if (pending.isEmpty()) {
+			layout("", null, currentLeaderMode, leader);
 		} else {
-			if (rows.isEmpty()) {
-				groupMarkers.add(marker);
-			} else {
-				rows.peek().addMarker(marker);
-			}
-		}
-	}
-	
-	private void applyAfterLeader(final AnchorSegment anchor) {
-		if (currentLeader!=null) {
-			if (layoutOrApplyAfterLeader == null) {
-				layoutOrApplyAfterLeader = new ArrayList<Object>();
-			}
-			layoutOrApplyAfterLeader.add(anchor);
-		} else {
-			if (rows.isEmpty()) {
-				groupAnchors.add(anchor.getReferenceID());
-			} else {
-				rows.peek().addAnchor(anchor.getReferenceID());
-			}
-		}
-	}
-	
-	private void applyAfterLeader(final IdentifierSegment identifier) {
-		if (currentLeader!=null) {
-			if (layoutOrApplyAfterLeader == null) {
-				layoutOrApplyAfterLeader = new ArrayList<Object>();
-			}
-			layoutOrApplyAfterLeader.add(identifier);
-		} else {
-			if (rows.isEmpty()) {
-				groupIdentifiers.add(identifier.getName());
-			} else {
-				rows.peek().addIdentifier(identifier.getName());
-			}
-		}
-	}
-	
-	private void layoutLeader() {
-		if (currentLeader!=null) {
-			// layout() sets currentLeader to null
-			if (layoutOrApplyAfterLeader == null) {
-				layout("", null, null);
-			} else {
-				layout(new AggregatedBrailleTranslatorResult(layoutOrApplyAfterLeader), currentLeaderMode);
-				layoutOrApplyAfterLeader = null;
-				seenSegmentAfterLeader = false;
-			}
+			layout(new AggregatedBrailleTranslatorResult(pending), currentLeaderMode, leader);
 		}
 	}
 
@@ -323,19 +285,19 @@ class BlockContentManager extends AbstractBlockContentManager {
 		return rows.iterator();
 	}
 	
-	private void layout(String c, String locale, String mode) {
-		layout(Translatable.text(fcontext.getConfiguration().isMarkingCapitalLetters()?c:c.toLowerCase()).locale(locale).build(), mode);
+	private void layout(String c, String locale, String mode, Leader leader) {
+		layout(Translatable.text(fcontext.getConfiguration().isMarkingCapitalLetters()?c:c.toLowerCase()).locale(locale).build(), mode, leader);
 	}
 	
-	private void layout(Translatable spec, String mode) {
+	private void layout(Translatable spec, String mode, Leader leader) {
 		try {
-			layout(fcontext.getTranslator(mode).translate(spec), mode);
+			layout(fcontext.getTranslator(mode).translate(spec), mode, leader);
 		} catch (TranslationException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void layout(BrailleTranslatorResult btr, String mode) {
+	private void layout(BrailleTranslatorResult btr, String mode, Leader leader) {
 		// process first row, is it a new block or should we continue the current row?
 		if (rows.size()==0) {
 			// add to left margin
@@ -347,27 +309,27 @@ class BlockContentManager extends AbstractBlockContentManager {
 					throw new RuntimeException(e);
 				}
 				if (item.getType()==FormattingTypes.ListStyle.PL) {
-					newRow(btr, listLabel, 0, rdp.getBlockIndentParent(), mode);
+					newRow(btr, listLabel, 0, rdp.getBlockIndentParent(), mode, leader);
 				} else {
-					newRow(btr, listLabel, rdp.getFirstLineIndent(), rdp.getBlockIndent(), mode);
+					newRow(btr, listLabel, rdp.getFirstLineIndent(), rdp.getBlockIndent(), mode, leader);
 				}
 				item = null;
 			} else {
-				newRow(btr, "", rdp.getFirstLineIndent(), rdp.getBlockIndent(), mode);
+				newRow(btr, "", rdp.getFirstLineIndent(), rdp.getBlockIndent(), mode, leader);
 			}
 		} else {
-			newRow(popRow(), btr, rdp.getBlockIndent(), mode);
+			newRow(popRow(), btr, rdp.getBlockIndent(), mode, leader);
 		}
 		while (btr.hasNext()) { //LayoutTools.length(chars.toString())>0
-			newRow(btr, "", rdp.getTextIndent(), rdp.getBlockIndent(), mode);
+			newRow(btr, "", rdp.getTextIndent(), rdp.getBlockIndent(), mode, null);
 		}
 		if (btr.supportsMetric(BrailleTranslatorResult.METRIC_FORCED_BREAK)) {
 			forceCount += btr.getMetric(BrailleTranslatorResult.METRIC_FORCED_BREAK);
 		}
 	}
 	
-	private void newRow(BrailleTranslatorResult chars, String contentBefore, int indent, int blockIndent, String mode) {
-		newRow(new RowInfo(getPreText(contentBefore, indent, blockIndent), createAndConfigureEmptyNewRow(leftMargin)), chars, blockIndent, mode);
+	private void newRow(BrailleTranslatorResult chars, String contentBefore, int indent, int blockIndent, String mode, Leader leader) {
+		newRow(new RowInfo(getPreText(contentBefore, indent, blockIndent), createAndConfigureEmptyNewRow(leftMargin)), chars, blockIndent, mode, leader);
 	}
 	
 	private String getPreText(String contentBefore, int indent, int blockIndent) {
@@ -381,14 +343,14 @@ class BlockContentManager extends AbstractBlockContentManager {
 	}
 
 	//TODO: check leader functionality
-	private void newRow(RowInfo m, BrailleTranslatorResult btr, int blockIndent, String mode) {
+	private void newRow(RowInfo m, BrailleTranslatorResult btr, int blockIndent, String mode, Leader leader) {
 		// [margin][preContent][preTabText][tab][postTabText] 
 		//      preContentPos ^
 		String tabSpace = "";
-		if (currentLeader!=null) {
-			int leaderPos = currentLeader.getPosition().makeAbsolute(available);
+		if (leader!=null) {
+			int leaderPos = leader.getPosition().makeAbsolute(available);
 			int offset = leaderPos-m.preTabPos;
-			int align = getLeaderAlign(currentLeader, btr.countRemaining());
+			int align = getLeaderAlign(leader, btr.countRemaining());
 			
 			if (m.preTabPos>leaderPos || offset - align < 0) { // if tab position has been passed or if text does not fit within row, try on a new row
 				addRow(m);
@@ -396,7 +358,7 @@ class BlockContentManager extends AbstractBlockContentManager {
 				//update offset
 				offset = leaderPos-m.preTabPos;
 			}
-			tabSpace = buildLeader(offset - align, mode);
+			tabSpace = buildLeader(offset - align, mode, leader);
 		}
 		breakNextRow(m, btr, tabSpace);
 	}
@@ -427,24 +389,19 @@ class BlockContentManager extends AbstractBlockContentManager {
 		return new RowInfo("", rows.pop(), rowIndex);
 	}
 	
-	private String buildLeader(int len, String mode) {
-		try {
-			if (len > 0) {
-				String leaderPattern;
-				try {
-					leaderPattern = fcontext.getTranslator(mode).translate(Translatable.text(currentLeader.getPattern()).build()).getTranslatedRemainder();
-				} catch (TranslationException e) {
-					throw new RuntimeException(e);
-				}
-				return StringTools.fill(leaderPattern, len);
-			} else {
-				Logger.getLogger(this.getClass().getCanonicalName())
-					.fine("Leader position has been passed on an empty row or text does not fit on an empty row, ignoring...");
-				return "";
+	private String buildLeader(int len, String mode, Leader leader) {
+		if (len > 0) {
+			String leaderPattern;
+			try {
+				leaderPattern = fcontext.getTranslator(mode).translate(Translatable.text(leader.getPattern()).build()).getTranslatedRemainder();
+			} catch (TranslationException e) {
+				throw new RuntimeException(e);
 			}
-		} finally {
-			// always discard leader
-			currentLeader = null;
+			return StringTools.fill(leaderPattern, len);
+		} else {
+			Logger.getLogger(this.getClass().getCanonicalName())
+				.fine("Leader position has been passed on an empty row or text does not fit on an empty row, ignoring...");
+			return "";
 		}
 	}
 
@@ -452,7 +409,7 @@ class BlockContentManager extends AbstractBlockContentManager {
 		int contentLen = StringTools.length(tabSpace) + m.preTabTextLen;
 		boolean force = contentLen == 0;
 		//don't know if soft hyphens need to be replaced, but we'll keep it for now
-		String next = softHyphenPattern.matcher(btr.nextTranslatedRow(m.maxLenText - contentLen, force)).replaceAll("");
+		String next = !btr.hasNext() ? "" : softHyphenPattern.matcher(btr.nextTranslatedRow(m.maxLenText - contentLen, force)).replaceAll("");
 		if ("".equals(next) && "".equals(tabSpace)) {
 			m.row.setChars(m.preContent + trailingWsBraillePattern.matcher(m.preTabText).replaceAll(""));
 			addRow(m);
@@ -539,7 +496,11 @@ class BlockContentManager extends AbstractBlockContentManager {
 			String row = "";
 			BrailleTranslatorResult current = computeNext();
 			while (limit > row.length()) {
-				row += current.nextTranslatedRow(limit - row.length(), force);
+				row += current.nextTranslatedRow(limit - row.length(), force && row.isEmpty());
+				if (current.hasNext()) {
+					row = trailingWsBraillePattern.matcher(row).replaceAll("");
+					break;
+				}
 				current = computeNext();
 				if (current == null) {
 					break;
