@@ -633,16 +633,21 @@ frontmatter,
     display: none;
 }
 
-/* doctitle and docauthor are skipped, #cover-recto, #cover-verso and.titlepage are moved
+/* doctitle and docauthor are skipped, #cover-recto, #cover-verso and .titlepage are moved
  * to the "cover" flow. If the frontmatter has no other child elements, skip it.
  */
-frontmatter,
-/*body|section*/[epub|type~='frontmatter'] {
-    &:has(> *:not(doctitle, docauthor, #cover-recto, #cover-verso, .titlepage)) {
-        display: block;
-        page: frontmatter;
-        flow: frontmatter;
-    }
+frontmatter:has(>
+    *:not(doctitle,
+          docauthor,
+          #cover-recto,
+          #cover-verso,
+          .titlepage)),
+/*body|section*/[epub|type~='frontmatter']:not([epub|type~='titlepage'], #cover-recto, #cover-verso):has(>
+    *:not(header:not(:has(> *:not(h1[epub|type~='fulltitle'],
+                                  p[epub|type~='z3998:author']))))) {
+    display: block;
+    page: frontmatter;
+    flow: frontmatter;
 }
 
 frontmatter level2,
@@ -686,7 +691,7 @@ frontmatter level2,
     margin-bottom:1;
 }
 
-frontmatter > #cover-recto > .series-sjw {
+#cover-recto > .series-sjw {
     display: block;
     text-indent: 0;
     -obfl-vertical-position:12;
@@ -695,7 +700,7 @@ frontmatter > #cover-recto > .series-sjw {
 /* Only display this block ("In ... Braillebänden") and the next
    ("Erster Band") when the book has more than 1 volumes.
    The same applies to "Erster Band" in the TOC */
-frontmatter > level1 > .how-many-volumes {
+#cover-recto > .how-many-volumes {
     &::before {
 	content: -obfl-evaluate('(if (= $volumes 1) "" "In ")');
     }
@@ -711,7 +716,7 @@ frontmatter > level1 > .how-many-volumes {
     -obfl-vertical-position:16;
 }
 
-frontmatter > level1 > .which-volume {
+#cover-recto > .which-volume {
     &::after {
 	&::before {
 	    content: -obfl-evaluate('(if (= $volumes 1) "" $volume)');
@@ -758,20 +763,36 @@ frontmatter > level1 > .which-volume {
     margin-top: 1;
 }
 
+[epub|type~='frontmatter'][epub|type~='titlepage'],
 frontmatter > .titlepage {
     display: block;
     flow: cover;
-}
-
-frontmatter > .titlepage > level2:first-child > p {
-    display: block;
-    text-align:center;
-}
-
-frontmatter > .titlepage > level2:nth-child(2) > p {
-    display: block;
-    margin-left:2;
-    text-indent:-2;
+    > {
+        section, level2 {
+            &:first-child {
+                &::before {
+                    display: block;
+                    text-align: center;
+                    white-space: pre-line;
+                    padding-top: 5;
+                    margin-bottom: 1;
+                    margin-left: 4;
+                    margin-right: 4;
+                    -obfl-underline: ⠤;
+                    content: string(docauthor) "\A\A\A" string(doctitle);
+                }
+                > p {
+                    display: block;
+                    text-align: center;
+                }
+            }
+            &:nth-child(2) > p {
+                display: block;
+                margin-left: 2;
+                text-indent: -2;
+            }
+        }
+    }
 }
 
 .sourcePublisher {
@@ -779,18 +800,6 @@ frontmatter > .titlepage > level2:nth-child(2) > p {
     text-align:center;
     -obfl-vertical-position:26;
     page-break-after:always;
-}
-
-frontmatter > .titlepage > level2:first-child::before {
-    display: block;
-    text-align:center;
-    white-space: pre-line;
-    padding-top:5;
-    margin-bottom:1;
-    margin-left:4;
-    margin-right:4;
-    -obfl-underline: ⠤;
-    content: string(docauthor) "\A\A\A" string(doctitle);
 }
 
 bodymatter {
