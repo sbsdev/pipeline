@@ -76,13 +76,33 @@
 		</p:input>
 	</px:dtbook-load>
 	
+	<px:fileset-load media-types="application/x-dtbook+xml">
+		<p:input port="in-memory">
+			<p:pipe step="dtbook" port="in-memory.out"/>
+		</p:input>
+	</px:fileset-load>
+	
+	<p:for-each name="dtbook-xml-preprocessed">
+		<p:output port="result" sequence="true"/>
+		<p:xslt>
+			<p:input port="stylesheet">
+				<p:document href="dtbook-to-epub3-preprocess.xsl"/>
+			</p:input>
+			<p:input port="parameters">
+				<p:empty/>
+			</p:input>
+		</p:xslt>
+	</p:for-each>
+	
+	<p:for-each><p:identity/></p:for-each>
+	
 	<px:nordic-dtbook-to-html.step name="html"
 	                               fail-on-error="true">
 		<p:input port="fileset.in">
 			<p:pipe step="dtbook" port="fileset.out"/>
 		</p:input>
 		<p:input port="in-memory.in">
-			<p:pipe step="dtbook" port="in-memory.out"/>
+			<p:pipe step="dtbook-xml-preprocessed" port="result"/>
 		</p:input>
 		<p:input port="xslt">
 			<p:document href="dtbook-to-epub3.xsl"/>

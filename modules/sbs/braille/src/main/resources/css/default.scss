@@ -124,8 +124,22 @@
 }
 
 brl|volume[brl|grade='#{$contraction-grade}'] {
-   display:block;
-   volume-break-before:always;
+    display: block;
+    volume-break-before: always;
+}
+
+br[class^=braille-volume-break] {
+    display: none;
+    /* cancel default behavior of br (newline) */
+    &::before {
+        content: none;
+    }
+}
+
+br.braille-volume-break,
+br.braille-volume-break-grade-#{$contraction-grade} {
+    display: block;
+    volume-break-before: always;
 }
 
 @volume {
