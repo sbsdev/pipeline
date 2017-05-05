@@ -2500,7 +2500,7 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="keep-spans-without-white-space-together" xfail="true">
+  <x:scenario label="keep-spans-without-white-space-together">
     <x:documentation>
       Tests that two segments that are not separated with white space are not broken across
       lines. This is achieved by adding a ZWNBSP character at the end of the first segment and

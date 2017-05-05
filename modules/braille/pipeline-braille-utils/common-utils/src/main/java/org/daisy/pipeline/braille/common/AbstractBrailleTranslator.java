@@ -497,9 +497,18 @@ public abstract class AbstractBrailleTranslator extends AbstractTransform implem
 					BrailleStream save_inputStream = inputStream;
 					inputStream = emptyBrailleStream;
 					List<Character> save_inputBuffer = inputBuffer != null ? copyOf(inputBuffer) : null;
-					inputBuffer = save_inputBuffer != null ?
-						peekingIterator(concat(save_inputBuffer.iterator(), charactersOf(save_inputStream.remainder()).iterator())) :
-						peekingIterator(charactersOf(save_inputStream.remainder()).iterator());
+					if (save_inputBuffer != null) {
+						if (save_inputStream.hasNext()) {
+							inputBuffer = peekingIterator(
+									concat(save_inputBuffer.iterator(), charactersOf(save_inputStream.remainder()).iterator()));
+						} else {
+							inputBuffer = peekingIterator(save_inputBuffer.iterator());
+						}
+					} else if (save_inputStream.hasNext()) {
+						inputBuffer = peekingIterator(charactersOf(save_inputStream.remainder()).iterator());
+					} else {
+						inputBuffer = null;
+					}
 					StringBuilder save_charBuffer = charBuffer;
 					charBuffer = new StringBuilder(charBuffer.toString());
 					ArrayList<Byte> save_wrapInfo = wrapInfo;

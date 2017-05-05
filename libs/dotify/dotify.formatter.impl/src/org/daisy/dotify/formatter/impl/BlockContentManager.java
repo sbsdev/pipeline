@@ -494,17 +494,97 @@ class BlockContentManager extends AbstractBlockContentManager {
 
 		public String nextTranslatedRow(int limit, boolean force) {
 			String row = "";
+			boolean nextForce = false;
+			
+			// for saving/restoring state
+			int restoreRow = 0;
+			int restoreCurrent = currentIndex;
+			int restoreMarkers = pendingMarkers.size();
+			int restoreAnchors = pendingAnchors.size();
+			int restoreIdentifiers = pendingIdentifiers.size();
+			
 			BrailleTranslatorResult current = computeNext();
 			while (limit > row.length()) {
-				row += current.nextTranslatedRow(limit - row.length(), force && row.isEmpty());
-				if (current.hasNext()) {
-					row = trailingWsBraillePattern.matcher(row).replaceAll("");
-					break;
+				if (current == null || !current.hasNext()) {
+					throw new RuntimeException("coding error");
 				}
-				current = computeNext();
-				if (current == null) {
-					break;
+				String r = current.nextTranslatedRow(limit - row.length(), nextForce);
+				nextForce = false;
+				if (nextForce && r.isEmpty()) {
+					throw new RuntimeException("corrupt BrailleTranslatorResult: " + current + ": "
+					                           + ".hasNext() is true but .nextTranslatedRow("+ (limit - row.length()) + ", true)"
+					                           + " returns empty string");
 				}
+				if (!r.isEmpty()) {
+					row += r;
+					
+					// save state
+					restoreRow = row.length();
+					restoreCurrent = currentIndex;
+					restoreMarkers = pendingMarkers.size();
+					restoreAnchors = pendingAnchors.size();
+					restoreIdentifiers = pendingIdentifiers.size();
+				} else if (!current.hasNext()) {
+					
+					// The BrailleTranslatorResult wrongly indicated that it had more rows. Not sure whether this is
+					// an error? Just ignore for now.
+					current = computeNext();
+					if (current == null) {
+						break;
+					}
+				}
+				if (current.hasNext() && current.countRemaining() < limit - row.length()) {
+					
+					// use force when we are still at the beginning of the line because getTranslatedRemainder
+					// can possibly start with white space
+					if (row.isEmpty()) {
+						nextForce = true;
+						continue;
+					}
+					String rem = current.getTranslatedRemainder();
+					if (rem.isEmpty()) {
+						throw new RuntimeException("coding error");
+					}
+					row += rem;
+					currentIndex++;
+					current = computeNext();
+					if (current == null) {
+						break;
+					} else {
+						continue;
+					}
+				} else if (r.isEmpty()) {
+					
+					// restore state
+					row = row.substring(0, restoreRow);
+					currentIndex = restoreCurrent;
+					pendingMarkers.subList(restoreMarkers, pendingMarkers.size()).clear();
+					pendingAnchors.subList(restoreAnchors, pendingAnchors.size()).clear();
+					pendingIdentifiers.subList(restoreIdentifiers, pendingIdentifiers.size()).clear();
+					current = computeNext();
+					if (row.isEmpty()) {
+						if (force) {
+							nextForce = true;
+							continue;
+						} else {
+							break;
+						}
+					} else {
+						break;
+					}
+				} else if (current.hasNext()) {
+					break;
+				} else {
+					current = computeNext();
+					if (current == null) {
+						break;
+					} else {
+						continue;
+					}
+				}
+			}
+			if (hasNext()) {
+				row = trailingWsBraillePattern.matcher(row).replaceAll("");
 			}
 			return row;
 		}
