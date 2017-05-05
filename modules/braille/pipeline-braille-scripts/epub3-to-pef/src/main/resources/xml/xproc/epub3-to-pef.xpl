@@ -195,7 +195,7 @@ even though the provided CSS is more specific.
             <p:pipe step="convert" port="in-memory.out"/>
         </p:input>
     </p:identity>
-    <px:message cx:depends-on="opf" message="[progress 5 px:epub3-to-pef.store] Storing PEF"/>
+    <px:message message="[progress 5 px:epub3-to-pef.store] Storing PEF"/>
     <p:delete match="/*/@xml:base"/>
     <px:epub3-to-pef.store>
         <p:with-option name="epub" select="$epub"/>
