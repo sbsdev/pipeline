@@ -346,19 +346,20 @@ header > p[epub|type~='z3998:author'] {
 
 /* Footnotes */
 
-dtbook {
+dtbook,
+html {
     counter-reset: footnote 0;
 }
 
-note {
+note,
+[epub|type~='rearnote'] {
     display: none;
+    p {
+        display: inline;
+    }
 }
 
-note p {
-    display: inline;
-}
-
-noteref {
+@mixin noteref($refattr) {
     flow: null;
     counter-increment: footnote;
     
@@ -368,7 +369,7 @@ noteref {
         content: '*' counter(footnote);
         &::alternate {
             display: block;
-            content: '⠠⠔' counter(footnote) ' ' target-content(attr(idref));
+            content: '⠠⠔' counter(footnote) ' ' target-content(attr($refattr));
             text-indent: -2;
             margin-left: 2;
             @if ($footnotes-placement == 'standard') {
@@ -384,14 +385,26 @@ noteref {
     }
 }
 
+noteref {
+    @include noteref(idref);
+}
+
+a[epub|type~='noteref'] {
+    @include noteref(href);
+}
+
 @if ($footnotes-placement == 'end-of-chapter') {
     level1,
     level2,
     level3,
     level4,
     level5,
-    level6 {
-        &:has(noteref)::after {
+    level6,
+    section:not([epub|type~='z3998:poem']),
+    [epub|type~='frontmatter'],
+    [epub|type~='bodymatter'],
+    [epub|type~='rearmatter'] {
+        &:has(noteref, a[epub|type~='noteref'])::after {
             content: flow(chapter-notes);
             &::before {
                 display: block;
@@ -403,32 +416,38 @@ noteref {
         }
     }
 } @else if ($footnotes-placement == 'end-of-volume') {
-    book:has(noteref)::alternate {
-        flow: volume-notes-title;
-        display: block;
-        margin-top: 1;
-        -obfl-underline: ⠒;
-        content: 'Anmerkungen';
-        text-transform: auto;
-    }
-} @else if ($footnotes-placement == 'end-of-book') {
-    book:has(noteref)::alternate {
-        display: -obfl-list-of-references;
-        flow: endnotes-container;
-        content: -obfl-collection(endnotes);
-        hyphens: manual;
-        text-transform: none;
-        &::-obfl-on-volume-start {
+    book,
+    html {
+        &:has(noteref, a[epub|type~='noteref'])::alternate {
+            flow: volume-notes-title;
             display: block;
+            margin-top: 1;
             -obfl-underline: ⠒;
-            page-break-after: avoid;
-            content: 'Anmerkungen' -obfl-evaluate('(if (> $volumes 1) (concat " Band " $started-volume-number) "")');
+            content: 'Anmerkungen';
             text-transform: auto;
         }
-        /* because skip-margin-top-of-page=true currently does not work for margin-top on -obfl-on-volume-start */
-        &::-obfl-on-volume-end {
-            display: block;
-            content: ' ';
+    }
+} @else if ($footnotes-placement == 'end-of-book') {
+    book,
+    html {
+        &:has(noteref, a[epub|type~='noteref'])::alternate {
+            display: -obfl-list-of-references;
+            flow: endnotes-container;
+            content: -obfl-collection(endnotes);
+            hyphens: manual;
+            text-transform: none;
+            &::-obfl-on-volume-start {
+                display: block;
+                -obfl-underline: ⠒;
+                page-break-after: avoid;
+                content: 'Anmerkungen' -obfl-evaluate('(if (> $volumes 1) (concat " Band " $started-volume-number) "")');
+                text-transform: auto;
+            }
+            /* because skip-margin-top-of-page=true currently does not work for margin-top on -obfl-on-volume-start */
+            &::-obfl-on-volume-end {
+                display: block;
+                content: ' ';
+            }
         }
     }
 }
