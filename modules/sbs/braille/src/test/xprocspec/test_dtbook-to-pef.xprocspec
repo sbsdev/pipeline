@@ -1701,6 +1701,7 @@
                   <p>...</p>
                   <p>Zeichnungen ab Seite <a class="pageref" href="#p-81">81</a></p>
                   <p>...</p>
+                  <p><a class="pageref" href="#p-81">82</a></p>
                 </level1>
               </frontmatter>
               <bodymatter>
@@ -1710,7 +1711,12 @@
                   <a id="p-81"/>
                   <level2>
                     <h2>Die Heilmittel</h2>
-                    <p>...</p>
+                    <p>
+                      ...
+                      <pagenum id="page-82" page="normal">82</pagenum>
+                      <a id="p-82"/>
+                      ...
+                    </p>
                   </level2>
                 </level1>
               </bodymatter>
@@ -1745,6 +1751,7 @@
                   <row>⠀⠀⠄⠄⠄</row>
                   <row>⠀⠀⠵⠑⠊⠉⠓⠝⠥⠝⠛⠑⠝⠀⠁⠃⠀⠎⠑⠊⠞⠑⠀⠼⠁</row>
                   <row>⠀⠀⠄⠄⠄</row>
+                  <row>⠀⠀⠼⠁</row>
                 </page>
               </section>
               <section>
@@ -1754,7 +1761,7 @@
                   <row/>
                   <row>⠙⠊⠑⠀⠓⠑⠊⠇⠍⠊⠞⠞⠑⠇</row>
                   <row>⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒</row>
-                  <row>⠀⠀⠄⠄⠄</row>
+                  <row>⠀⠀⠄⠄⠄⠀⠄⠄⠄</row>
                   <row/>
                   <row/>
                   <row/>
