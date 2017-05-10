@@ -11,6 +11,7 @@ import static org.daisy.pipeline.pax.exam.Options.logbackConfigFile;
 import static org.daisy.pipeline.pax.exam.Options.mavenBundle;
 import static org.daisy.pipeline.pax.exam.Options.mavenBundlesWithDependencies;
 import static org.daisy.pipeline.pax.exam.Options.pipelineModule;
+import static org.daisy.pipeline.pax.exam.Options.thisBundle;
 import static org.daisy.pipeline.pax.exam.Options.xprocspec;
 
 import org.junit.Test;
@@ -39,6 +40,7 @@ public class DtbookToOdtTest {
 			calabashConfigFile(),
 			felixDeclarativeServices(),
 			junitBundles(),
+			thisBundle(),
 			mavenBundlesWithDependencies(
 				pipelineModule("dtbook-to-odt"),
 				pipelineModule("odt-utils"),

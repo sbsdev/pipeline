@@ -34,6 +34,7 @@
     <module>modules/sbs/maven-parents/modules-parent</module>
     <module>modules/sbs/braille-tables</module>
     <module>modules/sbs/epub3-dtbook-migrator</module>
+    <module>modules/sbs/dtbook-to-odt</module>
   </modules>
   
   <build>
