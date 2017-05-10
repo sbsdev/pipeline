@@ -21,13 +21,13 @@
   
   <properties>
     <!--
-	this needs to match the version in scripts-aggregator 1.9
+	this needs to match the version in scripts-bom (1.10.1: defined in modules-parent)
     -->
-    <dtbook-to-odt.version>1.0.0</dtbook-to-odt.version>
+    <dtbook-to-odt.version>1.1.1</dtbook-to-odt.version>
     <!--
-	this needs to match the version in script-utils-aggregator 1.9
+	this needs to match the version in scripts-utils-bom (1.10.2-SNAPSHOT: defined in modules-parent)
     -->
-    <odt-utils.version>1.0.1</odt-utils.version>
+    <odt-utils.version>1.0.2</odt-utils.version>
     <tagNameFormat>v@{project.version}</tagNameFormat>
   </properties>
   

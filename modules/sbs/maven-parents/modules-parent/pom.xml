@@ -35,40 +35,40 @@
   <dependencyManagement>
     <dependencies>
       <!--
-          pipeline modules
+          pipeline
       -->
       <dependency>
         <groupId>org.daisy.pipeline</groupId>
         <artifactId>framework-bom</artifactId>
-        <version>1.10.0</version>
+        <version>1.10.3-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
-        <artifactId>common-utils-aggregator</artifactId>
-        <version>1.9</version>
+        <artifactId>common-utils-bom</artifactId>
+        <version>1.10.2-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
-        <artifactId>scripts-aggregator</artifactId>
-        <version>1.9</version>
+        <artifactId>scripts-bom</artifactId>
+        <version>1.10.1</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
-        <artifactId>script-utils-aggregator</artifactId>
-        <version>1.9</version>
+        <artifactId>scripts-utils-bom</artifactId>
+        <version>1.10.2-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules.braille</groupId>
         <artifactId>braille-modules-bom</artifactId>
-        <version>1.9.15</version>
+        <version>1.10.1-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -78,13 +78,12 @@
       <dependency>
         <groupId>org.daisy.xprocspec</groupId>
         <artifactId>xprocspec</artifactId>
-        <version>1.1.0</version>
-        <scope>test</scope>
+        <version>1.2.0</version>
       </dependency>
       <dependency>
         <groupId>org.daisy.maven</groupId>
         <artifactId>xprocspec-runner</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
         <scope>test</scope>
         <exclusions>
           <exclusion>
@@ -96,14 +95,8 @@
       <dependency>
         <groupId>org.daisy.maven</groupId>
         <artifactId>xproc-engine-daisy-pipeline</artifactId>
-        <version>1.10</version>
+        <version>1.10.3-SNAPSHOT</version>
         <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.daisy.maven</groupId>
