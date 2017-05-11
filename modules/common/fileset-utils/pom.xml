@@ -99,23 +99,13 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <executions>
           <execution>
-            <id>manifest-before-test</id>
+            <id>bundle-before-test</id>
             <phase>generate-test-resources</phase>
             <goals>
-              <goal>manifest</goal>
+              <goal>bundle</goal>
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <!-- TODO temporary disbling of XProcSpec tests -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/XProcSpecTest.java</exclude>
-          </excludes>
-        </configuration>
       </plugin>
     </plugins>
   </build>
