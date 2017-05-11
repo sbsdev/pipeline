@@ -132,6 +132,7 @@
                                                    resolve-uri('group-starting-with-linenum.xsl'),
                                                    resolve-uri('handle-toc-and-running-line.xsl'),
                                                    resolve-uri('handle-dl.xsl'),
+                                                   resolve-uri('handle-pageref.xsl'),
                                                    resolve-uri('insert-boilerplate.xsl'),
                                                    $stylesheet),' ')">
             <p:inline>

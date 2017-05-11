@@ -452,13 +452,14 @@ a[epub|type~='noteref'] {
     }
 }
 
-.pageref {
+/* handle-pageref.xsl converts "pageref" to "pageref-frontmatter" when
+ * the referenced element is within the frontmatter. */
+.pageref:not(.pageref-frontmatter) {
     flow: null;
-}
-
-.pageref::alternate {
-    display: inline;
-    content: target-counter(attr(href), page);
+    &::alternate {
+        display: inline;
+        content: target-counter(attr(href), page);
+    }
 }
 
 a:empty {
