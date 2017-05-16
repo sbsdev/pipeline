@@ -26,3 +26,11 @@ The tree below shows the structure of the project:
 
 
 [git-subrepo]: https://github.com/ingydotnet/git-subrepo
+
+# Building
+
+``` shell
+$ make clean
+$ make compile
+$ `make dump-maven-cmd` -f modules/sbs/dtbook-to-odt clean package
+```
