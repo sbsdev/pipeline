@@ -4,6 +4,7 @@
                xmlns:c="http://www.w3.org/ns/xproc-step"
                xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
                xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+               xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
                script="http://www.sbs.ch/pipeline/dtbook-to-odt/dtbook-to-odt.xpl">
   
   <x:scenario label="minimal">
@@ -47,4 +48,83 @@
     </x:expect>
   </x:scenario>
   
+  <x:scenario label="no-page-numbers-float">
+    <x:call step="sbs:dtbook-to-odt">
+      <x:input port="source">
+        <x:document type="inline">
+          <dtbook xmlns="http://www.daisy.org/z3986/2005/dtbook/" version="2005-3" xml:lang="de">
+            <book>
+              <bodymatter>
+                <level1>
+                  <p>Um acht erwacht Thomas <brl:name>Mann</brl:name>.  Nicht etwa, weil er geweckt
+                  wird oder einen Wecker gestellt hat. Nein, er erwacht einfach immer um acht. Als
+                  er einmal um halb acht aufwacht, blieb er die halbe Stunde liegen, irritiert, wie
+                  ihm das passiert sein konnte. Es sollte nie wieder vorkommen. Sein Körper
+                  gehorchte ihm. Wir wissen noch immer sehr wenig aus der Kältekammer der Ehe
+                  zwischen Thomas <brl:name>Mann</brl:name> und Katia Pringsheim. Aber es ist
+                  auffällig, dass Katia, nachdem ihr Ehemann den »Tod in Venedig« im Jahre 1912
+                  abgeschlossen hat, fast anderthalb Jahre ununterbrochen zu verschiedenen
+                  Kuraufenthalten in der Schweiz ist, um ihre Lungenkrankheit zu kurieren. Was ihr
+                  den Atem verschlagen hatte, war das versteckte homosexuelle Bekenntnis ihres
+                  Mannes. Natürlich wusste sie mehr als jeder andere, dass jener Gustav von
+                  Aschenbach ein Selbstporträt ihres Gatten war – und dass es beim gemeinsamen
+                  Urlaub in Venedig 1911, im Grand Hotel
+                  <brl:homograph>d<brl:separator/>es</brl:homograph> Bains war, dass er den Blick
+                  nicht abwenden konnte von jenem hübschen Jungen Tadzio, den er im Buch als
+                  »vollkommen schön« beschreibt, »bleich und anmutig verschlossen«. Katia hatte sich
+                  gewundert über ihren Mann, wie er dem Knaben hinterherstierte, doch nun las sie
+                  die Novelle über den alternden Künstler, der hemmungslos seiner Knabenliebe
+                  folgte, den Jungen beobachtete, wenn er am Strand war und wenn er aß, »vormännlich
+                  hold und herb«. Aber Thomas <brl:name>Mann</brl:name> hat jenen Gustav von
+                  Aschenbach stellvertretend für sich seinen Willen ausleben und seinen Tod finden
+                  lassen. Das »strenge Eheglück« muss von Katia und Thomas in dem Jahr der
+                  permanenten Sanatoriumsaufenthalte schmerzhaft fallengelassen werden. Aber sie
+                  bleiben zusammen, bewahren Haltung und bauen ein Haus.</p>
+                </level1>
+              </bodymatter>
+            </book>
+          </dtbook>
+        </x:document>
+      </x:input>
+      <x:option name="page-numbers-float" select="false()"/>
+      <x:option name="output-dir" select="concat($temp-dir,'no-page-numbers-float/')"/>
+    </x:call>
+    <x:context label="the content file">
+      <x:document type="file" base-uri="temp-dir" href="no-page-numbers-float/test_script.odt!/content.xml"
+                  select="/office:document-content/office:body/office:text"/>
+    </x:context>
+    <x:expect label="the content file" type="compare">
+      <x:document type="inline">
+        <office:text>
+          <text:sequence-decls>
+            <text:sequence-decl text:display-outline-level="0" text:name="Illustration"/>
+            <text:sequence-decl text:display-outline-level="0" text:name="Table"/>
+            <text:sequence-decl text:display-outline-level="0" text:name="Text"/>
+            <text:sequence-decl text:display-outline-level="0" text:name="Drawing"/>
+          </text:sequence-decls>
+          <text:p text:style-name="dtb_3a_p">Um acht erwacht Thomas Mann.  Nicht etwa, weil er
+          geweckt wird oder einen Wecker gestellt hat. Nein, er erwacht einfach immer um acht. Als
+          er einmal um halb acht aufwacht, blieb er die halbe Stunde liegen, irritiert, wie ihm das
+          passiert sein konnte. Es sollte nie wieder vorkommen. Sein Körper gehorchte ihm. Wir
+          wissen noch immer sehr wenig aus der Kältekammer der Ehe zwischen Thomas Mann und Katia
+          Pringsheim. Aber es ist auffällig, dass Katia, nachdem ihr Ehemann den »Tod in Venedig« im
+          Jahre 1912 abgeschlossen hat, fast anderthalb Jahre ununterbrochen zu verschiedenen
+          Kuraufenthalten in der Schweiz ist, um ihre Lungenkrankheit zu kurieren. Was ihr den Atem
+          verschlagen hatte, war das versteckte homosexuelle Bekenntnis ihres Mannes. Natürlich
+          wusste sie mehr als jeder andere, dass jener Gustav von Aschenbach ein Selbstporträt ihres
+          Gatten war – und dass es beim gemeinsamen Urlaub in Venedig 1911, im Grand Hotel des Bains
+          war, dass er den Blick nicht abwenden konnte von jenem hübschen Jungen Tadzio, den er im
+          Buch als »vollkommen schön« beschreibt, »bleich und anmutig verschlossen«. Katia hatte
+          sich gewundert über ihren Mann, wie er dem Knaben hinterherstierte, doch nun las sie die
+          Novelle über den alternden Künstler, der hemmungslos seiner Knabenliebe folgte, den Jungen
+          beobachtete, wenn er am Strand war und wenn er aß, »vormännlich hold und herb«. Aber
+          Thomas Mann hat jenen Gustav von Aschenbach stellvertretend für sich seinen Willen
+          ausleben und seinen Tod finden lassen. Das »strenge Eheglück« muss von Katia und Thomas in
+          dem Jahr der permanenten Sanatoriumsaufenthalte schmerzhaft fallengelassen werden. Aber
+          sie bleiben zusammen, bewahren Haltung und bauen ein Haus.</text:p>
+        </office:text>
+      </x:document>
+    </x:expect>
+  </x:scenario>
+
 </x:description>
