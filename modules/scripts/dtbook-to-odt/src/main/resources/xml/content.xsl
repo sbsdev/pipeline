@@ -680,7 +680,7 @@
 				</xsl:analyze-string>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:sequence select="$text"/>
+				<xsl:value-of select="$text"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -688,7 +688,7 @@
 	<xsl:template match="text()" mode="#all" priority="-1.4">
 		<xsl:choose>
 			<xsl:when test="normalize-space(.)=''">
-				<xsl:sequence select="."/>
+				<xsl:value-of select="."/>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:call-template name="TERMINATE"/>
