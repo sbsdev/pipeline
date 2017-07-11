@@ -21,9 +21,9 @@
   
   <properties>
     <!--
-	this needs to match the version in scripts-bom (1.10.1: defined in modules-parent)
+	this needs to match the version in scripts-bom (1.10.2-SNAPSHOT: defined in modules-parent)
     -->
-    <dtbook-to-odt.version>1.1.1</dtbook-to-odt.version>
+    <dtbook-to-odt.version>1.1.2-SNAPSHOT</dtbook-to-odt.version>
     <!--
 	this needs to match the version in scripts-utils-bom (1.10.2-SNAPSHOT: defined in modules-parent)
     -->
