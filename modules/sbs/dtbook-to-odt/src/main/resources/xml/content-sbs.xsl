@@ -339,6 +339,17 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
+	<xsl:template match="brl:running-line|brl:toc-line|brl:volume|brl:when-braille|brl:separator|
+	                     brl:select|brl:otherwise"
+	              as="xs:boolean" mode="is-block-element" priority="1">
+		<xsl:sequence select="false()"/>
+	</xsl:template>
+	
+	<xsl:template match="brl:homograph|brl:place|brl:name|brl:v-form|brl:num|brl:emph"
+	              as="xs:boolean" mode="is-block-element">
+		<xsl:sequence select="false()"/>
+	</xsl:template>
+	
 	<!-- ===== -->
 	<!-- STYLE -->
 	<!-- ===== -->
