@@ -4,6 +4,9 @@
                xmlns:c="http://www.w3.org/ns/xproc-step"
                xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
                xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+               xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0"
+               xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0"
+               xmlns:xlink="http://www.w3.org/1999/xlink"
                xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
                script="http://www.sbs.ch/pipeline/dtbook-to-odt/dtbook-to-odt.xpl">
   
@@ -127,4 +130,71 @@
     </x:expect>
   </x:scenario>
 
+  <x:scenario label="math">
+    <x:call step="sbs:dtbook-to-odt">
+      <x:input port="source">
+        <x:document type="inline">
+          <dtbook xml:lang="de" xmlns="http://www.daisy.org/z3986/2005/dtbook/">
+            <book>
+              <bodymatter>
+                <level1>
+                  <p>
+                    <span class="asciimath">(3xy)^2</span>
+                  </p>
+                </level1>
+              </bodymatter>
+            </book>
+          </dtbook>
+        </x:document>
+      </x:input>
+      <x:option name="asciimath" select="'BOTH'"/>
+      <x:option name="output-dir" select="concat($temp-dir,'math/')"/>
+    </x:call>
+    <x:context label="the content file">
+      <x:document type="file" base-uri="temp-dir" href="math/test_script.odt!/content.xml"
+                  select="/office:document-content/office:body/office:text"/>
+    </x:context>
+    <x:expect label="the content file" type="compare">
+      <x:document type="inline">
+        <office:text>
+          <text:sequence-decls>
+            <text:sequence-decl text:display-outline-level="0" text:name="Illustration"/>
+            <text:sequence-decl text:display-outline-level="0" text:name="Table"/>
+            <text:sequence-decl text:display-outline-level="0" text:name="Text"/>
+            <text:sequence-decl text:display-outline-level="0" text:name="Drawing"/>
+          </text:sequence-decls>
+          <text:p text:style-name="dtb_3a_p">
+            <draw:frame draw:name="math:math#1" draw:style-name="dtb_3a_math" text:anchor-type="as-char" draw:z-index="0">
+              <draw:object xlink:show="embed" xlink:type="simple" xlink:actuate="onLoad" xlink:href="Math/mathml_1"/>
+              <svg:title>(3xy)^2</svg:title>
+            </draw:frame>
+            <text:span text:style-name="dtb_3a_span_5f_asciimath">(3xy)^2</text:span>
+          </text:p>
+        </office:text>
+      </x:document>
+    </x:expect>
+    <x:context label="the mathml file">
+      <x:document type="file" base-uri="temp-dir" href="math/test_script.odt!/Math/mathml_1/content.xml"/>
+    </x:context>
+    <x:expect label="the mathml file" type="compare">
+      <x:document type="inline">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <semantics>
+            <msup>
+              <mrow>
+                <mo>(</mo>
+                <mn>3</mn>
+                <mi>x</mi>
+                <mi>y</mi>
+                <mo>)</mo>
+              </mrow>
+              <mn>2</mn>
+            </msup>
+            <annotation encoding="ASCIIMath">(3xy)^2</annotation>
+          </semantics>
+        </math>
+      </x:document>
+    </x:expect>
+  </x:scenario>
+  
 </x:description>
