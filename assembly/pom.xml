@@ -20,7 +20,7 @@
     <tag>v1.10.0</tag>
   </scm>
   <properties>
-    <cli.version>2.0.0</cli.version>
+    <cli.version>2.1.0</cli.version>
   </properties>
   <dependencyManagement>
     <dependencies>
