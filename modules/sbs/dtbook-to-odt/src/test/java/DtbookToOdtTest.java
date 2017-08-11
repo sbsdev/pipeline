@@ -48,16 +48,6 @@ public class DtbookToOdtTest {
 				pipelineModule("file-utils"),
 				// for dtbook-to-odt
 				pipelineModule("image-utils"),
-				pipelineModule("asciimath-utils"),
-				// for odt-utils
-				pipelineModule("fileset-utils"),
-				pipelineModule("zip-utils"),
-				pipelineModule("common-utils"),
-				// other transitive dependencies
-				pipelineModule("html-utils"),
-				pipelineModule("mediatype-utils"),
-				pipelineModule("validation-utils"),
-				pipelineModule("dtbook-validator"),
 				// logging
 				logbackClassic(),
 				// xprocspec
