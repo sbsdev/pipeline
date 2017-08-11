@@ -158,8 +158,8 @@
 	<artifactId>maven-resources-plugin</artifactId>
 	<executions>
 	  <execution>
-	    <id>filter-resources</id>
-	    <phase>process-resources</phase>
+	    <id>filter-dtbook-to-odt</id>
+	    <phase>generate-resources</phase>
 	    <goals>
 	      <goal>copy-resources</goal>
 	    </goals>
