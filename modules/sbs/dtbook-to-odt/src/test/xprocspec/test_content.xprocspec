@@ -126,7 +126,7 @@
       <x:document type="inline">
         <wrapper>
           <text:p text:style-name="dtb_3a_p">
-            Du brauchst *
+            Du brauchst*
             <text:span text:style-name="dtb_3a_note">
               ( * brauchen + zu kann nur negativ oder einschränkend verwendet werden. )
             </text:span>
@@ -163,9 +163,9 @@
     <x:expect label="result" type="compare">
       <x:document type="inline">
         <wrapper>
-          <text:p text:style-name="dtb_3a_p">* +</text:p>
+          <text:p text:style-name="dtb_3a_p">*+</text:p>
           <text:p text:style-name="dtb_3a_note_5f_footnote">
-            <text:span text:style-name="dtb_3a_note">( *</text:span>
+            <text:span text:style-name="dtb_3a_note">(*</text:span>
           </text:p>
           <text:p text:style-name="dtb_3a_note_5f_footnote">
             <text:span text:style-name="dtb_3a_note">
@@ -438,7 +438,7 @@
       <x:document type="inline">
         <wrapper>
           <text:p text:style-name="Standard">
-            <text:span text:style-name="dtb_3a_linenum">Z 15</text:span>
+            <text:span text:style-name="dtb_3a_linenum">Z15</text:span>
             Einsamkeit und Hummelgesumm.
           </text:p>
         </wrapper>
@@ -473,11 +473,11 @@
             Dann gibt es noch drei Katzen. Niko bekommt immer einen Schreck, wenn
           </text:p>
           <text:p text:style-name="dtb_3a_p">
-            Z 5 eine von ihnen um seine Beine streicht. Am schönsten findet er aber die Papageien.
+            Z5 eine von ihnen um seine Beine streicht. Am schönsten findet er aber die Papageien.
             Sie sitzen in einem Käfig, der über der Theke hängt. Einer der Papageien ist weiß,
           </text:p>
           <text:p text:style-name="dtb_3a_p">
-            Z 10 der andere quietschgrün. Manchmal kreischen sie.
+            Z10 der andere quietschgrün. Manchmal kreischen sie.
           </text:p>
         </wrapper>
       </x:document>
