@@ -42,6 +42,7 @@ import org.sonatype.aether.connector.wagon.WagonProvider;
 import org.sonatype.aether.connector.wagon.WagonRepositoryConnectorFactory;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyNode;
+import org.sonatype.aether.graph.Exclusion;
 import org.sonatype.aether.repository.LocalRepository;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.RepositorySystem;
@@ -223,6 +224,7 @@ public abstract class Options {
 		private String type = "jar";
 		private String classifier = "";
 		private String version = null;
+		private Set<Exclusion> exclusions = new HashSet<Exclusion>();
 		
 		public MavenBundle groupId(String groupId) {
 			checkURLResolved();
@@ -259,6 +261,11 @@ public abstract class Options {
 			else {
 				this.version = version;
 				versionAsInProject = false; }
+			return this;
+		}
+		
+		public MavenBundle exclusion(String groupId, String artifactId) {
+			exclusions.add(new Exclusion(groupId, artifactId, null, "jar"));
 			return this;
 		}
 		
@@ -384,8 +391,8 @@ public abstract class Options {
 				else
 					localRepository = DEFAULT_LOCAL_REPOSITORY; }
 			CollectRequest request = new CollectRequest();
-			for (MavenBundle bundle : fromBundles) {
-				request.addDependency(new Dependency(bundle.asArtifact(), "runtime")); }
+			for (MavenBundle bundle : fromBundles)
+				request.addDependency(new Dependency(bundle.asArtifact(), "runtime", false, bundle.exclusions));
 			List<RemoteRepository> repositories = new Vector<RemoteRepository>();
 			RemoteRepository central = new RemoteRepository("central", "default", "http://repo1.maven.org/maven2/");
 			repositories.add(central);
