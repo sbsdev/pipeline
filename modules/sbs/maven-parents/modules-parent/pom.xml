@@ -146,7 +146,7 @@
   </dependencyManagement>
   
   <!-- Copied from modules parent of DAISY Pipeline build utils
-       (https://github.com/daisy-consortium/pipeline-build-utils/blob/master/modules-parent/pom.xml)
+       (https://github.com/daisy/pipeline-build-utils/blob/master/modules-parent/pom.xml)
        -->
   <profiles>
     <profile>
@@ -157,51 +157,27 @@
         </file>
       </activation>
       <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <excludes>
+              <exclude>META-INF/catalog.xml</exclude>
+            </excludes>
+          </resource>
+        </resources>
         <plugins>
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>xml-maven-plugin</artifactId>
+            <groupId>org.daisy.pipeline.build</groupId>
+            <artifactId>modules-build-helper</artifactId>
             <executions>
               <execution>
+                <id>process-catalog</id>
+                <phase>generate-resources</phase>
                 <goals>
-                  <goal>transform</goal>
+                  <goal>process-catalog</goal>
                 </goals>
               </execution>
             </executions>
-            <configuration>
-              <transformationSets>
-                <transformationSet>
-                  <dir>src</dir>
-                  <includes>
-                    <include>**/META-INF/catalog.xml</include>
-                  </includes>
-                  <stylesheet>org/daisy/pipeline/modules/build/catalog-to-ds.xsl</stylesheet>
-                  <parameters>
-                    <parameter>
-                      <name>outputDir</name>
-                      <value>${project.baseUri}/target/generated-resources</value>
-                    </parameter>
-                    <parameter>
-                      <name>version</name>
-                      <value>${project.version}</value>
-                    </parameter>
-                  </parameters>
-                  <outputDir>${project.build.directory}/generated-resources</outputDir>
-                </transformationSet>
-              </transformationSets>
-            </configuration>
-            <dependencies>
-              <dependency>
-                <groupId>net.sf.saxon</groupId>
-                <artifactId>Saxon-HE</artifactId>
-                <version>9.4</version>
-              </dependency>
-              <dependency>
-                <groupId>org.daisy.pipeline.build</groupId>
-                <artifactId>modules-build-helper</artifactId>
-                <version>1.2</version>
-              </dependency>
-            </dependencies>
           </plugin>
           <plugin>
             <groupId>org.apache.felix</groupId>
@@ -209,14 +185,14 @@
             <configuration>
               <instructions>
                 <!-- always add Maven resources - add OSGI-INF if it exists -->
-                <!-- 
+                <!--
                      TODO replace the hackish syntax when this is released:
                      https://github.com/bndtools/bnd/issues/168
                  -->
                 <Include-Resource>
-     {maven-resources}$(if;$(replace;$(isdir;${project.build.directory}/generated-resources/OSGI-INF);false(.*);$1);,OSGI-INF=${project.build.directory}/generated-resources/OSGI-INF)
+     {maven-resources}$(if;$(replace;$(isdir;${project.build.directory}/generated-resources/process-catalog/OSGI-INF);false(.*);$1);,OSGI-INF=${project.build.directory}/generated-resources/process-catalog/OSGI-INF)
                 </Include-Resource>
-                <_include>${project.build.directory}/generated-resources/bnd.bnd</_include>
+                <_include>${project.build.directory}/generated-resources/process-catalog/bnd.bnd</_include>
               </instructions>
             </configuration>
           </plugin>

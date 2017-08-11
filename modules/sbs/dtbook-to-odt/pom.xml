@@ -105,12 +105,20 @@
 	<excludes>
 	  <exclude>templates/**</exclude>
 	  <exclude>xml/dtbook-to-odt.xpl</exclude>
+	  <exclude>META-INF/catalog.xml</exclude>
 	</excludes>
       </resource>
       <resource>
 	<directory>target/generated-resources</directory>
 	<includes>
 	  <include>templates/**</include>
+	  <!--
+	      FIXME: This will fail as soon as dtbook-to-odt.xpl contains some inline datatypes
+	      because then modules-build-helper:process-catalog will also generate a modified
+	      version of dtbook-to-odt.xpl and change catalog.xml to point to it. The solution would
+	      be to apply modules-build-helper:process-catalog on a catalog.xml that points to our
+	      modified version of dtbook-to-odt.xpl.
+	  -->
 	  <include>xml/dtbook-to-odt.xpl</include>
 	</includes>
       </resource>
@@ -171,8 +179,43 @@
 	      </filters>
 	    </configuration>
 	  </execution>
+	  <!--
+	  <execution>
+	    <id>copy-catalog</id>
+	    <phase>generate-resources</phase>
+	    <goals>
+	      <goal>copy-resources</goal>
+	    </goals>
+	    <configuration>
+	      <outputDirectory>target/generated-resources</outputDirectory>
+	      <resources>
+		<resource>
+		  <directory>src/main/resources</directory>
+		  <includes>
+		    <include>META-INF/catalog.xml</include>
+		  </includes>
+		</resource>
+	      </resources>
+	    </configuration>
+	  </execution>
+	  -->
 	</executions>
       </plugin>
+      <!--
+      <plugin>
+	<groupId>org.daisy.pipeline.build</groupId>
+	<artifactId>modules-build-helper</artifactId>
+	<executions>
+	  <execution>
+	    <id>process-catalog</id>
+	    <phase>generate-resources</phase>
+	    <configuration>
+	      <catalogFile>target/generated-resources/META-INF/catalog.xml</catalogFile>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+      -->
       <plugin>
 	<groupId>org.ops4j.pax.exam</groupId>
 	<artifactId>maven-paxexam-plugin</artifactId>
