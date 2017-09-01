@@ -63,6 +63,11 @@
                 <xsl:sequence select="(1000,1000)"/>
               </xsl:function>
               
+              <xsl:function name="pf:file-exists" as="xs:boolean">
+                <xsl:param name="src" as="xs:anyURI"/>
+                <xsl:sequence select="true()"/>
+              </xsl:function>
+              
             </xsl:stylesheet>
           </p:inline>
         </p:input>
