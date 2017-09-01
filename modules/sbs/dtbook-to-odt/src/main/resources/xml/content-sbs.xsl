@@ -281,7 +281,7 @@
 		</xsl:next-match>
 	</xsl:template>
 	
-	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem" mode="office:text office:annotation text:section"
+	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem" mode="office:text office:annotation text:section text:list-item"
 	              priority="0.6">
 		<xsl:call-template name="text:empty-p"/>
 		<xsl:next-match/>

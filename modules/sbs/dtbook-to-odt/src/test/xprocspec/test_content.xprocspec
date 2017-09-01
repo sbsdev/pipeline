@@ -418,6 +418,73 @@
     </x:expect>
   </x:scenario>
   
+  <x:scenario label="blockquote inside li">
+    <x:documentation>
+      See issue https://github.com/daisy/pipeline-scripts/issues/110.
+    </x:documentation>
+    <x:call step="pxi:test-content">
+      <x:input port="source">
+        <x:document type="inline">
+          <wrapper>
+            <list type="pl" depth="1" xmlns="http://www.daisy.org/z3986/2005/dtbook/">
+              <li>
+                <p>1 when we say what something is or what it is like:</p>
+                <blockquote id="block_1">
+                  <p>What's that? It's a radio.</p>
+                  <p>My sister drives an expensive German car.</p>
+                </blockquote>
+              </li>
+              <li>
+                <p>2 when we say what somebody's job is:</p>
+                <blockquote id="block_2">
+                  <p>Tom Cruise is a film actor.</p>
+                </blockquote>
+              </li>
+              <li>
+                <p>3 when we describe somebody's features:</p>
+                <blockquote id="block_3">
+                  <p>He's got a long face and a small moustache.</p>
+                </blockquote>
+              </li>
+            </list>
+          </wrapper>
+        </x:document>
+      </x:input>
+    </x:call>
+    <x:context label="result">
+      <x:document type="port" port="result"/>
+    </x:context>
+    <x:expect label="result" type="compare">
+      <x:document type="inline">
+        <wrapper xmlns="">
+          <text:p text:style-name="Standard"/>
+          <text:list text:style-name="LFO3">
+            <text:list-item>
+              <text:p text:style-name="dtb_3a_li">1 when we say what something is or what it is like:</text:p>
+              <text:p text:style-name="Standard"/>
+              <text:p text:style-name="dtb_3a_blockquote">What's that? It's a radio.</text:p>
+              <text:p text:style-name="dtb_3a_blockquote">My sister drives an expensive German car.</text:p>
+              <text:p text:style-name="Standard"/>
+            </text:list-item>
+            <text:list-item>
+              <text:p text:style-name="dtb_3a_li">2 when we say what somebody's job is:</text:p>
+              <text:p text:style-name="Standard"/>
+              <text:p text:style-name="dtb_3a_blockquote">Tom Cruise is a film actor.</text:p>
+              <text:p text:style-name="Standard"/>
+            </text:list-item>
+            <text:list-item>
+              <text:p text:style-name="dtb_3a_li">3 when we describe somebody's features:</text:p>
+              <text:p text:style-name="Standard"/>
+              <text:p text:style-name="dtb_3a_blockquote">He's got a long face and a small moustache.</text:p>
+              <text:p text:style-name="Standard"/>
+            </text:list-item>
+          </text:list>
+          <text:p text:style-name="Standard"/>
+        </wrapper>
+      </x:document>
+    </x:expect>
+  </x:scenario>
+  
   <!-- ====================== -->
   <!-- INLINE ELEMENTS & TEXT -->
   <!-- ====================== -->
