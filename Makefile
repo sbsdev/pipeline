@@ -35,6 +35,12 @@ dist-deb : compile
 	$(MVN) clean package -DskipTests | $(MVN_LOG)
 	mv modules/sbs/braille/target/*.deb .
 
+# just create the artifacts. docker build will copy them to the right place
+.PHONY: docker
+docker: compile
+	cd assembly && \
+	$(MVN) clean package -Plinux | $(MVN_LOG)
+
 .PHONY : run
 run : assembly/target/dev-launcher/bin/pipeline2
 	$<
