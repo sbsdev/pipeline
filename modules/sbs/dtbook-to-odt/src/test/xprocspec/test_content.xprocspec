@@ -64,7 +64,7 @@
               </xsl:function>
               
               <xsl:function name="pf:file-exists" as="xs:boolean">
-                <xsl:param name="src" as="xs:anyURI"/>
+                <xsl:param name="src" as="xs:string"/>
                 <xsl:sequence select="true()"/>
               </xsl:function>
               
