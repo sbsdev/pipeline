@@ -2,7 +2,8 @@
 <x:description xmlns:x="http://www.daisy.org/ns/xprocspec"
                xmlns:sbs="http://www.sbs.ch/pipeline"
                xmlns:c="http://www.w3.org/ns/xproc-step"
-               script="http://www.sbs.ch/pipeline/dtbook-to-odt/dtbook-to-odt.xpl">
+               script="http://www.sbs.ch/pipeline/dtbook-to-odt/dtbook-to-odt.xpl"
+               pending="disabled because takes long time">
   
   <x:scenario label="big_math">
     <x:call step="sbs:dtbook-to-odt">
