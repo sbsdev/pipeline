@@ -116,6 +116,10 @@ run-docker : dist-docker-image
 .PHONY : check-sbs
 check-sbs : check-modules/sbs/braille check-modules/sbs/braille-tables check-modules/sbs/dtbook-to-odt
 
+.PHONY : check-clientlib/go
+check-clientlib/go :
+	$(MAKE) -C clientlib/go check
+
 .PHONY : release
 release : assembly/.release
 
@@ -236,9 +240,11 @@ assembly/.dependencies : \
 modules/sbs/braille/.install.deb : modules/sbs/braille/.install
 modules/sbs/dtbook-to-odt/.install.deb : modules/sbs/dtbook-to-odt/.install
 
+export PIPELINE_CLIENTLIB_PATH = $(CURDIR)/clientlib/go
+
 cli/build/bin/darwin_386/dp2 cli/build/bin/linux_386/dp2 : cli/.install
 
-cli/.install : cli/cli/*.go
+cli/.install : cli/cli/*.go clientlib/go/*.go
 
 .SECONDARY : cli/.install-darwin_386.zip cli/.install-linux_386.zip cli/.install-windows_386.zip
 cli/.install-darwin_386.zip cli/.install-linux_386.zip cli/.install-windows_386.zip : cli/.install
