@@ -1,7 +1,24 @@
 sudo: required
 before_install:
   - sudo apt-get update && sudo apt-get install -y libxml2-utils make pcregrep
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "sbs" ]; then
+        gem install jekyll:3.3.0
+                    rdf:1.1.15
+                    rdf-xsd:1.1.4
+                    rdf-aggregate-repo:1.1.0
+                    sparql-client:1.1.6
+                    sparql:1.1.8
+                    rdf-turtle:1.1.7
+                    rdf-rdfa:1.1.6
+                    commaparty:0.0.2
+                    nokogiri:1.5.6
+                    mustache:1.0.2
+                    github-markup:1.4.0
+                    coderay:1.1.0;
+    fi
 script:
   - make check-sbs
 after_failure:
  - cat maven.log
+after_success:
+  - source .travis/publish-website.sh
