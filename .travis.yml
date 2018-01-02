@@ -16,6 +16,8 @@ before_install:
                     github-markup:1.4.0
                     coderay:1.1.0;
     fi
+  # see https://github.com/travis-ci/travis-cookbooks/issues/964
+  - rm -f /opt/jdk_switcher/jdk_switcher.sh
 script:
   - make check-sbs
 after_failure:
