@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.daisy.pipeline</groupId>
   <artifactId>assembly</artifactId>
-  <version>1.10.1-SNAPSHOT</version>
+  <version>1.10.5-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>DAISY Pipeline 2 :: Assembly</name>
   <description>Builds the main distribution of the DAISY Pipeline 2.</description>
@@ -17,7 +17,7 @@
     <connection>scm:git:git@github.com:daisy-consortium/pipeline-assembly.git</connection>
     <url>scm:git:git@github.com:daisy-consortium/pipeline-assembly.git</url>
     <developerConnection>scm:git:git@github.com:daisy-consortium/pipeline-assembly.git</developerConnection>
-    <tag>v1.10.0</tag>
+    <tag>HEAD</tag>
   </scm>
   <properties>
     <cli.version>2.1.0</cli.version>
@@ -42,7 +42,7 @@
       <dependency>
         <groupId>org.daisy.pipeline</groupId>
         <artifactId>updater-gui</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>
@@ -52,35 +52,35 @@
       <dependency>
         <groupId>org.daisy.pipeline</groupId>
         <artifactId>framework-bom</artifactId>
-        <version>1.10.3-SNAPSHOT</version>
+        <version>1.10.5-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
         <artifactId>scripts-bom</artifactId>
-        <version>1.10.2-SNAPSHOT</version>
+        <version>1.10.3-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
         <artifactId>common-utils-bom</artifactId>
-        <version>1.10.2-SNAPSHOT</version>
+        <version>1.10.5-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
         <artifactId>scripts-utils-bom</artifactId>
-        <version>1.10.2-SNAPSHOT</version>
+        <version>1.10.4-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules.braille</groupId>
         <artifactId>braille-modules-bom</artifactId>
-        <version>1.10.1-SNAPSHOT</version>
+        <version>1.10.2-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -94,7 +94,7 @@
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
         <artifactId>tts-modules-bom</artifactId>
-        <version>1.10.1</version>
+        <version>1.10.2</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -228,7 +228,6 @@
                 <artifactItem>
                   <groupId>org.osgi</groupId>
                   <artifactId>org.osgi.enterprise</artifactId>
-                  <version>5.0.0</version>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.slf4j</groupId>
@@ -568,10 +567,6 @@
                   <groupId>org.daisy.pipeline</groupId>
                   <artifactId>calabash-adapter</artifactId>
                 </artifactItem>
-                <!--<artifactItem>
-                  <groupId>org.daisy.pipeline</groupId>
-                  <artifactId>calabash-custom-steps</artifactId>
-                </artifactItem>-->
                 <artifactItem>
                   <groupId>org.daisy.pipeline</groupId>
                   <artifactId>common-utils</artifactId>
@@ -768,6 +763,10 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.daisy.pipeline.modules</groupId>
+                  <artifactId>dtbook-to-rtf</artifactId>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.daisy.pipeline.modules</groupId>
                   <artifactId>dtbook-to-ssml</artifactId>
                 </artifactItem>
                 <artifactItem>
@@ -819,6 +818,11 @@
                 <artifactItem>
                   <groupId>org.idpf</groupId>
                   <artifactId>epubcheck</artifactId>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>com.google.guava</groupId>
+                  <artifactId>guava</artifactId>
+                  <version>14.0.1</version>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.commons</groupId>
@@ -1442,7 +1446,6 @@
               </execution>
             </executions>
           </plugin>
-          <!--
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>build-helper-maven-plugin</artifactId>
@@ -1555,7 +1558,6 @@
               </execution>
             </executions>
           </plugin>
-          -->
         </plugins>
       </build>
     </profile>
@@ -1644,6 +1646,47 @@
                   <appendAssemblyId>false</appendAssemblyId>
                   <finalName>pipeline2-${project.version}_linux</finalName>
                 </configuration>
+              </execution>
+              <execution>
+                <id>dist-mac</id>
+                <phase>none</phase>
+              </execution>
+              <execution>
+                <id>dist-win</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-app-package</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install-node</id>
+                <phase>none</phase>
+              </execution>
+              <execution>
+                <id>install-appdmg</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>exec-appdmg</id>
+                <phase>none</phase>
               </execution>
             </executions>
           </plugin>
@@ -1804,6 +1847,7 @@
             <version>2.0</version>
             <executions>
               <execution>
+                <id>detach-exe</id>
                 <phase>package</phase>
                 <goals>
                   <goal>execute</goal>
@@ -1818,6 +1862,72 @@
                     project.getAttachedArtifacts().remove(exe);
                   </source>
                 </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-app-package</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install-node</id>
+                <phase>none</phase>
+              </execution>
+              <execution>
+                <id>install-appdmg</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>exec-appdmg</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-app-package</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install-node</id>
+                <phase>none</phase>
+              </execution>
+              <execution>
+                <id>install-appdmg</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>exec-appdmg</id>
+                <phase>none</phase>
               </execution>
             </executions>
           </plugin>
@@ -1990,6 +2100,25 @@
                   <appendAssemblyId>false</appendAssemblyId>
                   <finalName>dev-launcher</finalName>
                 </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>nsis-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>detach-exe</id>
+                <phase>none</phase>
               </execution>
             </executions>
           </plugin>
@@ -2449,6 +2578,7 @@
         <bundles.auto.deploy>system/felix</bundles.auto.deploy> <!-- don't change! must be the same as in dist.properties -->
         <bundles.bootstrap>system/bootstrap</bundles.bootstrap> <!-- don't change! must be the same as in dist.properties -->
         <bundles.modules>modules</bundles.modules> <!-- don't change! must be the same as in dist.properties -->
+        <pipeline.log.jobappender>org.daisy.pipeline.logging.IgnoreSiftAppender</pipeline.log.jobappender>
       </properties>
       <build>
         <plugins>
@@ -2463,7 +2593,9 @@
                 </goals>
                 <configuration>
                   <attach>false</attach>
-                  <formats>dir</formats>
+                  <formats>
+                    <format>dir</format>
+                  </formats>
                   <descriptors>
                     <descriptor>src/main/assembly/dist-linux.xml</descriptor>
                   </descriptors>
@@ -2537,6 +2669,7 @@
                         <include>etc/system.properties</include>
                         <include>etc/config.properties</include>
                         <include>etc/org.apache.felix.fileinstall-modules.cfg</include>
+                        <include>etc/config-logback.xml</include>
                       </includes>
                       <filter>true</filter>
                     </source>
@@ -2768,102 +2901,6 @@ rm -rf /opt/daisy-pipeline2/cli
                 </script>
               </postremoveScriptlet>
             </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>webui</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>unpack</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>org.daisy.pipeline</groupId>
-                      <artifactId>webui-desktop</artifactId>
-                      <version>1.8.1</version>
-                      <type>zip</type>
-                      <overWrite>true</overWrite>
-                      <outputDirectory>target/webui</outputDirectory>
-                    </artifactItem>
-                  </artifactItems>
-                  <overWriteReleases>false</overWriteReleases>
-                  <overWriteSnapshots>true</overWriteSnapshots>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>dist-webui-mac</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-                <configuration>
-                  <attach>false</attach>
-                  <descriptors>
-                    <descriptor>src/main/assembly/webui-mac.xml</descriptor>
-                  </descriptors>
-                  <filters>
-                    <filter>src/main/assembly/dist.properties</filter>
-                    <filter>src/main/assembly/dist-nix.properties</filter>
-                  </filters>
-                  <appendAssemblyId>false</appendAssemblyId>
-                  <finalName>pipeline2-${project.version}-webui_mac</finalName>
-                </configuration>
-              </execution>
-              <execution>
-                <id>dist-webui-linux</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-                <configuration>
-                  <attach>false</attach>
-                  <descriptors>
-                    <descriptor>src/main/assembly/webui-linux.xml</descriptor>
-                  </descriptors>
-                  <filters>
-                    <filter>src/main/assembly/dist.properties</filter>
-                    <filter>src/main/assembly/dist-nix.properties</filter>
-                  </filters>
-                  <appendAssemblyId>false</appendAssemblyId>
-                  <finalName>pipeline2-${project.version}-webui_linux</finalName>
-                </configuration>
-              </execution>
-              <execution>
-                <id>dist-webui-win</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-                <configuration>
-                  <attach>false</attach>
-                  <descriptors>
-                    <descriptor>src/main/assembly/webui-win.xml</descriptor>
-                  </descriptors>
-                  <filters>
-                    <filter>src/main/assembly/dist.properties</filter>
-                    <filter>src/main/assembly/dist-win.properties</filter>
-                  </filters>
-                  <appendAssemblyId>false</appendAssemblyId>
-                  <finalName>pipeline2-${project.version}-webui_windows</finalName>
-                </configuration>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>
