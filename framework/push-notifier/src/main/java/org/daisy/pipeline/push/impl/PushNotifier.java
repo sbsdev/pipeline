@@ -163,21 +163,19 @@ public class PushNotifier {
 
                 }
                 private synchronized void postMessages() {
-                        MessageList messages; {
-                                synchronized(PushNotifier.this.messages) {
-                                        messages = PushNotifier.this.messages.copy();
-                                        PushNotifier.this.messages.clear();
-                                }
-                        }
-                        for (JobId jobId : messages.getJobs()) {
-                                Optional<Job> job = jobManager.get().getJob(jobId);
-                                if(!job.isPresent()){
-                                        continue;
-                                }
-                                for (Callback callback : callbackRegistry.getCallbacks(jobId)) {
-                                        if (callback.getType() == CallbackType.MESSAGES) {
-                                                Poster.postMessage(job.get(), new LinkedList<Message>(messages.getMessages(jobId)), callback);
+                        synchronized(PushNotifier.this.messages){
+                                for (JobId jobId : messages.getJobs()) {
+                                        Optional<Job> job = jobManager.get().getJob(jobId);
+                                        if(!job.isPresent()){
+                                                break;
                                         }
+                                        for (Callback callback : callbackRegistry.getCallbacks(jobId)) {
+                                                if (callback.getType() == CallbackType.MESSAGES) {
+                                                        Poster.postMessage(job.get(), new LinkedList<Message>(messages.getMessages(jobId)), callback);
+                                                }
+                                        }
+                                        //I don't mind noone listening for the messages they will be discarded anyway...
+                                        messages.removeJob(jobId);
                                 }
                         }
 
@@ -232,10 +230,6 @@ public class PushNotifier {
 
                 public synchronized boolean isEmpty() {
                         return messages.isEmpty();
-                }
-
-                public synchronized void clear() {
-                        messages.clear();
                 }
 
                 // for debugging

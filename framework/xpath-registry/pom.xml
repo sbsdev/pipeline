@@ -6,12 +6,12 @@
   <parent>
     <groupId>org.daisy.pipeline</groupId>
     <artifactId>framework-parent</artifactId>
-    <version>1.10.3-SNAPSHOT</version>
+    <version>1.10.5-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
   <artifactId>xpath-registry</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
   <name>DAISY Pipeline 2 :: XPath Extension Function Registry</name>
@@ -25,18 +25,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    <!-- <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-    </dependency> -->
-    <!-- <dependency>
-      <groupId>org.daisy.pipeline</groupId>
-      <artifactId>org.daisy.common-utils</artifactId>
-    </dependency> -->
-    <!-- <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-    </dependency> -->
   </dependencies>
 
   <build>
