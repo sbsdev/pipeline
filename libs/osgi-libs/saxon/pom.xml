@@ -12,7 +12,7 @@
 
   <groupId>org.daisy.libs</groupId>
   <artifactId>saxon-he</artifactId>
-  <version>9.6.0.9-p1-SNAPSHOT</version>
+  <version>9.5.1.5-1-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
   <name>Saxon HE (OSGi Bundle)</name>
@@ -24,8 +24,8 @@
   </organization>
   <licenses>
     <license>
-      <name>Mozilla Public License Version 2.0</name>
-      <url>http://www.mozilla.org/MPL/2.0/</url>
+      <name>Mozilla Public License Version 1.0</name>
+      <url>http://www.mozilla.org/MPL/1.0/</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -50,24 +50,14 @@
     <developer>
       <id>ond1</id>
       <name>O'Neil Delpratt</name>
-      <email>oneil@saxonica.com</email>
-    </developer>
-    <developer>
-      <id>debbie</id>
-      <name>Debbie Lockett</name>
-      <email>debbie@saxonica.com</email>
-    </developer>
-    <developer>
-      <id>John</id>
-      <name>John Lumley</name>
-      <email>john@saxonica.com</email>
+      <email>onei@saxonica.com</email>
     </developer>
   </developers>
 
   <properties>
     <lib.groupId>net.sf.saxon</lib.groupId>
     <lib.artifactId>Saxon-HE</lib.artifactId>
-    <lib.version>9.6.0-9</lib.version>
+    <lib.version>9.5.1-5</lib.version>
   </properties>
 
   <dependencies>
@@ -104,6 +94,8 @@
               *
             </Import-Package>
             <Embed-Dependency>*;inline=META-INF/services/**|*w3c/**|javax/**|net/**|*.xml|*.xsl|*.properties</Embed-Dependency>
+            <SPI-Provider>*</SPI-Provider>
+            <SPI-Consumer>javax.xml.parsers.SAXParserFactory#newInstance</SPI-Consumer>
             <_removeheaders>Built-By,Bnd-LastModified,Embed-Dependency,Include-Resource</_removeheaders>
           </instructions>
         </configuration>
