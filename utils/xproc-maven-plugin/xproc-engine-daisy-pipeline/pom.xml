@@ -6,12 +6,12 @@
   <parent>
     <groupId>org.daisy.maven</groupId>
     <artifactId>xproc-maven-plugin-parent</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
     <relativePath>../parent/</relativePath>
   </parent>
   
   <artifactId>xproc-engine-daisy-pipeline</artifactId>
-  <version>1.10.3-SNAPSHOT</version>
+  <version>1.10.5-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>xproc-engine-daisy-pipeline</name>
   
@@ -20,7 +20,7 @@
       <dependency>
         <groupId>org.daisy.pipeline</groupId>
         <artifactId>framework-bom</artifactId>
-        <version>1.10.3-SNAPSHOT</version>
+        <version>1.10.5-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -45,14 +45,26 @@
     <dependency>
       <groupId>org.daisy.pipeline</groupId>
       <artifactId>xproc-api</artifactId>
+      <!--
+          dependency of calabash-adapter
+      -->
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.daisy.pipeline</groupId>
       <artifactId>framework-core</artifactId>
+      <!--
+          dependency of calabash-adapter
+      -->
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.daisy.pipeline</groupId>
       <artifactId>common-utils</artifactId>
+      <!--
+          dependency of calabash-adapter
+      -->
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -72,11 +84,17 @@
     <!--
         runtime dependencies (for org.daisy.common.xproc.XProcEngine)
     -->
+    <!--
+        disabled in order to force users of xproc-engine-daisy-pipeline to also explicitely include
+        (a specific version of) calabash-adapter
+    -->
+    <!--
     <dependency>
       <groupId>org.daisy.pipeline</groupId>
       <artifactId>calabash-adapter</artifactId>
       <scope>runtime</scope>
     </dependency>
+    -->
   </dependencies>
   <build>
     <plugins>
