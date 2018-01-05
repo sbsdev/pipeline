@@ -13,10 +13,10 @@ class RowGroup implements SplitPointUnit {
 	private final List<RowImpl> rows;
 	private final List<Marker> markers;
 	private final List<String> anchors;
+	private final List<String> identifiers;
 	private final float unitSize, lastUnitSize;
 	private final boolean breakable, skippable, collapsible, lazyCollapse;
 	private final List<String> ids;
-	private final String identifier;
 	private final int keepWithNextSheets, keepWithPreviousSheets;
 	private Integer avoidVolumeBreakAfterPriority = null;
 	
@@ -24,11 +24,11 @@ class RowGroup implements SplitPointUnit {
 		private final List<RowImpl> rows;
 		private List<Marker> markers;
 		private List<String> anchors;
+		private List<String> identifiers;
 		private final float rowDefault;
 		private boolean breakable = false, skippable = false, collapsible = false;
 		private float overhead = 0;
 		private int keepWithNextSheets=0, keepWithPreviousSheets=0;
-		private String identifier=null;
 		private boolean lazyCollapse = true;
 		Builder(float rowDefault, RowImpl ... rows) {
 			this(rowDefault, Arrays.asList(rows));
@@ -41,6 +41,7 @@ class RowGroup implements SplitPointUnit {
 			this.rowDefault = rowDefault;
 			this.markers = new ArrayList<>();
 			this.anchors = new ArrayList<>();
+			this.identifiers = new ArrayList<>();
 		}
 		
 		Builder add(RowImpl value) {
@@ -59,6 +60,10 @@ class RowGroup implements SplitPointUnit {
 			this.anchors = value;
 			return this;
 		}
+		Builder identifiers(List<String> value) {
+			this.identifiers = value;
+			return this;
+		}
 		Builder breakable(boolean value) {
 			this.breakable = value;
 			return this;
@@ -73,10 +78,6 @@ class RowGroup implements SplitPointUnit {
 		}
 		Builder overhead(float value) {
 			this.overhead = value;
-			return this;
-		}
-		Builder identifier(String value) {
-			this.identifier = value;
 			return this;
 		}
 		Builder lazyCollapse(boolean value) {
@@ -100,6 +101,7 @@ class RowGroup implements SplitPointUnit {
 		this.rows = builder.rows;
 		this.markers = builder.markers;
 		this.anchors = builder.anchors;
+		this.identifiers = builder.identifiers;
 		this.breakable = builder.breakable;
 		this.skippable = builder.skippable;
 		this.collapsible = builder.collapsible;
@@ -110,7 +112,6 @@ class RowGroup implements SplitPointUnit {
 		for (RowImpl r : rows) {
 			ids.addAll(r.getAnchors());
 		}
-		this.identifier = builder.identifier;
 		this.keepWithNextSheets = builder.keepWithNextSheets;
 		this.keepWithPreviousSheets = builder.keepWithPreviousSheets;
 	}
@@ -126,6 +127,7 @@ class RowGroup implements SplitPointUnit {
 		}
 		this.markers = new ArrayList<>(template.markers);
 		this.anchors = new ArrayList<>(template.anchors);
+		this.identifiers = new ArrayList<>(template.identifiers);
 		this.breakable = template.breakable;
 		this.skippable = template.skippable;
 		this.collapsible = template.collapsible;
@@ -133,7 +135,6 @@ class RowGroup implements SplitPointUnit {
 		this.lastUnitSize = template.lastUnitSize;
 		this.ids = new ArrayList<>(template.ids);
 		this.lazyCollapse = template.lazyCollapse;
-		this.identifier = template.identifier;
 		this.keepWithNextSheets = template.keepWithNextSheets;
 		this.keepWithPreviousSheets = template.keepWithPreviousSheets;
 		this.avoidVolumeBreakAfterPriority = template.avoidVolumeBreakAfterPriority;
@@ -175,10 +176,6 @@ class RowGroup implements SplitPointUnit {
 		return unitSize;
 	}
 	
-	public String getIdentifier() {
-		return identifier;
-	}
-
 	@Override
 	public boolean collapsesWith(Object obj) {
 		if (lazyCollapse) {
@@ -227,7 +224,7 @@ class RowGroup implements SplitPointUnit {
 	@Override
 	public String toString() {
 		return "RowGroup [rows=" + rows + ", unitSize=" + unitSize + ", breakable=" + breakable + ", skippable="
-				+ skippable + ", collapsible=" + collapsible + ", ids=" + ids + ", identifier=" + identifier + "]";
+				+ skippable + ", collapsible=" + collapsible + ", ids=" + ids + ", identifiers=" + identifiers + "]";
 	}
 
 	@Override
@@ -241,6 +238,10 @@ class RowGroup implements SplitPointUnit {
 
 	public List<String> getAnchors() {
 		return anchors;
+	}
+
+	public List<String> getIdentifiers() {
+		return identifiers;
 	}
 
 	public int getKeepWithNextSheets() {

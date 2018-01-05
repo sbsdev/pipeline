@@ -44,7 +44,7 @@ class PageImpl implements Page, Cloneable {
 	private final List<RowImpl> before;
 	private final List<RowImpl> after;
 	private ArrayList<RowImpl> bodyRows;
-	private ArrayList<RowImpl> pageArea;
+	ArrayList<RowImpl> pageArea;
 	private ArrayList<RowImpl> pageRows;
 	private ArrayList<Marker> markers;
 	private ArrayList<String> anchors;
@@ -238,8 +238,8 @@ class PageImpl implements Page, Cloneable {
 		return anchors;
 	}
 	
-	public void addIdentifier(String id) {
-		identifiers.add(id);
+	public void addIdentifiers(List<String> ids) {
+		identifiers.addAll(ids);
 	}
 	
 	public List<String> getIdentifiers() {

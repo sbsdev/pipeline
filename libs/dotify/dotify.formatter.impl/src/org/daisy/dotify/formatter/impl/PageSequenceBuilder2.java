@@ -365,9 +365,7 @@ class PageSequenceBuilder2 {
 	}
 	
 	private void addProperties(RowGroup rg) {
-		if (rg.getIdentifier()!=null) {
-			currentPage().addIdentifier(rg.getIdentifier());
-		}
+		currentPage().addIdentifiers(rg.getIdentifiers());
 		currentPage().addMarkers(rg.getMarkers());
 		//TODO: addGroupAnchors
 		setKeepWithNextSheets(rg.getKeepWithNextSheets());

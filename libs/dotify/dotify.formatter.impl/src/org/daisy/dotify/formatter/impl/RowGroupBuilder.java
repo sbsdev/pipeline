@@ -41,11 +41,9 @@ class RowGroupBuilder {
 	}
 
 	private static void setProperties(RowGroup.Builder rgb, AbstractBlockContentManager bcm, Block g) {
-		if (!"".equals(g.getIdentifier())) { 
-			rgb.identifier(g.getIdentifier());
-		}
 		rgb.markers(bcm.getGroupMarkers());
 		rgb.anchors(bcm.getGroupAnchors());
+		rgb.identifiers(bcm.getGroupIdentifiers());
 		rgb.keepWithNextSheets(g.getKeepWithNextSheets());
 		rgb.keepWithPreviousSheets(g.getKeepWithPreviousSheets());
 	}
@@ -258,7 +256,7 @@ class RowGroupBuilder {
 														collapsible(false).skippable(false).breakable(false).build());
 							}
 							if (bcm.getRowCount()==0) { //TODO: Does this interfere with collapsing margins? 
-								if (!bcm.getGroupAnchors().isEmpty() || !bcm.getGroupMarkers().isEmpty() || !"".equals(g.getIdentifier())
+								if (!bcm.getGroupAnchors().isEmpty() || !bcm.getGroupMarkers().isEmpty() || !bcm.getGroupIdentifiers().isEmpty()
 										|| g.getKeepWithNextSheets()>0 || g.getKeepWithPreviousSheets()>0 ) {
 									RowGroup.Builder rgb = new RowGroup.Builder(master.getRowSpacing(), new ArrayList<RowImpl>());
 									setProperties(rgb, bcm, g);

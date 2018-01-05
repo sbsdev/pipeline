@@ -59,6 +59,10 @@ class BlockContentManager extends AbstractBlockContentManager {
 		this.context = context;
 		this.thisBlock = thisBlock;
 
+		if (!"".equals(thisBlock.getIdentifier())) {
+			groupIdentifiers.add(thisBlock.getIdentifier());
+		}
+
 		calculateRows(segments);
 	}
 	
