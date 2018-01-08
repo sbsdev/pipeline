@@ -29,18 +29,13 @@
       <dependency>
         <groupId>org.daisy.libs</groupId>
         <artifactId>jstyleparser</artifactId>
-        <version>1.20-p10</version>
+        <version>1.20-p11</version>
         <exclusions>
           <exclusion>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.servicemix.bundles</groupId>
-        <artifactId>org.apache.servicemix.bundles.antlr-runtime</artifactId>
-        <version>3.5.2_1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -49,14 +44,6 @@
     <dependency>
       <groupId>org.daisy.libs</groupId>
       <artifactId>jstyleparser</artifactId>
-    </dependency>
-    <!--
-        OSGi runtime dependencies
-    -->
-    <dependency>
-      <groupId>org.apache.servicemix.bundles</groupId>
-      <artifactId>org.apache.servicemix.bundles.antlr-runtime</artifactId>
-      <scope>runtime</scope>
     </dependency>
     <!--
         test dependencies
@@ -127,6 +114,7 @@
       <plugin>
         <groupId>org.antlr</groupId>
         <artifactId>antlr3-maven-plugin</artifactId>
+        <version>3.5.2</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>
