@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = git@github.com:daisy/pipeline-it.git
+	branch = master
+	commit = a75d276778dac4d5b213600dd88521e66cb37382
+	parent = fb717216398507c2c8342a66ef0d58c261c817d4
+	cmdver = 0.3.1
