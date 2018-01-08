@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = git@github.com:daisy/pipeline-mod-nlp.git
+	branch = master
+	commit = 9054848e187e36800bd4062a0f5a4a618f83236e
+	parent = cd68f9117903c5957d691e60e37adf96e08068aa
+	cmdver = 0.3.1
