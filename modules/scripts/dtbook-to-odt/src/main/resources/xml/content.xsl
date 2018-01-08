@@ -30,7 +30,6 @@
 	
 	<xsl:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xsl"/>
 	<xsl:import href="http://www.daisy.org/pipeline/modules/image-utils/library.xsl"/>
-	
 	<xsl:include href="utilities.xsl"/>
 	
 	<!-- ========================== -->

@@ -6,18 +6,20 @@
   <parent>
     <groupId>org.daisy.pipeline.modules</groupId>
     <artifactId>scripts-parent</artifactId>
-    <version>1.10.2-SNAPSHOT</version>
+    <version>1.10.3-SNAPSHOT</version>
     <relativePath>../parent/</relativePath>
   </parent>
 
   <artifactId>daisy202-to-epub3</artifactId>
-  <version>1.2.2-SNAPSHOT</version>
+  <version>1.2.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
   <name>DAISY Pipeline 2 module :: DAISY 2.02 to EPUB 3</name>
   
   <dependencies>
-    <!-- runtime dependencies -->
+    <!--
+        runtime dependencies
+    -->
     <dependency>
       <groupId>org.daisy.pipeline.modules</groupId>
       <artifactId>common-utils</artifactId>
@@ -67,6 +69,19 @@
       <groupId>org.daisy.pipeline.modules</groupId>
       <artifactId>mediatype-utils</artifactId>
       <scope>runtime</scope>
+    </dependency>
+    <!--
+        test dependencies
+    -->
+    <dependency>
+      <groupId>org.daisy.pipeline.modules</groupId>
+      <artifactId>common-entities</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.daisy.pipeline.build</groupId>
+      <artifactId>modules-test-helper</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
