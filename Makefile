@@ -1,39 +1,96 @@
-POMS := $(shell find * -name pom.xml ! -path '*/target/*')
-MAVEN_MODULES := $(patsubst %/pom.xml,%,$(filter-out pom.xml assembly/pom.xml,$(POMS)))
+POMS := $(shell find * -name pom.xml ! -path '*/target/*' ! -path '*/src/*')
+MAVEN_MODULES := $(patsubst %/pom.xml,%,$(filter-out pom.xml,$(POMS)))
 GRADLE_FILES := $(shell find * -name build.gradle -o -name settings.gradle -o -name gradle.properties)
+GRADLE_MODULES := $(patsubst %/build.gradle,%,$(filter %/build.gradle,$(GRADLE_FILES)))
+MODULES := $(MAVEN_MODULES) $(GRADLE_MODULES)
+GITREPOS := $(shell find * -name .gitrepo -exec dirname {} \;)
 
-MVN_WORKSPACE := $(CURDIR)/.maven-workspace
-MVN_CACHE := $(CURDIR)/.maven-cache
+MVN_WORKSPACE := .maven-workspace
+MVN_CACHE := .maven-cache
 
-MVN := mvn --settings "$(CURDIR)/settings.xml" -Dworkspace="$(MVN_WORKSPACE)" -Dcache="$(MVN_CACHE)" \
-           -Dorg.ops4j.pax.url.mvn.localRepository="$(MVN_WORKSPACE)"
-GRADLE := M2_HOME=$(CURDIR)/.gradle-settings libs/dotify/dotify.api/gradlew -Dworkspace="$(MVN_WORKSPACE)" -Dcache="$(MVN_CACHE)"
+MVN := mvn --settings "$(CURDIR)/settings.xml" -Dworkspace="$(CURDIR)/$(MVN_WORKSPACE)" -Dcache="$(CURDIR)/$(MVN_CACHE)" \
+           -Dorg.ops4j.pax.url.mvn.localRepository="$(CURDIR)/$(MVN_WORKSPACE)" \
+           -Dorg.daisy.org.ops4j.pax.url.mvn.settings="$(CURDIR)/settings.xml"
+GRADLE := M2_HOME=$(CURDIR)/.gradle-settings $(CURDIR)/libs/dotify/dotify.api/gradlew -Dworkspace="$(CURDIR)/$(MVN_WORKSPACE)" -Dcache="$(CURDIR)/$(MVN_CACHE)"
 
 MVN_LOG := tee -a $(CURDIR)/maven.log | cut -c1-1000 | pcregrep -M "^\[INFO\] -+\n\[INFO\] Building .*\n\[INFO\] -+$$|^\[(ERROR|WARNING)\]"; \
            test $${PIPESTATUS[0]} -eq 0
 
 SHELL := /bin/bash
 
+EVAL := :
+
+export CURDIR MVN MVN_LOG GRADLE MVN_CACHE MAKE MAKEFLAGS MAKECMDGOALS
+
+rwildcard = $(shell [ -d $1 ] && find $1 -type f | sed 's/ /\\ /g')
+# does not support spaces in file names:
+#rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+
 .PHONY : all
-all : compile check dist
+all : check-sbs dist-deb
 
 .PHONY : dist
-dist: dist-zip dist-deb
+dist: dist-dmg dist-exe dist-zip-linux dist-zip-minimal dist-deb dist-rpm dist-webui-deb dist-webui-rpm
 
-.PHONY : dist-zip
-dist-zip : compile
+.PHONY : dist-dmg
+dist-dmg : assembly/.dependencies | .maven-init
 	cd assembly && \
-	$(MVN) clean package -Plinux,mac,win | $(MVN_LOG)
+	$(MVN) clean package -Pmac | $(MVN_LOG)
+	mv assembly/target/*.dmg .
+
+.PHONY : dist-exe
+dist-exe : assembly/.dependencies | .maven-init
+	cd assembly && \
+	$(MVN) clean package -Pwin | $(MVN_LOG)
+	mv assembly/target/*.exe .
+
+.PHONY : dist-zip-linux
+dist-zip-linux : assembly/.dependencies | .maven-init
+	cd assembly && \
+	$(MVN) clean package -Plinux | $(MVN_LOG)
+	mv assembly/target/*.zip .
+
+.PHONY : dist-zip-minimal
+dist-zip-minimal : assembly/.dependencies | .maven-init
+	cd assembly && \
+	$(MVN) clean package -Pminimal | $(MVN_LOG)
 	mv assembly/target/*.zip .
 
 .PHONY : dist-deb
-dist-deb : compile
+dist-deb : assembly/.dependencies modules/sbs/braille/.dependencies modules/sbs/dtbook-to-odt/.dependencies | .maven-init
 	cd assembly && \
 	$(MVN) clean package -Pdeb | $(MVN_LOG)
 	mv assembly/target/*.deb .
 	cd modules/sbs/braille && \
 	$(MVN) clean package -DskipTests | $(MVN_LOG)
 	mv modules/sbs/braille/target/*.deb .
+	cd modules/sbs/dtbook-to-odt && \
+	$(MVN) clean package -DskipTests | $(MVN_LOG)
+	mv modules/sbs/dtbook-to-odt/target/*.deb .
+
+.PHONY : dist-rpm
+dist-rpm : assembly/.dependencies | .maven-init
+	if [ -f /etc/redhat-release ]; then \
+		cd assembly && \
+		$(MVN) clean package -Prpm | $(MVN_LOG) && \
+		mv assembly/target/rpm/pipeline2/RPMS/*/*.rpm .; \
+	else \
+		echo "Skipping RPM because not running RedHat/CentOS"; \
+	fi
+
+.PHONY : dist-webui-deb
+dist-webui-deb : assembly/.dependencies
+	# see webui README for instructions on how to make a signed package for distribution
+	cd webui && \
+	./activator clean debian:packageBin | $(MVN_LOG)
+	mv webui/target/*deb .
+
+.PHONY : dist-webui-rpm
+dist-webui-rpm : assembly/.dependencies
+	# see webui README for instructions on how to make a signed package for distribution
+	cd webui && \
+	./activator clean rpm:packageBin
+	mv webui/target/rpm/RPMS/noarch/*.rpm .
 
 .PHONY : run
 run : assembly/target/dev-launcher/bin/pipeline2
@@ -44,24 +101,24 @@ run-gui : assembly/target/dev-launcher/bin/pipeline2
 	$< gui
 
 .PHONY : run-webui
-run-webui :
+run-webui : # webui/.dependencies
 	if [ ! -d webui/dp2webui ]; then cp -r webui/dp2webui-cleandb webui/dp2webui ; fi
 	cd webui && \
 	./activator run
 
 .PHONY : check
-check : assembly/.gradle-test-dependencies assembly/.maven-test-dependencies
+check : $(addprefix check-,$(MODULES))
 
 .PHONY : check-sbs
 check-sbs : check-modules/sbs/braille
 
-.PHONY : compile
-compile : assembly/.gradle-install-dependencies assembly/.maven-install-dependencies
+.PHONY : release
+release : assembly/.release
 
-.PHONY : $(MAVEN_MODULES)
-$(MAVEN_MODULES) : % : compile-%
+.PHONY : $(addprefix check-,$(MODULES))
+$(addprefix check-,$(MODULES)) : check-% : %/.last-tested
 
-assembly/target/dev-launcher/bin/pipeline2 : compile
+assembly/target/dev-launcher/bin/pipeline2 : assembly/.dependencies | .maven-init
 	cd assembly && \
 	$(MVN) clean package -Pdev-launcher | $(MVN_LOG)
 	rm assembly/target/dev-launcher/etc/*windows*
@@ -71,289 +128,201 @@ assembly/target/dev-launcher/bin/pipeline2 : compile
 		rm assembly/target/dev-launcher/etc/*mac*; \
 	fi
 
-.PHONY : $(addprefix compile-,$(MAVEN_MODULES))
-$(addprefix compile-,$(MAVEN_MODULES)) : compile-% : %/.gradle-install-dependencies %/.maven-install-dependencies
-	cd $(dir $<) && \
-	$(MVN) clean install -DskipTests | $(MVN_LOG) && \
-	if [ -e .maven-to-install ]; then \
-		mv .maven-to-install .maven-to-test-dependents; \
+ifeq ($(MAKECMDGOALS), clean)
+include $(shell find * -name .deps.mk)
+else
+ifneq ($(MAKECMDGOALS), dump-maven-cmd)
+ifneq ($(MAKECMDGOALS), check-versions)
+ifneq ($(MAKECMDGOALS), clean-website)
+-include $(addsuffix /.deps.mk,$(MODULES) website/target/maven)
+endif
+endif
+endif
+endif
+
+SAXON := $(MVN_WORKSPACE)/net/sf/saxon/Saxon-HE/9.4/Saxon-HE-9.4.jar
+export SAXON
+
+ifneq ($(MAKECMDGOALS), clean)
+$(addsuffix /.deps.mk,$(MAVEN_MODULES) website/target/maven) : .maven-deps.mk
+	if ! test -e $@; then \
+		if cat .maven-modules | grep -Fx "$$(dirname $@)" >/dev/null; then \
+			echo "\$$(error $@ could not be generated)" >$@; \
+		fi \
+	fi
+	touch $@
+endif
+
+.SECONDARY : .maven-deps.mk
+.maven-deps.mk : .effective-pom.xml .gradle-pom.xml | $(SAXON)
+	rm -f $(addsuffix /.deps.mk,$(MAVEN_MODULES) website/target/maven) && \
+	if ! java -cp $(SAXON) net.sf.saxon.Transform \
+	          -s:$< \
+	          -xsl:.make/make-maven-deps.mk.xsl \
+	          CURDIR="$(CURDIR)" \
+	          GRADLE_POM="$(word 2,$^)" \
+	          MODULE="." \
+	          SRC_DIRS="$$(cat .maven-modules | while read -r m; do test -e $$m/src && echo $$m/src; done | paste -sd ' ' -)" \
+	          MAIN_DIRS="$$(cat .maven-modules | while read -r m; do test -e $$m/src/main && echo $$m/src/main; done | paste -sd ' ' -)" \
+	          RELEASE_DIRS="$$(for x in $(GITREPOS); do [ -e $$x/bom/pom.xml ] || [ -e $$x/maven/bom/pom.xml ] && echo $$x; done )" \
+	          OUTPUT_FILENAME=".deps.mk" \
+	          >/dev/null \
+	; then \
+		rm -f $(addsuffix /.deps.mk,$(MAVEN_MODULES) website/target/maven) && \
+		exit 1; \
 	fi
 
-.PHONY : $(addprefix check-,$(MAVEN_MODULES))
-$(addprefix check-,$(MAVEN_MODULES)) : check-% : %/.gradle-install-dependencies %/.maven-install-dependencies
-	cd $(dir $<) && \
-	$(MVN) clean test && \
-	if [ -e .maven-to-test ]; then \
-		rm .maven-to-test; \
-	fi
+$(SAXON) :
+	# cd into random directory in order to force Maven "stub" project
+	cd .make && \
+	$(MVN) org.apache.maven.plugins:maven-dependency-plugin:3.0.0:get -Dartifact=net.sf.saxon:Saxon-HE:9.4:jar
 
-.PHONY : $(addsuffix /.maven-test-dependencies,assembly $(MAVEN_MODULES))
-$(addsuffix /.maven-test-dependencies,assembly $(MAVEN_MODULES)) : %/.maven-test-dependencies : %/.maven-dependencies-to-test
-	if [ -s $< ]; then \
-		cat $< | while read -r line; do \
-			echo "--> $$line"; \
+# the purpose of the test is for making "make -B" not affect this rule (to speed thing up)
+# can not use $^ because it includes .dependencies-init
+# .maven-modules omitted because it has no additional prerequisites
+.effective-pom.xml : .maven-modules $(POMS) website/target/maven/pom.xml | .maven-init
+	if ! find $@ $(POMS) website/target/maven/pom.xml >/dev/null 2>/dev/null \
+	     || [[ -n $$(find $(POMS) website/target/maven/pom.xml -newer $@ 2>/dev/null) ]]; then \
+		cat $< | while read -r module; do \
+			pom=$$module/pom.xml && \
+			v=$$(xmllint --xpath "/*/*[local-name()='version']/text()" $$pom) && \
+			g=$$(xmllint --xpath "/*/*[local-name()='groupId']/text()" $$pom 2>/dev/null) || \
+			g=$$(xmllint --xpath "/*/*[local-name()='parent']/*[local-name()='groupId']/text()" $$pom) && \
+			a=$$(xmllint --xpath "/*/*[local-name()='artifactId']/text()" $$pom) && \
+			dest="$(MVN_WORKSPACE)/$$(echo $$g |tr . /)/$$a/$$v/$$a-$$v.pom" && \
+			if [[ ! -e "$$dest" ]] || [[ -n $$(find "$$pom" -newer "$$dest" 2>/dev/null) ]]; then \
+				mkdir -p $$(dirname $$dest) && \
+				cp $$pom $$dest; \
+			fi \
 		done && \
-		modules=$$(cat $< |paste -sd , -) && \
-		$(MVN) --projects $$modules clean test package integration-test \
-			org.codehaus.mojo:exec-maven-plugin:1.5.0:exec -Dexec.executable=sh -Dexec.args="-c 'rm .maven-to-test'" \
-		| $(MVN_LOG); \
+		$(MVN) --projects $$(cat $< |paste -sd , -) help:effective-pom -Doutput=$(CURDIR)/$@ >maven.log; \
 	else \
-		echo "All modules have been tested already" >&2; \
+		touch $@; \
 	fi
 
-$(addsuffix /.maven-test-dependencies,assembly $(MAVEN_MODULES)) : %/.maven-test-dependencies : %/.maven-install-dependencies
-
-.PHONY : $(addsuffix /.gradle-test-dependencies,assembly $(MAVEN_MODULES))
-$(addsuffix /.gradle-test-dependencies,assembly $(MAVEN_MODULES)) : %/.gradle-test-dependencies : %/.gradle-dependencies-to-test
-	if [ -s $< ]; then \
-		$(GRADLE) test && \
-		for module in $$(cat $<); do \
-			rm $$module/.gradle-to-test ;\
-		done \
-	fi
-
-$(addsuffix /.gradle-test-dependencies,assembly $(MAVEN_MODULES)) : %/.gradle-test-dependencies : %/.gradle-install-dependencies
-
-.PHONY : $(addsuffix /.maven-install-dependencies,assembly $(MAVEN_MODULES))
-$(addsuffix /.maven-install-dependencies,assembly $(MAVEN_MODULES)) : %/.maven-install-dependencies : %/.maven-dependencies-to-install
-	if [ -s $< ]; then \
-		cat $< | while read -r line; do \
-			echo "--> $$line"; \
-		done && \
-		modules=$$(cat $< |paste -sd , -) && \
-		$(MVN) --projects $$modules clean install -DskipTests -Dinvoker.skip=true \
-			org.codehaus.mojo:exec-maven-plugin:1.5.0:exec -Dexec.executable=sh \
-				-Dexec.args="-c 'if [ -e .maven-to-install ]; then mv .maven-to-install .maven-to-test-dependents; fi'" \
-		| $(MVN_LOG); \
-	else \
-		echo "All modules are up to date" >&2; \
-	fi
-
-$(addsuffix /.maven-install-dependencies,assembly $(MAVEN_MODULES)) : %/.maven-install-dependencies : %/.gradle-install-dependencies
-$(addsuffix /.maven-test-dependencies,assembly $(MAVEN_MODULES)) : %/.maven-test-dependencies : %/.gradle-install-dependencies
-
-.PHONY : $(addsuffix /.gradle-install-dependencies,assembly $(MAVEN_MODULES))
-$(addsuffix /.gradle-install-dependencies,assembly $(MAVEN_MODULES)) : %/.gradle-install-dependencies : %/.gradle-dependencies-to-install
-	if [ -s $< ]; then \
-		$(GRADLE) install && \
-		for module in $$(cat $<); do \
-			rm $$module/.gradle-to-install ;\
-		done \
-	else \
-		echo "All modules are up to date" >&2; \
-	fi
-
-# This target should be called from a target that depends on .maven-install-dependencies first
-.INTERMEDIATE : $(addsuffix /.maven-dependencies-to-test,assembly $(MAVEN_MODULES))
-$(addsuffix /.maven-dependencies-to-test,assembly $(MAVEN_MODULES)) : %/.maven-dependencies-to-test : %/.maven-dependencies-to-test-dependents
-	echo "Finding out which modules need to be tested..." >&2
-	if [ -s $< ]; then \
-		modules=$$(cat $< |paste -sd , -) && \
-		$(MVN) --quiet --projects $$modules --also-make-dependents \
-			org.codehaus.mojo:exec-maven-plugin:1.5.0:exec -Dexec.executable=sh -Dexec.args="-c 'touch .maven-to-test'"; \
-	fi
-	for module in $$(cat $$(dirname $@)/.maven-snapshot-dependencies); do \
-		rm -rf $$module/.maven-to-test-dependents && \
-		if [ -e $$module/.maven-to-test ]; then \
-			echo $$module; \
-		fi \
-	done > $@
-
-# This target should be called from a target that depends on .maven-install-dependencies first
-.INTERMEDIATE : $(addsuffix /.maven-dependencies-to-test-dependents,assembly $(MAVEN_MODULES))
-$(addsuffix /.maven-dependencies-to-test-dependents,assembly $(MAVEN_MODULES)) : %/.maven-dependencies-to-test-dependents : %/.maven-snapshot-dependencies
-	for module in $$(cat $<); do \
-		if [ -e $$module/.maven-to-test-dependents ]; then \
-			echo $$module; \
-		fi \
-	done > $@
-
-# Build only the modules that have changed since the last build.
-.INTERMEDIATE : $(addsuffix /.maven-dependencies-to-install,assembly $(MAVEN_MODULES))
-$(addsuffix /.maven-dependencies-to-install,assembly $(MAVEN_MODULES)) : %/.maven-dependencies-to-install : %/.maven-snapshot-dependencies
-	echo "Looking for changes..." >&2
-	for module in $$(cat $<); do \
-		v=$$(xmllint --xpath "/*/*[local-name()='version']/text()" $$module/pom.xml) && \
-		g=$$(xmllint --xpath "/*/*[local-name()='groupId']/text()" $$module/pom.xml 2>/dev/null) || \
-		g=$$(xmllint --xpath "/*/*[local-name()='parent']/*[local-name()='groupId']/text()" $$module/pom.xml) && \
-		a=$$(xmllint --xpath "/*/*[local-name()='artifactId']/text()" $$module/pom.xml) && \
-		dest="$(MVN_WORKSPACE)/$$(echo $$g |tr . /)/$$a/$$v" && \
-		if [[ ! -e "$$dest/$$a-$$v.pom" ]] || \
-		   [[ ! -e "$$dest/maven-metadata-local.xml" ]] || \
-		   [[ -n $$(find $$module/{pom.xml,src} -newer "$$dest/maven-metadata-local.xml" 2>/dev/null) ]] || \
-		   [[ -n $$(find $$module -name '*.go' -newer "$$dest/maven-metadata-local.xml" 2>/dev/null) ]]; then \
-			touch $$module/.maven-to-{install,test}; \
-		fi \
-	done
-	for module in $$(cat $<); do \
-		if [ -e $$module/.maven-to-install ]; then \
-			echo $$module; \
-		fi \
-	done > $@
-
-# From all the Maven modules only include those in the build that are referenced from the
-# super aggregator, have a snapshot version, and are listed in the assembly with that same
-# version number. If the module is not listed in the assembly at all (also not a different
-# version), we assume it is a helper module (parent, BoM, plugin, etc.) so we include it
-# in the build as well.
-$(addsuffix /.maven-snapshot-dependencies,assembly $(MAVEN_MODULES)) : %/.maven-snapshot-dependencies : %/.maven-effective-pom.xml $(POMS)
+.maven-modules : $(POMS) website/target/maven/pom.xml
 	function print_modules_recursively() { \
 		local module=$$1 && \
 		submodules=($$(xmllint --format --xpath "/*/*[local-name()='modules']/*" $$module/pom.xml 2>/dev/null \
 		               | sed -e 's/<module>\([^<]*\)<\/module>/\1 /g')) && \
 		if [[ $${#submodules[*]} -gt 0 ]]; then \
 			for sub in $${submodules[*]}; do \
-				print_modules_recursively $$module/$$sub; \
+				if [ $$module == "." ]; then \
+					print_modules_recursively $$sub; \
+				else \
+					print_modules_recursively $$module/$$sub; \
+				fi \
 			done \
 		else \
-			v=$$(xmllint --xpath "/*/*[local-name()='version']/text()" $$module/pom.xml) && \
-			if [[ "$$v" =~ -SNAPSHOT$$ ]]; then \
-				g=$$(xmllint --xpath "/*/*[local-name()='groupId']/text()" $$module/pom.xml 2>/dev/null) || \
-				g=$$(xmllint --xpath "/*/*[local-name()='parent']/*[local-name()='groupId']/text()" $$module/pom.xml) && \
-				a=$$(xmllint --xpath "/*/*[local-name()='artifactId']/text()" $$module/pom.xml) && \
-				if v_in_bom=$$(xmllint --xpath "//*[local-name()='dependency'][ \
-				                                    *[local-name()='groupId']='$$g' and \
-				                                    *[local-name()='artifactId']='$$a' \
-				                                ][1]/*[local-name()='version']/text()" $< 2>/dev/null); then \
-					if [ $$v_in_bom == $$v ]; then \
-						echo $$module; \
-					fi \
-				else \
-					echo $$module; \
-				fi \
-			fi \
+			echo $$module; \
 		fi \
 	} && \
 	print_modules_recursively . >$@
 
-.INTERMEDIATE : $(addsuffix /.gradle-dependencies-to-test,assembly $(MAVEN_MODULES))
-$(addsuffix /.gradle-dependencies-to-test,assembly $(MAVEN_MODULES)) : %/.gradle-dependencies-to-test : %/.gradle-dependencies-to-install
-	for module in $$(cat $$(dirname $@)/.gradle-snapshot-dependencies); do \
-		if [ -e $$module/.gradle-to-test ]; then \
-			echo $$module; \
-		fi \
-	done > $@
+.gradle-pom.xml : $(GRADLE_FILES)
+	bash .make/make-gradle-pom.sh $(GRADLE_MODULES) > $@
 
-.INTERMEDIATE : $(addsuffix /.gradle-dependencies-to-install,assembly $(MAVEN_MODULES))
-$(addsuffix /.gradle-dependencies-to-install,assembly $(MAVEN_MODULES)) : %/.gradle-dependencies-to-install : %/.gradle-snapshot-dependencies
-	echo "Looking for changes..." >&2
-	for module in $$(cat $<); do \
-		v=$$((cat $$module/gradle.properties | grep '^distVersion' || \
-		      cat $$module/gradle.properties | grep '^version' ) | sed 's/.*=//') && \
-		a=$$(basename $$module) && \
-		g=$$(cat $$module/build.gradle | grep '^group' | sed "s/^group *= *['\"]\(.*\)['\"]/\1/") && \
-		dest="$(MVN_WORKSPACE)/$$(echo $$g |tr . /)/$$a/$$v" && \
-		if [[ ! -e "$$dest/$$a-$$v.pom" ]] || \
-		   [[ ! -e "$$dest/maven-metadata-local.xml" ]] || \
-		   [[ -n $$(find $$module/{build.gradle,gradle.properties,src} -newer "$$dest/maven-metadata-local.xml" 2>/dev/null) ]]; then \
-			touch $$module/.gradle-to-{install,test}; \
-		elif [[ -n $$(find $$module/test -newer "$$dest/maven-metadata-local.xml" 2>/dev/null) ]]; then \
-			touch $$module/.gradle-to-test; \
-		fi \
-	done
-	for module in $$(cat $<); do \
-		if [ -e $$module/.gradle-to-install ]; then \
-			echo $$module; \
-		fi \
-	done > $@
+ifneq ($(MAKECMDGOALS), clean)
+$(addsuffix /.deps.mk,$(GRADLE_MODULES)) : $(GRADLE_FILES)
+	if ! bash .make/make-gradle-deps.mk.sh $$(dirname $@) >$@; then \
+		echo "\$$(error $@ could not be generated)" >$@; \
+	fi
+endif
 
-$(addsuffix /.gradle-snapshot-dependencies,assembly $(MAVEN_MODULES)) : %/.gradle-snapshot-dependencies : %/.maven-effective-pom.xml $(GRADLE_FILES)
-	cat settings.gradle | sed "s/^include  *'\(.*\)'/\1/" | tr : / \
-	| while read -r module; do \
-		v=$$((cat $$module/gradle.properties | grep '^distVersion' || \
-		      cat $$module/gradle.properties | grep '^version' ) | sed 's/.*=//') && \
-		if [[ "$$v" =~ -SNAPSHOT$$ ]]; then \
-			a=$$(basename $$module) && \
-			g=$$(cat $$module/build.gradle | grep '^group' | sed "s/^group *= *['\"]\(.*\)['\"]/\1/") && \
-			if v_in_bom=$$(xmllint --xpath "//*[local-name()='dependency'][ \
-			                                    *[local-name()='groupId']='$$g' and \
-			                                    *[local-name()='artifactId']='$$a' \
-			                                ][1]/*[local-name()='version']/text()" $< 2>/dev/null); then \
-				if [ $$v_in_bom == $$v ]; then \
-					echo $$module; \
-				fi \
-			else \
-				echo $$module; \
-			fi \
-		fi \
-	done >$@
+.SECONDARY : cli/.install.zip
+cli/.install.zip : cli/.install
 
-# The assembly defines which versions of which modules we have to include in the build.
-# This target should be called from a target that depends on $(MVN_WORKSPACE) first
-$(addsuffix /.maven-effective-pom.xml,assembly $(MAVEN_MODULES)) : %/.maven-effective-pom.xml : %/pom.xml $(POMS)
-	poms=($(POMS)) && \
-	for pom in $${poms[*]}; do \
-		v=$$(xmllint --xpath "/*/*[local-name()='version']/text()" $$pom) && \
-		if [[ "$$v" =~ -SNAPSHOT$$ ]]; then \
-			g=$$(xmllint --xpath "/*/*[local-name()='groupId']/text()" $$pom 2>/dev/null) || \
-			g=$$(xmllint --xpath "/*/*[local-name()='parent']/*[local-name()='groupId']/text()" $$pom) && \
-			a=$$(xmllint --xpath "/*/*[local-name()='artifactId']/text()" $$pom) && \
-			dest="$(MVN_WORKSPACE)/$$(echo $$g |tr . /)/$$a/$$v/$$a-$$v.pom" && \
-			mkdir -p $$(dirname $$dest) && \
-			cp $$pom $$dest; \
-		fi \
-	done
-	cd $(dir $<) && $(MVN) --quiet help:effective-pom -Doutput=$(CURDIR)/$@
+cli/.install : cli/cli/*.go
 
-$(addsuffix /.gradle-install-dependencies,assembly $(MAVEN_MODULES)) : .gradle-settings/conf/settings.xml
-$(addsuffix /.gradle-test-dependencies,assembly $(MAVEN_MODULES)) : .gradle-settings/conf/settings.xml
+updater/cli/.install : updater/cli/*.go
+
+.SECONDARY : libs/jstyleparser/.install-sources.jar
+libs/jstyleparser/.install-sources.jar : libs/jstyleparser/.install
+
+.SECONDARY : .group-eval
+.group-eval :
+ifndef SKIP_GROUP_EVAL_TARGET
+	set -o pipefail; \
+	if commands=$$( \
+		$(MAKE) -n EVAL=": xxx" SKIP_GROUP_EVAL_TARGET=true $(MAKECMDGOALS) \
+		| perl -e '$$take = 1; \
+		           while (<>) { \
+		             chomp; \
+		             if ($$_ eq ":") {} \
+		             elsif ($$_ =~ /^: xxx (.+)/) { if ($$take) { print "$$1\n" } \
+		             else { exit 1 }} else { $$take = 0 }}' \
+	); then \
+		if [ -n "$$commands" ]; then \
+			echo "$$commands" | perl .make/group-eval.pl; \
+		fi \
+	else \
+		exit $$?; \
+	fi
+endif
+
+.group-eval : | .maven-init .gradle-init
+
+$(addsuffix /.deps.mk,$(MODULES) website/target/maven) .maven-deps.mk .effective-pom.xml .maven-modules : .dependencies-init
+
+.SECONDARY : .dependencies-init
+.dependencies-init :
+	echo "Recomputing dependencies between modules..." >&2
+
+.SECONDARY : .maven-init
+.maven-init : | $(MVN_WORKSPACE)
+
+.SECONDARY : .gradle-init
+.gradle-init : | $(MVN_WORKSPACE) .gradle-settings/conf/settings.xml
+
+# the purpose of the test is for making "make -B" not affect this rule (to speed thing up)
+$(MVN_WORKSPACE) :
+	if ! [ -e $(MVN_WORKSPACE) ]; then \
+		mkdir -p $(MVN_CACHE) && \
+		cp -r $(MVN_CACHE) $@; \
+	fi
 
 .gradle-settings/conf/settings.xml : settings.xml
 	mkdir -p $(dir $@)
 	cp $< $@
 
-$(addsuffix /.maven-snapshot-dependencies,assembly $(MAVEN_MODULES)) : .modules-init
-$(addsuffix /.gradle-snapshot-dependencies,assembly $(MAVEN_MODULES)) : .modules-init
-$(addsuffix /.maven-effective-pom.xml,assembly $(MAVEN_MODULES)) : .modules-init
-
-.SECONDARY : .modules-init
-.modules-init :
-	echo "Recomputing modules to include in the build..." >&2
-
-$(addsuffix /.gradle-install-dependencies,assembly $(MAVEN_MODULES)) : .gradle-init
-$(addsuffix /.gradle-dependencies-to-install,assembly $(MAVEN_MODULES)) : .gradle-init
-$(addsuffix /.gradle-dependencies-to-test,assembly $(MAVEN_MODULES)) : .gradle-init
-
-.SECONDARY : .gradle-init
-.gradle-init :
-	echo "╔════════╗" >&2
-	echo "║ GRADLE ║" >&2
-	echo "╚════════╝" >&2
-
-$(addsuffix /.maven-install-dependencies,assembly $(MAVEN_MODULES)) : .maven-init
-$(addsuffix /.maven-dependencies-to-install,assembly $(MAVEN_MODULES)) : .maven-init
-$(addsuffix /.maven-dependencies-to-test,assembly $(MAVEN_MODULES)) : .maven-init
-
-.SECONDARY : .maven-init
-.maven-init :
-	echo "╔═══════╗" >&2
-	echo "║ MAVEN ║" >&2
-	echo "╚═══════╝" >&2
-	rm -f maven.log
-
-$(addsuffix /.gradle-test-dependencies,assembly $(MAVEN_MODULES)) : $(MVN_WORKSPACE)
-$(addsuffix /.gradle-install-dependencies,assembly $(MAVEN_MODULES)) : $(MVN_WORKSPACE)
-$(addsuffix /.maven-test-dependencies,assembly $(MAVEN_MODULES)) : $(MVN_WORKSPACE)
-$(addsuffix /.maven-install-dependencies,assembly $(MAVEN_MODULES)) : $(MVN_WORKSPACE)
-
-$(MVN_WORKSPACE) :
-	mkdir -p $(MVN_CACHE)
-	cp -r $(MVN_CACHE) $@
-
 .PHONY : cache
 cache :
 	if [ -e $(MVN_WORKSPACE) ]; then \
-		echo "Caching repository..." >&2 && \
+		echo "Caching downloaded artifacts..." >&2 && \
 		rm -rf $(MVN_CACHE) && \
 		rsync -mr --exclude "*-SNAPSHOT" --exclude "maven-metadata-*.xml" $(MVN_WORKSPACE)/ $(MVN_CACHE); \
 	fi
+
+TEMP_REPOS := modules/scripts/dtbook-to-daisy3/target/test/local-repo
+
+.PHONY : go-offline
+go-offline :
+	if [ -e $(MVN_WORKSPACE) ]; then \
+		for repo in $(TEMP_REPOS); do \
+			if [ -e $$repo ]; then \
+				rsync -mr --exclude "*-SNAPSHOT" --exclude "maven-metadata-*.xml" $$repo/ $(MVN_WORKSPACE); \
+			fi \
+		done \
+	fi
+
+.PHONY : check-versions
+check-versions : .maven-modules .effective-pom.xml
+	bash .make/check-versions.sh
 
 .PHONY : clean
 clean : cache
 	rm -rf $(MVN_WORKSPACE)
 	rm -f maven.log
-	rm -f *.zip *.deb
+	rm -f *.zip *.deb *.rpm
 	rm -rf webui/dp2webui
+	rm -f .maven-modules
+	rm -f .effective-pom.xml
+	rm -f .gradle-pom.xml
+	find * -name .last-tested -exec rm -r "{}" \;
+	find * -name .deps.mk -exec rm -r "{}" \;
+	# generated in previous versions:
+	rm -f .maven-build.mk
+	find . -name .build.mk -exec rm -r "{}" \;
 	find * -name .maven-to-install -exec rm -r "{}" \;
 	find * -name .maven-to-test -exec rm -r "{}" \;
 	find * -name .maven-to-test-dependents -exec rm -r "{}" \;
@@ -362,16 +331,57 @@ clean : cache
 	find * -name .maven-dependencies-to-install -exec rm -r "{}" \;
 	find * -name .maven-dependencies-to-test -exec rm -r "{}" \;
 	find * -name .maven-dependencies-to-test-dependents -exec rm -r "{}" \;
+	find * -name .gradle-to-test -exec rm -r "{}" \;
+	find * -name .gradle-snapshot-dependencies -exec rm -r "{}" \;
 	find * -name .gradle-dependencies-to-install -exec rm -r "{}" \;
 	find * -name .gradle-dependencies-to-test -exec rm -r "{}" \;
+
+clean : clean-website clean-eclipse
 
 .PHONY : gradle-clean
 gradle-clean :
 	$(GRADLE) clean
 
+.PHONY : checked
+checked :
+	touch $(addsuffix /.last-tested,$(MODULES))
+
+website/target/maven/pom.xml : $(addprefix website/src/_data/,modules.yml versions.yml)
+	cd website && \
+	make target/maven/pom.xml
+
+export MVN_OPTS = --settings '$(CURDIR)/settings.xml' -Dworkspace='$(CURDIR)/$(MVN_WORKSPACE)' -Dcache='$(CURDIR)/$(MVN_CACHE)' -Pstaged-releases
+
+website/target/maven/modules : website/target/maven/.deps.mk website/target/maven/.dependencies
+	rm -rf $@
+	cd website && \
+	make target/maven/modules
+
+.PHONY : website
+website : | website/target/maven/modules
+	cd website && \
+	make
+
+.PHONY : serve-website
+serve-website : | website/target/maven/modules
+	cd website && \
+	make serve
+
+.PHONY : publish-website
+publish-website : | website/target/maven/modules
+	cd website && \
+	make publish
+
+.PHONY : clean-website
+clean-website :
+	cd website && \
+	make clean
+
 .PHONY : dump-maven-cmd
 dump-maven-cmd :
-	echo $(MVN)
+	echo "mvn () { $(shell dirname "$$(which mvn)")/$(MVN) \"\$$@\"; }"
+	echo '# Run this command to configure your shell: '
+	echo '# eval $$(make $@)'
 
 .PHONY : dump-gradle-cmd
 dump-gradle-cmd :
@@ -379,30 +389,57 @@ dump-gradle-cmd :
 
 .PHONY : help
 help :
-	echo "make all:"                                                                                >&2
-	echo "	Incrementally compile and test code and package into a ZIP for each platform and a DEB" >&2
-	echo "make compile:"                                                                            >&2
-	echo "	Incrementally compile code"                                                             >&2
-	echo "make check:"                                                                              >&2
-	echo "	Incrementally compile and test code"                                                    >&2
-	echo "make dist:"                                                                               >&2
-	echo "	Incrementally compile code and package into a ZIP for each platform and a DEB"          >&2
-	echo "make dist-zip:"                                                                           >&2
-	echo "	Incrementally compile code and package into a ZIP for each platform"                    >&2
-	echo "make dist-deb:"                                                                           >&2
-	echo "	Incrementally compile code and package into a DEB"                                      >&2
-	echo "make run:"                                                                                >&2
-	echo "	Incrementally compile code and run locally"                                             >&2
-	echo "make run-gui:"                                                                            >&2
-	echo "	Incrementally compile code and run GUI locally"                                         >&2
-	echo "make run-webui:"                                                                          >&2
-	echo "	Compile and run web UI locally"                                                         >&2
+	echo "make all:"                                                                                                >&2
+	echo "	Incrementally compile and test code and package into a DMG, a EXE, a ZIP (for Linux), a DEB and a RPM"  >&2
+	echo "make check:"                                                                                              >&2
+	echo "	Incrementally compile and test code"                                                                    >&2
+	echo "make dist:"                                                                                               >&2
+	echo "	Incrementally compile code and package into a DMG, a EXE, a ZIP (for Linux), a DEB and a RPM"           >&2
+	echo "make dist-dmg:"                                                                                           >&2
+	echo "	Incrementally compile code and package into a DMG"                                                      >&2
+	echo "make dist-exe:"                                                                                           >&2
+	echo "	Incrementally compile code and package into a EXE"                                                      >&2
+	echo "make dist-zip-linux:"                                                                                     >&2
+	echo "	Incrementally compile code and package into a ZIP (for Linux)"                                          >&2
+	echo "make dist-deb:"                                                                                           >&2
+	echo "	Incrementally compile code and package into a DEB"                                                      >&2
+	echo "make dist-rpm:"                                                                                           >&2
+	echo "	Incrementally compile code and package into a RPM"                                                      >&2
+	echo "make dist-webui-deb:"                                                                                     >&2
+	echo "	Compile Web UI and package into a DEB"                                                                  >&2
+	echo "make dist-webui-rpm:"                                                                                     >&2
+	echo "	Compile Web UI and package into a RPM"                                                                  >&2
+	echo "make run:"                                                                                                >&2
+	echo "	Incrementally compile code and run locally"                                                             >&2
+	echo "make run-gui:"                                                                                            >&2
+	echo "	Incrementally compile code and run GUI locally"                                                         >&2
+	echo "make run-webui:"                                                                                          >&2
+	echo "	Compile and run web UI locally"                                                                         >&2
+	echo "make website:"                                                                                            >&2
+	echo "	Build the website"                                                                                      >&2
+	echo "make dump-maven-cmd:"                                                                                     >&2
+	echo '	Get the Maven command used. To configure your shell: eval $$(make dump-maven-cmd)'                      >&2
+
+PHONY : $(addprefix eclipse-,$(MODULES))
+$(addprefix eclipse-,$(MODULES)) : eclipse-% : %/.project \
+	.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.m2e.core.prefs
+
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.m2e.core.prefs : | settings.eclipse.xml
+	if ! test -e $(dir $@); then \
+		echo "No Eclipse workspace in $(CURDIR). Please create one with Eclipse first." >&2; \
+		exit 1; \
+	fi
+	echo "eclipse.m2.userSettingsFile=$(CURDIR)/settings.eclipse.xml" >$@
+	echo "eclipse.preferences.version=1" >>$@
+	echo "Now restart your Eclipse workspace '$(CURDIR)'" >&2
+
+settings.eclipse.xml : settings.xml
+	cat $< | sed -e 's|$${workspace}|$(CURDIR)/$(MVN_WORKSPACE)|g' -e 's|$${cache}|$(CURDIR)/$(MVN_CACHE)|g' >$@
+
+.PHONY : clean-eclipse
+clean-eclipse :
+	rm -rf .metadata settings.eclipse.xml
 
 ifndef VERBOSE
 .SILENT:
 endif
-
-# FIXME: why do I need to do this?
-.PRECIOUS: $(addsuffix /.maven-effective-pom.xml,assembly $(MAVEN_MODULES))
-.PRECIOUS: $(addsuffix /.maven-snapshot-dependencies,assembly $(MAVEN_MODULES))
-.PRECIOUS: $(addsuffix /.gradle-snapshot-dependencies,assembly $(MAVEN_MODULES))

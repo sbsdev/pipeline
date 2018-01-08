@@ -16,25 +16,36 @@
   <packaging>pom</packaging>
   
   <modules>
+    <module>utils/build-utils</module>
+    <module>utils/xspec-maven-plugin</module>
     <module>utils/xprocspec</module>
     <module>utils/xproc-maven-plugin</module>
-    <module>utils/xspec-maven-plugin</module>
     <module>utils/project-version-maven-plugin</module>
-    <module>utils/build-utils</module>
     <module>libs/jstyleparser</module>
     <module>libs/braille-css</module>
-    <module>libs/liblouis-java</module>
     <module>libs/osgi-libs</module>
+    <module>libs/liblouis-java</module>
     <module>framework</module>
+    <module>modules/braille</module>
     <module>modules/common</module>
     <module>modules/scripts-utils</module>
     <module>modules/scripts</module>
-    <module>modules/braille</module>
+    <module>modules/tts</module>
+    <module>modules/audio</module>
+    <module>modules/nlp</module>
     <module>modules/sbs/maven-parents/super-parent</module>
     <module>modules/sbs/maven-parents/modules-parent</module>
     <module>modules/sbs/braille-tables</module>
+    <module>modules/sbs/braille</module>
     <module>modules/sbs/epub3-dtbook-migrator</module>
     <module>modules/sbs/dtbook-to-odt</module>
+    <module>cli</module>
+    <module>gui</module>
+    <module>updater/cli</module>
+    <module>updater/gui</module>
+    <module>assembly</module>
+    <module>website/target/maven</module>
+    <module>clientlib/java</module>
   </modules>
   
   <build>
