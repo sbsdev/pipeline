@@ -21,13 +21,13 @@
   
   <properties>
     <!--
-	this needs to match the version in scripts-bom (1.10.2-SNAPSHOT: defined in modules-parent)
+	this needs to match the version in scripts-bom (1.10.3-SNAPSHOT: defined in modules-parent)
     -->
     <dtbook-to-odt.version>1.1.2-SNAPSHOT</dtbook-to-odt.version>
     <!--
-	this needs to match the version in scripts-utils-bom (1.10.2-SNAPSHOT: defined in modules-parent)
+	this needs to match the version in scripts-utils-bom (1.10.4-SNAPSHOT: defined in modules-parent)
     -->
-    <odt-utils.version>1.0.2</odt-utils.version>
+    <odt-utils.version>1.0.3-SNAPSHOT</odt-utils.version>
     <tagNameFormat>v@{project.version}</tagNameFormat>
   </properties>
   
@@ -67,29 +67,8 @@
 	test dependencies
     -->
     <dependency>
-      <groupId>org.daisy.maven</groupId>
-      <artifactId>xproc-engine-daisy-pipeline</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.daisy.xprocspec</groupId>
-      <artifactId>xprocspec</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.daisy.maven</groupId>
-      <artifactId>xprocspec-runner</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      <version>1.7.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.daisy.pipeline</groupId>
-      <artifactId>pax-exam-helper</artifactId>
+      <groupId>org.daisy.pipeline.build</groupId>
+      <artifactId>modules-test-helper</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

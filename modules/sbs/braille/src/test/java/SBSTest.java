@@ -23,39 +23,24 @@ import org.daisy.pipeline.braille.common.BrailleTranslator.FromStyledTextToBrail
 import org.daisy.pipeline.braille.common.CSSStyledText;
 import static org.daisy.pipeline.braille.common.Query.util.query;
 
-import static org.daisy.pipeline.pax.exam.Options.brailleModule;
-import static org.daisy.pipeline.pax.exam.Options.calabashConfigFile;
-import static org.daisy.pipeline.pax.exam.Options.domTraversalPackage;
-import static org.daisy.pipeline.pax.exam.Options.felixDeclarativeServices;
-import static org.daisy.pipeline.pax.exam.Options.logbackClassic;
-import static org.daisy.pipeline.pax.exam.Options.logbackConfigFile;
+import org.daisy.pipeline.junit.AbstractXSpecAndXProcSpecTest;
+
 import static org.daisy.pipeline.pax.exam.Options.mavenBundle;
-import static org.daisy.pipeline.pax.exam.Options.mavenBundlesWithDependencies;
-import static org.daisy.pipeline.pax.exam.Options.pipelineModule;
-import static org.daisy.pipeline.pax.exam.Options.thisBundle;
-import static org.daisy.pipeline.pax.exam.Options.xprocspec;
-import static org.daisy.pipeline.pax.exam.Options.xspec;
+import static org.daisy.pipeline.pax.exam.Options.thisPlatform;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import org.ops4j.pax.exam.Configuration;
-import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.util.PathUtils;
 
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
+import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.systemPackage;
 import static org.ops4j.pax.exam.CoreOptions.vmOption;
 
-@RunWith(PaxExam.class)
-@ExamReactorStrategy(PerClass.class)
-public class SBSTest {
+public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 	
 	@Inject
 	private XProcEngine xprocEngine;
@@ -65,6 +50,12 @@ public class SBSTest {
 	
 	@Inject
 	private XProcSpecRunner xprocspecRunner;
+	
+	@Override
+	public void runXProcSpec() {}
+	
+	@Override
+	public void runXSpec() {}
 	
 	@Test
 	public void runXSpecAndXProcSpec() throws Exception {
@@ -156,54 +147,43 @@ public class SBSTest {
 		assertEquals("zwölf", int2textFactory.newInteger2Text("de").intToText(12));
 	}
 	
-	@Configuration
+	@Override
+	protected String[] testDependencies() {
+		return new String[]{
+			brailleModule("common-utils"),
+			brailleModule("css-utils"),
+			brailleModule("pef-utils"),
+			brailleModule("liblouis-utils"),
+			"org.daisy.pipeline.modules.braille:liblouis-native:jar:" + thisPlatform() + ":?",
+			brailleModule("libhyphen-core"),
+			"org.daisy.pipeline.modules.braille:libhyphen-native:jar:" + thisPlatform() + ":?",
+			"ch.sbs.pipeline:sbs-braille-tables:?",
+			"ch.sbs.pipeline:sbs-hyphenation-tables:?",
+			brailleModule("dotify-utils"),
+			brailleModule("dotify-formatter"),
+			brailleModule("dtbook-to-pef"),
+			brailleModule("epub3-to-pef"),
+			pipelineModule("common-utils"),
+			pipelineModule("file-utils"),
+			pipelineModule("fileset-utils"),
+			pipelineModule("epubcheck-adapter"),
+			pipelineModule("nordic-epub3-dtbook-migrator"),
+			// because of bug in lou_indexTables we need to include liblouis-tables even though
+			// we're not using it (needed for include-brf)
+			brailleModule("liblouis-tables"),
+			// logging
+			"org.slf4j:jul-to-slf4j:?",
+			"org.daisy.pipeline:logging-activator:?",
+		};
+	}
+	
+	@Override @Configuration
 	public Option[] config() {
 		return options(
+			composite(super.config()),
 			vmOption("-Xmx8g"),
-			logbackConfigFile(),
-			calabashConfigFile(),
-			domTraversalPackage(),
-			felixDeclarativeServices(),
-			systemPackage("javax.xml.stream;version=\"1.0.1\""),
-			systemPackage("com.sun.org.apache.xml.internal.resolver"),
-			systemPackage("com.sun.org.apache.xml.internal.resolver.tools"),
-			thisBundle(),
-			junitBundles(),
-			mavenBundlesWithDependencies(
-				brailleModule("common-utils"),
-				brailleModule("css-utils"),
-				brailleModule("pef-utils"),
-				brailleModule("liblouis-utils"),
-				brailleModule("liblouis-native").forThisPlatform(),
-				brailleModule("libhyphen-core"),
-				brailleModule("libhyphen-native").forThisPlatform(),
-				mavenBundle("ch.sbs.pipeline:sbs-braille-tables:?"),
-				mavenBundle("ch.sbs.pipeline:sbs-hyphenation-tables:?"),
-				brailleModule("dotify-utils"),
-				brailleModule("dotify-formatter"),
-				brailleModule("dtbook-to-pef"),
-				brailleModule("epub3-to-pef"),
-				pipelineModule("common-utils"),
-				pipelineModule("file-utils"),
-				pipelineModule("fileset-utils"),
-				pipelineModule("epubcheck-adapter"),
-				pipelineModule("nordic-epub3-dtbook-migrator"),
-				// because of bug in lou_indexTables we need to include liblouis-tables even though
-				// we're not using it (needed for include-brf)
-				brailleModule("liblouis-tables"),
-				// logging
-				logbackClassic(),
-				mavenBundle("org.slf4j:jul-to-slf4j:?"),
-				mavenBundle("org.daisy.pipeline:logging-activator:?"),
-				// xprocspec
-				xprocspec(),
-				mavenBundle("org.daisy.maven:xproc-engine-daisy-pipeline:?"),
-				// xspec
-				xspec(),
-				mavenBundle("org.daisy.pipeline:saxon-adapter:?")),
 			// second version of guava needed for epubcheck-adapter
-			mavenBundle("com.google.guava:guava:14.0.1")
-		);
+			mavenBundle("com.google.guava:guava:14.0.1"));
 	}
 	
 	private Iterable<CSSStyledText> styledText(String... textAndStyle) {
