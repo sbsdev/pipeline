@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/brailleapps/braille-utils.impl
+	branch = master
+	commit = 6a52756bd8d278102d760418fe58338946ca2e6e
+	parent = 0fd37ea54bf4668a2e60277a2d92a03d026cf213
+	cmdver = 0.3.1
