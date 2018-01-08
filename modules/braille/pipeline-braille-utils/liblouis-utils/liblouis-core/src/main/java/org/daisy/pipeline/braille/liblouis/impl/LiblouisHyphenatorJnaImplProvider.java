@@ -114,7 +114,11 @@ public class LiblouisHyphenatorJnaImplProvider implements LiblouisHyphenator.Pro
 			if (table != null)
 				q.add("table", table);
 			if (locale != null)
-				q.add("locale", parseLocale(locale).toLanguageTag().replace('-', '_'));
+				try {
+					q.add("locale", parseLocale(locale).toLanguageTag().replace('-', '_')); }
+				catch (IllegalArgumentException e) {
+					logger.error("Invalid locale", e);
+					return empty; }
 			Iterable<LiblouisTableJnaImpl> tables = tableProvider.get(q.asImmutable());
 			return transform(
 				tables,

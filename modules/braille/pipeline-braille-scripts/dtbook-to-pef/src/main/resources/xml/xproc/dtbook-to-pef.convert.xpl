@@ -14,12 +14,17 @@
     <p:input port="source">
         <p:documentation>DTBook</p:documentation>
     </p:input>
-    <p:output port="result" primary="true">
+    <p:output port="result" primary="true" sequence="true"> <!-- sequence=false when d:validation-status result="ok" -->
         <p:documentation>PEF</p:documentation>
     </p:output>
     <p:output port="obfl" sequence="true"> <!-- sequence=false when include-obfl=true -->
         <p:documentation>OBFL</p:documentation>
         <p:pipe step="transform" port="obfl"/>
+    </p:output>
+    <p:output port="status" px:media-type="application/vnd.pipeline.status+xml">
+        <p:documentation>Whether or not the conversion was successful. When include-obfl is true,
+        the conversion may fail but still output a document on the "obfl" port.</p:documentation>
+        <p:pipe step="transform" port="status"/>
     </p:output>
     
     <p:input kind="parameter" port="parameters" sequence="true">
@@ -120,9 +125,12 @@
     <px:message message="[progress px:dtbook-to-pef.convert 85 px:dtbook-to-pef.convert.choose-transform] Transforming from XML to PEF" cx:depends-on="parameters"/>
     <p:choose name="transform">
         <p:when test="$include-obfl='true'">
-            <p:output port="pef" primary="true"/>
+            <p:output port="pef" primary="true" sequence="true"/>
             <p:output port="obfl">
                 <p:pipe step="obfl" port="result"/>
+            </p:output>
+            <p:output port="status">
+                <p:pipe step="try-pef" port="status"/>
             </p:output>
             <p:group name="obfl">
                 <p:output port="result"/>
@@ -139,25 +147,49 @@
                     </p:input>
                 </px:transform>
             </p:group>
-            <p:group>
-                <p:variable name="transform-query" select="concat('(input:obfl)(input:text-css)(output:pef)',$transform,'(locale:',$lang,')')"/>
-                <px:message severity="DEBUG" message="px:transform query=$1">
-                    <p:with-option name="param1" select="$transform-query"/>
-                </px:message>
-                <px:message message="[progress px:dtbook-to-pef.convert.choose-transform 66 *] Transforming from OBFL to PEF"/>
-                <px:transform>
-                    <p:with-option name="query" select="$transform-query"/>
-                    <p:with-option name="temp-dir" select="$temp-dir"/>
-                    <p:input port="parameters">
-                        <p:pipe port="result" step="parameters"/>
-                    </p:input>
-                </px:transform>
-            </p:group>
+            <p:try name="try-pef">
+                <p:group>
+                    <p:output port="pef" primary="true"/>
+                    <p:output port="status">
+                        <p:inline>
+                            <d:validation-status result="ok"/>
+                        </p:inline>
+                    </p:output>
+                    <p:variable name="transform-query" select="concat('(input:obfl)(input:text-css)(output:pef)',$transform,'(locale:',$lang,')')"/>
+                    <px:message severity="DEBUG" message="px:transform query=$1">
+                        <p:with-option name="param1" select="$transform-query"/>
+                    </px:message>
+                    <px:message message="[progress px:dtbook-to-pef.convert.choose-transform 66 *] Transforming from OBFL to PEF"/>
+                    <px:transform>
+                        <p:with-option name="query" select="$transform-query"/>
+                        <p:with-option name="temp-dir" select="$temp-dir"/>
+                        <p:input port="parameters">
+                            <p:pipe port="result" step="parameters"/>
+                        </p:input>
+                    </px:transform>
+                </p:group>
+                <p:catch>
+                    <p:output port="pef" primary="true">
+                        <p:empty/>
+                    </p:output>
+                    <p:output port="status">
+                        <p:inline>
+                            <d:validation-status result="error"/>
+                        </p:inline>
+                    </p:output>
+                    <p:sink/>
+                </p:catch>
+            </p:try>
         </p:when>
         <p:otherwise>
             <p:output port="pef" primary="true"/>
             <p:output port="obfl">
                 <p:empty/>
+            </p:output>
+            <p:output port="status">
+                <p:inline>
+                    <d:validation-status result="ok"/>
+                </p:inline>
             </p:output>
             <p:group>
                 <p:variable name="transform-query" select="concat('(input:css)(output:pef)',$transform,'(locale:',$lang,')')"/>
@@ -175,33 +207,41 @@
             </p:group>
         </p:otherwise>
     </p:choose>
-    <p:identity name="pef"/>
-
-    <p:identity>
-        <p:input port="source">
-            <p:pipe step="main" port="source"/>
-        </p:input>
-    </p:identity>
-    <px:message message="[progress px:dtbook-to-pef.convert 1 dtbook-to-metadata.xsl] Extracting metadata from DTBook"/>
-    <p:xslt name="metadata">
-        <p:input port="stylesheet">
-            <p:document href="../xslt/dtbook-to-metadata.xsl"/>
-        </p:input>
-        <p:input port="parameters">
-            <p:empty/>
-        </p:input>
-    </p:xslt>
     
-    <p:identity>
-        <p:input port="source">
-            <p:pipe step="pef" port="result"/>
-        </p:input>
-    </p:identity>
-    <px:message cx:depends-on="metadata" message="[progress px:dtbook-to-pef.convert 1 pef:add-metadata] Adding metadata to PEF"/>
-    <pef:add-metadata>
-        <p:input port="metadata">
-            <p:pipe step="metadata" port="result"/>
-        </p:input>
-    </pef:add-metadata>
+    <p:choose name="add-metadata">
+        <p:xpath-context>
+            <p:pipe step="transform" port="status"/>
+        </p:xpath-context>
+        <p:when test="/*/@result='ok'">
+            <p:identity>
+                <p:input port="source">
+                    <p:pipe step="main" port="source"/>
+                </p:input>
+            </p:identity>
+            <px:message message="[progress px:dtbook-to-pef.convert 1 dtbook-to-metadata.xsl] Extracting metadata from DTBook"/>
+            <p:xslt name="metadata">
+                <p:input port="stylesheet">
+                    <p:document href="../xslt/dtbook-to-metadata.xsl"/>
+                </p:input>
+                <p:input port="parameters">
+                    <p:empty/>
+                </p:input>
+            </p:xslt>
+            <p:identity>
+                <p:input port="source">
+                    <p:pipe step="transform" port="pef"/>
+                </p:input>
+            </p:identity>
+            <px:message cx:depends-on="metadata" message="[progress px:dtbook-to-pef.convert 1 pef:add-metadata] Adding metadata to PEF"/>
+            <pef:add-metadata>
+                <p:input port="metadata">
+                    <p:pipe step="metadata" port="result"/>
+                </p:input>
+            </pef:add-metadata>
+        </p:when>
+        <p:otherwise>
+            <p:identity/>
+        </p:otherwise>
+    </p:choose>
     
 </p:declare-step>

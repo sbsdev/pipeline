@@ -2,22 +2,27 @@
 <xsl:stylesheet version="2.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                xmlns:louis="http://liblouis.org/liblouis"
                 xmlns:css="http://www.daisy.org/ns/pipeline/braille-css"
+                xmlns:pf="http://www.daisy.org/ns/pipeline/functions"
                 exclude-result-prefixes="#all">
 	
 	<xsl:import href="http://www.daisy.org/pipeline/modules/braille/css-utils/transform/block-translator-template.xsl"/>
 	
-	<xsl:param name="query"/>
+	<xsl:param name="text-transform"/>
+	<xsl:param name="main-locale"/>
 	
-	<xsl:template match="css:block" mode="#default before after">
+	<!-- NOTE: by not matching using a namespace prefix (i.e. css:block) we avoid the SXXP0005 warning in Saxon 9.5 -->
+	<xsl:template match="*[local-name()='block' and namespace-uri()='http://www.daisy.org/ns/pipeline/braille-css']" mode="#default before after">
 		<xsl:variable name="text" as="text()*" select="//text()"/>
 		<xsl:variable name="style" as="xs:string*">
 			<xsl:apply-templates mode="style"/>
 		</xsl:variable>
 		<xsl:variable name="lang" select="ancestor-or-self::*[@xml:lang][1]/string(@xml:lang)"/>
 		<xsl:apply-templates select="node()[1]" mode="treewalk">
-			<xsl:with-param name="new-text-nodes" select="louis:translate(concat($query,'(locale:',$lang,')'), $text, $style)"/>
+			<xsl:with-param name="new-text-nodes" select="if (string($lang)=$main-locale)
+			                                              then pf:text-transform($text-transform, $text, $style)
+			                                              else pf:text-transform($text-transform, $text, $style,
+			                                                                     for $_ in 1 to count($text) return string($lang))"/>
 		</xsl:apply-templates>
 	</xsl:template>
 	

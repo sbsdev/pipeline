@@ -561,7 +561,7 @@
                     Move around and change page breaking related properties so that they can be mapped
                     one-to-one on OBFL properties.
                 </p:documentation>
-                <px:message message="[progress for-each-7.iteration 1/4 propagate-page-break] Propagage page breaks"/>
+                <px:message message="[progress for-each-7.iteration 1/4 propagate-page-break] Propagate css:page-break-before, css:page-break-after, css:page-break-inside, css:page, css:counter-set-page, css:volume and css:volume-break-before attributes."/>
                 <pxi:propagate-page-break>
                     <p:documentation>
                         Propagate css:page-break-before, css:page-break-after,

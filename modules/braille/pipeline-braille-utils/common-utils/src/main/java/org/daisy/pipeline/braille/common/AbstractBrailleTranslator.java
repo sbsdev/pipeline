@@ -448,26 +448,26 @@ public abstract class AbstractBrailleTranslator extends AbstractTransform implem
 							
 							// strip leading SPACE/LF/CR/TAB/BLANK and also NBSP in remaining text (all except NBSP are already collapsed into one)
 							// FIXME: breaks cases where NBSP after SHY is not from letter-spacing
-							cut = i;
-							while (cut < bufSize && charBuffer.charAt(cut) == blankChar) cut++;
+							int cut2 = i;
+							while (cut2 < bufSize && charBuffer.charAt(cut2) == blankChar) cut2++;
 							
 							// if break prohibited at the end, strip blanks from next row but not from remainder
 							if (bufSize == limit && wrapInfo.get(bufSize - 1) == PROHIBIT_WRAP) {
 								
 								// make sure there are remaining characters after the blanks otherwise nextTranslatedRow(force=true)
 								// could return "" while hasNext() = true
-								if (cut == bufSize) {
+								if (cut2 == bufSize) {
 									
 									// there are NBSP at the end because a SPACE/LF/CR/TAG/BLANK would have overruled the WJ
 									// strip only SPACE/LF/CR/TAG/BLANK because we can assume the NBSP is not from letter-spacing
-									cut = i;
-									while (cut < bufSize && wrapInfo.get(cut) == SOFT_WRAP_AFTER_SPACE) cut++;
-									if (cut == bufSize)
+									cut2 = i;
+									while (cut2 < bufSize && wrapInfo.get(cut2) == SOFT_WRAP_AFTER_SPACE) cut2++;
+									if (cut2 == bufSize)
 										throw new RuntimeException("coding error"); }
-								remainderBeginBlanks = charBuffer.substring(rv.length(), cut); }
+								remainderBeginBlanks = charBuffer.substring(cut, cut2); }
 							else
 								remainderBeginBlanks = "";
-							flushBuffers(cut);
+							flushBuffers(cut2);
 							return rv; }}
 					
 					// force hard break
