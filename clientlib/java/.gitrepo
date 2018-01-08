@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = git@github.com:daisy/pipeline-clientlib-java.git
+	branch = master
+	commit = 358919a32dd976e8ee9170e7711171b0a5edb5da
+	parent = 24f93be894ffa8482097345c413a125f66098606
+	cmdver = 0.3.1
