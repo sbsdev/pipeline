@@ -110,7 +110,7 @@ run-webui : # webui/.dependencies
 check : $(addprefix check-,$(MODULES))
 
 .PHONY : check-sbs
-check-sbs : check-modules/sbs/braille
+check-sbs : check-modules/sbs/braille check-modules/sbs/braille-tables check-modules/sbs/dtbook-to-odt
 
 .PHONY : release
 release : assembly/.release
