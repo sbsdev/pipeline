@@ -107,14 +107,14 @@
         bodymatter,
         /*body|section*/ [epub|type~='bodymatter'] {
             h#{$level} {
-                &:not(:has(> brl|select)) {
+                &:not(:has(> select)) {
                     string-set: running-footer-body content();
                 }
-                > brl|select {
-                    &:not(:has(> brl|running-line)) > brl|otherwise {
+                > select {
+                    &:not(:has(> running-line)) > otherwise {
                         string-set: running-footer-body content();
                     }
-                    > brl|running-line {
+                    > running-line {
                         string-set: running-footer-body content();
                     }
                 }
@@ -294,14 +294,14 @@ br.braille-volume-break-grade-#{$contraction-grade} {
     li {
         display: block;
         a {
-            brl|otherwise {
+            otherwise {
                 display: inline;
             }
-            &:has(brl|toc-line) {
-                brl|toc-line {
+            &:has(toc-line) {
+                toc-line {
                     display: inline;
                     /* Depends on handle-toc-and-running-line.xsl (see below) */
-                    ~ brl|otherwise {
+                    ~ otherwise {
                         display: none;
                     }
                 }
@@ -465,13 +465,13 @@ a:empty {
     display: none;
 }
 
-brl|select,
-brl|when-braille,
-brl|literal{
+select,
+when-braille,
+literal{
     display: inline;
 }
 
-brl|otherwise{
+otherwise{
     display: none;
 }
 
@@ -502,7 +502,7 @@ brl|otherwise{
  * before any CSS is applied.
  */
 h1, h2, h3, h4, h5, h6 {
-    brl|toc-line, brl|running-line { ~ brl|otherwise {
+    toc-line, running-line { ~ otherwise {
         display: inline;
     }}
 }
@@ -556,7 +556,7 @@ hd, bridgehead {
     hyphens: none;
 }
 
-brl|running-line, brl|toc-line, brl|otherwise {
+running-line, toc-line, otherwise {
     display:none;
 }
 
