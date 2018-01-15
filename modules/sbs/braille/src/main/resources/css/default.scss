@@ -307,7 +307,7 @@ br.braille-volume-break-grade-#{$contraction-grade} {
                 }
             }
             &::after {
-                content: " " leader('⠄') " ⠼";
+                content: " ⠄⠄" leader('⠄') " ⠼";
                 hyphens: initial;
                 &::after {
                     &::before {
