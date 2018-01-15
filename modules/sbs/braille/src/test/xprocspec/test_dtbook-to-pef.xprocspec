@@ -1810,7 +1810,7 @@
       </x:input>
       <x:option name="contraction-grade" select="2"/>
       <x:option name="show-braille-page-numbers" select="false()"/>
-      <x:option name="show-print-page-numbers" select="false()"/>
+      <x:option name="show-print-page-numbers" select="true()"/>
       <x:option name="levels-in-footer" select="0"/>
       <x:option name="include-brf" select="true()"/>
       <x:param port="parameters" name="generate-titlepage" select="false()"/>
@@ -1846,6 +1846,22 @@
                   <row>⠋⠗⠡⠀⠇⠕⠎⠄⠀⠩⠀⠻⠀⠉⠀⠫⠉⠀⠺⠛⠀⠹⠀⠬⠀⠍⠉⠯</row>
                   <row>⠃⠁⠓⠝⠦⠂⠀⠁⠹⠦⠦⠀⠻⠀⠙⠡⠂⠀⠝⠀⠏⠸⠀⠵</row>
                   <row>⠱⠺⠑⠃⠉⠄</row>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row/>
+                  <row>⠸⠼⠁⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</row>
                 </page>
               </section>
             </volume>

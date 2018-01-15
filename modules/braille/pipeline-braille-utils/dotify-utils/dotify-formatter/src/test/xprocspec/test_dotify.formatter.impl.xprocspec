@@ -2313,20 +2313,17 @@
   <!--
       note that generate-dotify-tests.xsl hides the issue at the beginning of a blocks
   -->
-  <x:scenario label="white-space-normalization-around-marker" xfail="true">
+  <x:scenario label="white-space-normalization-around-marker">
     <x:documentation>
       Tests white space normalisation near marker elements. Tests that white space at the beginning
       of a block or following a br element is stripped, also when it is preceded directly by a
-      marker element.
-      
-      Broken: see https://github.com/joeha480/dotify/issues/117. An additional normalisation step in
-      DP2 fixes the issue at the beginning of a blocks, but not following br elements.
+      marker element. Tests also that white space around a marker element is properly collapsed.
     </x:documentation>
     <x:call>
       <x:input port="source">
         <x:document type="inline">
           <obfl xmlns="http://www.daisy.org/ns/2011/obfl" version="2011-1" xml:lang="und" hyphenate="false">
-            <layout-master name="body" page-width="15" page-height="10" duplex="true">
+            <layout-master name="body" page-width="15" page-height="15" duplex="true">
               <default-template>
                 <header/>
                 <footer/>
@@ -2357,6 +2354,22 @@
                 <marker class="foo" value="x"/>
                 ⠤⠤⠤
               </block>
+              <block>
+                ⠤⠤⠤
+                ⠤⠤⠤
+                ⠤⠤⠤
+                ⠤⠤⠤
+                <marker class="foo" value="x"/>
+                <marker class="foo" value="x"/>
+                ⠤⠤⠤
+              </block>
+              <block>
+                ⠤⠤⠤
+                ⠤⠤⠤
+                ⠤⠤⠤
+                ⠤⠤⠤<marker class="foo" value="x"/>
+                ⠤⠤⠤
+              </block>
             </sequence>
           </obfl>
         </x:document>
@@ -2374,15 +2387,19 @@
             </meta>
           </head>
           <body>
-            <volume cols="15" rows="10" rowgap="0" duplex="true">
+            <volume cols="15" rows="15" rowgap="0" duplex="true">
               <section>
                 <page>
                   <row>⠤⠤⠤⠀⠤⠤⠤⠀⠤⠤⠤</row>
-                  <row>⠤⠤⠤⠀⠤⠤⠤⠀⠤⠤⠤</row> <!-- was: ⠀⠤⠤⠤⠀⠤⠤⠤⠀⠤⠤⠤ -->
+                  <row>⠤⠤⠤⠀⠤⠤⠤⠀⠤⠤⠤</row>
                   <row>⠤⠤⠤⠀⠤⠤⠤</row>
                   <row>⠤⠤⠤</row>
                   <row>⠤⠤⠤⠀⠤⠤⠤</row>
-                  <row>⠤⠤⠤</row> <!-- was: ⠀⠤⠤⠤ -->
+                  <row>⠤⠤⠤</row>
+                  <row>⠤⠤⠤⠀⠤⠤⠤⠀⠤⠤⠤⠀⠤⠤⠤</row>
+                  <row>⠤⠤⠤</row>
+                  <row>⠤⠤⠤⠀⠤⠤⠤⠀⠤⠤⠤⠀⠤⠤⠤</row>
+                  <row>⠤⠤⠤</row>
                 </page>
               </section>
             </volume>
@@ -2557,11 +2574,10 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="comment-in-white-space" xfail="true">
+  <x:scenario label="comment-in-white-space">
     <x:documentation>
-      Tests presence of a comment surrounded by white space.
-      
-      Broken: white space is dropped.
+      Tests presence of a comment surrounded by white space. Dotify would normally drop the white
+      space but pxi:obfl-normalize-space prevents this.
     </x:documentation>
     <x:call>
       <x:input port="source">
@@ -2607,9 +2623,6 @@
     </x:expect>
   </x:scenario>
   
-  <!--
-      TODO: remove ZWSP before comments when comment-in-white-space issue is fixed
-  -->
   <x:scenario label="marker-reference-sequence-backward">
     <x:documentation>
       Tests marker-reference with scope sequence and direction backward. Tested with markers at the
@@ -2642,13 +2655,13 @@
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- new page -->
+                <!-- new page -->
                 ⠁⠁⠁⠁⠁
                 <marker class="foo" value="2"/>
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- new page -->
+                <!-- new page -->
                 <marker class="foo" value="3"/>
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
@@ -2746,9 +2759,6 @@
     </x:expect>
   </x:scenario>
   
-  <!--
-      TODO: remove ZWSP before comments when comment-in-white-space issue is fixed
-  -->
   <x:scenario label="marker-reference-page-forward-backward">
     <x:documentation>
       Tests marker-reference with scope page. Tested with both forward and backward
@@ -2784,13 +2794,13 @@
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- new page -->
+                <!-- new page -->
                 ⠁⠁⠁⠁⠁
                 <marker class="foo" value="2"/>
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- new page -->
+                <!-- new page -->
                 <marker class="foo" value="3"/>
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
@@ -2888,9 +2898,6 @@
     </x:expect>
   </x:scenario>
   
-   <!--
-      TODO: remove ZWSP before comments when comment-in-white-space issue is fixed
-  -->
   <x:scenario label="marker-reference-page-content-forward-backward">
     <x:documentation>
       Tests marker-reference with scope page-content. Tested with both forward and backward
@@ -2926,13 +2933,13 @@
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- new page -->
+                <!-- new page -->
                 ⠁⠁⠁⠁⠁
                 <marker class="foo" value="2"/>
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- new page -->
+                <!-- new page -->
                 <marker class="foo" value="3"/>
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
@@ -3161,9 +3168,6 @@
     </x:expect>
   </x:scenario>
   
-  <!--
-      TODO: remove ZWSP before comments when comment-in-white-space issue is fixed
-  -->
   <x:scenario label="marker-reference-spread-across-sequence" xfail="true">
     <x:documentation>
       Tests that marker-reference with scope spread searches beyond sequence boundaries, i.e. a
@@ -3204,7 +3208,7 @@
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- left page -->
+                <!-- left page -->
                 ⠁⠁⠁⠁⠁
                 <marker class="foo" value="1"/>
                 ⠁⠁⠁⠁⠁
@@ -3212,7 +3216,7 @@
             </sequence>
             <sequence master="a">
               <block break-before="page">
-                ​<!-- right page -->
+                <!-- right page -->
                 ⠁⠁⠁⠁⠁
                 <marker class="foo" value="2"/>
                 ⠁⠁⠁⠁⠁
@@ -3285,9 +3289,6 @@
     </x:expect>
   </x:scenario>
   
-  <!--
-      TODO: remove ZWSP before comments when comment-in-white-space issue is fixed
-  -->
   <x:scenario label="marker-reference-spread-across-volume">
     <x:documentation>
       Tests that marker-reference with scope spread does not search beyond volume boundaries.
@@ -3320,24 +3321,24 @@
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- left page -->
+                <!-- left page -->
                 ⠁⠁⠁⠁⠁
                 <marker class="foo" value="1"/>
                 ⠁⠁⠁⠁⠁
               </block>
               <block break-before="page">
-                ​<!-- right page -->
+                <!-- right page -->
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- left page -->
+                <!-- left page -->
                 ⠁⠁⠁⠁⠁
                 <marker class="foo" value="2"/>
                 ⠁⠁⠁⠁⠁
               </block>
               <block break-before="page">
-                ​<!-- right page -->
+                <!-- right page -->
                 ⠁⠁⠁⠁⠁
               </block>
             </sequence>
@@ -3479,9 +3480,6 @@
     </x:expect>
   </x:scenario>
   
-  <!--
-      TODO: remove ZWSP before comments when comment-in-white-space issue is fixed
-  -->
   <x:scenario label="marker-reference-page-first-workaround">
     <x:documentation>
       Tests (hypothetical) marker-reference type that corresponds with 'page-first' in CSS. This
@@ -3519,13 +3517,13 @@
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- new page -->
+                <!-- new page -->
                 ⠁⠁⠁⠁⠁
                 <marker class="foo" value="2"/>
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- new page -->
+                <!-- new page -->
                 <marker class="foo" value="3"/>
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
@@ -3623,9 +3621,6 @@
     </x:expect>
   </x:scenario>
   
-  <!--
-      TODO: remove ZWSP before comments when comment-in-white-space issue is fixed
-  -->
   <x:scenario label="marker-reference-page-start-workaround">
     <x:documentation>
       Tests (hypothetical) marker-reference type that corresponds with 'page-start' in CSS. This
@@ -3675,7 +3670,7 @@
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- new page -->
+                <!-- new page -->
                 ⠁⠁⠁⠁⠁
                 <marker class="foo/prev" value="1"/>
                 <marker class="foo" value="2"/>
@@ -3684,7 +3679,7 @@
                 ⠁⠁⠁⠁⠁
                 <marker class="foo/prev" value="3"/>
                 <marker class="foo" value="3"/>
-                ​<!-- new page -->
+                <!-- new page -->
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
@@ -3793,9 +3788,6 @@
     </x:expect>
   </x:scenario>
   
-  <!--
-      TODO: remove ZWSP before comments when comment-in-white-space issue is fixed
-  -->
   <x:scenario label="marker-reference-page-start-except-last-workaround">
     <x:documentation>
       Tests (hypothetical) marker-reference type that corresponds with 'page-start-except-last' in
@@ -3842,7 +3834,7 @@
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- new page -->
+                <!-- new page -->
                 ⠁⠁⠁⠁⠁
                 <marker class="foo/prev" value="1"/>
                 <marker class="foo" value="2"/>
@@ -3851,7 +3843,7 @@
                 ⠁⠁⠁⠁⠁
                 <marker class="foo/prev" value="3"/>
                 <marker class="foo" value="3"/>
-                ​<!-- new page -->
+                <!-- new page -->
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
@@ -3960,9 +3952,6 @@
     </x:expect>
   </x:scenario>
   
-  <!--
-      TODO: remove ZWSP before comments when comment-in-white-space issue is fixed
-  -->
   <x:scenario label="marker-reference-spread-start-workaround">
     <x:documentation>
       Tests (hypothetical) marker-reference type that corresponds with 'spread-start' in CSS. This
@@ -4038,14 +4027,14 @@
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- left page -->
+                <!-- left page -->
                 ⠁⠁⠁⠁⠁
                 <marker class="foo/prev" value="1"/>
                 <marker class="foo" value="2"/>
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- right page -->
+                <!-- right page -->
                 <marker class="foo/prev" value="3"/>
                 <marker class="foo" value="3"/>
                 ⠁⠁⠁⠁⠁
@@ -4163,9 +4152,6 @@
     </x:expect>
   </x:scenario>
   
-  <!--
-      TODO: remove ZWSP before comments when comment-in-white-space issue is fixed
-  -->
   <x:scenario label="marker-reference-spread-start-except-last-workaround">
     <x:documentation>
       Tests (hypothetical) marker-reference type that corresponds with 'spread-start-except-last' in
@@ -4235,14 +4221,14 @@
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- left page -->
+                <!-- left page -->
                 ⠁⠁⠁⠁⠁
                 <marker class="foo/prev" value="1"/>
                 <marker class="foo" value="2"/>
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
                 ⠁⠁⠁⠁⠁
-                ​<!-- right page -->
+                <!-- right page -->
                 <marker class="foo/prev" value="3"/>
                 <marker class="foo" value="3"/>
                 ⠁⠁⠁⠁⠁
@@ -4991,9 +4977,7 @@
             </block>
             <block>
               ⠤⠤⠤⠤
-              <span id="foo">
-                ⠿
-              </span>
+              <span id="foo">⠿</span>
             </block>
             <block>
               ⠤⠤⠤⠤
