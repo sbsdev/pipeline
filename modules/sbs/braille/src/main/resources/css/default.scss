@@ -744,6 +744,7 @@ frontmatter level2,
 	content: -obfl-evaluate('(if (= $volumes 1) "" " Band")');;
     }
     display: block;
+    text-indent: 0;
 }
 
 .publisher {
