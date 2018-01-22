@@ -16,5 +16,5 @@ else
     ssh-add .travis/secrets/deploy_key && \
     git config --global user.name "travis-ci" && \
     git config --global user.email "noreply@travis-ci.org" && \
-    make website-publish
+    make publish-website
 fi
