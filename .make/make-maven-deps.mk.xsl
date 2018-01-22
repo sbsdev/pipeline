@@ -295,7 +295,7 @@
 							<xsl:with-param name="type" select="'pom'"/>
 						</xsl:call-template>
 						<xsl:text> : </xsl:text>
-						<xsl:value-of select="concat($dirname,'.install | .group-eval')"/>
+						<xsl:value-of select="concat($dirname,'.install.pom | .group-eval')"/>
 						<xsl:text>&#x0A;</xsl:text>
 						<xsl:text>&#x09;</xsl:text>
 						<xsl:text>+$(EVAL) touch $@</xsl:text>
@@ -312,6 +312,16 @@
 						<xsl:text>&#x0A;</xsl:text>
 						<xsl:text>&#x09;</xsl:text>
 						<xsl:text>+$(EVAL) 'test -e' $@</xsl:text>
+						<xsl:text>&#x0A;</xsl:text>
+						<xsl:text>&#x0A;</xsl:text>
+						<xsl:text>.SECONDARY : </xsl:text>
+						<xsl:value-of select="concat($dirname,'.install.pom')"/>
+						<xsl:text>&#x0A;</xsl:text>
+						<xsl:value-of select="concat($dirname,'.install.pom')"/>
+						<xsl:text> : %/.install.pom : %/pom.xml %/.dependencies | .maven-init .group-eval</xsl:text>
+						<xsl:text>&#x0A;</xsl:text>
+						<xsl:text>&#x09;</xsl:text>
+						<xsl:text>+$(EVAL) 'bash .make/mvn-install-pom.sh' $$(dirname $@)</xsl:text>
 						<xsl:text>&#x0A;</xsl:text>
 						<xsl:if test="$type='jar'">
 							<xsl:text>&#x0A;</xsl:text>
