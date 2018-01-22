@@ -5,7 +5,7 @@
   
   <x:scenario label="basic">
     <x:call step="sbs:epub3-to-pef">
-      <x:option name="epub" select="resolve-uri('../resources/test_epub3_basic/EPUB/package.opf')"/>
+      <x:option name="epub" select="resolve-uri('../resources/test_epub3_basic/epub/package.opf')"/>
       <x:option name="contraction-grade" select="'0'"/>
       <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_basic/')"/>
       <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
