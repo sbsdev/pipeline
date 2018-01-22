@@ -7,3 +7,7 @@ after_success:
 cache:
   directories:
     - gems
+# SBS website deployed from super-project
+branches:
+  except:
+    - sbs-website
