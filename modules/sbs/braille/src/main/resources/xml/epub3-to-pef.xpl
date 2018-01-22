@@ -172,4 +172,31 @@
         <p:with-option name="preview-output-dir" select="$preview-output-dir"/>
     </px:epub3-to-pef.store>
     
+    <!--
+        store as single volume BRF (will overwrite PEF too)
+    -->
+    <p:identity>
+        <p:input port="source">
+            <p:pipe step="convert" port="in-memory.out"/>
+        </p:input>
+    </p:identity>
+    <p:choose>
+        <p:when test="$include-brf='true' and $brf-output-dir!='' and count(//pef:volume) &gt; 1">
+            <p:variable name="name" select="if (ends-with(lower-case($epub),'.epub')) then replace($epub,'^.*/([^/]*)\.[^/\.]*$','$1')
+                                           else (/opf:package/opf:metadata/dc:identifier[not(@refines)], 'unknown-identifier')[1]">
+                <p:pipe step="load" port="opf"/>
+            </p:variable>
+            <pef:store>
+                <p:with-option name="href" select="concat($pef-output-dir,'/',$name,'.pef')"/>
+                <p:with-option name="brf-dir-href" select="$brf-output-dir"/>
+                <p:with-option name="brf-name-pattern" select="$name"/>
+                <p:with-option name="brf-single-volume-name" select="$name"/>
+                <p:with-option name="brf-file-format" select="concat($ascii-file-format,'(locale:',(//pef:meta/dc:language,'und')[1],')')"/>
+            </pef:store>
+        </p:when>
+        <p:otherwise>
+            <p:sink/>
+        </p:otherwise>
+    </p:choose>
+    
 </p:declare-step>
