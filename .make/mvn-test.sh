@@ -3,5 +3,5 @@ set -e
 set -o pipefail
 for arg in "$@"; do
     cd "$CURDIR/$arg"
-    eval $MVN clean verify | eval $MVN_LOG
+    eval $MVN clean verify
 done
