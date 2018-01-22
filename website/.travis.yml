@@ -16,3 +16,7 @@ script:
   - make
 after_success:
   - source .travis/publish.sh
+# SBS website deployed from super-project
+branches:
+  except:
+    - sbs-website
