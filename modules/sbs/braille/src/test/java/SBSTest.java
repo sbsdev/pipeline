@@ -107,10 +107,11 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 			File xspecReportsDir = new File(baseDir, "target/surefire-reports");
 			xspecReportsDir.mkdirs();
 			TestResults result = xspecRunner.run(xspecTests, xspecReportsDir);
-			try {
-				assertEquals("Number of XSpec failures and errors should be zero", 0L, result.getFailures() + result.getErrors()); }
-			catch (AssertionError e) {
-				errors.add(e); }}
+			if (result.getFailures() > 0 || result.getErrors() > 0) {
+				System.out.println(result.toDetailedString());
+				errors.add(new AssertionError("There are XSpec test failures."));
+			}
+		}
 		if (xprocspecHasFocus || !xspecHasFocus) {
 			
 			// execute tests a second time via EPUB 3, except if they contain custom, DTBook-specific CSS
@@ -125,16 +126,16 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 					                null,
 					                null);
 					xprocspecTests.put(test + "_via_epub3", generatedTest); }
+			File xprocspecReportsDir = new File(baseDir, "target/xprocspec-reports");
 			boolean success = xprocspecRunner.run(xprocspecTests,
-			                                      new File(baseDir, "target/xprocspec-reports"),
+			                                      xprocspecReportsDir,
 			                                      new File(baseDir, "target/surefire-reports"),
 			                                      new File(baseDir, "target/xprocspec"),
 			                                      null,
 			                                      new XProcSpecRunner.Reporter.DefaultReporter());
-			try {
-				assertTrue("XProcSpec tests should run with success", success); }
-			catch (AssertionError e) {
-				errors.add(e); }}
+			if (!success)
+				errors.add(new AssertionError("There are XProcSpec test failures."));
+		}
 		for (AssertionError e : errors)
 			throw e;
 	}
