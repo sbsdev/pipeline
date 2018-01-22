@@ -1130,29 +1130,6 @@ imggroup {
 /* Lists */
 
 
-/* dl, dt, dd not working with css, according to BF we need a pre-processing step to implement that */
-dl {
-    display:block;
-}
-
-dt {
-    display:inline;
-}
-
-dd {
-    display:inline;
-}
-
-dt + dd {
-    padding-left:1;
-}
-
-dd::after {
-    display:block;
-    white-space: pre-line;
-    content: '\A';
-}
-
 list, ol, ul {
     margin-left: 2;
     text-indent: -2;
@@ -1191,6 +1168,30 @@ list[type=ol], ol {
             content: "⠼" counter(list-item, symbols(numeric "⠴" "⠂" "⠆" "⠒" "⠲" "⠢" "⠖" "⠶" "⠦" "⠔")) " ";
             text-transform: none;
             hyphens: initial;
+        }
+    }
+}
+
+/*
+ * Definition lists
+ *
+ * Depends on handle-dl.xsl which groups dt elements and their following
+ * dd element.
+ */
+list.dl, ul.dl {
+    list-style-type: none;
+    li.dd {
+        span.dt {
+            display: inline;
+            &::after {
+                content: ": ";
+            }
+            &:has(~ span.dt)::after {
+                content: " ";
+            }
+        }
+        &:not(:has(span.dt)) {
+            text-indent: 2;
         }
     }
 }

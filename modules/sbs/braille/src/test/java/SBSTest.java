@@ -95,7 +95,8 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 				if (!test.equals("test_block-translate") &&
 				    !test.equals("test_handle_downgrading-1") &&
 				    !test.equals("test_handle-downgrading-2") &&
-				    !test.equals("test_dtbook2sbsform-9")) {
+				    !test.equals("test_dtbook2sbsform-9") &&
+				    !test.equals("test_handle-dl")) {
 					xprocEngine.run(generateXSpecTests,
 					                ImmutableMap.of("source", (List<String>)ImmutableList.of(xspecTests.get(test).toURI().toASCIIString())),
 					                ImmutableMap.of("result", generatedTest.toURI().toASCIIString()),

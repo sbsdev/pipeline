@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<x:description xmlns:x="http://www.jenitennison.com/xslt/xspec"
+               xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
+               stylesheet="../../main/resources/xml/handle-dl.xsl"
+               preserve-space="dtb:dl dtb:dt dtb:dd">
+
+  <x:scenario label="simple dl">
+    <x:context>
+      <dl xmlns="http://www.daisy.org/z3986/2005/dtbook/">
+        <dt> Term </dt>
+        <dd> Definition </dd>
+      </dl>
+    </x:context>
+    <x:expect label="result">
+      <list xmlns="http://www.daisy.org/z3986/2005/dtbook/" type="ul" class="dl">
+        <li class="dd"><span class="dt"> Term</span>
+         Definition </li>
+      </list>
+    </x:expect>
+  </x:scenario>
+  
+  <x:scenario label="dl with one dt and two dd">
+    <x:context>
+      <dl xmlns="http://www.daisy.org/z3986/2005/dtbook/">
+        <dt> Term </dt>
+        <dd> Definition 1 </dd>
+        <dd> Definition 2 </dd>
+      </dl>
+    </x:context>
+    <x:expect label="result">
+      <list xmlns="http://www.daisy.org/z3986/2005/dtbook/" type="ul" class="dl">
+        <li class="dd"><span class="dt"> Term</span>
+         Definition 1 </li>
+        <li class="dd"> Definition 2 </li>
+      </list>
+    </x:expect>
+  </x:scenario>
+  
+  <x:scenario label="dl with two dt and one dd">
+    <x:context>
+      <dl xmlns="http://www.daisy.org/z3986/2005/dtbook/">
+        <dt> Term 1 </dt>
+        <dt> Term 2 </dt>
+        <dd> Definition </dd>
+      </dl>
+    </x:context>
+    <x:expect label="result">
+      <list xmlns="http://www.daisy.org/z3986/2005/dtbook/" type="ul" class="dl">
+        <li class="dd"><span class="dt"> Term 1</span>
+        <span class="dt"> Term 2</span>
+         Definition </li>
+      </list>
+    </x:expect>
+  </x:scenario>
+  
+</x:description>
