@@ -6,6 +6,15 @@ RUN apt-get update && apt-get install -y \
     make \
     pcregrep
 
+# for some reason `make dist-zip-linux` needs jekyll and a very
+# obscure ruby gem
+RUN apt-get install -y \
+    gcc \
+    jekyll \
+    ruby-dev \
+    ruby-nokogiri
+RUN gem install commaparty
+
 ADD . /usr/src/pipeline2
 WORKDIR /usr/src/pipeline2
 RUN make dist-zip-linux
