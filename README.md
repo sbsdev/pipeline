@@ -1,5 +1,7 @@
 # pipeline
 
+[![Build Status](https://travis-ci.org/sbsdev/pipeline.svg?branch=sbs)](https://travis-ci.org/sbsdev/pipeline)
+
 ## Code
 
 This is a convenience "super" Pipeline project that aggregates all sub-projects and 3rd-party libraries.
