@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   pipeline:
-    image: sbsdev/pipeline2
+    image: sbsdev/pipeline:sbs
     environment:
       PIPELINE2_WS_HOST: "pipeline"
       PIPELINE2_WS_AUTHENTICATION: "false"
