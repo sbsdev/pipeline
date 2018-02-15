@@ -1,12 +1,39 @@
 package org.daisy.dotify.formatter.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.daisy.dotify.common.layout.SplitPoint;
-import org.daisy.dotify.common.layout.SplitPointCost;
-import org.daisy.dotify.common.layout.SplitPointHandler;
-import org.daisy.dotify.formatter.impl.DefaultContext.Space;
+import org.daisy.dotify.api.formatter.SequenceProperties.SequenceBreakBefore;
+import org.daisy.dotify.common.splitter.SplitPoint;
+import org.daisy.dotify.common.splitter.SplitPointCost;
+import org.daisy.dotify.common.splitter.SplitPointDataSource;
+import org.daisy.dotify.common.splitter.SplitPointHandler;
+import org.daisy.dotify.common.splitter.SplitPointSpecification;
+import org.daisy.dotify.common.splitter.StandardSplitOption;
+import org.daisy.dotify.formatter.impl.core.PaginatorException;
+import org.daisy.dotify.formatter.impl.datatype.VolumeKeepPriority;
+import org.daisy.dotify.formatter.impl.page.BlockSequence;
+import org.daisy.dotify.formatter.impl.page.PageImpl;
+import org.daisy.dotify.formatter.impl.page.PageStruct;
+import org.daisy.dotify.formatter.impl.page.RestartPaginationException;
+import org.daisy.dotify.formatter.impl.search.AnchorData;
+import org.daisy.dotify.formatter.impl.search.CrossReferenceHandler;
+import org.daisy.dotify.formatter.impl.search.DefaultContext;
+import org.daisy.dotify.formatter.impl.search.Space;
+import org.daisy.dotify.formatter.impl.sheet.SectionBuilder;
+import org.daisy.dotify.formatter.impl.sheet.Sheet;
+import org.daisy.dotify.formatter.impl.sheet.SheetDataSource;
+import org.daisy.dotify.formatter.impl.sheet.SheetGroup;
+import org.daisy.dotify.formatter.impl.sheet.SheetGroupManager;
+import org.daisy.dotify.formatter.impl.sheet.SplitterLimit;
+import org.daisy.dotify.formatter.impl.sheet.VolumeImpl;
+import org.daisy.dotify.formatter.impl.volume.VolumeSequence;
+import org.daisy.dotify.formatter.impl.volume.VolumeTemplate;
 
 /**
  * Provides contents in volumes.
@@ -15,68 +42,74 @@ import org.daisy.dotify.formatter.impl.DefaultContext.Space;
  *
  */
 public class VolumeProvider {
-	private final Iterable<BlockSequence> blocks;
-	private final FormatterContext fcontext;
-	private final  CrossReferenceHandler crh;
-	private final SheetGroupManager groups;
-	private final SplitPointHandler<Sheet> volSplitter;
-	
-	private PageStructBuilder contentPaginator;
+	private static final Logger logger = Logger.getLogger(VolumeProvider.class.getCanonicalName());
+	private static final int DEFAULT_SPLITTER_MAX = 50;
+	private final List<BlockSequence> blocks;
+	private final CrossReferenceHandler crh;
+	private SheetGroupManager groups;
+	private final SplitPointHandler<Sheet, SheetDataSource> volSplitter;
+
 	private int pageIndex = 0;
 	private int currentVolumeNumber=0;
+	private boolean init = false;
+	private int j = 1;
 	
 	private final SplitterLimit splitterLimit;
+    private final Stack<VolumeTemplate> volumeTemplates;
+    private final LazyFormatterContext context;
 
 	/**
 	 * Creates a new volume provider with the specifed parameters
 	 * @param blocks the block sequences
-	 * @param splitterLimit the splitter limit
-	 * @param fcontext the formatter context
+	 * @param volumeTemplates volume templates
+	 * @param context the formatter context
 	 * @param crh the cross reference handler
 	 */
-	public VolumeProvider(Iterable<BlockSequence> blocks, SplitterLimit splitterLimit, FormatterContext fcontext, CrossReferenceHandler crh) {
+	VolumeProvider(List<BlockSequence> blocks, Stack<VolumeTemplate> volumeTemplates, LazyFormatterContext context, CrossReferenceHandler crh) {
 		this.blocks = blocks;
-		this.splitterLimit = splitterLimit;
-		this.fcontext = fcontext;
+		this.splitterLimit = volumeNumber -> {
+            final DefaultContext c = new DefaultContext.Builder(crh)
+                    .currentVolume(volumeNumber)
+                    .build();
+            Optional<VolumeTemplate> ot = volumeTemplates.stream().filter(t -> t.appliesTo(c)).findFirst();
+            if (ot.isPresent()) {
+                return ot.get().getVolumeMaxSize();
+            } else {
+                logger.fine("Found no applicable volume template.");
+                return DEFAULT_SPLITTER_MAX;                
+            }
+        };
+		this.volumeTemplates = volumeTemplates;
+		this.context = context;
 		this.crh = crh;
 		this.volSplitter = new SplitPointHandler<>();
-		
-		this.groups = new SheetGroupManager(splitterLimit);
-		init();
 	}
-	
-	private void init() {
-		//FIXME: delete the following try/catch
-		//This code is here for compatibility with regression tests and can be removed once
-		//differences have been checked and accepted
-		try {
+		
+	/**
+	 * Resets the volume provider to its initial state (with some information preserved). 
+	 * @throws RestartPaginationException
+	 */
+	void prepare() {
+		if (!init) {
+			groups = new SheetGroupManager(splitterLimit);
 			// make a preliminary calculation based on a contents only
-			List<List<Sheet>> allUnits = new PageStructBuilder(fcontext, blocks, crh).paginateGrouped(new DefaultContext.Builder().space(Space.BODY).build());
+			Iterable<SheetDataSource> allUnits = prepareToPaginateWithVolumeGroups(blocks, new DefaultContext.Builder(crh).space(Space.BODY).build());
 			int volCount = 0;
-			for (int i=0; i<allUnits.size(); i++) {
+			for (SheetDataSource data : allUnits) {
 				SheetGroup g = groups.add();
-				g.setUnits(allUnits.get(i));
-				g.getSplitter().updateSheetCount(allUnits.get(i).size());
+				g.setUnits(data);
+				g.getSplitter().updateSheetCount(data.getRemaining().size(), data.getRemaining().size());
 				volCount += g.getSplitter().getVolumeCount();
 			}
 			crh.setVolumeCount(volCount);
-		} catch (PaginatorException e) {
-			throw new RuntimeException("Error while formatting.", e);
+			//if there is an error, we won't have a proper initialization and have to retry from the beginning
+			init = true;
 		}
-	}
-	
-	/**
-	 * Resets the volume provider to its initial state (with some information preserved). 
-	 */
-	void prepare() {
-		contentPaginator = new PageStructBuilder(fcontext, blocks, crh);
-		try {
-			List<List<Sheet>> allUnits = contentPaginator.paginateGrouped(new DefaultContext.Builder().space(Space.BODY).build());
-			for (int i=0; i<allUnits.size(); i++) {
-				groups.atIndex(i).setUnits(allUnits.get(i));
-			}
-		} catch (PaginatorException e) {
-			throw new RuntimeException("Error while reformatting.", e);
+		Iterable<SheetDataSource> allUnits = prepareToPaginateWithVolumeGroups(blocks, new DefaultContext.Builder(crh).space(Space.BODY).build());
+		int i=0;
+		for (SheetDataSource unit : allUnits) {
+			groups.atIndex(i).setUnits(unit);
+			i++;
 		}
 		pageIndex = 0;
 		currentVolumeNumber=0;
@@ -85,133 +118,207 @@ public class VolumeProvider {
 	}
 	
 	/**
+	 * @return returns the next volume
+	 * @throws RestartPaginationException if pagination should be restarted
+	 */
+	VolumeImpl nextVolume() {
+		currentVolumeNumber++;
+		VolumeImpl volume = new VolumeImpl(crh.getOverhead(currentVolumeNumber));
+		ArrayList<AnchorData> ad = new ArrayList<>();
+		volume.setPreVolData(updateVolumeContents(currentVolumeNumber, ad, true));
+		volume.setBody(nextBodyContents(volume.getOverhead().total(), ad));
+		
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine("Sheets  in volume " + currentVolumeNumber + ": " + (volume.getVolumeSize()) + 
+					", content:" + volume.getBodySize() +
+					", overhead:" + volume.getOverhead());
+		}
+		volume.setPostVolData(updateVolumeContents(currentVolumeNumber, ad, false));
+		crh.setSheetsInVolume(currentVolumeNumber, volume.getBodySize() + volume.getOverhead().total());
+		//crh.setPagesInVolume(i, value);
+		crh.setAnchorData(currentVolumeNumber, ad);
+		crh.setOverhead(currentVolumeNumber, volume.getOverhead());
+		return volume;
+
+	}
+	
+	/**
 	 * Gets the contents of the next volume
 	 * @param overhead the number of sheets in this volume that's not part of the main body of text
 	 * @param ad the anchor data
 	 * @return returns the contents of the next volume
 	 */
-	List<Sheet> nextVolume(final int overhead, ArrayList<AnchorData> ad) {
-		currentVolumeNumber++;
+	private SectionBuilder nextBodyContents(final int overhead, ArrayList<AnchorData> ad) {
 		groups.currentGroup().setOverheadCount(groups.currentGroup().getOverheadCount() + overhead);
 		final int splitterMax = splitterLimit.getSplitterLimit(currentVolumeNumber);
 		final int targetSheetsInVolume = (groups.lastInGroup()?splitterMax:groups.sheetsInCurrentVolume());
-		volSplitter.setCost(new SplitPointCost<Sheet>(){
+		//Not using lambda for now, because it's noticeably slower.
+		SplitPointCost<Sheet> cost = new SplitPointCost<Sheet>(){
 			@Override
-			public double getCost(List<Sheet> units, int index) {
+			public double getCost(SplitPointDataSource<Sheet, ?> units, int index, int breakpoint) {
 				int contentSheetTarget = targetSheetsInVolume - overhead;
-				if (units.size()>index+1 && units.get(index+1).shouldStartNewVolume()) { 
-					// The closer to 0 index is, the better. 
-					// By giving it a negative cost, it is always preferred over the options below.
-					return index-units.size();
-				} else {
-					Sheet lastSheet = units.get(index);
-					double priorityPenalty = 0;
-					int sheetCount = index + 1;
-					// Calculates a maximum offset based on the maximum possible number of sheets
-					double range = splitterMax * 0.2;
-					if (!units.isEmpty()) {
-						Integer avoid = lastSheet.getAvoidVolumeBreakAfterPriority();
-						if (avoid!=null) {
-							// Reverses 1-9 to 9-1 with bounds control and normalizes that to [1/9, 1]
-							double normalized = ((10 - Math.max(1, Math.min(avoid, 9)))/9d);
-							// Calculates a number of sheets that a high priority can beat
-							priorityPenalty = range * normalized;
-						}
+				Sheet lastSheet = units.get(index);
+				double priorityPenalty = 0;
+				int sheetCount = index + 1;
+				// Calculates a maximum offset based on the maximum possible number of sheets
+				double range = splitterMax * 0.4;
+				if (!units.isEmpty()) {
+					VolumeKeepPriority avoid = lastSheet.getAvoidVolumeBreakAfterPriority();
+					if (avoid.hasValue()) {
+						// Reverses 1-9 to 9-1 with bounds control and normalizes that to [1/9, 1]
+						double normalized = ((10 - avoid.getValue())/9d);
+						// Calculates a number of sheets that a high priority can beat
+						priorityPenalty = range * normalized;
 					}
-					// sets the preferred value to targetSheetsInVolume, where cost will be 0
-					// including a small preference for bigger volumes
-					double distancePenalty = Math.abs(contentSheetTarget - sheetCount) + (contentSheetTarget-sheetCount)*0.001;
-					int unbreakablePenalty = lastSheet.isBreakable()?0:100;
-					return distancePenalty + priorityPenalty + unbreakablePenalty;
 				}
-			}});
-		SplitPoint<Sheet> sp = getSplitPoint(splitterMax-overhead);
+				// sets the preferred value to targetSheetsInVolume, where cost will be 0
+				// including a small preference for bigger volumes
+				double distancePenalty = Math.abs(contentSheetTarget - sheetCount) + (contentSheetTarget-sheetCount)*0.001;
+				int unbreakablePenalty = lastSheet.isBreakable()?0:100;
+				return distancePenalty + priorityPenalty + unbreakablePenalty;
+			}};
+		SplitPoint<Sheet, SheetDataSource> sp;
+
+		crh.setReadOnly();
+		SheetDataSource data = groups.currentGroup().getUnits();
+		SheetDataSource copySource = new SheetDataSource(data);
+		SplitPointSpecification spec = volSplitter.find(splitterMax-overhead, 
+				copySource, 
+				cost, StandardSplitOption.ALLOW_FORCE);
+		crh.setReadWrite();
+		sp = volSplitter.split(spec, groups.currentGroup().getUnits());
+		/*
+			sp = volSplitter.split(splitterMax-overhead, 
+					groups.currentGroup().getUnits(),
+					cost, StandardSplitOption.ALLOW_FORCE);
+		*/
 		groups.currentGroup().setUnits(sp.getTail());
 		List<Sheet> contents = sp.getHead();
 		int pageCount = Sheet.countPages(contents);
-		// TODO: In a volume-by-volume scenario, how can we make this work
-		contentPaginator.setVolumeScope(currentVolumeNumber, pageIndex, pageIndex+pageCount); 
+		crh.commitPageDetails();
+		crh.setVolumeScope(currentVolumeNumber, pageIndex, pageIndex+pageCount);
+
 		pageIndex += pageCount;
+		SectionBuilder sb = new SectionBuilder();
 		for (Sheet sheet : contents) {
 			for (PageImpl p : sheet.getPages()) {
 				for (String id : p.getIdentifiers()) {
 					crh.setVolumeNumber(id, currentVolumeNumber);
 				}
 				if (p.getAnchors().size()>0) {
-					ad.add(new AnchorData(p.getPageIndex(), p.getAnchors()));
+					ad.add(new AnchorData(p.getAnchors(), p.getPageNumber()));
 				}
 			}
+			sb.addSheet(sheet);
 		}
 		groups.currentGroup().setSheetCount(groups.currentGroup().getSheetCount() + contents.size());
 		groups.nextVolume();
-		return contents;
+		return sb;
+	}
+	
+	private SectionBuilder updateVolumeContents(int volumeNumber, ArrayList<AnchorData> ad, boolean pre) {
+		DefaultContext c = new DefaultContext.Builder(crh)
+						.currentVolume(volumeNumber)
+						.space(pre?Space.PRE_CONTENT:Space.POST_CONTENT)
+						.build();
+		try {
+			ArrayList<BlockSequence> ib = new ArrayList<>();
+			for (VolumeTemplate t : volumeTemplates) {
+				if (t.appliesTo(c)) {
+					for (VolumeSequence seq : (pre?t.getPreVolumeContent():t.getPostVolumeContent())) {
+						BlockSequence s = seq.getBlockSequence(context.getFormatterContext(), c, crh);
+						if (s!=null) {
+							ib.add(s);
+						}
+					}
+					break;
+				}
+			}
+			List<Sheet> ret = prepareToPaginate(ib, c, null).getRemaining();
+			SectionBuilder sb = new SectionBuilder();
+			for (Sheet ps : ret) {
+				for (PageImpl p : ps.getPages()) {
+					if (p.getAnchors().size()>0) {
+						ad.add(new AnchorData(p.getAnchors(), p.getPageNumber()));
+					}
+				}
+				sb.addSheet(ps);
+			}
+			return sb;
+		} catch (PaginatorException e) {
+			return null;
+		}
+	}
+	
+	private SheetDataSource prepareToPaginate(List<BlockSequence> fs, DefaultContext rcontext, Integer volumeGroup) throws PaginatorException {
+		return prepareToPaginate(new PageStruct(), rcontext, volumeGroup, fs);
+	}
+	
+	private Iterable<SheetDataSource> prepareToPaginateWithVolumeGroups(List<BlockSequence> fs, DefaultContext rcontext) {
+		List<List<BlockSequence>> volGroups = new ArrayList<>();
+		List<BlockSequence> currentGroup = new ArrayList<>();
+		volGroups.add(currentGroup);
+		for (BlockSequence bs : fs) {
+			if (bs.getSequenceProperties().getBreakBeforeType()==SequenceBreakBefore.VOLUME) {
+				currentGroup = new ArrayList<>();
+				volGroups.add(currentGroup);
+			}
+			currentGroup.add(bs);
+		}
+		PageStruct struct = new PageStruct();
+        crh.resetUniqueChecks();
+		return new Iterable<SheetDataSource>(){
+			@Override
+			public Iterator<SheetDataSource> iterator() {
+				try {
+					return prepareToPaginateWithVolumeGroups(struct, rcontext, volGroups).iterator();
+				} catch (PaginatorException e) {
+					throw new RuntimeException(e);
+				}
+			}};
+	}
+
+	private List<SheetDataSource> prepareToPaginateWithVolumeGroups(PageStruct struct, DefaultContext rcontext, Iterable<List<BlockSequence>> volGroups) throws PaginatorException {
+		List<SheetDataSource> ret = new ArrayList<>();
+		int i = 0;
+		for (List<BlockSequence> glist : volGroups) {
+			ret.add(prepareToPaginate(struct, rcontext, i++, glist));
+		}
+		return ret;
+	}
+	
+	private SheetDataSource prepareToPaginate(PageStruct struct, DefaultContext rcontext, Integer volumeGroup, List<BlockSequence> seqs) throws PaginatorException {
+		return new SheetDataSource(struct, context.getFormatterContext(), rcontext, volumeGroup, seqs);
 	}
 	
 	/**
-	 * Informs the volume provider that the caller has finished requesting volumes.  
+	 * Informs the volume provider that the caller has finished requesting volumes.
+	 * <b>Note: only use after all volumes have been calculated.</b>
+	 * @return returns true if the volumes can be accepted, false otherwise  
 	 */
-	void update() {
+	boolean done() {
+		if (groups.hasNext()) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("There is more content (sheets: " + groups.countRemainingSheets() + ", pages: " + groups.countRemainingPages() + ")");
+			}
+		}
+		// this changes the value of groups.getVolumeCount() to the newly computed
+		// required number of volume based on groups.countTotalSheets()
 		groups.updateAll();
-		//TODO: call adjustVolumeCount from here and remove it from the caller's responsibility
-	}
-	
-	/**
-	 * Informs the volume provider to adjust its volume calculation.
-	 */
-	void adjustVolumeCount() {
-		groups.adjustVolumeCount();
-	}
-	
-	/**
-	 * Gets the total number of volumes.
-	 * @return returns the number of volumes
-	 */
-	int getVolumeCount() {
-		return groups.getVolumeCount();
-	}
-	
-	/**
-	 * Counts the total number of sheets.
-	 * @return returns the total number of sheets.
-	 */
-	int countTotalSheets() {
-		return groups.countTotalSheets();
-	}
-	
-	/**
-	 * Counts the remaining pages.
-	 * @return returns the number of remaining pages
-	 */
-	int countRemainingPages() {
-		return groups.countRemainingPages();
-	}
-	
-	/**
-	 * Counts the remaining sheets.
-	 * @return returns the number of remaining sheets
-	 */
-	int countRemainingSheets() {
-		return groups.countRemainingSheets();
-	}
-	
-	/**
-	 * The total number of pages provided so far
-	 * @return the number of pages
-	 */
-	int getTotalPageCount() {
-		return pageIndex;
-	}
-	
-	private SplitPoint<Sheet> getSplitPoint(int contentSheets) {
-		return volSplitter.split(contentSheets, true, groups.currentGroup().getUnits());
-	}
-	
-	/**
-	 * Returns true if there is content left or left behind.
-	 * @return returns true if there is more content, false otherwise
-	 */
-	boolean hasNext() {
-		return groups.hasNext();
+		crh.commitBreakable();
+		crh.commitTransitionProperties();
+		crh.trimPageDetails();
+		crh.setVolumeCount(groups.getVolumeCount());
+		crh.setSheetsInDocument(groups.countTotalSheets());
+		//crh.setPagesInDocument(value);
+		if (!crh.isDirty() && !groups.hasNext()) {
+			return true;
+		} else {
+			crh.setDirty(false);
+			logger.info("Things didn't add up, running another iteration (" + j + ")");
+		}
+		j++;
+		return false;
 	}
 
 }
