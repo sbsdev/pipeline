@@ -1,0 +1,4 @@
+org.daisy.dotify.tasks.impl.input.xml.XMLInputManagerFactory
+org.daisy.dotify.tasks.impl.input.text.TextInputManagerFactory
+org.daisy.dotify.tasks.impl.input.epub.Epub3InputManagerFactory
+org.daisy.dotify.tasks.impl.input.LayoutEngineFactory
