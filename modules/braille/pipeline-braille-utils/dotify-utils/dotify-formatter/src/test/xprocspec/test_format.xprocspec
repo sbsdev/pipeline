@@ -11714,10 +11714,12 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="test_101">
+  <x:scenario label="test_101" xfail="true">
     <x:documentation>
       Tests bottom right margin box of height 2 inside page margin of height 0, which results in
       text being flowed into the whole footer.
+      
+      Broken: functionality reverted in Dotify.
     </x:documentation>
     <x:call step="dotify:format">
       <x:input port="source">
@@ -11809,10 +11811,12 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="test_102">
+  <x:scenario label="test_102" xfail="true">
     <x:documentation>
       Tests bottom right margin box of height 2 inside page margin of height 1, which results in
       text being partly flowed into whole footer.
+      
+      Broken: functionality reverted in Dotify.
     </x:documentation>
     <x:call step="dotify:format">
       <x:input port="source">

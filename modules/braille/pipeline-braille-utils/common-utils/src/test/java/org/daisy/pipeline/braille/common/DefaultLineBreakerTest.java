@@ -10,7 +10,9 @@ import static com.google.common.collect.Lists.newArrayList;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
+import org.daisy.dotify.api.translator.BrailleTranslatorResult;
 import org.daisy.pipeline.braille.common.AbstractBrailleTranslator;
 import org.daisy.pipeline.braille.common.AbstractHyphenator;
 import org.daisy.pipeline.braille.common.CSSStyledText;
@@ -122,6 +124,20 @@ public class DefaultLineBreakerTest {
 		}
 	}
 	
+	@Test
+	public void testDisallowHyphenation() {
+		TestHyphenator hyphenator = new TestHyphenator();
+		TestTranslator translator = new TestTranslator(hyphenator);
+		BrailleTranslator.LineIterator i
+			= translator.lineBreakingFromStyledText().transform(text("abc­def abc­def abc­def abc­def"));
+		assertEquals("ABCDEF ABC-", i.nextTranslatedRow(12, true, false));
+		assertEquals("DEF",         i.nextTranslatedRow(6,  true, false));
+		assertEquals("ABCDEF",      i.nextTranslatedRow(12, true, true));
+		assertEquals("ABC-",        i.nextTranslatedRow(5,  true, false));
+		assertEquals("DEF",         i.nextTranslatedRow(5,  true, false));
+		assertFalse(i.hasNext());
+	}
+	
 	private static class TestHyphenator extends AbstractHyphenator {
 		
 		@Override
@@ -184,7 +200,7 @@ public class DefaultLineBreakerTest {
 					public boolean hasNext() {
 						return pos < text.length();
 					}
-					public String next(int limit, boolean force) {
+					public String next(int limit, boolean force, boolean allowHyphens) {
 						String next = "";
 						int start = pos;
 						int end = text.length();
@@ -212,14 +228,14 @@ public class DefaultLineBreakerTest {
 											break;
 										else {
 											Hyphenator.LineIterator lines = hyphenator.asLineBreaker().transform(word);
-											String line = lines.nextLine(available, force);
+											String line = lines.nextLine(available, force, allowHyphens);
 											if (line.length() == available && lines.lineHasHyphen()) {
 												lines.reset();
-												line = lines.nextLine(available - 1, force); }
+												line = lines.nextLine(available - 1, force, allowHyphens); }
 											if (line.length() > 0) {
 												next += line;
 												if (lines.lineHasHyphen())
-													next += "-\u200b";
+													next += "\u00ad";
 												pos += line.length();
 												text = text.substring(0, pos) + lines.remainder(); }
 											break; }}
@@ -236,16 +252,13 @@ public class DefaultLineBreakerTest {
 					public String remainder() {
 						return translate(text.substring(pos));
 					}
-					int markPos;
-					String markText; {
-						mark(); }
-					public void mark() {
-						markPos = pos;
-						markText = text;
-					}
-					public void reset() {
-						pos = markPos;
-						text = markText;
+					@Override
+					public Object clone() {
+						try {
+							return super.clone();
+						} catch (CloneNotSupportedException e) {
+							throw new InternalError("coding error");
+						}
 					}
 					private String translate(String s) {
 						return s.toUpperCase();
@@ -295,17 +308,17 @@ public class DefaultLineBreakerTest {
 				}
 			}
 			
-			public String nextTranslatedRow(int limit, boolean force) {
-				String row = fillLine(segments, limit, false);
+			public String nextTranslatedRow(int limit, boolean force, boolean wholeWordsOnly) {
+				String row = fillLine(segments, limit, false, wholeWordsOnly);
 				if (force && row.isEmpty())
-					row = fillLine(segments, limit, true);
+					row = fillLine(segments, limit, true, wholeWordsOnly);
 				return row;
 			}
 			
-			private String fillLine(List<BrailleTranslator.LineIterator> segments, int width, boolean force) {
+			private String fillLine(List<BrailleTranslator.LineIterator> segments, int width, boolean force, boolean wholeWordsOnly) {
 				if (!segments.get(0).hasNext()) {
 					segments.remove(0);
-					return fillLine(segments, width, force);
+					return fillLine(segments, width, force, wholeWordsOnly);
 				}
 				if (segments.get(0).countRemaining() < width
 				    || (segments.get(0).countRemaining() == width && segments.size() == 1)) {
@@ -314,17 +327,18 @@ public class DefaultLineBreakerTest {
 						segments.remove(0);
 						return line;
 					}
-					String s = fillLine(segments.subList(1, segments.size()), width - line.length(), force);
+					String s = fillLine(segments.subList(1, segments.size()), width - line.length(), force, wholeWordsOnly);
 					if (!s.isEmpty()) {
 						segments.remove(0);
 						return line + s;
 					}
 				}
-				return segments.get(0).nextTranslatedRow(width, force);
+				return segments.get(0).nextTranslatedRow(width, force, wholeWordsOnly);
 			}
 			
 			public String getTranslatedRemainder()       { throw new UnsupportedOperationException(); }
 			public int countRemaining()                  { throw new UnsupportedOperationException(); }
+			public BrailleTranslatorResult copy()        { throw new UnsupportedOperationException(); }
 			public boolean supportsMetric(String metric) { throw new UnsupportedOperationException(); }
 			public double getMetric(String metric)       { throw new UnsupportedOperationException(); }
 		};
