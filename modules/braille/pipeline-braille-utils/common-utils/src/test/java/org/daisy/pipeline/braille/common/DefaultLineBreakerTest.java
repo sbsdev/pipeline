@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.google.common.collect.Iterators.concat;
+import static com.google.common.collect.Lists.newArrayList;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -277,57 +277,56 @@ public class DefaultLineBreakerTest {
 	}
 	
 	private static String fillLines(Iterator<BrailleTranslator.LineIterator> segments, int width) {
-		StringBuilder sb = new StringBuilder();
-		StringBuilder tmp = new StringBuilder();
-		int remainingWidth = width;
-		boolean force = false;
-		List<BrailleTranslator.LineIterator> restoreSegments = new ArrayList<>();
-		int restoreRemainingWidth = remainingWidth;
-	  outer:while (segments.hasNext()) {
-			BrailleTranslator.LineIterator segment = segments.next();
-			while (segment.hasNext()) {
-				if (remainingWidth < 0)
-					throw new RuntimeException("coding error");
-				String row = segment.nextTranslatedRow(remainingWidth, force);
+		return fillLines(aggregate(segments), width);
+	}
+	
+	private static BrailleTranslator.LineIterator aggregate(final Iterator<BrailleTranslator.LineIterator> segmentsIterator) {
+		return new BrailleTranslator.LineIterator() {
+			
+			private List<BrailleTranslator.LineIterator> segments = newArrayList(segmentsIterator);
+			
+			public boolean hasNext() {
+				while (true) {
+					if (segments.isEmpty())
+						return false;
+					if (segments.get(0).hasNext())
+						return true;
+					segments = segments.subList(1, segments.size());
+				}
+			}
+			
+			public String nextTranslatedRow(int limit, boolean force) {
+				String row = fillLine(segments, limit, false);
 				if (force && row.isEmpty())
-					throw new RuntimeException("coding error");
-				force = false;
-				if (!row.isEmpty()) {
-					sb.append(tmp);
-					sb.append(row);
-					remainingWidth = remainingWidth - row.length();
-					tmp.setLength(0);
-					restoreSegments.clear();
-					restoreRemainingWidth = remainingWidth; }
-				if (segment.hasNext()
-				    && (segment.countRemaining() < remainingWidth
-				        || (segment.countRemaining() == remainingWidth && !segments.hasNext()))) {
-					// use force when we are still at the beginning of the line because
-					// translatedRemainder can possibly start with white space
-					if (remainingWidth == width) {
-						force = true;
-						continue; }
-					String remainder = segment.getTranslatedRemainder();
-					if (remainder.isEmpty())
-						throw new RuntimeException("coding error");
-					tmp.append(remainder);
-					remainingWidth = remainingWidth - remainder.length();
-					restoreSegments.add(segment);
-					continue outer; }
-				if (row.isEmpty()) {
-					if (!restoreSegments.isEmpty()) {
-						restoreSegments.add(segment);
-						segments = concat(restoreSegments.iterator(), segments);
-						segment = segments.next();
-						restoreSegments = new ArrayList<>();
-						tmp.setLength(0);
-						remainingWidth = restoreRemainingWidth; }
-					if (remainingWidth == width) {
-						force = true;
-						continue; }}
-				if (segment.hasNext()) {
-					sb.append('\n');
-					remainingWidth = width; }}}
-		return sb.toString();
+					row = fillLine(segments, limit, true);
+				return row;
+			}
+			
+			private String fillLine(List<BrailleTranslator.LineIterator> segments, int width, boolean force) {
+				if (!segments.get(0).hasNext()) {
+					segments.remove(0);
+					return fillLine(segments, width, force);
+				}
+				if (segments.get(0).countRemaining() < width
+				    || (segments.get(0).countRemaining() == width && segments.size() == 1)) {
+					String line = segments.get(0).getTranslatedRemainder();
+					if (segments.size() == 1) {
+						segments.remove(0);
+						return line;
+					}
+					String s = fillLine(segments.subList(1, segments.size()), width - line.length(), force);
+					if (!s.isEmpty()) {
+						segments.remove(0);
+						return line + s;
+					}
+				}
+				return segments.get(0).nextTranslatedRow(width, force);
+			}
+			
+			public String getTranslatedRemainder()       { throw new UnsupportedOperationException(); }
+			public int countRemaining()                  { throw new UnsupportedOperationException(); }
+			public boolean supportsMetric(String metric) { throw new UnsupportedOperationException(); }
+			public double getMetric(String metric)       { throw new UnsupportedOperationException(); }
+		};
 	}
 }
