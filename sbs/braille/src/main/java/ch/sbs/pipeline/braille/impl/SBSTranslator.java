@@ -94,18 +94,18 @@ public interface SBSTranslator {
 			unpack(URLs.getResourceFromJAR("/liblouis/virtual.dis", SBSTranslator.class), f);
 			virtualDisTable = URIs.asURI(f);
 			grade0Table = liblouisTable("sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti," + // no sbs-whitespace.mod
-			                            "sbs-numsign.mod,sbs-litdigit-upper.mod,sbs-de-core.mod,sbs-de-g0-core.mod," +
+			                            "sbs-numsign.mod,litdigits6Dots.uti,sbs-de-core.mod,sbs-de-g0-core.mod," +
 			                            "sbs-de-hyph-none.mod,sbs-de-accents-ch.mod,sbs-special.mod");
 			grade1Table = liblouisTable("sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti," + // no sbs-whitespace.mod
-			                            "sbs-numsign.mod,sbs-litdigit-upper.mod,sbs-de-core.mod,sbs-de-g0-core.mod," +
+			                            "sbs-numsign.mod,litdigits6Dots.uti,sbs-de-core.mod,sbs-de-g0-core.mod," +
 			                            "sbs-de-g1-white.mod,sbs-de-g1-core.mod,sbs-de-hyph-none.mod,sbs-de-accents-ch.mod," +
 			                            "sbs-special.mod");
 			grade2Table = liblouisTable("sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti," + // no sbs-whitespace.mod
-			                            "sbs-de-letsign.mod,sbs-numsign.mod,sbs-litdigit-upper.mod,sbs-de-core.mod," +
+			                            "sbs-de-letsign.mod,sbs-numsign.mod,litdigits6Dots.uti,sbs-de-core.mod," +
 			                            "sbs-de-g2-white.mod,sbs-de-g2-core.mod,sbs-de-hyph-none.mod,sbs-de-accents-ch.mod," +
 			                            "sbs-special.mod");
 			Query romanNumberTable = liblouisTable("sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti," + // no sbs-whitespace.mod
-			                                       "sbs-numsign.mod,sbs-litdigit-upper.mod,sbs-de-core.mod,sbs-de-g0-core.mod," +
+			                                       "sbs-numsign.mod,litdigits6Dots.uti,sbs-de-core.mod,sbs-de-g0-core.mod," +
 			                                       "sbs-de-hyph-none.mod,sbs-de-accents-ch.mod,sbs-special.mod");
 			grade0SubTables = new HashMap<String,Query>(); {
 				grade0SubTables.put("roman-num", romanNumberTable);

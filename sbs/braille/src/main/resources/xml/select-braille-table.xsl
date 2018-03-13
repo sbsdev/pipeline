@@ -59,7 +59,7 @@
 		if ($context = 'v-form' or $context = 'name_capitalized' or ($actual_contraction != '2' and $enable_capitalization = true())) then 'sbs-de-capsign.mod' else '',
 		if ($actual_contraction = '2' and not($context=('num_roman','abbr','date_month','date_day','name_capitalized'))) then 'sbs-de-letsign.mod' else '',
 		if (not($context = 'date_month' or $context = 'denominator' or $context = 'index' or $context = 'linenum')) then 'sbs-numsign.mod' else '',
-		if ($context = 'num_ordinal' or $context = 'date_day' or $context = 'denominator' or $context = 'index') then 'sbs-litdigit-lower.mod' else 'sbs-litdigit-upper.mod',
+		if ($context = 'num_ordinal' or $context = 'date_day' or $context = 'denominator' or $context = 'index') then 'sbs-litdigit-lower.mod' else 'litdigits6Dots.uti',
 		if ($context != 'date_month' and $context != 'date_day') then 'sbs-de-core.mod' else '',
 		if ($context = 'name_capitalized' or $context = 'num_roman' or ($context = 'abbr' and not(my:containsDot($ctx))) or ($actual_contraction &lt;= '1' and $context != 'date_day' and $context != 'date_month')) then 'sbs-de-g0-core.mod' else '',
 		if ($actual_contraction = '1' and $context != 'num_roman' and ($context != 'name_capitalized' and ($context != 'abbr' or my:containsDot($ctx)) and $context != 'date_month' and $context != 'date_day')) then string-join((if ($use_local_dictionary = true()) then concat('sbs-de-g1-white-',$document-identifier,'.mod,') else '', 'sbs-de-g1-white.mod', 'sbs-de-g1-core.mod')[. != ''],',') else ''
