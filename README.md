@@ -82,3 +82,8 @@ The `gh-pages` branch contains the source of the [Pipeline website](http://daisy
 $ make clean
 $ make dist-deb
 ```
+# Running
+
+``` shell
+$ docker-compose -f webui/docker-compose.yml -f docker-compose.sbs.yml up
+```

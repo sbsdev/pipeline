@@ -1,0 +1,4 @@
+version: "2.1"
+services:
+  pipeline:
+    image: sbsdev/pipeline:sbs
