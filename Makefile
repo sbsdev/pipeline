@@ -349,14 +349,14 @@ checked :
 
 website/target/maven/pom.xml : $(addprefix website/src/_data/,modules.yml versions.yml)
 	cd website && \
-	make target/maven/pom.xml
+	$(MAKE) target/maven/pom.xml
 
 export MVN_OPTS = --batch-mode --settings '$(CURDIR)/settings.xml' -Dworkspace='$(CURDIR)/$(MVN_WORKSPACE)' -Dcache='$(CURDIR)/$(MVN_CACHE)' -Pstaged-releases
 
 website/target/maven/modules : website/target/maven/.deps.mk website/target/maven/.dependencies
 	rm -rf $@
 	cd website && \
-	make target/maven/modules
+	$(MAKE) target/maven/modules
 
 .PHONY : website
 website : | website/target/maven/modules
@@ -366,17 +366,17 @@ website : | website/target/maven/modules
 .PHONY : serve-website
 serve-website : | website/target/maven/modules
 	cd website && \
-	make serve
+	$(MAKE) serve
 
 .PHONY : publish-website
 publish-website : | website/target/maven/modules
 	cd website && \
-	make publish
+	$(MAKE) publish
 
 .PHONY : clean-website
 clean-website :
 	cd website && \
-	make clean
+	$(MAKE) clean
 
 .PHONY : dump-maven-cmd
 dump-maven-cmd :
