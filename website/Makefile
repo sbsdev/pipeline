@@ -1,5 +1,6 @@
 JEKYLL_SRC_DIR := src
 SHELL := bash
+RUBY := ruby
 JEKYLL_SRC_FILES_CONTENT := $(shell find $(JEKYLL_SRC_DIR)/{_wiki,_wiki_gui,_wiki_webui} -type f -not -name '_*' -not -name '*.png' )
 JEKYLL_SRC_FILES_MUSTACHE := $(shell find $(JEKYLL_SRC_DIR)/ -type f -name '_Sidebar.md')
 JEKYLL_SRC_FILES_OTHER := $(filter-out $(JEKYLL_SRC_FILES_CONTENT) $(JEKYLL_SRC_FILES_MUSTACHE),\
@@ -62,7 +63,10 @@ $(JEKYLL_DIR)/modules : $(MUSTACHE_DIR)/modules
 
 $(JEKYLL_DIR)/$(meta_file) : $(META_JEKYLL_DIR)/_site
 	mkdir -p $(dir $@)
-	make/make_meta.rb "$<$(baseurl)/**/*.html" $<$(baseurl) $(CONFIG_FILE) >$@
+	if ! $(RUBY) make/make_meta.rb "$<$(baseurl)/**/*.html" $<$(baseurl) $(CONFIG_FILE) >$@; then
+		rm -f $@; \
+		exit 1; \
+	fi
 
 $(META_JEKYLL_DIR)/_site : %/_site : %/$(meta_file) %/modules $(META_JEKYLL_FILES)
 	cd $(dir $@) && jekyll build --destination $(CURDIR)/$@$(baseurl)
@@ -101,7 +105,10 @@ $(MUSTACHE_DIR)/modules : $(MAVEN_DIR)/modules $(JEKYLL_DIR)/$(meta_file)
 	mkdir -p $(dir $@)
 	rm -rf $@
 	cp -r $< $@
-	make/mustache.rb "$@/**/*" $(word 2,$^) $(MUSTACHE_DIR) $(CONFIG_FILE)
+	if ! $(RUBY) make/mustache.rb "$@/**/*" $(word 2,$^) $(MUSTACHE_DIR) $(CONFIG_FILE); then \
+		rm -rf $@; \
+		exit 1; \
+	fi
 
 $(MAVEN_DIR)/modules : $(MAVEN_DIR)/pom.xml
 	rm -rf $@
@@ -111,7 +118,10 @@ $(MAVEN_DIR)/modules : $(MAVEN_DIR)/pom.xml
 
 $(MAVEN_DIR)/pom.xml : $(JEKYLL_SRC_DIR)/_data/versions.yml $(JEKYLL_SRC_DIR)/_data/modules.yml
 	mkdir -p $(dir $@)
-	make/make_pom.rb $^ > $@
+	if ! $(RUBY) make/make_pom.rb $^ > $@; then \
+		rm -f $@ && \
+		exit 1; \
+	fi
 
 .PHONY : serve
 serve : ws all
