@@ -298,6 +298,9 @@
 						<xsl:value-of select="concat($dirname,'.install.pom | .group-eval')"/>
 						<xsl:text>&#x0A;</xsl:text>
 						<xsl:text>&#x09;</xsl:text>
+						<xsl:text>+$(EVAL) 'test -e' $@</xsl:text>
+						<xsl:text>&#x0A;</xsl:text>
+						<xsl:text>&#x09;</xsl:text>
 						<xsl:text>+$(EVAL) touch $@</xsl:text>
 						<xsl:text>&#x0A;</xsl:text>
 						<xsl:text>&#x0A;</xsl:text>
@@ -312,6 +315,9 @@
 						<xsl:text>&#x0A;</xsl:text>
 						<xsl:text>&#x09;</xsl:text>
 						<xsl:text>+$(EVAL) 'test -e' $@</xsl:text>
+						<xsl:text>&#x0A;</xsl:text>
+						<xsl:text>&#x09;</xsl:text>
+						<xsl:text>+$(EVAL) touch $@</xsl:text>
 						<xsl:text>&#x0A;</xsl:text>
 						<xsl:text>&#x0A;</xsl:text>
 						<xsl:text>.SECONDARY : </xsl:text>
@@ -630,7 +636,12 @@
 							</xsl:when>
 							<xsl:otherwise>
 								<!-- might be transitive dependency, but not supported here -->
-								<xsl:message terminate="yes">error</xsl:message>
+								<xsl:message terminate="yes">
+									<xsl:text>error processing dependency </xsl:text>
+									<xsl:value-of select="$artifactId"/>
+									<xsl:text> in </xsl:text>
+									<xsl:value-of select="$project/pom:artifactId"/>
+								</xsl:message>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>

@@ -7,18 +7,17 @@ import java.util.List;
  * @author Joel Håkansson
  *
  * @param <T> the type of units
- * @param <U> the type of data source
  */
-public class DefaultSplitResult<T extends SplitPointUnit, U extends SplitPointDataSource<T, U>> implements SplitResult<T, U> {
+public class DefaultSplitResult<T extends SplitPointUnit> implements SplitResult<T> {
 	private final List<T> head;
-	private final U tail;
+	private final SplitPointDataSource<T> tail;
 	
 	/**
 	 * Creates a new result.
 	 * @param head the head of the result
 	 * @param tail the tail of the result
 	 */
-	public DefaultSplitResult(List<T> head, U tail) {
+	public DefaultSplitResult(List<T> head, SplitPointDataSource<T> tail) {
 		this.head = head;
 		this.tail = tail;
 	}
@@ -29,7 +28,7 @@ public class DefaultSplitResult<T extends SplitPointUnit, U extends SplitPointDa
 	}
 
 	@Override
-	public U tail() {
+	public SplitPointDataSource<T> tail() {
 		return tail;
 	}
 }

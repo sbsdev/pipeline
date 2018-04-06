@@ -3,6 +3,7 @@ package org.daisy.dotify.common.splitter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Provides split point data
@@ -10,12 +11,11 @@ import java.util.List;
  *
  * @param <T> the type of split point units
  */
-public final class SplitPointDataList<T extends SplitPointUnit> implements SplitPointDataSource<T, SplitPointDataList<T>> {
-	/**
-	 * Provides an empty manager.
-	 */
+public final class SplitPointDataList<T extends SplitPointUnit> implements SplitPointDataSource<T> {
+
 	@SuppressWarnings("rawtypes")
-    public static final SplitPointDataList EMPTY_MANAGER = new SplitPointDataList<>();
+	public static final SplitPointDataList EMPTY_LIST = new SplitPointDataList<>();
+	
 	@SuppressWarnings("rawtypes")
 	private static final Supplements EMPTY_SUPPLEMENTS = new Supplements() {
 		@Override
@@ -23,6 +23,7 @@ public final class SplitPointDataList<T extends SplitPointUnit> implements Split
 			return null;
 		}
 	};
+	
 	private final List<T> units;
 	private final Supplements<T> supplements;
 	private final int offset;
@@ -51,20 +52,15 @@ public final class SplitPointDataList<T extends SplitPointUnit> implements Split
 		this(Collections.emptyList(), null);
 	}
 	
-    /**
-     * Returns an empty manager
-     * @param <T> the type of split point units
-     * @return returns an empty manager
-     */
-    @SuppressWarnings("unchecked")
-    public static final <T extends SplitPointUnit> SplitPointDataList<T> emptyManager() {
-        return EMPTY_MANAGER;
-    }
-    
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
+	public static <T extends SplitPointUnit> SplitPointDataList<T> emptyList() {
+		return (SplitPointDataList<T>)EMPTY_LIST;
+	}
+	
+	@SuppressWarnings("unchecked")
 	private static final <T extends SplitPointUnit> Supplements<T> emptySupplements() {
-    	return (Supplements<T>)EMPTY_SUPPLEMENTS;
-    }
+		return (Supplements<T>)EMPTY_SUPPLEMENTS;
+	}
 	
 	/**
 	 * Creates a new instance with the specified units and supplements
@@ -91,18 +87,17 @@ public final class SplitPointDataList<T extends SplitPointUnit> implements Split
 	}
 
 	@Override
-	public boolean hasElementAt(int index) {
-		return this.units.size()>index+offset;
-	}
-
-	@Override
 	public boolean isEmpty() {
-		return this.units.size()<=offset;
+		return units.size() == offset;
 	}
 
 	@Override
-	public T get(int n) {
-		return this.units.get(offset+n);
+	public ListIterator iterator() {
+		return new ListIterator();
+	}
+
+	public int getSize() {
+		return units.size() - offset;
 	}
 
 	/**
@@ -112,12 +107,7 @@ public final class SplitPointDataList<T extends SplitPointUnit> implements Split
 	 * @throws IndexOutOfBoundsException if the index is beyond the end of the stream
 	 */
 	public List<T> head(int toIndex) {
-		return this.units.subList(offset, offset+toIndex);
-	}
-	
-	@Override
-	public List<T> getRemaining() {
-		return this.units.subList(offset, units.size());
+		return this.units.subList(offset, offset + toIndex);
 	}
 
 	/**
@@ -127,27 +117,52 @@ public final class SplitPointDataList<T extends SplitPointUnit> implements Split
 	 * @throws IndexOutOfBoundsException if the index is beyond the end of the stream
 	 */
 	public SplitPointDataList<T> tail(int fromIndex) {
-		return new SplitPointDataList<T>(units, supplements, offset+fromIndex);
-	}
-	
-	@Override
-	public SplitResult<T, SplitPointDataList<T>> splitInRange(int atIndex) {
-		return new DefaultSplitResult<T, SplitPointDataList<T>>(head(atIndex), tail(atIndex));
+		return new SplitPointDataList<T>(units, supplements, offset + fromIndex);
 	}
 
-	@Override
-	public int getSize(int limit) {
-		return Math.min(this.units.size()-offset, limit);
-	}
+	public class ListIterator implements SplitPointDataSource.Iterator<T>, Cloneable {
 
-	@Override
-	public SplitPointDataList<T> createEmpty() {
-		return emptyManager();
-	}
+		private int index = 0;
 
-	@Override
-	public SplitPointDataList<T> getDataSource() {
-		return this;
-	}
+		@Override
+		public boolean hasNext() {
+			return units.size() <= offset + index;
+		}
 
+		// position is ignored
+		@Override
+		public T next(/*float position, */boolean last) throws NoSuchElementException /*, CantFitInOtherDimensionException*/ {
+			if (units.size() <= offset + index) {
+				return units.get(index++);
+			} else {
+				throw new NoSuchElementException();
+			}
+		}
+
+		public void previous() {
+			if (index >= 0) {
+				index--;
+			} else {
+				throw new NoSuchElementException();
+			}
+		}
+
+		@Override
+		public SplitPointDataSource<T> iterable() {
+			if (index == 0) {
+				return SplitPointDataList.this;
+			} else {
+				return tail(index);
+			}
+		}
+
+		@Override
+		public ListIterator clone() {
+			try {
+				return (ListIterator)super.clone();
+			} catch (CloneNotSupportedException e) {
+				throw new InternalError("coding error");
+			}
+		}
+	}
 }

@@ -11714,7 +11714,7 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="test_101" xfail="true">
+  <x:scenario label="test_101" xfail="true" focus="">
     <x:documentation>
       Tests bottom right margin box of height 2 inside page margin of height 0, which results in
       text being flowed into the whole footer.
@@ -11811,7 +11811,7 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="test_102" xfail="true">
+  <x:scenario label="test_102" xfail="true" focus="">
     <x:documentation>
       Tests bottom right margin box of height 2 inside page margin of height 1, which results in
       text being partly flowed into whole footer.

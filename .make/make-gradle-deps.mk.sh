@@ -20,6 +20,8 @@ fi
 if [[ $v == *-SNAPSHOT ]]; then
 	echo ""
 	echo "\$(MVN_WORKSPACE)/$(echo $g |tr . /)/$a/$v/$a-$v.jar : $module/.install-jar"
+	echo "	+\$(EVAL) 'test -e' \$@"
+	echo "	+\$(EVAL) touch \$@"
 	echo ""
 	echo ".SECONDARY : $module/.install-jar"
 	echo "$module/.install-jar : %/.install-jar : %/.install"
@@ -46,10 +48,11 @@ else
 fi
 if [[ $v == *-SNAPSHOT ]]; then
 	echo ""
+	# FIXME: gradle eclipse does not link up projects
+	# FIXME: gradle eclipse does not take into account localRepository from .gradle-settings/conf/settings.xml
+	# when creating .classpath (but it does need the dependencies to be installed in .maven-workspace)
 	echo "$module/.project : $module/build.gradle $module/gradle.properties $module/.dependencies"
-	echo "	cd \$(dir \$@) && \\"
-	# FIXME: generates project name with "/" in it which Eclipse won't import
-	echo "	gradle eclipse"
+	echo "	+\$(EVAL) 'bash .make/gradle-eclipse.sh' \$\$(dirname \$@)"
 	echo ""
 	echo "clean-eclipse : $module/.clean-eclipse"
 	echo ".PHONY : $module/.clean-eclipse"

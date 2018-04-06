@@ -2,20 +2,28 @@ package org.daisy.dotify.formatter.impl.search;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
-class LookupHandler<K, V> {
-	private final Map<K, V> keyValueMap;
-	private final Map<K, V> uncommitted;
-	private final Set<K> requestedKeys;
-	private boolean dirty;
+class LookupHandler<K, V> implements Cloneable {
+	private HashMap<K, V> keyValueMap;
+	// FIXME: remove
+	// private HashMap<K, V> uncommitted;
+	// private HashSet<K> requestedKeys;
+	private Runnable setDirty;
 	
-	LookupHandler() {
+	private boolean debug;
+	private String indent = "";
+	
+	LookupHandler(Runnable setDirty) {
+		this(setDirty, false);
+	}
+	
+	LookupHandler(Runnable setDirty, boolean debug) {
 		this.keyValueMap = new HashMap<>();
-		this.uncommitted = new HashMap<>();
-		this.requestedKeys = new HashSet<>();
-		this.dirty = false;
+		// this.uncommitted = new HashMap<>();
+		// this.requestedKeys = new HashSet<>();
+		this.setDirty = setDirty;
+		
+		this.debug = debug;
 	}
 
 	V get(K key) {
@@ -23,10 +31,16 @@ class LookupHandler<K, V> {
 	}
 
 	V get(K key, V def) {
-		requestedKeys.add(key);
+		// requestedKeys.add(key);
 		V ret = keyValueMap.get(key);
 		if (ret==null) {
-			dirty = true;
+			
+			if (setDirty != null) {
+				if (debug)
+					System.err.println("[DIRTY] "+this+".get( "+key+" )");
+				setDirty.run();
+			}
+			
 			//ret is null here, so if def is also null, either variable can be returned
 			return def;
 		} else {
@@ -43,47 +57,84 @@ class LookupHandler<K, V> {
 	 * @param key the value to keep
 	 * @param value the value
 	 */
-	void keep(K key, V value) {
-		uncommitted.put(key, value);
-	}
+	// void keep(K key, V value) {
+	// 	uncommitted.put(key, value);
+	// }
 	
 	/**
 	 * Commits values stored with keep.
 	 */
-	void commit() {
-		while (!uncommitted.isEmpty()) {
-			K key = uncommitted.keySet().iterator().next();
-			V value = uncommitted.remove(key);
-			put(key, value);
-		}
-	}
+	// void commit() {
+	// 	while (!uncommitted.isEmpty()) {
+	// 		K key = uncommitted.keySet().iterator().next();
+	// 		V value = uncommitted.remove(key);
+	// 		put(key, value);
+	// 	}
+	// }
 	
 	void put(K key, V value) {
-		if (uncommitted.containsKey(key)) {
-			throw new IllegalStateException(key + " has uncommitted values. Commit before putting.");
+		
+		if (setDirty != null) {
+			if (debug)
+				System.err.println(this+".put( "+key+", "+value+" )");
 		}
+		
+		// if (uncommitted.containsKey(key)) {
+		// 	throw new IllegalStateException(key + " has uncommitted values. Commit before putting.");
+		// }
 		V prv = keyValueMap.put(key, value);
-		if (requestedKeys.contains(key) && prv!=null && !prv.equals(value)) {
-			dirty = true;
+		if (/*requestedKeys.contains(key) &&*/ prv!=null && !prv.equals(value)) {
+			
+			if (setDirty != null) {
+				if (debug)
+					System.err.println("[DIRTY] "+value+" != "+prv);
+				setDirty.run();
+			}
 		}
 	}
 
-	boolean isDirty() {
-		return dirty;
+	// FIXME: find a better name: forgetRequests ?
+	// FIXME: or do this implicitly when creating a new CrossReferenceHandler from another (not a clone) ?
+	// FIXME: or could we just skip the requestedKeys check?
+	// -> why don't we set dirty if the key hasn't been requested yet?
+	//    -> because in that case we can be sure the right value is used, so we don't need another iteration
+	//    -> for now skip anyway
+	
+	// /**
+	//  * Forget the requested keys (but not the values)
+	//  *
+	//  * @throws IllegalStateException if there are uncommitted values.
+	//  */
+	// void reset() {
+	// 	if (!uncommitted.isEmpty()) {
+	// 		throw new IllegalStateException("Uncommitted values.");
+	// 	}
+	// 	requestedKeys.clear();
+	// }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public LookupHandler<K, V> clone() {
+		LookupHandler<K, V> clone;
+		try {
+			clone = (LookupHandler<K, V>)super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new InternalError("coding error");
+		}
+		clone.keyValueMap = (HashMap<K, V>)keyValueMap.clone();
+		// clone.uncommitted = (HashMap<K, V>)uncommitted.clone();
+		// clone.requestedKeys = (HashSet<K>)requestedKeys.clone();
+		
+		if (debug) {
+			clone.indent = indent + "   ";
+			System.err.println(indent + this + "\n" + indent + "`- " + clone);
+		}
+		
+		return clone;
 	}
 	
-	/**
-	 * Sets the dirty status
-	 * @param value the value
-	 * @throws IllegalStateException if there are uncommitted values.
-	 */
-	void setDirty(boolean value) {
-		if (!uncommitted.isEmpty()) {
-			throw new IllegalStateException("Uncommitted values.");
-		}
-		if (!value) {
-			requestedKeys.clear();
-		}
-		dirty = value;
+	@Override
+	public String toString() {
+		return super.toString().substring("org.daisy.dotify.formatter.impl.search.".length());
 	}
 }

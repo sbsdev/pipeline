@@ -19,6 +19,7 @@
       isn't always available (because of pax-exam-container-forked?). Also because in XProcSpec
       there is no concept of jobs. Instead just appending to console directly.
   -->
+  <!--
   <appender name="TO_EVENTBUS" class="ch.qos.logback.core.ConsoleAppender">
     <filter class="org.daisy.pipeline.logging.ThresholdFilter">
       <rootLevel>INFO</rootLevel>
@@ -44,12 +45,13 @@
   <logger name="org.daisy.maven.xproc.pipeline.MessageEventListener" level="INFO" additivity="false">
     <appender-ref ref="FROM_EVENTBUS"/>
   </logger>
+  -->
   
   <logger name="org.daisy" level="DEBUG"/>
   
-  <root level="WARN">
+  <root level="TRACE">
     <appender-ref ref="TEST_LOG"/>
-    <appender-ref ref="TO_EVENTBUS"/>
+    <!-- <appender-ref ref="TO_EVENTBUS"/> -->
   </root>
   
 </configuration>

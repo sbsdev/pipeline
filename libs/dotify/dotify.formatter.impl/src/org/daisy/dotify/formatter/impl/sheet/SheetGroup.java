@@ -97,7 +97,15 @@ public class SheetGroup {
 	 * @return returns the total sheet count
 	 */
 	int countTotalSheets() {
-		return getOverheadCount() + getSheetCount() + getUnits().getRemaining().size();
+		return getOverheadCount() + getSheetCount() + countRemainingSheets();
+	}
+	
+	int countRemainingSheets() {
+		return getUnits().countRemainingSheets(/*getOverheadCount() + getSheetCount()*/);
+	}
+	
+	int countRemainingPages() {
+		return getUnits().countRemainingPages(/*getOverheadCount() + getSheetCount()*/);
 	}
 	
 	/**
@@ -105,6 +113,9 @@ public class SheetGroup {
 	 * @return returns true if this group has remaining sheets, false otherwise
 	 */
 	boolean hasNext() {
+		
+		// System.err.println("SheetGroup.hasNext()");
+		
 		return !getUnits().isEmpty();
 	}
 

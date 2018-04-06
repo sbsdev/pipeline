@@ -23,4 +23,8 @@ public class BlockAddress {
 		return blockNumber;
 	}
 
+	@Override
+	public String toString() {
+		return "BlockAddress[groupNumber="+groupNumber+", blockNumber="+blockNumber+"]";
+	}
 }

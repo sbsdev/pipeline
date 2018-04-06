@@ -14,27 +14,9 @@ if which eclim >/dev/null; then
     fi
 fi
 
-# renaming existing projects means trouble
 for module in "$@"; do
-    if [ -e $module/.project ]; then
-        groupId=$(xmllint --xpath "/*/*[local-name()='groupId']/text()" $module/pom.xml 2>/dev/null) || \
-        groupId=$(xmllint --xpath "/*/*[local-name()='parent']/*[local-name()='groupId']/text()" $module/pom.xml)
-        artifactId=$(xmllint --xpath "/*/*[local-name()='artifactId']/text()" $module/pom.xml)
-        name=$( xmllint --xpath "string(/projectDescription/name)" $module/.project 2>/dev/null )
-        if [ "${groupId}.${artifactId}" != $name ]; then
-            echo "Project at '$module' cannot be renamed to '${groupId}.${artifactId}'" >&2
-            exit 1
-        fi
-    fi
-done
-
-# generate projects one by one, otherwise projectNameTemplate is not used for inter-module links (Maven bug)
-for module in "$@"; do
-    eval $MVN --projects $module \
-              org.apache.maven.plugins:maven-eclipse-plugin:2.10:eclipse \
-              -Declipse.useProjectReferences=true \
-              -Declipse.projectNameTemplate=[groupId].[artifactId] \
-    | eval $MVN_LOG
+    cd "$CURDIR/$module"
+    eval $GRADLE eclipse
     # import project with eclim if available
     if which eclim >/dev/null; then
         if [ -e "$CURDIR/$module/.project" ]; then
@@ -43,8 +25,8 @@ for module in "$@"; do
             msg=$( eval printf "$msg" )
             if project=$( perl -e '$ARGV[0] =~ /^Project with name \x27(.+?)\x27 already exists/ and print "$1" or exit 1' "$msg" ); then
                 msg=$( eclim -command project_update -p $project )
-                eval printf "$msg"
-                echo
+                    eval printf "$msg"
+                    echo
             else
                 echo "$msg"
             fi
