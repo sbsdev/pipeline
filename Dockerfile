@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
 
 # for some reason `make dist-zip-linux` needs jekyll and a very
 # obscure ruby gem
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
     gcc \
     jekyll \
     ruby-dev \
