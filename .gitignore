@@ -16,3 +16,5 @@
 /.maven-modules
 /.maven-workspace/
 /maven.log
+/.metadata/
+/.recommenders/

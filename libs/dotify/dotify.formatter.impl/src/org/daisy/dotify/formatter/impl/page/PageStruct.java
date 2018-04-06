@@ -6,21 +6,18 @@ package org.daisy.dotify.formatter.impl.page;
  * @author Joel Håkansson
  */
 public class PageStruct {
-	private int pageOffset;
-	private int pageCount;
+
+	private final int pageOffset;
+	private final int pageCount;
 
 	public PageStruct() {
 		pageOffset = 0;
 		pageCount = 0;
 	}
 
-	public PageStruct(PageStruct template) {
-		this.pageOffset = template.pageOffset;
-		this.pageCount = template.pageCount;
-	}
-
-	public void setDefaultPageOffset(int value) {
-		pageOffset = value;
+	private PageStruct(Builder builder) {
+		pageOffset = builder.pageOffset;
+		pageCount = builder.pageCount;
 	}
 
 	public int getDefaultPageOffset() {
@@ -35,11 +32,39 @@ public class PageStruct {
 		return pageCount;
 	}
 	
-	/**
-	 * Advance to the next page.
-	 */
-	public void increasePageCount() {
-		pageCount++;
+	public Builder builder() {
+		return from(this);
+	}
+	
+	public static Builder from(PageStruct template) {
+		return new Builder(template);
 	}
 
+	public static class Builder {
+		
+		private int pageOffset;
+		private int pageCount;
+		
+		private Builder(PageStruct template) {
+			pageOffset = template.pageOffset;
+			pageCount = template.pageCount;
+		}
+		
+		public Builder setDefaultPageOffset(int value) {
+			pageOffset = value;
+			return this;
+		}
+		
+		/**
+		 * Advance to the next page.
+		 */
+		public Builder increasePageCount() {
+			pageCount++;
+			return this;
+		}
+		
+		public PageStruct build() {
+			return new PageStruct(this);
+		}
+	}
 }

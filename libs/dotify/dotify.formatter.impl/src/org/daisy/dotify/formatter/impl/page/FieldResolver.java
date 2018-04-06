@@ -1,6 +1,7 @@
 package org.daisy.dotify.formatter.impl.page;
 
 import java.util.ArrayList;
+import java.util.function.Supplier;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,14 +24,14 @@ import org.daisy.dotify.formatter.impl.row.RowImpl;
 import org.daisy.dotify.formatter.impl.search.CrossReferenceHandler;
 import org.daisy.dotify.formatter.impl.search.PageDetails;
 
-class FieldResolver implements PageShape {
+class FieldResolver /*implements PageShape*/ {
 	private static final Pattern softHyphen = Pattern.compile("\u00ad");
 	private final LayoutMaster master;
 	private final FormatterContext fcontext;
-	private final CrossReferenceHandler crh;
+	private final Supplier<CrossReferenceHandler> crh;
 	private final PageDetails detailsTemplate;
 
-	FieldResolver(LayoutMaster master, FormatterContext fcontext, CrossReferenceHandler crh, PageDetails detailsTemplate) {
+	FieldResolver(LayoutMaster master, FormatterContext fcontext, Supplier<CrossReferenceHandler> crh, PageDetails detailsTemplate) {
 		this.master = master;
 		this.fcontext = fcontext;
 		this.crh = crh;
@@ -45,7 +46,7 @@ class FieldResolver implements PageShape {
 		return ret;
 	}
     
-    RowImpl renderField(PageDetails p, FieldList field, BrailleTranslator translator) throws PaginatorException {
+    private RowImpl renderField(PageDetails p, FieldList field, BrailleTranslator translator) throws PaginatorException {
     	try {
             return new RowImpl.Builder(distribute(p, field, master.getFlowWidth(), fcontext.getSpaceCharacter()+"", translator))
             		.rowSpacing(field.getRowSpacing())
@@ -96,7 +97,7 @@ class FieldResolver implements PageShape {
 		if (field instanceof CompoundField) {
 			ret = resolveCompoundField((CompoundField)field, p, b2);
 		} else if (field instanceof MarkerReferenceField) {
-			ret = crh.findMarker(p.getPageId(), (MarkerReferenceField)field);
+			ret = crh.get().findMarker(p.getPageId(), (MarkerReferenceField)field);
 		} else if (field instanceof CurrentPageField) {
 			ret = resolveCurrentPageField((CurrentPageField)field, p);
 		} else {
@@ -117,8 +118,8 @@ class FieldResolver implements PageShape {
 		return f.getNumeralStyle().format(pagenum);
 	}
 
-	@Override
-	public int getWidth(int pagenum, int rowOffset) {
+	/*@Override
+	public*/int getWidth(int pagenum, int rowOffset) {
 		while (true) {
 			// Iterates until rowOffset is less than the height of the page.
 			// Since each page could potentially have a different flow height we cannot
@@ -141,7 +142,7 @@ class FieldResolver implements PageShape {
 		return getWidth(detailsTemplate.with(pagenum-1), rowOffset);
 	}
 
-	int getWidth(PageDetails details, int rowOffset) {
+	private int getWidth(PageDetails details, int rowOffset) {
 		PageTemplate p = master.getTemplate(details.getPageNumber());
 		int flowHeader = p.validateAndAnalyzeHeader();
 		int flowFooter = p.validateAndAnalyzeFooter();

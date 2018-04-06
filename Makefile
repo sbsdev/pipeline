@@ -12,12 +12,19 @@ MVN := mvn --batch-mode \
            --settings "$(CURDIR)/settings.xml" -Dworkspace="$(CURDIR)/$(MVN_WORKSPACE)" -Dcache="$(CURDIR)/$(MVN_CACHE)" \
            -Dorg.ops4j.pax.url.mvn.localRepository="$(CURDIR)/$(MVN_WORKSPACE)" \
            -Dorg.daisy.org.ops4j.pax.url.mvn.settings="$(CURDIR)/settings.xml"
+
 GRADLE := M2_HOME=$(CURDIR)/.gradle-settings $(CURDIR)/libs/dotify/dotify.api/gradlew -Dworkspace="$(CURDIR)/$(MVN_WORKSPACE)" -Dcache="$(CURDIR)/$(MVN_CACHE)"
+# ifdef OFFLINE
+# MVN += --offline
+# GRADLE += --offline
+# endif
 
 MVN_LOG := tee -a $(CURDIR)/maven.log | cut -c1-1000 | pcregrep -M "^\[INFO\] -+\n\[INFO\] Building .*\n\[INFO\] -+$$|^\[(ERROR|WARNING)\]"; \
            test $${PIPESTATUS[0]} -eq 0
 
-SHELL := /bin/bash
+# or just `SHELL := bash`
+SHELL := /usr/local/bin/bash
+# SHELL := /bin/bash
 
 EVAL := :
 
@@ -196,7 +203,8 @@ $(SAXON) :
 				cp $$pom $$dest; \
 			fi \
 		done && \
-		$(MVN) --projects $$(cat $< |paste -sd , -) help:effective-pom -Doutput=$(CURDIR)/$@ >maven.log; \
+		$(MVN) --projects $$(cat $< |paste -sd , -) \
+		       org.apache.maven.plugins:maven-help-plugin:2.2:effective-pom -Doutput=$(CURDIR)/$@ >maven.log; \
 	else \
 		touch $@; \
 	fi
@@ -240,12 +248,27 @@ updater/cli/.install : updater/cli/*.go
 .SECONDARY : libs/jstyleparser/.install-sources.jar
 libs/jstyleparser/.install-sources.jar : libs/jstyleparser/.install
 
+# FIXME: this is needed because .make/make-gradle-deps.mk.sh does not extract dependencies
+
+DOTIFY_API_VERSION    := 4.1.1-SNAPSHOT
+DOTIFY_COMMON_VERSION := 4.1.1-SNAPSHOT
+
+ifeq ($(shell [[ $(DOTIFY_API_VERSION) == *-SNAPSHOT ]] && echo x), x)
+libs/dotify/dotify.formatter.impl/.dependencies : \
+	$(MVN_WORKSPACE)/org/daisy/dotify/dotify.api/$(DOTIFY_API_VERSION)/dotify.api-$(DOTIFY_API_VERSION).jar
+endif
+ifeq ($(shell [[ $(DOTIFY_COMMON_VERSION) == *-SNAPSHOT ]] && echo x), x)
+libs/dotify/dotify.formatter.impl/.dependencies : \
+	$(MVN_WORKSPACE)/org/daisy/dotify/dotify.common/$(DOTIFY_COMMON_VERSION)/dotify.common-$(DOTIFY_COMMON_VERSION).jar
+endif
+
 .SECONDARY : .group-eval
 .group-eval :
 ifndef SKIP_GROUP_EVAL_TARGET
 	set -o pipefail; \
 	if commands=$$( \
-		$(MAKE) -n EVAL=": xxx" SKIP_GROUP_EVAL_TARGET=true $(MAKECMDGOALS) \
+		$(MAKE) -n EVAL=": xxx" SKIP_GROUP_EVAL_TARGET=true $(MAKECMDGOALS) >commands && \
+		cat commands \
 		| perl -e '$$take = 1; \
 		           while (<>) { \
 		             chomp; \
@@ -253,6 +276,7 @@ ifndef SKIP_GROUP_EVAL_TARGET
 		             elsif ($$_ =~ /^: xxx (.+)/) { if ($$take) { print "$$1\n" } \
 		             else { exit 1 }} else { $$take = 0 }}' \
 	); then \
+		rm commands && \
 		if [ -n "$$commands" ]; then \
 			echo "$$commands" | perl .make/group-eval.pl; \
 		fi \
@@ -440,6 +464,36 @@ settings.eclipse.xml : settings.xml
 .PHONY : clean-eclipse
 clean-eclipse :
 	rm -rf .metadata settings.eclipse.xml
+
+DOTIFY_MODULES := $(addprefix libs/dotify/dotify.,api common formatter.impl)
+
+eclipse-libs/dotify : $(addsuffix /.project,$(DOTIFY_MODULES)) \
+	.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.m2e.core.prefs
+
+# FIXME: every below is needed because `gradle eclipse` does not take into account localRepository from .gradle-settings/conf/settings.xml
+
+$(addsuffix /.project,$(DOTIFY_MODULES)) : %/.project : %/.eclipse-dependencies
+
+.PHONY : $(addsuffix /.eclipse-dependencies,$(DOTIFY_MODULES))
+$(addsuffix /.eclipse-dependencies,$(DOTIFY_MODULES)) :
+
+USER_HOME := $(shell echo ~)
+
+ifeq ($(shell [[ $(DOTIFY_API_VERSION) == *-SNAPSHOT ]] && echo x), x)
+$(USER_HOME)/.m2/repository/org/daisy/dotify/dotify.api/$(DOTIFY_API_VERSION)/dotify.api-$(DOTIFY_API_VERSION).jar : \
+	libs/dotify/dotify.api/build.gradle libs/dotify/dotify.api/gradle.properties $(call rwildcard,libs/dotify/dotify.api/src/,*)
+	+$(EVAL) 'bash -c "cd $(dir $<) && ./gradlew install"'
+libs/dotify/dotify.formatter.impl/.eclipse-dependencies : \
+	$(USER_HOME)/.m2/repository/org/daisy/dotify/dotify.api/$(DOTIFY_API_VERSION)/dotify.api-$(DOTIFY_API_VERSION).jar
+endif
+
+ifeq ($(shell [[ $(DOTIFY_COMMON_VERSION) == *-SNAPSHOT ]] && echo x), x)
+$(USER_HOME)/.m2/repository/org/daisy/dotify/dotify.common/$(DOTIFY_COMMON_VERSION)/dotify.common-$(DOTIFY_COMMON_VERSION).jar : \
+	libs/dotify/dotify.common/build.gradle libs/dotify/dotify.common/gradle.properties $(call rwildcard,libs/dotify/dotify.common/src/,*)
+	+$(EVAL) 'bash -c "cd $(dir $<) && ./gradlew install"'
+libs/dotify/dotify.formatter.impl/.eclipse-dependencies : \
+	$(USER_HOME)/.m2/repository/org/daisy/dotify/dotify.common/$(DOTIFY_COMMON_VERSION)/dotify.common-$(DOTIFY_COMMON_VERSION).jar
+endif
 
 ifndef VERBOSE
 .SILENT:

@@ -50,7 +50,7 @@ public class SplitPointSpecification {
 	Type getType() {
 		return type;
 	}
-		
+	
 	int getIndex() {
 		if (type!=Type.INDEX) {
 			throw new IllegalStateException("This type doesn't support this method.");

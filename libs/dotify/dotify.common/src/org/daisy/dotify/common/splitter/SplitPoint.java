@@ -7,14 +7,13 @@ import java.util.Objects;
 /**
  * Provides a data object to keep the information about a split point result.
  * @param <T> the type of split point units 
- * @param <U> the type of data source
  * @author Joel Håkansson
  */
-public class SplitPoint<T extends SplitPointUnit, U extends SplitPointDataSource<T, U>> {
+public class SplitPoint<T extends SplitPointUnit> {
 
 	private final List<T> head;
 	private final List<T> supplements;
-	private final U tail;
+	private final SplitPointDataSource<T> tail;
 	private final List<T> discarded;
 	private final boolean hardBreak;
 
@@ -26,7 +25,7 @@ public class SplitPoint<T extends SplitPointUnit, U extends SplitPointDataSource
 	 * @param discarded a list of discarded units
 	 * @param hardBreak set to true if a break point could not be achieved with respect for break point boundaries 
 	 */
-	public SplitPoint(List<T> head, List<T> supplements, U tail, List<T> discarded, boolean hardBreak) {
+	public SplitPoint(List<T> head, List<T> supplements, SplitPointDataSource<T> tail, List<T> discarded, boolean hardBreak) {
 		if (head == null) {
 			head = Collections.emptyList();
 		}
@@ -64,7 +63,7 @@ public class SplitPoint<T extends SplitPointUnit, U extends SplitPointDataSource
 	 * Get the tail part of the SplitPointUnit list
 	 * @return returns the tail part of the SplitPointUnit list
 	 */
-	public U getTail() {
+	public SplitPointDataSource<T> getTail() {
 		return tail;
 	}
 	
@@ -108,7 +107,7 @@ public class SplitPoint<T extends SplitPointUnit, U extends SplitPointDataSource
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		SplitPoint<?, ?> other = (SplitPoint<?, ?>) obj;
+		SplitPoint<?> other = (SplitPoint<?>) obj;
 		if (discarded == null) {
 			if (other.discarded != null) {
 				return false;

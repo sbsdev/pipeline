@@ -113,7 +113,7 @@ class TocSequenceEventImpl implements VolumeSequence {
 	}
 
 	@Override
-	public BlockSequence getBlockSequence(FormatterContext context, DefaultContext vars, CrossReferenceHandler crh) {
+	public BlockSequence getBlockSequence(FormatterContext context, Context vars, CrossReferenceHandler crh) {
 		currentBlockAddress = new BlockAddress(groupNumber, 0);
 		try {
 			BlockSequenceManipulator fsm = new BlockSequenceManipulator(
