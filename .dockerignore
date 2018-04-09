@@ -5,6 +5,6 @@
 Dockerfile
 
 # .maven-cache
-# .maven-workspace
+.maven-workspace
 
 **/target

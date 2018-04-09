@@ -15,14 +15,9 @@ RUN apt-get update && apt-get install -y \
     ruby-nokogiri
 RUN gem install commaparty
 
-# the build needs rsync and Perl
-RUN apt-get update && apt-get install -y \
-    perl \
-    rsync
-
 ADD . /usr/src/pipeline2
 WORKDIR /usr/src/pipeline2
-RUN make clean dist-zip-linux
+RUN make dist-zip-linux
 
 # then use the build artifacts to create an image where the pipeline is installed
 FROM openjdk:8-jre
