@@ -2,3 +2,5 @@
 /build/
 /.settings/
 /.gradle/
+/test/errors.txt
+/test/report.xml

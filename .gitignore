@@ -16,3 +16,6 @@
 /.maven-modules
 /.maven-workspace/
 /maven.log
+/target/
+/test/
+/modules/sbs/target/
