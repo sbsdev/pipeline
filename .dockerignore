@@ -1,9 +1,3 @@
-# .git
-.gitignore
-
-.dockerignore
-Dockerfile
-
 # .maven-cache
 .maven-workspace
 
