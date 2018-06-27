@@ -1,0 +1,6 @@
+This code has some parts borrowed from
+https://github.com/snaekobbi/system (commit 54535d8, Dockerfile) and
+from https://github.com/snaekobbi/profiling (commit 57ba78c,
+docker-speed-test folder).
+
+TODO: add a native test runner

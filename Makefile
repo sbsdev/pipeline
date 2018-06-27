@@ -18,6 +18,7 @@ ifneq ($(MAKECMDGOALS), dump-maven-cmd)
 ifneq ($(MAKECMDGOALS), dump-gradle-cmd)
 ifneq ($(MAKECMDGOALS), clean-website)
 include .make/main.mk
+-include it/sbs-benchmark/.deps.mk
 endif
 endif
 endif
@@ -52,10 +53,8 @@ dist-zip-minimal : assembly/.dependencies | .maven-init
 	mv assembly/target/*.zip .
 
 .PHONY : dist-deb
-dist-deb : assembly/.dependencies modules/sbs/braille/.dependencies modules/sbs/dtbook-to-odt/.dependencies | .maven-init
-	cd assembly && \
-	$(MVN) clean package -Pdeb | $(MVN_LOG)
-	mv assembly/target/*.deb .
+dist-deb : assembly/.install-all.deb modules/sbs/braille/.dependencies modules/sbs/dtbook-to-odt/.dependencies | .maven-init
+	cp $(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/assembly/$(assembly/VERSION)/assembly-$(assembly/VERSION)-all.deb .
 	cd modules/sbs/braille && \
 	$(MVN) clean package -DskipTests | $(MVN_LOG)
 	mv modules/sbs/braille/target/*.deb .
@@ -134,12 +133,55 @@ assembly/target/dev-launcher/bin/pipeline2 : assembly/pom.xml assembly/.dependen
 		rm assembly/target/dev-launcher/etc/*mac*; \
 	fi
 
-.SECONDARY : cli/.install.zip
-cli/.install.zip : cli/.install
+.PHONY : benchmark
+benchmark : it/sbs-benchmark/.dependencies
+	MVN_OPTS="--settings '$(CURDIR)/settings.xml' -Dworkspace='$(CURDIR)/$(MVN_WORKSPACE)' -Dcache='$(CURDIR)/$(MVN_CACHE)'" \
+	it/sbs-benchmark/run.sh
+
+it/sbs-benchmark/.deps.mk : it/sbs-benchmark/conf
+	while true; do \
+		echo ".SECONDARY : it/sbs-benchmark/.dependencies" && \
+		echo -n "it/sbs-benchmark/.dependencies :" && \
+		source $< && \
+		if [[ $$MOD_SBS_VERSION == *-SNAPSHOT ]]; then \
+			echo " \\" && \
+			echo -n "	\$$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/modules/braille/mod-sbs/$$MOD_SBS_VERSION/mod-sbs-$$MOD_SBS_VERSION-all.deb"; \
+		fi && \
+		if [[ $$CLI_VERSION == *-SNAPSHOT ]]; then \
+			echo " \\" && \
+			if [ "$$(uname)" == Darwin ]; then \
+				echo -n "	\$$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/cli/$$CLI_VERSION/cli-$$CLI_VERSION-darwin_386.zip"; \
+			else \
+				echo -n "	\$$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/cli/$$CLI_VERSION/cli-$$CLI_VERSION-linux_386.zip"; \
+			fi; \
+		fi && \
+		if [[ $$ASSEMBLY_VERSION == *-SNAPSHOT ]]; then \
+			echo " \\" && \
+			echo -n "	\$$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/assembly/$$ASSEMBLY_VERSION/assembly-$$ASSEMBLY_VERSION-all.deb"; \
+		fi && \
+		echo "" && \
+		break; \
+	done >$@
+
+.SECONDARY : assembly/.install-all.deb
+assembly/.install-all.deb : %/.install-all.deb : %/pom.xml %/.dependencies $(call rwildcard,assembly/src/main/,*) | .maven-init .group-eval
+	+$(call eval-if-unix,bash -c 'cd assembly && $(MVN) clean install -Pdeb | $(MVN_LOG)')
+
+.SECONDARY : modules/sbs/braille/.install-all.deb
+modules/sbs/braille/.install-all.deb : modules/sbs/braille/.install
 
 cli/.install : cli/cli/*.go
 
+.SECONDARY : cli/.install.zip
+cli/.install.zip : cli/.install
+
+.SECONDARY : cli/.install-darwin_386.zip
+cli/.install-darwin_386.zip : cli/.install
+
 updater/cli/.install : updater/cli/*.go
+
+.SECONDARY : updater/cli/.install-darwin_386.zip
+updater/cli/.install-darwin_386.zip : updater/cli/.install
 
 .SECONDARY : libs/jstyleparser/.install-sources.jar
 libs/jstyleparser/.install-sources.jar : libs/jstyleparser/.install

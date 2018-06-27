@@ -44,7 +44,7 @@ sub pretty_print_and_eval {
 			print join(" ", @cmd), "\n";
 		}
 		print color("reset");
-	    system("bash", "-c", join(" ",@cmd));
+	    system(@cmd);
 		if ($? == 0) {
 		} elsif ($? == -1) {
 			printf STDERR "\nfailed to execute: $!\n";
