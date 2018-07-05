@@ -98,13 +98,6 @@ A number of environment variables will influence the program:
 `JAVA_DEBUG_OPTS`
 : Additional Java options to be passed on when `PIPELINE2_DEBUG` is set.
 
-`PIPELINE2_WS_LOCALFS`
-: Whether to allow local filesystem interaction when the client is running
-  on the same machine as the server ("true" or "false", default is "true").
-
-`PIPELINE2_WS_AUTHENTICATION`
-: Whether the web service requires authentication ("true" or "false", default is "false").
-
 `PIPELINE2_DEBUG`
 : When "true", passes debug options to Java ("true" or "false", default is "false").
 
@@ -117,7 +110,7 @@ A number of environment variables will influence the program:
 -->
 
 In addition to the environment variable listed above, all available
-[system properties]({{site.baseurl}}/wiki/Configuration-Files/#system-properties)
+[system properties]({{site.baseurl}}/Configuration-Files/#system-properties)
 that start with `org.daisy.pipeline` can be set through environment
 variables as well. For example, the system property
 `org.daisy.pipeline.ws.host` can be set with the environment variable
