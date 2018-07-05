@@ -1,6 +1,7 @@
+#!/usr/bin/env bash
 [[ -n ${VERBOSE+x} ]] && set -x
 set -e
 for arg in "$@"; do
-    cd "$CURDIR/$arg"
+    cd "$ROOT_DIR/$arg"
     eval $GRADLE install
 done

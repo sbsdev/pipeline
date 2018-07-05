@@ -1,7 +1,8 @@
+#!/usr/bin/env bash
 [[ -n ${VERBOSE+x} ]] && set -x
 set -e
 set -o pipefail
 for arg in "$@"; do
-    cd "$CURDIR/$arg"
+    cd "$ROOT_DIR/$arg"
     eval $MVN clean verify
 done
