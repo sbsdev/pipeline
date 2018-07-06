@@ -118,8 +118,8 @@ check-sbs : check-modules/sbs/braille check-modules/sbs/braille-tables check-mod
 .PHONY : release
 release : assembly/.release
 
-.PHONY : $(addprefix check-,$(MODULES))
-$(addprefix check-,$(MODULES)) : check-% : %/.last-tested
+.PHONY : $(addprefix check-,$(MODULES) $(MAVEN_AGGREGATORS))
+$(addprefix check-,$(MODULES) $(MAVEN_AGGREGATORS)) : check-% : %/.last-tested
 
 assembly/target/dev-launcher/bin/pipeline2 : assembly/pom.xml assembly/.dependencies $(call rwildcard,assembly/src/main/,*) | .maven-init
 	cd assembly && \
