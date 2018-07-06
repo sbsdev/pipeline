@@ -31,6 +31,7 @@ import org.ops4j.pax.exam.util.PathUtils;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.systemPackage;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -43,6 +44,9 @@ public class DtbookToOdtWithAsciimathmlMockTest {
 			calabashConfigFile(),
 			felixDeclarativeServices(),
 			junitBundles(),
+			systemPackage("javax.xml.stream;version=\"1.0.1\""),
+			systemPackage("com.sun.org.apache.xml.internal.resolver"),
+			systemPackage("com.sun.org.apache.xml.internal.resolver.tools"),
 			thisBundle(),
 			bundle("reference:file:" + PathUtils.getBaseDir() + "/target/test-classes/asciimath-utils-mock/"),
 			mavenBundlesWithDependencies(
