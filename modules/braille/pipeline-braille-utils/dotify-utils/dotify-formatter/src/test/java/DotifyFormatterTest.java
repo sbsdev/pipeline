@@ -60,7 +60,9 @@ public class DotifyFormatterTest extends AbstractXSpecAndXProcSpecTest {
 			// logging
 			"org.slf4j:jul-to-slf4j:?",
 			"org.daisy.pipeline:logging-activator:?",
-			"org.daisy.pipeline:logging-appender:?"
+			"org.daisy.pipeline:logging-appender:?",
+			// FIXME: Dotify needs older version of jing
+			"org.daisy.libs:jing:20120724.0.0",
 		};
 	}
 	

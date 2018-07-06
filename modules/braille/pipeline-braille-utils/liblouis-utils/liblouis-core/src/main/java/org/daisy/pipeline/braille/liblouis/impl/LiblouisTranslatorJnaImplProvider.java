@@ -862,6 +862,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 				private String addHyphensAndLetterSpacing(String segment, String segmentInBraille, int letterSpacing) {
 					
 					byte[] autoHyphens = fullHyphenator.hyphenate(segment);
+					// FIXME: don't hard-code the number 8
 					byte[] autoHyphensAndLetterBoundaries
 						= (letterSpacing > 0) ? detectLetterBoundaries(autoHyphens, segment, (byte)8) : autoHyphens;
 					if (autoHyphensAndLetterBoundaries == null && manualHyphens == null)
@@ -1214,6 +1215,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 				for (int i = 0; i < letterSpacing.length; i++)
 					if (letterSpacing[i] > 0) someLetterSpacing = true; }
 			if (someLetterSpacing)
+				// FIXME: don't hard-code the number 8
 				inputAttrs = detectLetterBoundaries(inputAttrs, joinedText, (byte)8);
 			
 			// typeform var with the same length as joinedText and short[] instead of byte[]
@@ -1316,7 +1318,8 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 							if (outputSegmentNumbers[j] > l) {
 								brailleWithWs[l] = b.toString();
 								b = new StringBuffer();
-								if (j > 0 && (outputAttrs[j - 1] & 8) == 8) {
+								// FIXME: don't hard-code the number 16
+								if (j > 0 && (outputAttrs[j - 1] & 16) == 16) {
 									if (pre[l]) {
 										Matcher m = Pattern.compile("\\xA0([\\xAD\\u200B]*)").matcher(brailleWithWs[l]);
 										if (m.matches())
@@ -1337,11 +1340,14 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 									l++; }}
 							b.append(joinedBrailleWithoutHyphens.charAt(j));
 							if (j < jmax - 1) {
+								// FIXME: don't hard-code these numbers
 								if ((outputAttrs[j] & 1) == 1)
 									b.append(SHY);
 								if ((outputAttrs[j] & 2) == 2)
 									b.append(ZWSP);
 								if ((outputAttrs[j] & 4) == 4)
+									b.append(WJ);
+								if ((outputAttrs[j] & 8) == 8)
 									b.append(US); }}
 						brailleWithWs[l] = b.toString();
 						if (pre[l])

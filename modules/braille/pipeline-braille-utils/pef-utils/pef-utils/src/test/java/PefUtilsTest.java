@@ -9,7 +9,9 @@ public class PefUtilsTest extends AbstractXSpecAndXProcSpecTest {
 			brailleModule("pef-saxon"),
 			pipelineModule("file-utils"),
 			"org.daisy.pipeline:logging-activator:?",
-			"org.daisy.pipeline:logging-appender:?"
+			"org.daisy.pipeline:logging-appender:?",
+			// FIXME: BrailleUtils needs older version of jing
+			"org.daisy.libs:jing:20120724.0.0",
 		};
 	}
 }
