@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Stack;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -59,7 +60,7 @@ class BlockContentManager extends AbstractBlockContentManager {
 		this.context = context;
 		this.thisBlock = thisBlock;
 
-		if (!"".equals(thisBlock.getIdentifier())) {
+		if (thisBlock != null && !"".equals(thisBlock.getIdentifier())) {
 			groupIdentifiers.add(thisBlock.getIdentifier());
 		}
 
@@ -496,94 +497,96 @@ class BlockContentManager extends AbstractBlockContentManager {
 			this.results = results;
 		}
 
+		private static class State {
+			final int rowSize;
+			final int currentIndex;
+			final int pendingMarkersSize;
+			final int pendingAnchorsSize;
+			final int pendingIdentifiersSize;
+			State(int rowSize, int currentIndex, int pendingMarkersSize, int pendingAnchorsSize, int pendingIdentifiersSize) {
+				this.rowSize = rowSize;
+				this.currentIndex = currentIndex;
+				this.pendingMarkersSize = pendingMarkersSize;
+				this.pendingAnchorsSize = pendingAnchorsSize;
+				this.pendingIdentifiersSize = pendingIdentifiersSize;
+			}
+			static State save(AggregatedBrailleTranslatorResult btr, String row) {
+				return new State(row.length(),
+				                 btr.currentIndex,
+				                 btr.pendingMarkers.size(),
+				                 btr.pendingAnchors.size(),
+				                 btr.pendingIdentifiers.size());
+			}
+			String restore(AggregatedBrailleTranslatorResult btr, String row) {
+				row = row.substring(0, rowSize);
+				btr.currentIndex = currentIndex;
+				btr.pendingMarkers.subList(pendingMarkersSize, btr.pendingMarkers.size()).clear();
+				btr.pendingAnchors.subList(pendingAnchorsSize, btr.pendingAnchors.size()).clear();
+				btr.pendingIdentifiers.subList(pendingIdentifiersSize, btr.pendingIdentifiers.size()).clear();
+				return row;
+			}
+		}
+
+		private static void failIf(boolean test) {
+			if (test) {
+				throw new RuntimeException("coding error");
+			}
+		}
+
 		public String nextTranslatedRow(int limit, boolean force) {
+			String row = nextTranslatedRowInner(limit, false);
+			if (force && row.isEmpty())
+				row = nextTranslatedRowInner(limit, true);
+			return row;
+		}
+
+		private String nextTranslatedRowInner(int limit, boolean force) {
 			String row = "";
-			boolean nextForce = false;
-			
-			// for saving/restoring state
-			int restoreRow = 0;
-			int restoreCurrent = currentIndex;
-			int restoreMarkers = pendingMarkers.size();
-			int restoreAnchors = pendingAnchors.size();
-			int restoreIdentifiers = pendingIdentifiers.size();
-			
+			Stack<State> backup = new Stack<>();
 			BrailleTranslatorResult current = computeNext();
-			while (limit > row.length()) {
-				if (current == null || !current.hasNext()) {
-					throw new RuntimeException("coding error");
-				}
-				String r = current.nextTranslatedRow(limit - row.length(), nextForce);
-				nextForce = false;
-				if (nextForce && r.isEmpty()) {
-					throw new RuntimeException("corrupt BrailleTranslatorResult: " + current + ": "
-					                           + ".hasNext() is true but .nextTranslatedRow("+ (limit - row.length()) + ", true)"
-					                           + " returns empty string");
-				}
-				if (!r.isEmpty()) {
-					row += r;
-					
-					// save state
-					restoreRow = row.length();
-					restoreCurrent = currentIndex;
-					restoreMarkers = pendingMarkers.size();
-					restoreAnchors = pendingAnchors.size();
-					restoreIdentifiers = pendingIdentifiers.size();
-				} else if (!current.hasNext()) {
-					
-					// The BrailleTranslatorResult wrongly indicated that it had more rows. Not sure whether this is
-					// an error? Just ignore for now.
-					current = computeNext();
-					if (current == null) {
-						break;
-					}
-				}
-				if (current.hasNext() && current.countRemaining() < limit - row.length()) {
-					
-					// use force when we are still at the beginning of the line because getTranslatedRemainder
-					// can possibly start with white space
-					if (row.isEmpty()) {
-						nextForce = true;
-						continue;
-					}
-					String rem = current.getTranslatedRemainder();
-					if (rem.isEmpty()) {
-						throw new RuntimeException("coding error");
-					}
-					row += rem;
+			if (current == null)
+				throw new NoSuchElementException();
+			o: while (limit > row.length()) {
+				failIf(current == null || !current.hasNext());
+				if (current.countRemaining() < limit - row.length()) {
+					String remainder = current.getTranslatedRemainder();
+					failIf(remainder.isEmpty());
+					backup.push(State.save(this, row));
+					row += remainder;
 					currentIndex++;
 					current = computeNext();
 					if (current == null) {
-						break;
-					} else {
-						continue;
-					}
-				} else if (r.isEmpty()) {
-					
-					// restore state
-					row = row.substring(0, restoreRow);
-					currentIndex = restoreCurrent;
-					pendingMarkers.subList(restoreMarkers, pendingMarkers.size()).clear();
-					pendingAnchors.subList(restoreAnchors, pendingAnchors.size()).clear();
-					pendingIdentifiers.subList(restoreIdentifiers, pendingIdentifiers.size()).clear();
-					current = computeNext();
-					if (row.isEmpty()) {
-						if (force) {
-							nextForce = true;
-							continue;
+						break; // everything fits on a line; return
+					} // there is more content; try fitting the next segment
+				} else { // segment does not fit on the line, try breaking it
+					while (true) {
+						String r = current.nextTranslatedRow(limit - row.length(), force);
+						if (!r.isEmpty()) {
+							row += r;
+							break o; // segment was broken; return
+						} else if (!current.hasNext()) {
+							// The BrailleTranslatorResult wrongly indicated that it had more rows. Not sure whether this is
+							// an error? Just ignore for now.
+							current = computeNext();
+							failIf(current == null); // if everything would fit on a line we would have detected it already
+							// there is more content, try breaking the next segment
 						} else {
-							break;
+							if (force) {
+								throw new RuntimeException("corrupt BrailleTranslatorResult: " + current + ": "
+								                           + "hasNext() is true but nextTranslatedRow("+ (limit - row.length()) + ", true)"
+								                           + " returns empty string");
+							}
+							if (backup.isEmpty()) {
+								failIf(!row.isEmpty());
+								break o; // return empty row
+							} else {
+								failIf(row.isEmpty());
+								row = backup.pop().restore(this, row); // backup to the previous segment
+								current = computeNext();
+								failIf(current == null);
+								// try breaking the previous segment
+							}
 						}
-					} else {
-						break;
-					}
-				} else if (current.hasNext()) {
-					break;
-				} else {
-					current = computeNext();
-					if (current == null) {
-						break;
-					} else {
-						continue;
 					}
 				}
 			}
