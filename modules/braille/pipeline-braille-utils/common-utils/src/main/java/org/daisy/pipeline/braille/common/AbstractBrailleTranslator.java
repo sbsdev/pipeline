@@ -118,10 +118,12 @@ public abstract class AbstractBrailleTranslator extends AbstractTransform implem
 				private String next;
 				private String mark;
 				public FullyHyphenatedAndTranslatedString(String string) {
+					if (string.replaceAll("[\u00ad\u200b]","").isEmpty())
+						string = null;
 					next = mark = string;
 				}
 				public boolean hasNext() {
-					return (next != null && !next.isEmpty());
+					return next != null;
 				}
 				public String next(int limit, boolean force) {
 					if (next == null)
