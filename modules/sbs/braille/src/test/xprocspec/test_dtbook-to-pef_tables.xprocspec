@@ -90,6 +90,26 @@
     </x:expect>
   </x:scenario>
   
+  <x:scenario label="4.4.58_all_types">
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="file" href="../resources/test_4.4.58_all_types/test_4.4.58.xml"/>
+      </x:input>
+      <x:option name="stylesheet" select="'http://www.sbs.ch/pipeline/modules/braille/default.scss
+                                           style.css'"/>
+      <x:option name="contraction-grade" select="0"/>
+      <x:option name="show-braille-page-numbers" select="false()"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_4.4.58_all_types/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_4.4.58_all_types/test_4.4.58.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_4.4.58_all_types/output_expected/test_4.4.58.pef"/>
+    </x:expect>
+  </x:scenario>
+  
   <x:scenario label="4.4.60_ex1_matrix-transposed">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">

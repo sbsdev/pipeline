@@ -1,0 +1,47 @@
+@page {
+	size: 28 50;
+}
+
+table.table-linearized,
+table.table-matrix,
+table.table-matrix-transposed,
+table.mytable-with-leaders {
+	margin-bottom: 3;
+}
+
+table.table-matrix,
+table.table-matrix-transposed {
+	-obfl-preferred-empty-space: 0;
+}
+
+.table-matrix-transposed td:first-child,
+.table-matrix-transposed th:first-child {
+	border-bottom: ⠒;
+}
+
+table.mytable-with-leaders {
+	display: table;
+	-obfl-table-col-spacing: 2;
+}
+
+table.mytable-with-leaders tr,
+table.mytable-with-leaders tbody,
+table.mytable-with-leaders tfoot {
+	display: block;
+}
+
+table.mytable-with-leaders td::after {
+	content: ' ' leader('⠄');
+}
+
+table.mytable-with-leaders td:last-child::after {
+	content: '';
+}
+
+table.mytable-with-leaders th {
+	border-bottom: ⠒;
+}
+table.mytable-with-leaders caption {
+	display: block;
+	margin-bottom: 1;
+}
