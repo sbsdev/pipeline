@@ -1185,10 +1185,9 @@ list.dl, ul.dl {
         span.dt {
             display: inline;
             &::after {
-                content: ": ";
-            }
-            &:has(~ span.dt)::after {
                 content: " ";
+                text-transform: none;
+                hyphens: initial;
             }
         }
         &:not(:has(span.dt)) {
