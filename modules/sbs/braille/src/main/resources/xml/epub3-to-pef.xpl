@@ -28,6 +28,7 @@
     <p:option name="temp-dir"/>
     
     <p:option name="stylesheet"/>
+    <p:option name="apply-document-specific-stylesheets" px:type="boolean" select="'false'"/>
     <p:option name="contraction-grade"/>
     <p:option name="ascii-file-format"/>
     <p:option name="include-preview"/>
@@ -82,6 +83,7 @@
         </p:input>
     </px:merge-parameters>
     <px:delete-parameters parameter-names="stylesheet
+                                           apply-document-specific-stylesheets
                                            ascii-file-format
                                            include-brf
                                            include-preview
@@ -123,7 +125,6 @@
     </p:identity>
     <px:message message="Done loading EPUB, starting conversion to PEF"/>
     <px:epub3-to-pef.convert default-stylesheet="http://www.daisy.org/pipeline/modules/braille/epub3-to-pef/css/default.css"
-                             apply-document-specific-stylesheets="false"
                              name="convert">
         <p:with-option name="epub" select="$epub"/>
         <p:input port="in-memory.in">
@@ -143,6 +144,7 @@
                 <irrelevant/>
             </p:inline>
         </p:with-option>
+        <p:with-option name="apply-document-specific-stylesheets" select="$apply-document-specific-stylesheets"/>
         <p:with-option name="transform" select="concat('(formatter:dotify)(translator:sbs)(grade:',$contraction-grade,')')"/>
         <p:input port="parameters">
             <p:pipe port="result" step="input-options"/>
