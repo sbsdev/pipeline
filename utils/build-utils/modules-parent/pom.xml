@@ -402,12 +402,9 @@
                       <includes>
                         <include>index.md</include>
                         <include>src/main/README.md</include>
-                        <include>doc/**/*.md</include>
+                        <include>doc/**/*</include>
                         <include>doc/**/*.html</include>
                       </includes>
-                      <excludes>
-                        <exclude>src/main/resources/**/*</exclude>
-                      </excludes>
                     </resource>
                   </resources>
                   <outputDirectory>${project.build.directory}/doc/</outputDirectory>
