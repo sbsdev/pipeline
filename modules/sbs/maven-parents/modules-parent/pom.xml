@@ -83,8 +83,7 @@
     </dependencies>
   </dependencyManagement>
   
-  <!-- Copied from modules parent of DAISY Pipeline build utils
-       (https://github.com/daisy/pipeline-build-utils/blob/master/modules-parent/pom.xml)
+  <!-- Copied from modules parent of DAISY Pipeline build utils v1.7-SNAPSHOT
        -->
   <profiles>
     <profile>
