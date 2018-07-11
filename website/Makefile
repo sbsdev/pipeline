@@ -84,6 +84,10 @@ $(JEKYLL_DIR)/$(meta_file) : $(META_JEKYLL_DIR)/_site
 		rm -f $@; \
 		exit 1; \
 	fi
+	# FIXME: grotesque hack!
+	tail -n+20 $@ > $@.tmp
+	head -n20 $@ >> $@.tmp
+	mv $@.tmp $@
 
 $(META_JEKYLL_DIR)/_site : %/_site : %/$(meta_file) %/modules %/api $(META_JEKYLL_FILES)
 	cd $(dir $@) && jekyll build --destination $(CURDIR)/$@$(baseurl)
