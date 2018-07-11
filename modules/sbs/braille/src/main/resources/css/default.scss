@@ -1038,6 +1038,7 @@ table:not([class]) {
 table.table-matrix {
     display: table;
     -obfl-table-col-spacing: 2;
+    -obfl-preferred-empty-space: 0;
     th {
 	border-bottom: ⠒;
     }
@@ -1050,6 +1051,7 @@ table.table-matrix {
 table.table-matrix-transposed {
     display: table;
     -obfl-table-col-spacing: 2;
+    -obfl-preferred-empty-space: 0;
     render-table-by: column;
     caption {
 	display: block;

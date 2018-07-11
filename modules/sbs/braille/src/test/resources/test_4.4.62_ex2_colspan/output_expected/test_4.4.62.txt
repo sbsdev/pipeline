@@ -1,7 +1,7 @@
- MONAT     ERSPARNIS
- ::::::::  :::::::::
- JANUAR    #AJJ
- FEBRUAR   #HJ
+ MONAT    ERSPARNIS
+ :::::::  :::::::::
+ JANUAR   #AJJ
+ FEBRUAR  #HJ
  SUMME: #AHJ
 
 
