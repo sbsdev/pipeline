@@ -3,7 +3,8 @@ FROM maven:3.5-jdk-8 as builder
 
 RUN apt-get update && apt-get install -y \
     libxml2-utils \
-    make
+    make \
+	golang
 
 # for some reason `make dist-zip-linux` needs jekyll and a very
 # obscure ruby gem
