@@ -17,7 +17,17 @@ RUN gem install commaparty
 
 ADD . /usr/src/pipeline2
 WORKDIR /usr/src/pipeline2
-RUN make dist-zip-linux
+RUN if ! make dist-zip-linux; then \
+      if [ -e .make-target/commands ]; then \
+        echo "cat .make-target/commands" && \
+        cat .make-target/commands | sed 's/^/> /g'; \
+      fi && \
+      if [ -e maven.log ]; then \
+        echo "cat maven.log" && \
+        cat maven.log | sed 's/^/> /g'; \
+      fi && \
+      exit 1; \
+    fi
 
 # then use the build artifacts to create an image where the pipeline is installed
 FROM openjdk:8-jre
