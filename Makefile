@@ -167,15 +167,15 @@ it/sbs-benchmark/.deps.mk : it/sbs-benchmark/conf
 
 .SECONDARY : assembly/.install-all.deb
 assembly/.install-all.deb : %/.install-all.deb : %/pom.xml %/.dependencies $(call rwildcard,assembly/src/main/,*) | .maven-init .group-eval
-	+$(call eval-if-unix,bash -c "'cd assembly && $(MVN) clean install -Pdeb | $(MVN_LOG)'")
+	+$(call eval-if-unix,bash -c $(call quote,$(call quote,cd assembly && $(MVN) clean install -Pdeb | $(MVN_LOG))))
 
 .SECONDARY : assembly/.install-linux.zip
 assembly/.install-linux.zip : %/.install-linux.zip : %/pom.xml %/.dependencies $(call rwildcard,assembly/src/main/,*) | .maven-init .group-eval
-	+$(call eval-if-unix,bash -c "'cd assembly && $(MVN) clean install -Plinux | $(MVN_LOG)'")
+	+$(call eval-if-unix,bash -c $(call quote,$(call quote,cd assembly && $(MVN) clean install -Plinux | $(MVN_LOG))))
 
 .SECONDARY : assembly/.install-mac.zip
 assembly/.install-mac.zip : %/.install-mac.zip : %/pom.xml %/.dependencies $(call rwildcard,assembly/src/main/,*) | .maven-init .group-eval
-	+$(call eval-if-unix,bash -c "'cd assembly && $(MVN) clean install -Pzip-mac | $(MVN_LOG)'")
+	+$(call eval-if-unix,bash -c $(call quote,$(call quote,cd assembly && $(MVN) clean install -Pzip-mac | $(MVN_LOG))))
 
 .SECONDARY : modules/sbs/braille/.install-all.deb
 modules/sbs/braille/.install-all.deb : modules/sbs/braille/.install
