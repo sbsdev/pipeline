@@ -3,8 +3,7 @@ FROM maven:3.5-jdk-8 as builder
 
 RUN apt-get update && apt-get install -y \
     libxml2-utils \
-    make \
-    pcregrep
+    make
 
 # for some reason `make dist-zip-linux` needs jekyll and a very
 # obscure ruby gem
@@ -17,7 +16,7 @@ RUN gem install commaparty
 
 ADD . /usr/src/pipeline2
 WORKDIR /usr/src/pipeline2
-RUN if ! make dist-zip-linux; then \
+RUN if ! make MVN_LOG='cat>>$(ROOT_DIR)/maven.log' dist-zip-linux; then \
       if [ -e .make-target/commands ]; then \
         echo "cat .make-target/commands" && \
         cat .make-target/commands | sed 's/^/> /g'; \
