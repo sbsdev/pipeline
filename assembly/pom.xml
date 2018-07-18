@@ -1818,7 +1818,7 @@
                   <goal>single</goal>
                 </goals>
                 <configuration>
-                  <attach>false</attach>
+                  <attach>true</attach>
                   <formats>
                     <format>zip</format>
                   </formats>
@@ -1829,8 +1829,7 @@
                     <filter>src/main/assembly/dist.properties</filter>
                     <filter>src/main/assembly/dist-nix.properties</filter>
                   </filters>
-                  <appendAssemblyId>false</appendAssemblyId>
-                  <finalName>pipeline2-${project.version}_linux</finalName>
+                  <appendAssemblyId>true</appendAssemblyId>
                 </configuration>
               </execution>
               <execution>
