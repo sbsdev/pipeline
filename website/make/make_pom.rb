@@ -39,7 +39,7 @@ $stdout << CommaParty.markup(
               artifact = mod['artifact']
               version = mod['version']
               if (group == 'ch.sbs.pipeline')
-                outputDirectory = 'doc/modules/sbs'
+                outputDirectory = 'doc/org/daisy/pipeline/modules/sbs'
               elsif (group == 'org.daisy.pipeline.modules' or group.start_with?('org.daisy.pipeline.modules.'))
                 outputDirectory = 'doc/' + group.gsub('.', '/') + '/' + artifact
               else
