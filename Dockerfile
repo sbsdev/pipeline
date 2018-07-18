@@ -33,7 +33,7 @@ RUN cd assembly/target && unzip assembly-*-linux.zip
 # then use the build artifacts to create an image where the pipeline is installed
 FROM openjdk:8-jre
 LABEL maintainer="Christian Egli <christian.egli@sbs.ch>"
-COPY --from=builder /usr/src/pipeline2/assembly/target/assembly/target/daisy-pipeline /opt/daisy-pipeline2
+COPY --from=builder /usr/src/pipeline2/assembly/target/daisy-pipeline /opt/daisy-pipeline2
 ENV PIPELINE2_WS_LOCALFS=false \
     PIPELINE2_WS_AUTHENTICATION=true \
     PIPELINE2_WS_AUTHENTICATION_CLIENTKEY=clientid \
