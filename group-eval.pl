@@ -24,9 +24,16 @@ sub group_commands {
 	@commands;
 }
 
+sub color_if_terminal {
+	my ($color) = @_;
+	if (-t STDOUT) { # assuming -t STDERR is the same
+		color($color);
+	}
+}
+
 sub pretty_print_and_eval {
 	my @commands = @_;
-	print "-------------- ", color("bold yellow"), "Build order", color("reset"), ": -------------\n";
+	print "-------------- ", color_if_terminal("bold yellow"), "Build order", color_if_terminal("reset"), ": -------------\n";
 	for (@commands) {
 		my @cmd = @{$_};
 		if (@cmd > 2) {
@@ -38,19 +45,19 @@ sub pretty_print_and_eval {
 	print "-----------------------------------------\n";
 	for (@commands) {
 		my @cmd = @{$_};
-	    print "--> ", color("bold yellow");
+	    print "--> ", color_if_terminal("bold yellow");
 		if (@cmd > 2) {
 			print join(" \\\n   ", @cmd), "\n";
 		} else {
 			print join(" ", @cmd), "\n";
 		}
-		print color("reset");
+		print color_if_terminal("reset");
 		system("bash", "-c", join(" ",@cmd));
 		if ($? == 0) {
 		} elsif ($? == -1) {
-			printf STDERR color("bold red");
+			printf STDERR color_if_terminal("bold red");
 			printf STDERR "\nfailed to execute command: $!\n";
-			printf STDERR color("reset");
+			printf STDERR color_if_terminal("reset");
 			exit 1;
 		} elsif ($? & 127) {
 			printf STDERR "\ncommand died with signal %d\n", ($? & 127);
@@ -60,9 +67,9 @@ sub pretty_print_and_eval {
 			if ($e == 100) {
 				printf STDERR "\naction suspended...\n";
 			} else {
-				printf STDERR color("bold red");
+				printf STDERR color_if_terminal("bold red");
 				printf STDERR "\ncommand exited with value %d\n", $e;
-				printf STDERR color("reset");
+				printf STDERR color_if_terminal("reset");
 			}
 			exit $e;
 		}
