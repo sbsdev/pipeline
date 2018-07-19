@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:nordic="http://www.mtm.se/epub/"
+  xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="de" lang="de"
+  epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#"
+  xmlns:brl="http://www.daisy.org/z3986/2009/braille/">
+  <head>
+    <title>Testdokument</title>
+    <style type="text/css" media="embossed">
+@namespace xml "http://www.w3.org/XML/1998/namespace";
+@namespace brl url(http://www.daisy.org/z3986/2009/braille/);
+
+li[brl|class='myclass'] {
+   margin-left:2;
+}
+   </style>
+  </head>
+  <body epub:type="bodymatter">
+    <section>
+    <div class="page-normal" epub:type="pagebreak" id="page-9" title="9"></div>
+    <h1>heading volume
+        1<brl:running-line>runningline</brl:running-line><brl:toc-line>tocline</brl:toc-line></h1>
+    <ul style="list-style-type: none">
+      <li>span-answer <span epub:type="answer">---</span></li>
+      <li>span-answer1 <span class="answer_1">---</span></li>
+      <li>span-box <span class="box">---</span></li>
+      <li brl:class="myclass">li-brl-class</li>
+      <li>a-pageref <a class="pageref" href="#page-9"><brl:emph class="ss">9</brl:emph></a></li>
+      <li>brl-homograph <brl:homograph>Wach<brl:separator></brl:separator>stube</brl:homograph></li>
+      <li>brl-v-form <brl:v-form>Sie</brl:v-form></li>
+      <li>brl-num<br />cardinal <brl:num role="cardinal">5</brl:num><br /> ordinal <brl:num
+          role="ordinal">5.</brl:num><br /> roman <brl:num role="roman">II.</brl:num><br /> phone
+          <brl:num role="phone">043 / 333 32 32</brl:num><br /> isbn <brl:num role="isbn"
+          >978-3-492-24072-7</brl:num><br /> measure <brl:num role="measure">4 dl</brl:num><br />
+        fraction <brl:num role="fraction">3/4</brl:num><br /> mixed <brl:num role="mixed">8
+          1/2</brl:num></li>
+      <li>brl-place <brl:place>Mannheim</brl:place></li>
+      <li>brl-select <brl:select>
+          <brl:when-braille>
+            <brl:literal brl:grade="0">BASIS</brl:literal>
+            <brl:literal brl:grade="1">VOLL</brl:literal>
+            <brl:literal brl:grade="2">KZ</brl:literal>
+          </brl:when-braille>
+          <brl:otherwise>nobraille</brl:otherwise>
+        </brl:select></li>
+      <li>brl-emph <br /><brl:emph>emph</brl:emph>
+        <br /><brl:emph brl:render="singlequote">singlequote</brl:emph>
+        <br /><brl:emph brl:render="quote">quote</brl:emph>
+        <br /><brl:emph brl:render="ignore">ignore</brl:emph>
+      </li>
+    </ul>
+    <div class="page-normal" epub:type="pagebreak" id="page-10" title="10"></div>
+    </section>
+    <br class="braille-volume-break-grade-0" />
+    <br class="braille-volume-break-grade-1" />
+    <br class="braille-volume-break-grade-2" />
+    <!--
+    <brl:volume brl:grade="0"></brl:volume>
+    <brl:volume brl:grade="1"></brl:volume>
+    <brl:volume brl:grade="2"></brl:volume>-->
+    <section>
+    <div class="page-normal" epub:type="pagebreak" id="page-11" title="11"></div>
+    <h1>heading volume
+        2<brl:running-line>runningline</brl:running-line><brl:toc-line>tocline</brl:toc-line></h1>
+    <ul style="list-style-type: none">
+      <li>brl-accents-span <span brl:accents="reduced">réduit</span>
+        <span brl:accents="detailed">détaillé</span></li>
+      <li>brl-computer <a external="true" href="http://www.sbs.ch"
+            ><brl:computer>www.sbs.ch</brl:computer></a></li>
+      <li>brl-date <brl:date value="2004-10-17">17.10.2004</brl:date></li>
+      <li>brl-time <brl:time value="05:15">05:05</brl:time></li>
+      <li>brl-name <brl:name>Kaufmann</brl:name></li>
+    </ul>
+    <div class="page-normal" epub:type="pagebreak" id="page-12" title="12"></div>
+    </section>
+  </body>
+</html>

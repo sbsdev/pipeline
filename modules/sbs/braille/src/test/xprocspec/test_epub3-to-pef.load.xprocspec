@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x:description xmlns:x="http://www.daisy.org/ns/xprocspec"
+               xmlns:sbs="http://www.sbs.ch"
+               xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
+               script="../../main/resources/xml/epub3-to-pef.load.xpl">
+  
+  <x:scenario label="load-epub-with-brl-prefixes">
+    <x:call step="sbs:epub3-to-pef.load">
+      <x:option name="epub" select="resolve-uri('../resources/test_epub3_various/EPUB/content.opf')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'load-epub-with-brl-prefixes/')"/>
+    </x:call>
+    <x:context label="in-memory.out">
+      <x:document type="port"  port="in-memory.out"/>
+    </x:context>
+    <x:expect label="brl:* elements preserved" type="xpath" test="exists(//brl:*)" equals="(true(),false())"/>
+  </x:scenario>
+  
+</x:description>

@@ -73,6 +73,7 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 		for (String test : new String[]{
 			"test_translator",
 			"test_epub3-to-pef",
+			"test_epub3-to-pef.load",
 			"test_dtbook-to-pef",
 			"test_dtbook-to-pef_downgrade",
 			"test_dtbook-to-pef_notes",
@@ -119,7 +120,8 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 			Set<String> tests = new HashSet<>(xprocspecTests.keySet());
 			for (String test : tests)
 				if (!test.equals("test_translator") &&
-				    !test.equals("test_epub3-to-pef")) {
+				    !test.equals("test_epub3-to-pef") &&
+				    !test.equals("test_epub3-to-pef.load")) {
 					File generatedTest = new File(generatedXProcSpecTestsDir, test + ".xprocspec");
 					xprocEngine.run(generateXProcSpecTests,
 					                ImmutableMap.of("source", (List<String>)ImmutableList.of(xprocspecTests.get(test).toURI().toASCIIString())),

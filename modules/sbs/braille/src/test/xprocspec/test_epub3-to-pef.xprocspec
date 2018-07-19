@@ -18,4 +18,36 @@
     </x:expect>
   </x:scenario>
   
+  <x:scenario label="various">
+    <x:call step="sbs:epub3-to-pef">
+      <x:option name="epub" select="resolve-uri('../resources/test_epub3_various/EPUB/content.opf')"/>
+      <x:option name="apply-document-specific-stylesheets" select="true()"/>
+      <x:option name="contraction-grade" select="'2'"/>
+      <x:option name="toc-depth" select="'1'"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_various/')"/>
+      <x:option name="include-brf" select="true()"/>
+      <x:option name="brf-output-dir" select="concat($temp-dir,'output-dir/test_various/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    <!--
+    <x:call step="sbs:dtbook-to-pef">
+      <x:input port="source">
+        <x:document type="file" href="../resources/test_epub3_various/dtbook/123456.xml"/>
+      </x:input>
+      <x:option name="contraction-grade" select="'2'"/>
+      <x:option name="toc-depth" select="'1'"/>
+      <x:option name="pef-output-dir" select="concat($temp-dir,'output-dir/test_various/')"/>
+      <x:option name="include-brf" select="true()"/>
+      <x:option name="brf-output-dir" select="concat($temp-dir,'output-dir/test_various/')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
+    </x:call>
+    -->
+    <x:context label="result">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_various/123456.pef"/>
+    </x:context>
+    <x:expect label="result" type="custom" href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl" step="x:pef-compare">
+      <x:document type="file" href="../resources/test_epub3_various/expected.pef"/>
+    </x:expect>
+  </x:scenario>
+  
 </x:description>

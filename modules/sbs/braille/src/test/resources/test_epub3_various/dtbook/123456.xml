@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE dtbook [<!ENTITY ndash "&#x2013;"><!ENTITY nbsp "&#x00A0;">]><?oxygen RNGSchema="http://xmlp/schema/dtbook-2005-3-sbs.rng" type="xml"?>
+<dtbook version="2005-3-sbs-full" xml:lang="de" xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
+  xmlns="http://www.daisy.org/z3986/2005/dtbook/">
+  <head>
+    <meta name="dc:Title" content="PRODSERVER1"/>
+    <meta name="dc:Creator" content="HAFECHÄS"/>
+    <meta name="dc:Subject" content=""/>
+    <meta name="dc:Description" content=""/>
+    <meta name="dc:Publisher"
+      content="Swiss Library for the Blind, Visually Impaired and Print Disabled"/>
+    <meta name="dc:Date" content="2012-01-05"/>
+    <meta name="dc:Type" content="Text"/>
+    <meta name="dc:Format" content="ANSI/NISO Z39.86-2005"/>
+    <meta name="dc:Identifier" content="ch-sbs-0d63eb29-566a-4061-a8bf-b279c69699ed"/>
+    <meta name="dc:Source" content=""/>
+    <meta name="dc:Language" content="de"/>
+    <meta name="dc:Rights" content=""/>
+    <meta name="dtb:uid" content="ch-sbs-0d63eb29-566a-4061-a8bf-b279c69699ed"/>
+    <meta name="dtb:sourceEdition" content=""/>
+    <meta name="dtb:sourcePublisher" content=""/>
+    <meta name="dtb:sourceRights" content=""/>
+    <meta name="prod:series" content=""/>
+    <meta name="prod:seriesNumber" content=""/>
+    <style type="text/css" media="embossed">
+@namespace xml "http://www.w3.org/XML/1998/namespace";
+@namespace brl url(http://www.daisy.org/z3986/2009/braille/);
+
+li[brl|class='myclass'] {
+   margin-left:2;
+}
+   </style>
+  </head>
+  <book>
+    <bodymatter>
+      <level1>
+        <pagenum id="page-9" page="normal">9</pagenum>
+        <a id="p-9"/>
+        <h1>heading volume
+            1<brl:running-line>runningline</brl:running-line><brl:toc-line>tocline</brl:toc-line></h1>
+        <list type="pl">
+          <li>span-answer <span class="answer">---</span></li>
+          <li>span-answer1 <span class="answer_1">---</span></li>
+          <li>span-box <span class="box">---</span></li>
+          <li brl:class="myclass">li-brl-class</li>
+          <li>a-pageref <a class="pageref" href="#p-9"><brl:emph class="ss">9</brl:emph></a></li>
+          <li>brl-homograph <brl:homograph>Wach<brl:separator/>stube</brl:homograph></li>
+          <li>brl-v-form <brl:v-form>Sie</brl:v-form></li>
+          <li>brl-num<br/>cardinal <brl:num role="cardinal">5</brl:num><br/> ordinal <brl:num
+              role="ordinal">5.</brl:num><br/> roman <brl:num role="roman">II.</brl:num><br/> phone
+              <brl:num role="phone">043 / 333 32 32</brl:num><br/> isbn <brl:num role="isbn"
+              >978-3-492-24072-7</brl:num><br/> measure <brl:num role="measure">4 dl</brl:num><br/>
+            fraction <brl:num role="fraction">3/4</brl:num><br/> mixed <brl:num role="mixed">8
+              1/2</brl:num></li>
+          <li>brl-place <brl:place>Mannheim</brl:place></li>
+          <li>brl-select <brl:select>
+              <brl:when-braille>
+                <brl:literal brl:grade="0">BASIS</brl:literal>
+                <brl:literal brl:grade="1">VOLL</brl:literal>
+                <brl:literal brl:grade="2">KZ</brl:literal>
+              </brl:when-braille>
+              <brl:otherwise>nobraille</brl:otherwise>
+            </brl:select></li>
+          <li>brl-emph <br/><brl:emph>emph</brl:emph>
+            <br/><brl:emph brl:render="singlequote">singlequote</brl:emph>
+            <br/><brl:emph brl:render="quote">quote</brl:emph>
+            <br/><brl:emph brl:render="ignore">ignore</brl:emph>
+          </li>
+        </list>
+        <pagenum id="page-10" page="normal">10</pagenum>
+        <a id="p-10"/>
+      </level1>
+      <brl:volume brl:grade="0"/>
+      <brl:volume brl:grade="1"/>
+      <brl:volume brl:grade="2"/>
+      <level1>
+        <pagenum id="page-11" page="normal">11</pagenum>
+        <a id="p-11"/>
+        <h1>heading volume
+            2<brl:running-line>runningline</brl:running-line><brl:toc-line>tocline</brl:toc-line></h1>
+        <list type="pl">
+          <li>brl-accents-span <span brl:accents="reduced">réduit</span>
+            <span brl:accents="detailed">détaillé</span></li>
+          <li>brl-computer <a external="true" href="http://www.sbs.ch"
+                ><brl:computer>www.sbs.ch</brl:computer></a></li>
+          <li>brl-date <brl:date value="2004-10-17">17.10.2004</brl:date></li>
+          <li>brl-time <brl:time value="05:15">05:05</brl:time></li>
+          <li>brl-name <brl:name>Kaufmann</brl:name></li>
+        </list>
+        <pagenum id="page-12" page="normal">12</pagenum>
+        <a id="p-12"/>
+      </level1>
+    </bodymatter>
+  </book>
+</dtbook>
