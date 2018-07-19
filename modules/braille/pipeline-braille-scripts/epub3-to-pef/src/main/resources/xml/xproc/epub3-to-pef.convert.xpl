@@ -61,31 +61,12 @@
     <px:message message="[progress px:epub3-to-pef.convert 1 px:merge-parameters]"/>
     <px:merge-parameters name="parameters"/>
     
-    <!-- Load OPF and add content files to fileset. -->
+    <!-- Load XHTML documents in spine order. -->
     <p:identity>
         <p:input port="source">
             <p:pipe port="fileset.in" step="main"/>
         </p:input>
     </p:identity>
-    <px:message message="[progress px:epub3-to-pef.convert 1 px:fileset-load]"/>
-    <px:fileset-load media-types="application/oebps-package+xml">
-        <p:input port="in-memory">
-            <p:pipe port="in-memory.in" step="main"/>
-        </p:input>
-    </px:fileset-load>
-    <p:identity name="opf"/>
-    <px:message message="[progress px:epub3-to-pef.convert 1 opf-manifest-to-fileset.xsl]"/>
-    <p:xslt>
-        <p:input port="parameters">
-            <p:empty/>
-        </p:input>
-        <p:input port="stylesheet">
-            <p:document href="../xslt/opf-manifest-to-fileset.xsl"/>
-        </p:input>
-    </p:xslt>
-    <p:identity name="opf-fileset"/>
-    
-    <!-- Load XHTML documents in spine order. -->
     <px:message message="[progress px:epub3-to-pef.convert 2 px:fileset-load] Load XHTML documents in spine order."/>
     <px:fileset-load media-types="application/oebps-package+xml application/xhtml+xml">
         <p:input port="in-memory">
@@ -147,9 +128,16 @@
     <!-- Convert OPF metadata to HTML metadata. -->
     <p:identity>
         <p:input port="source">
-            <p:pipe port="result" step="opf"/>
+            <p:pipe port="fileset.in" step="main"/>
         </p:input>
     </p:identity>
+    <px:message message="[progress px:epub3-to-pef.convert 1 px:fileset-load]"/>
+    <px:fileset-load media-types="application/oebps-package+xml">
+        <p:input port="in-memory">
+            <p:pipe port="in-memory.in" step="main"/>
+        </p:input>
+    </px:fileset-load>
+    <p:identity name="opf"/>
     <px:message message="[progress px:epub3-to-pef.convert 1 opf-to-html-head.xsl] Convert OPF metadata to HTML metadata."/>
     <p:xslt>
         <p:input port="stylesheet">

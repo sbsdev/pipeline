@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x:description xmlns:x="http://www.daisy.org/ns/xprocspec"
+               xmlns:px="http://www.daisy.org/ns/pipeline/xproc"
+               xmlns:d="http://www.daisy.org/ns/pipeline/data"
+               script="../../main/resources/xml/xproc/epub3-to-pef.load.xpl">
+  
+  <x:scenario label="load-simple">
+    <x:call step="px:epub3-to-pef.load">
+      <x:option name="epub" select="resolve-uri('../resources/simple-epub/package.opf')"/>
+      <x:option name="temp-dir" select="concat($temp-dir,'load-simple')"/>
+    </x:call>
+    <x:context label="fileset">
+      <x:document type="port"  port="fileset.out"/>
+    </x:context>
+    <x:expect label="4 files total" type="xpath" test="count(//d:file)=4"/>
+    <x:expect label="1 html files" type="xpath" test="count(//d:file[@media-type='application/oebps-package+xml'])=1"/>
+    <x:expect label="3 html files" type="xpath" test="count(//d:file[@media-type='application/xhtml+xml'])=3"/>
+    <x:context label="in-memory">
+      <x:document type="port"  port="in-memory.out"/>
+    </x:context>
+    <x:expect label="in-memory" type="compare">
+      <x:document type="file" href="../resources/simple-epub/package.opf"/>
+      <!--
+      <x:document type="file" href="../resources/simple-epub/content-1.xhtml"/>
+      <x:document type="file" href="../resources/simple-epub/content-2.xhtml"/>
+      <x:document type="file" href="../resources/simple-epub/nav.xhtml"/>
+      -->
+    </x:expect>
+  </x:scenario>
+  
+</x:description>
