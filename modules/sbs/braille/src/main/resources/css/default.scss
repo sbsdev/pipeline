@@ -843,7 +843,7 @@ p {
     text-indent: 2;
 }
 
-.precedingemptyline{
+.precedingemptyline {
     margin-top:1;
 }
 
@@ -854,20 +854,19 @@ hr.emptyline {
 
 $separator-width: 6;
 
-p.precedingseparator {
-    text-indent: 0;
-    &::before {
-        content: "\A"                                            /* empty line */
-                 repeat(" ", ($page-width - $separator-width)/2) /* centering */
-                 repeat("⠒", $separator-width) "\A"              /* separator */
-                 "\A"                                            /* empty line */
-                 "  ";                                           /* text indent */
-        white-space: pre-line;
-        text-transform: none;
-        hyphens: initial;
-    }
-}
-
+/*
+ * Depends on handle-precedingseparator.xsl, which inserts hr elements
+ * before elements with class "precedingseparator":
+ * ~~~
+ * <p class="precedingseparator"/>
+ * ~~~
+ * in the input becomes:
+ * ~~~
+ * <hr class="separator"/>
+ * <p/>
+ * ~~~
+ * before any CSS is applied.
+ */
 hr.separator {
     display: block;
     text-align: center;

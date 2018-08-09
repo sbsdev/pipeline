@@ -209,6 +209,8 @@
                 <level1>
                   <p> Bla bla bla </p>
                   <p class="precedingseparator"> Bla bla bla </p>
+                  <p> Bla bla bla </p>
+                  <p class="precedingseparator noindent"> Bla bla bla </p>
                 </level1>
               </bodymatter>
             </book>
@@ -242,11 +244,11 @@
                   <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠒⠒⠒⠒⠒⠒</row>
                   <row/>
                   <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
-		  <row/>
+                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
                   <row/>
+                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠒⠒⠒⠒⠒⠒</row>
                   <row/>
-                  <row/>
-                  <row/>
+                  <row>⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
                   <row/>
                   <row/>
                   <row/>
