@@ -22,5 +22,5 @@ script:
   - make check-sbs
 after_failure:
  - cat maven.log
-after_success:
-  - source .travis/publish-website.sh
+# after_success:
+#   - source .travis/publish-website.sh
