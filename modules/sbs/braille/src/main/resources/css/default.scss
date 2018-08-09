@@ -9,6 +9,8 @@
  * See also Braille CSS: http://snaekobbi.github.io/braille-css-spec/master/index.html *
  ***************************************************************************************/
 
+$page-width: 28 !default;
+
 /* Helper functions */
 
 /* http://stackoverflow.com/a/38713737 */
@@ -291,6 +293,7 @@ br.braille-volume-break-grade-#{$contraction-grade} {
 
 #generated-volume-toc,
 #generated-document-toc {
+    > li { margin-right: 3; }
     li {
         display: block;
         a {
@@ -307,7 +310,7 @@ br.braille-volume-break-grade-#{$contraction-grade} {
                 }
             }
             &::after {
-                content: " ⠄⠄" leader('⠄') " ⠼";
+                content: " ⠄⠄" leader('⠄', $page-width, right) " ⠼";
                 hyphens: initial;
                 &::after {
                     &::before {
