@@ -352,7 +352,9 @@ class BlockContentManager extends AbstractBlockContentManager {
 		// [margin][preContent][preTabText][tab][postTabText] 
 		//      preContentPos ^
 		String tabSpace = "";
+		boolean rightAlign = false;
 		if (leader!=null) {
+			rightAlign = leader.getAlignment() == Leader.Alignment.RIGHT;
 			int leaderPos = leader.getPosition().makeAbsolute(available);
 			int offset = leaderPos-m.preTabPos;
 			int align = getLeaderAlign(leader, btr.countRemaining());
@@ -365,7 +367,27 @@ class BlockContentManager extends AbstractBlockContentManager {
 			}
 			tabSpace = buildLeader(offset - align, mode, leader);
 		}
-		breakNextRow(m, btr, tabSpace);
+		if (rightAlign) {
+			// text following the leader should be kept on the current line
+			// allow it to extend into the margin
+			int remainingLength = btr.countRemaining();
+			String next = btr.nextTranslatedRow(Integer.MAX_VALUE, false);
+			if (btr.hasNext())
+				throw new RuntimeException(); // should not happen
+			if (next.length() != remainingLength)
+				Logger.getLogger(this.getClass().getCanonicalName()).warning("Leader alignment not done correctly");
+			m.row.setChars(m.preContent + m.preTabText + tabSpace + next);
+			m.row.setLeaderSpace(m.row.getLeaderSpace()+tabSpace.length());
+			addRow(m);
+			if (btr instanceof AggregatedBrailleTranslatorResult) {
+				AggregatedBrailleTranslatorResult abtr = ((AggregatedBrailleTranslatorResult)btr);
+				abtr.addMarkers(m.row);
+				abtr.addAnchors(m.row);
+				abtr.addIdentifiers(m.row);
+			}
+		} else {
+			breakNextRow(m, btr, tabSpace);
+		}
 	}
 
 	private int rowIndex = 0;

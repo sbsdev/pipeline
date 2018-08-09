@@ -7,5 +7,5 @@
 	remote = git@github.com:sbsdev/dotify.formatter.impl.git
 	branch = master
 	commit = 9f4d3d9796b8ce374c47a24c771305831577e211
-	parent = 3404e96d7442964a84f59f2637db159c41498772
+	parent = 5395e5e09a736df4051bf4dd4b204cffaf68ead9
 	cmdver = 0.3.1
