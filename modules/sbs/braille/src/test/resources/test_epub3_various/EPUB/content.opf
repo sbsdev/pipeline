@@ -13,7 +13,7 @@
   <manifest>
     <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
     <item id="htmltoc" properties="nav" media-type="application/xhtml+xml" href="toc.xhtml"/>
-    <item id="chapter" href="chapter.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter" href="chapter.xhtml" media-type="application/sbs-xhtml+xml"/>
   </manifest>
   <spine toc="ncx">
     <itemref idref="chapter"/>

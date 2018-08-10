@@ -68,7 +68,6 @@
     <!-- for testing purposes -->
     <p:input port="parameters" kind="parameter" primary="false"/>
     
-    <p:import href="epub3-to-pef.load.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/braille/epub3-to-pef/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/braille/xml-to-pef/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/common-utils/library.xpl"/>
@@ -110,12 +109,12 @@
     <!-- LOAD EPUB 3 -->
     <!-- =========== -->
     <px:message message="Loading EPUB"/>
-    <sbs:epub3-to-pef.load name="load">
+    <px:epub3-to-pef.load name="load">
         <p:with-option name="epub" select="$epub"/>
         <p:with-option name="temp-dir" select="concat(string(/c:result),'load/')">
             <p:pipe step="temp-dir" port="result"/>
         </p:with-option>
-    </sbs:epub3-to-pef.load>
+    </px:epub3-to-pef.load>
     
     <!-- ============= -->
     <!-- EPUB 3 TO PEF -->
@@ -127,6 +126,7 @@
     </p:identity>
     <px:message message="Done loading EPUB, starting conversion to PEF"/>
     <px:epub3-to-pef.convert default-stylesheet="http://www.daisy.org/pipeline/modules/braille/epub3-to-pef/css/default.css"
+                             content-media-types="application/xhtml+xml application/sbs-xhtml+xml"
                              name="convert">
         <p:with-option name="epub" select="$epub"/>
         <p:input port="in-memory.in">
