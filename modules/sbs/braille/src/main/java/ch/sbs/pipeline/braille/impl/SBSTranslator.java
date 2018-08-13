@@ -15,7 +15,6 @@ import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
 import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import static com.google.common.collect.Iterables.size;
 import static com.google.common.collect.Lists.newArrayList;
@@ -124,9 +123,6 @@ public interface SBSTranslator {
 		
 		private final static Iterable<BrailleTranslator> empty = Iterables.<BrailleTranslator>empty();
 		
-		private final static List<String> supportedInput = ImmutableList.of("css","text-css","dtbook","html");
-		private final static List<String> supportedOutput = ImmutableList.of("css","braille");
-		
 		/**
 		 * Recognized features:
 		 *
@@ -137,17 +133,29 @@ public interface SBSTranslator {
 		 */
 		protected final Iterable<BrailleTranslator> _get(Query query) {
 			final MutableQuery q = mutableQuery(query);
-			for (Feature f : q.removeAll("input")) {
-				String input = f.getValue().get();
-				if (!supportedInput.contains(input))
-					return empty; }
-			boolean forceBraille = false;
-			for (Feature f : q.removeAll("output")) {
-				String output = f.getValue().get();
-				if (!supportedOutput.contains(output))
+			String inputFormat = null;
+			for (Feature f : q.removeAll("input"))
+				if ("html".equals(f.getValue().get()))
+					inputFormat = "html";
+				else if ("dtbook".equals(f.getValue().get()))
+					inputFormat = "dtbook";
+				else if (!("css".equals(f.getValue().get()) || "text-css".equals(f.getValue().get())))
 					return empty;
-				if ("braille".equals(output))
-					forceBraille = true; }
+			boolean forceBraille = false;
+			final boolean htmlOut; {
+				boolean html = false;
+				for (Feature f : q.removeAll("output"))
+					if ("css".equals(f.getValue().get())) {}
+					else if ("html".equals(f.getValue().get())) {
+						if (inputFormat == null || !inputFormat.equals("html"))
+							return empty;
+						html = true; }
+					else if ("braille".equals(f.getValue().get()))
+						forceBraille = true;
+					else
+						return empty;
+				htmlOut = html;
+			}
 			if (q.containsKey("locale"))
 				if (!"de".equals(parseLocale(q.removeOnly("locale").getValue().get()).getLanguage()))
 					return empty;
@@ -168,7 +176,7 @@ public interface SBSTranslator {
 							else
 								return empty; }
 						if (q.isEmpty())
-							return getImpl(grade, hyphenTable); }
+							return getImpl(grade, hyphenTable, htmlOut); }
 					else if (q.containsKey("liblouis-table")) {
 						
 						// assumed to be coming from the XProc implementation
@@ -195,33 +203,36 @@ public interface SBSTranslator {
 						return __apply(logCreate(new TransformImpl(translator))); }});
 		}
 		
-		private Iterable<BrailleTranslator> getImpl(int grade, Query hyphenTable) {
+		private Iterable<BrailleTranslator> getImpl(int grade, Query hyphenTable, boolean htmlOut) {
 			return getImpl(grade,
 			               grade == 2 ? grade2Table : grade == 1 ? grade1Table : grade0Table,
 			               grade == 2 ? grade2SubTables : grade == 1 ? grade1SubTables : grade0SubTables,
-			               hyphenTable);
+			               hyphenTable,
+			               htmlOut);
 		}
 		
 		private Iterable<BrailleTranslator> getImpl(Query liblouisTable, Query hyphenTable) {
-			return getImpl(null, liblouisTable, Collections.<String,Query>emptyMap(), hyphenTable);
+			return getImpl(null, liblouisTable, Collections.<String,Query>emptyMap(), hyphenTable, null);
 		}
 		
 		private Iterable<BrailleTranslator> getImpl(final Integer grade,
 		                                            final Query mainLiblouisTable,
 		                                            final Map<String,Query> subLiblouisTables,
-		                                            Query hyphenTable) {
+		                                            Query hyphenTable,
+		                                            final Boolean htmlOut) {
 			return concat(
 				transform(
 					logSelect(hyphenTable, libhyphenHyphenatorProvider),
 					new Function<LibhyphenHyphenator,Iterable<BrailleTranslator>>() {
 						public Iterable<BrailleTranslator> _apply(final LibhyphenHyphenator h) {
-							return getImpl(grade, mainLiblouisTable, subLiblouisTables, h); }}));
+							return getImpl(grade, mainLiblouisTable, subLiblouisTables, h, htmlOut); }}));
 		}
 		
 		private Iterable<BrailleTranslator> getImpl(final Integer grade,
 		                                            Query mainLiblouisTable,
 		                                            Map<String,Query> subLiblouisTables,
-		                                            Hyphenator hyphenator) {
+		                                            Hyphenator hyphenator,
+		                                            final Boolean htmlOut) {
 			final Query hyphenatorQuery = mutableQuery().add("hyphenator", hyphenator.getIdentifier());
 			Query mainTranslatorQuery = mutableQuery(mainLiblouisTable).addAll(hyphenatorQuery);
 			final Iterable<LiblouisTranslator> mainTranslator = logSelect(mainTranslatorQuery, liblouisTranslatorProvider);
@@ -244,7 +255,8 @@ public interface SBSTranslator {
 										                         new TransformImpl(grade,
 										                                           translator,
 										                                           subTranslators,
-										                                           hyphenatorQuery.toString()))); }}); }}));
+										                                           hyphenatorQuery.toString(),
+										                                           htmlOut))); }}); }}));
 		}
 		
 		private final static Pattern PRINT_PAGE_NUMBER = Pattern.compile("(?<first>[0-9]+)?(?:/(?<last>[0-9]+))?");
@@ -273,10 +285,12 @@ public interface SBSTranslator {
 			private TransformImpl(int grade,
 			                      LiblouisTranslator mainTranslator,
 			                      Map<String,LiblouisTranslator> subTranslators,
-			                      String hyphenatorQuery) {
+			                      String hyphenatorQuery,
+			                      boolean htmlOut) {
 				Map<String,String> options = ImmutableMap.of(
 					"contraction-grade", ""+grade,
-					"text-transform-query-base", "(input:text-css)(output:braille)(translator:sbs)" + hyphenatorQuery);
+					"text-transform-query-base", "(input:text-css)(output:braille)(translator:sbs)" + hyphenatorQuery,
+					"no-wrap", String.valueOf(htmlOut));
 				this.xproc = new XProc(href, null, options);
 				this.grade = grade;
 				this.translator = mainTranslator.fromStyledTextToBraille();

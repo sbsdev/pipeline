@@ -43,6 +43,10 @@
       <artifactId>xml-to-pef</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.daisy.pipeline.modules.braille</groupId>
+      <artifactId>epub3-to-epub3</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.daisy.dotify</groupId>
       <artifactId>dotify.api</artifactId>
     </dependency>

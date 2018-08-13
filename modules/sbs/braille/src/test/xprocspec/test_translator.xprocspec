@@ -14,7 +14,7 @@
       <p:option name="grade" required="true"/>
       <p:import href="http://www.daisy.org/pipeline/modules/braille/common-utils/library.xpl"/>
       <px:transform>
-        <p:with-option name="query" select="concat('(input:html)(input:css)(output:css)(translator:sbs)(locale:de)(grade:',$grade,')')"/>
+        <p:with-option name="query" select="concat('(input:html)(input:css)(output:css)(output:html)(translator:sbs)(locale:de)(grade:',$grade,')')"/>
       </px:transform>
     </p:declare-step>
   </x:script>
@@ -34,7 +34,7 @@
         <x:option name="grade" select="'0'"/>
       </x:call>
       <x:context label="result">
-        <x:document type="port" port="result" select="/_/*"/>
+        <x:document type="port" port="result"/>
       </x:context>
       <x:expect label="result" type="compare">
         <x:document type="inline">
@@ -49,7 +49,7 @@
         <x:option name="grade" select="'1'"/>
       </x:call>
       <x:context label="result">
-        <x:document type="port" port="result" select="/_/*"/>
+        <x:document type="port" port="result"/>
       </x:context>
       <x:expect label="result" type="compare">
         <x:document type="inline">
@@ -64,7 +64,7 @@
         <x:option name="grade" select="'2'"/>
       </x:call>
       <x:context label="result">
-        <x:document type="port" port="result" select="/_/*"/>
+        <x:document type="port" port="result"/>
       </x:context>
       <x:expect label="result" type="compare">
         <x:document type="inline">
@@ -101,7 +101,7 @@
       <x:option name="grade" select="'2'"/>
     </x:call>
     <x:context label="result">
-      <x:document type="port" port="result" select="/_/*"/>
+      <x:document type="port" port="result"/>
     </x:context>
     <x:expect label="result" type="compare">
       <x:document type="inline">
@@ -141,7 +141,7 @@
         <x:option name="grade" select="'0'"/>
       </x:call>
       <x:context label="result">
-        <x:document type="port" port="result" select="/_/*"/>
+        <x:document type="port" port="result"/>
       </x:context>
       <x:expect label="result" type="compare">
         <x:document type="inline">
@@ -158,7 +158,7 @@
         <x:option name="grade" select="'2'"/>
       </x:call>
       <x:context label="result">
-        <x:document type="port" port="result" select="/_/*"/>
+        <x:document type="port" port="result"/>
       </x:context>
       <x:expect label="result" type="compare">
         <x:document type="inline">
@@ -194,7 +194,7 @@
       <x:option name="grade" select="'2'"/>
     </x:call>
     <x:context label="result">
-      <x:document type="port" port="result" select="/_/*"/>
+      <x:document type="port" port="result"/>
     </x:context>
     <x:expect label="result" type="compare">
       <x:document type="inline">

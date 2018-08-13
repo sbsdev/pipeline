@@ -7,6 +7,7 @@
 
 	<p:option name="contraction-grade" required="true"/>
 	<p:option name="text-transform-query-base" required="true"/>
+	<p:option name="no-wrap" select="'false'"/>
 
 	<p:import href="http://www.daisy.org/pipeline/modules/braille/css-utils/library.xpl"/>
 
@@ -49,6 +50,7 @@
 		<p:with-param name="contraction-grade" select="$contraction-grade"/>
 		<p:with-param name="text-transform-query-base" select="$text-transform-query-base"/>
 		<p:with-param name="hyphenation" select="'true'"/>
+		<p:with-param name="no-wrap" select="$no-wrap"/>
 	</p:xslt>
 	
 </p:pipeline>
