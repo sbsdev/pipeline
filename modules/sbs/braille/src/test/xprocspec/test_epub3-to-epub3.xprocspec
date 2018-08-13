@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x:description xmlns:x="http://www.daisy.org/ns/xprocspec"
+               xmlns:sbs="http://www.sbs.ch"
+               xmlns:c="http://www.w3.org/ns/xproc-step"
+               xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
+               xmlns:html="http://www.w3.org/1999/xhtml"
+               script="http://www.sbs.ch/pipeline/modules/braille/epub3-to-epub3.xpl">
+  
+  <x:scenario label="various">
+    <x:call step="sbs:epub3-to-epub3">
+      <x:option name="source" select="resolve-uri('../resources/test_epub3_various/mimetype')"/>
+      <x:option name="contraction-grade" select="'2'"/>
+      <x:option name="output-dir" select="concat($temp-dir,'output-dir/test_various/')"/>
+    </x:call>
+    <x:context label="result">
+      <x:document type="zip" base-uri="temp-dir" href="output-dir/test_various/test_epub3_various.epub" ordered="true"/>
+    </x:context>
+    <x:expect label="result" type="compare">
+      <x:document type="inline">
+        <c:zipfile name="test_epub3_various.epub">
+          <c:file name="EPUB/chapter.xhtml"/>
+          <c:file name="EPUB/chapter_braille.css"/>
+          <c:file name="EPUB/chapter_braille.xhtml"/>
+          <c:file name="EPUB/content.opf"/>
+          <c:file name="EPUB/package-braille.opf"/>
+          <c:file name="EPUB/renditionMapping.html"/>
+          <c:file name="EPUB/toc.ncx"/>
+          <c:file name="EPUB/toc.xhtml"/>
+          <c:file name="EPUB/toc_braille.css"/>
+          <c:file name="EPUB/toc_braille.xhtml"/>
+          <c:file name="META-INF/container.xml"/>
+          <c:file name="META-INF/metadata.xml"/>
+          <c:file name="dtbook/123456.xml"/>
+          <c:file name="expected.brl"/>
+          <c:file name="expected.pef"/>
+          <c:file name="mimetype"/>
+        </c:zipfile>
+      </x:document>
+    </x:expect>
+    <x:context label="The braille version of the content document">
+      <x:document type="file" base-uri="temp-dir" href="output-dir/test_various/test_epub3_various.epub!/EPUB/chapter_braille.xhtml"/>
+    </x:context>
+    <x:expect label="brl:* elements preserved" type="xpath" test="exists(//brl:*)" equals="(true(),false())"/>
+    <x:expect label="The translated" type="xpath" test="/html:html/html:head/html:title/string(.)" equals="'⠞⠑⠾⠙⠕⠅⠥⠍⠉⠞'"/>
+  </x:scenario>
+  
+</x:description>

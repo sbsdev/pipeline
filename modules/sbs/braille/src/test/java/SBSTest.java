@@ -72,6 +72,7 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 		Map<String,File> xprocspecTests = new HashMap<String,File>();
 		for (String test : new String[]{
 			"test_translator",
+			"test_epub3-to-epub3",
 			"test_epub3-to-pef",
 			"test_epub3-to-pef.load",
 			"test_dtbook-to-pef",
@@ -120,6 +121,7 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 			Set<String> tests = new HashSet<>(xprocspecTests.keySet());
 			for (String test : tests)
 				if (!test.equals("test_translator") &&
+				    !test.equals("test_epub3-to-epub3") &&
 				    !test.equals("test_epub3-to-pef") &&
 				    !test.equals("test_epub3-to-pef.load")) {
 					File generatedTest = new File(generatedXProcSpecTestsDir, test + ".xprocspec");
@@ -167,6 +169,7 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 			brailleModule("dotify-formatter"),
 			brailleModule("dtbook-to-pef"),
 			brailleModule("epub3-to-pef"),
+			brailleModule("epub3-to-epub3"),
 			pipelineModule("common-utils"),
 			pipelineModule("file-utils"),
 			pipelineModule("fileset-utils"),

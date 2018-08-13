@@ -52,7 +52,8 @@
         </p:input>
     </px:epub3-to-epub3.load>
     
-    <px:epub3-to-epub3.convert name="convert">
+    <px:epub3-to-epub3.convert content-media-types="application/xhtml+xml application/sbs-xhtml+xml"
+                               name="convert">
         <p:input port="epub.in.fileset">
             <p:pipe step="load" port="fileset"/>
         </p:input>
