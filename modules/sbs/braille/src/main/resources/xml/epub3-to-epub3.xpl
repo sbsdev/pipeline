@@ -41,7 +41,8 @@
     <p:import href="http://www.daisy.org/pipeline/modules/braille/epub3-to-epub3/library.xpl"/>
     
     <px:fileset-create name="target.base.fileset">
-        <p:with-option name="base" select="concat($output-dir,'/',replace($source,'^.*/(([^/]+)\.epub|([^/]+))$','$2$3.epub'),'!/')"/>
+        <p:with-option name="base"
+                       select="concat($output-dir,'/',replace(replace($source,'(\.epub|/mimetype)$',''),'^.*/([^/]+)$','$1'),'.epub!/')"/>
     </px:fileset-create>
     
     <px:epub3-to-epub3.load name="load">
