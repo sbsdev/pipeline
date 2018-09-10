@@ -449,6 +449,10 @@
                 <artifactItem>
                   <groupId>org.daisy.libs</groupId>
                   <artifactId>jstyleparser</artifactId>
+                  <!--
+                      FIXME: use version from framework bom
+                  -->
+                  <version>1.20-p12-SNAPSHOT</version>
                 </artifactItem>
                 <!--
                     for braille modules
