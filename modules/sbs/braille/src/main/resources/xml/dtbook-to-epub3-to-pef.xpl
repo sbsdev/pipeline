@@ -105,7 +105,7 @@
 			<p:pipe step="dtbook-xml-preprocessed" port="result"/>
 		</p:input>
 		<p:input port="xslt">
-			<p:document href="dtbook-to-epub3.xsl"/>
+			<p:document href="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/dtbook-to-epub3.sbs.xsl"/>
 		</p:input>
 		<p:with-option name="temp-dir" select="concat($temp-dir,'dtbook-to-html/')"/>
 	</px:nordic-dtbook-to-html.step>

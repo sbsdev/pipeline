@@ -19,33 +19,7 @@
 	
 	<xsl:import href="epub3-dtbook-migrator.xsl"/>
 	
-	<!-- @Override (epub3-to-dtbook.xsl) -->
-	<xsl:variable name="normalize-space-in-h" select="false()"/>
-	
-	<!-- @Override (epub3-to-dtbook.xsl) -->
-	<xsl:variable name="allow-links" select="true()"/>
-	
-	<!-- @Override (epub3-to-dtbook.xsl) -->
-	<xsl:variable name="generate-ids" select="false()"/>
-	
-	<!-- @Override (epub3-to-dtbook.xsl) -->
-	<xsl:variable name="transform-longdesc-to" select="'imgref'"/>
-	
-	<!-- @Override (epub3-to-dtbook.xsl) -->
-	<xsl:variable name="supported-list-types" select="('ol','ul','pl')"/>
-	
-	<!-- @Override (epub3-to-dtbook.xsl) -->
-	<xsl:variable name="add-list-depth" select="false()"/>
-	
-	<!-- @Override (epub3-to-dtbook.xsl) -->
-	<xsl:variable name="add-lic" select="false()"/>
-	
-	<!-- @Override (epub3-to-dtbook.xsl) -->
-	<xsl:template name="f:attrs" xmlns:f="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/epub3-to-dtbook.xsl">
-		<xsl:call-template name="f:coreattrs"/>
-		<xsl:call-template name="f:i18n"/>
-		<xsl:copy-of select="@brl:*"/>
-	</xsl:template>
+	<xsl:include href="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/epub3-to-dtbook.sbs.mod.overrides.xsl"/>
 	
 	<xsl:include href="block-translate.xsl"/>
 	

@@ -34,6 +34,14 @@
     <uri name="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/dtbook-to-epub3.xsl" uri="../xml/xslt/dtbook-to-epub3.xsl"/>
     <uri name="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/epub3-to-dtbook.xsl" uri="../xml/xslt/epub3-to-dtbook.xsl"/>
     
+    <!-- SBS specific stylesheets -->
+    <uri name="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/dtbook-to-epub3.sbs.xsl" uri="../xml/xslt/dtbook-to-epub3.sbs.xsl"/>
+    <uri name="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/dtbook-to-epub3.sbs.mod.overrides.xsl" uri="../xml/xslt/dtbook-to-epub3.sbs.mod.overrides.xsl"/>
+    <uri name="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/dtbook-to-epub3.sbs.mod.templates.xsl" uri="../xml/xslt/dtbook-to-epub3.sbs.mod.templates.xsl"/>
+    <uri name="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/epub3-to-dtbook.sbs.xsl" uri="../xml/xslt/epub3-to-dtbook.sbs.xsl"/>
+    <uri name="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/epub3-to-dtbook.sbs.mod.overrides.xsl" uri="../xml/xslt/epub3-to-dtbook.sbs.mod.overrides.xsl"/>
+    <uri name="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/epub3-to-dtbook.sbs.mod.templates.xsl" uri="../xml/xslt/epub3-to-dtbook.sbs.mod.templates.xsl"/>
+    
     <!-- RelaxNG and Schematron schemas -->
     <uri name="http://www.daisy.org/pipeline/modules/nordic/nordic-dtbook-2005-3.rng" uri="../xml/schema/nordic-dtbook-2005-3.rng"/>
     <uri name="http://www.daisy.org/pipeline/modules/nordic/nordic-html5.rng" uri="../xml/schema/nordic-html5.rng"/>
