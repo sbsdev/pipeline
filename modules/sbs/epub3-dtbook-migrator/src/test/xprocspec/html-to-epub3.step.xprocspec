@@ -7,7 +7,7 @@
     <x:scenario label="px:nordic-html-to-epub3.step">
         <x:call step="px:nordic-html-to-epub3.step">
             <x:input port="fileset.in">
-                <x:document type="inline" xml:base="single-html/">
+                <x:document type="inline" xml:base="../resources/single-html/">
                     <d:fileset>
                         <d:file href="images/valentin.jpg" media-type="image/jpeg" original-href="images/valentin.jpg"/>
                         <d:file href="C00000.xhtml" media-type="application/xhtml+xml" original-href="C00000.xhtml" doctype="&lt;!DOCTYPE html&gt;"/>
@@ -15,7 +15,7 @@
                 </x:document>
             </x:input>
             <x:input port="in-memory.in">
-                <x:document href="single-html/C00000.xhtml" type="file" method="xml"/>
+                <x:document href="../resources/single-html/C00000.xhtml" type="file" method="xml"/>
             </x:input>
             <x:option name="temp-dir" select="$temp-dir"/>
             <x:option name="fail-on-error" select="'true'"/>
@@ -25,8 +25,7 @@
             <x:document type="port" port="fileset.out"/>
         </x:context>
         <x:expect type="count" label="There should be exactly one fileset" min="1" max="1"/>
-        <x:expect type="xpath" label="The fileset should have a xml:base attribute pointing to the 'epub' subdirectory of the temporary directory" test="/*/@xml:base"
-            equals="concat($temp-dir,'epub/')"/>
+        <x:expect type="xpath" label="The fileset should have a xml:base attribute pointing to the 'epub' subdirectory of the temporary directory" test="/*/@xml:base" equals="concat(replace($temp-dir,'//tmp','/tmp'),'epub/')"/>
 
         <x:context label="all files in the fileset that does not exist on disk">
             <x:document type="port" port="fileset.out" select="//d:file[not(@original-href)]"/>
@@ -57,10 +56,16 @@
                 <d:file href="EPUB/C00000-08-chapter.xhtml" method="xhtml" indent="true" encoding="utf-8" version="1.0" media-type="application/xhtml+xml" omit-xml-declaration="false" doctype="&lt;!DOCTYPE html&gt;"/>
             </x:document>
             <x:document type="inline" base-uri="temp-dir">
-                <d:file href="EPUB/C00000-09-conclusion.xhtml" method="xhtml" indent="true" encoding="utf-8" version="1.0" media-type="application/xhtml+xml" omit-xml-declaration="false" doctype="&lt;!DOCTYPE html&gt;"/>
+                <d:file href="EPUB/C00000-09-part.xhtml" method="xhtml" indent="true" encoding="utf-8" version="1.0" media-type="application/xhtml+xml" omit-xml-declaration="false" doctype="&lt;!DOCTYPE html&gt;"/>
             </x:document>
             <x:document type="inline" base-uri="temp-dir">
-                <d:file href="EPUB/C00000-10-footnotes.xhtml" method="xhtml" indent="true" encoding="utf-8" version="1.0" media-type="application/xhtml+xml" omit-xml-declaration="false" doctype="&lt;!DOCTYPE html&gt;"/>
+                <d:file href="EPUB/C00000-10-chapter.xhtml" method="xhtml" indent="true" encoding="utf-8" version="1.0" media-type="application/xhtml+xml" omit-xml-declaration="false" doctype="&lt;!DOCTYPE html&gt;"/>
+            </x:document>
+            <x:document type="inline" base-uri="temp-dir">
+                <d:file href="EPUB/C00000-11-conclusion.xhtml" method="xhtml" indent="true" encoding="utf-8" version="1.0" media-type="application/xhtml+xml" omit-xml-declaration="false" doctype="&lt;!DOCTYPE html&gt;"/>
+            </x:document>
+            <x:document type="inline" base-uri="temp-dir">
+                <d:file href="EPUB/C00000-12-footnotes.xhtml" method="xhtml" indent="true" encoding="utf-8" version="1.0" media-type="application/xhtml+xml" omit-xml-declaration="false" doctype="&lt;!DOCTYPE html&gt;"/>
             </x:document>
             <x:document type="inline" base-uri="temp-dir">
                 <d:file href="EPUB/nav.ncx" method="xml" indent="true" omit-xml-declaration="false" media-type="application/x-dtbncx+xml"/>
@@ -85,7 +90,7 @@
         <x:context label="the in-memory.out port">
             <x:document type="port" port="in-memory.out"/>
         </x:context>
-        <x:expect label="there should be 14 documents on the in-memory.out port" type="count" min="14" max="14"/>
+        <x:expect label="there should be 16 documents on the in-memory.out port" type="count" min="16" max="16"/>
         
         <x:context label="the OPF">
             <x:document type="port" port="in-memory.out" select="/opf:package"/>

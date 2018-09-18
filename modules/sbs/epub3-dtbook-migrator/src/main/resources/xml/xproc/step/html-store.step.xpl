@@ -65,6 +65,16 @@
 
 
 
+            <px:normalize-document-base name="html-store.step.normalize-base">
+                <p:input port="source">
+                    <p:pipe port="in-memory.in" step="main"/>
+                </p:input>
+            </px:normalize-document-base>
+            <px:fileset-join>
+                <p:input port="source">
+                    <p:pipe port="fileset.in" step="main"/>
+                </p:input>
+            </px:fileset-join>
             <p:choose name="html-store.step.choose-include-resources">
                 <p:when test="$include-resources = 'false'">
                     <p:delete match="/*/d:file[@media-type != 'application/xhtml+xml']" name="html-store.step.choose-include-resources.delete-auxiliary-resources-from-fileset"/>
@@ -81,7 +91,7 @@
             <p:add-attribute match="/*/d:file[ends-with(@media-type,'+xml') or ends-with(@media-type,'/xml')]" attribute-name="encoding" attribute-value="us-ascii" name="html-store.step.set-encoding-to-ascii"/>
             <px:fileset-store name="html-store.step.html-store">
                 <p:input port="in-memory.in">
-                    <p:pipe port="in-memory.in" step="main"/>
+                    <p:pipe port="result" step="html-store.step.normalize-base"/>
                 </p:input>
             </px:fileset-store>
             <p:identity>
@@ -96,7 +106,7 @@
                     <p:with-option name="doctype" select="$doctype"/>
                     <p:with-option name="href" select="$href"/>
                 </px:set-doctype>
-                <p:add-attribute match="/*" attribute-name="doctype" name="html-store.step.viewport-doctype.add-doctype-attribute-to-fileset">
+                <p:add-attribute match="/*" attribute-name="doctype" name="html-store.step.viewport-doctype.add-doctype-attribute-to-fileset" cx:depends-on="html-store.step.viewport-doctype.set-doctype">
                     <p:input port="source">
                         <p:pipe port="current" step="html-store.step.viewport-doctype"/>
                     </p:input>
@@ -148,7 +158,7 @@
         <p:xpath-context>
             <p:pipe port="status.in" step="main"/>
         </p:xpath-context>
-        <p:when test="/*/@result='ok'">
+        <p:when test="/*/@result='ok' and $fail-on-error='true'">
             <p:output port="result"/>
             <px:nordic-validation-status>
                 <p:input port="source">

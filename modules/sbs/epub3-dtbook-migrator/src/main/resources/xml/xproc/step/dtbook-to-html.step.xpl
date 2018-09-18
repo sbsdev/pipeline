@@ -96,6 +96,14 @@
                     <p:pipe step="main" port="xslt"/>
                 </p:input>
             </p:xslt>
+            <p:xslt>
+                <p:input port="parameters">
+                    <p:empty/>
+                </p:input>
+                <p:input port="stylesheet">
+                    <p:document href="../../xslt/update-epub-prefixes.xsl"/>
+                </p:input>
+            </p:xslt>
 
             <p:insert match="/html:html/html:head" position="last-child" name="dtbook-to-html.step.insert-accessibility-css-link">
                 <p:input port="insertion">
@@ -241,7 +249,7 @@
         <p:xpath-context>
             <p:pipe port="status.in" step="main"/>
         </p:xpath-context>
-        <p:when test="/*/@result='ok'">
+        <p:when test="/*/@result='ok' and $fail-on-error='true'">
             <p:output port="result"/>
             <px:nordic-validation-status>
                 <p:input port="source">

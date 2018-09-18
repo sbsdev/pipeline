@@ -4,8 +4,8 @@
 ; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
 ;
 [subrepo]
-	remote = https://github.com/nlbdev/nordic-epub3-dtbook-migrator
+	remote = git@github.com:sbsdev/nordic-epub3-dtbook-migrator.git
 	branch = master
 	commit = 495d5fb160624cf868c92cc81e95e83ab30413db
-	parent = b1b9c98273a78aebf7b1ca098a382ae1532c1369
-	cmdver = 0.3.0
+	parent = 66a384fd82f230f7985b07df871b358aee71200a
+	cmdver = 0.3.1

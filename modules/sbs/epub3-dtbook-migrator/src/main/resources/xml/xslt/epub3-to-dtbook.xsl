@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:f="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/epub3-to-dtbook.xsl" xmlns:pf="http://www.daisy.org/ns/pipeline/functions" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
     xmlns="http://www.daisy.org/z3986/2005/dtbook/" xpath-default-namespace="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="#all" xmlns:epub="http://www.idpf.org/2007/ops"
-    xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:math="http://www.w3.org/1998/Math/MathML">
 
     <xsl:import href="http://www.daisy.org/pipeline/modules/common-utils/numeral-conversion.xsl"/>
     <!--<xsl:import href="../../../../test/xspec/mock/numeral-conversion.xsl"/>-->
@@ -33,7 +33,7 @@
     -->
 
     <xsl:template match="text()|comment()">
-        <xsl:copy-of select="."/>
+        <xsl:copy-of select="." exclude-result-prefixes="#all"/>
     </xsl:template>
 
     <xsl:template match="*">
@@ -47,14 +47,14 @@
     <xsl:template name="f:coreattrs">
         <xsl:param name="except" tunnel="yes"/>
 
-        <xsl:copy-of select="(@id|@title|@xml:space)[not(name()=$except)]"/>
+        <xsl:copy-of select="(@id|@title|@xml:space)[not(name()=$except)]" exclude-result-prefixes="#all"/>
         <xsl:call-template name="f:classes-and-types"/>
     </xsl:template>
 
     <xsl:template name="f:i18n">
         <xsl:param name="except" tunnel="yes"/>
 
-        <xsl:copy-of select="(@dir)[not(name()=$except)]"/>
+        <xsl:copy-of select="(@dir)[not(name()=$except)]" exclude-result-prefixes="#all"/>
         <xsl:if test="(@xml:lang|@lang) and not(('xml:lang','lang')=$except)">
             <xsl:attribute name="xml:lang" select="(@xml:lang|@lang)[1]"/>
         </xsl:if>
@@ -115,7 +115,7 @@
     <xsl:template name="f:attrsrqd">
         <xsl:param name="except" tunnel="yes"/>
 
-        <xsl:copy-of select="(@id|@title|@xml:space)[not(name()=$except)]"/>
+        <xsl:copy-of select="(@id|@title|@xml:space)[not(name()=$except)]" exclude-result-prefixes="#all"/>
         <xsl:call-template name="f:classes-and-types"/>
         <xsl:call-template name="f:i18n"/>
     </xsl:template>
@@ -163,7 +163,7 @@
 
     <xsl:template name="f:attlist.link">
         <xsl:call-template name="f:attrs"/>
-        <xsl:copy-of select="@href|@hreflang|@type|@rel|@media"/>
+        <xsl:copy-of select="@href|@hreflang|@type|@rel|@media" exclude-result-prefixes="#all"/>
         <!-- @sizes are dropped -->
     </xsl:template>
 
@@ -183,7 +183,7 @@
 
     <xsl:template name="f:attlist.meta">
         <xsl:call-template name="f:i18n"/>
-        <xsl:copy-of select="@http-equiv"/>
+        <xsl:copy-of select="@http-equiv" exclude-result-prefixes="#all"/>
         <xsl:choose>
             <xsl:when test="@name='nordic:guidelines'">
                 <xsl:attribute name="name" select="'track:Guidelines'"/>
@@ -588,7 +588,7 @@
         </xsl:call-template>
 
         <xsl:if test="$allow-links">
-            <xsl:copy-of select="@type|@href|@hreflang|@rel|@accesskey|@tabindex"/>
+            <xsl:copy-of select="@type|@href|@hreflang|@rel|@accesskey|@tabindex" exclude-result-prefixes="#all"/>
             <!-- @download and @media is dropped - they don't have a good equivalent in DTBook -->
 
             <xsl:choose>
@@ -850,14 +850,14 @@
     </xsl:template>
 
     <xsl:template name="f:attlist.noteref">
-        <xsl:if test="@class or f:types(.)[not(.='noteref')]">
+        <xsl:if test="f:classes(.)[not(.='noteref')] or f:types(.)[not(.='noteref')]">
             <xsl:message select="'the class attribute on a noteref was dropped since it is not allowed in Nordic DTBook.'"/>
         </xsl:if>
         <xsl:call-template name="f:attrs">
             <xsl:with-param name="except-classes" select="'*'" tunnel="yes"/>
         </xsl:call-template>
         <xsl:attribute name="idref" select="@href"/>
-        <xsl:copy-of select="@type"/>
+        <xsl:copy-of select="@type" exclude-result-prefixes="#all"/>
     </xsl:template>
 
     <!-- <annoref> is not allowed in nordic DTBook. Replacing with span. -->
@@ -875,7 +875,7 @@
             <!--            <xsl:with-param name="except-classes" select="'annoref'" tunnel="yes"/>-->
         </xsl:call-template>
         <!--<xsl:attribute name="idref" select="@href"/>
-        <xsl:copy-of select="@type"/>-->
+        <xsl:copy-of select="@type" exclude-result-prefixes="#all"/>-->
     </xsl:template>
 
     <xsl:template match="html:q">
@@ -906,10 +906,10 @@
                 <xsl:attribute name="alt" select="'illustration'"/>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:copy-of select="@alt"/>
+                <xsl:copy-of select="@alt" exclude-result-prefixes="#all"/>
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:copy-of select="@height|@width"/>
+        <xsl:copy-of select="@height|@width" exclude-result-prefixes="#all"/>
         <xsl:variable name="imgref-element" as="element()*">
             <xsl:if test="@longdesc and $transform-longdesc-to=('imgref','both')">
                 <xsl:variable name="longdesc" select="@longdesc"/>
@@ -1081,7 +1081,7 @@
 
     <xsl:template name="f:attlist.blockquote">
         <xsl:call-template name="f:attrs"/>
-        <xsl:copy-of select="@cite"/>
+        <xsl:copy-of select="@cite" exclude-result-prefixes="#all"/>
     </xsl:template>
 
     <xsl:template match="html:dl">
@@ -1156,7 +1156,7 @@
             <xsl:with-param name="except-classes" tunnel="yes" select="'preformatted'"/>
         </xsl:call-template>
         <xsl:if test="local-name()=$supported-list-types and not(f:classes(.)='preformatted')">
-            <xsl:copy-of select="@start"/>
+            <xsl:copy-of select="@start" exclude-result-prefixes="#all"/>
             <xsl:if test="@type">
                 <xsl:attribute name="enum" select="@type"/>
             </xsl:if>
@@ -1276,16 +1276,16 @@
                     <xsl:for-each select="$a/node()">
                         <xsl:choose>
                             <xsl:when test="count(@* except @id) or ($position = 1 and @id)">
-                                <xsl:copy>
-                                    <xsl:copy-of select="@* except @id"/>
+                                <xsl:copy exclude-result-prefixes="#all">
+                                    <xsl:copy-of select="@* except @id" exclude-result-prefixes="#all"/>
                                     <xsl:if test="$position = 1">
-                                        <xsl:copy-of select="@id"/>
+                                        <xsl:copy-of select="@id" exclude-result-prefixes="#all"/>
                                     </xsl:if>
-                                    <xsl:copy-of select="node()"/>
+                                    <xsl:copy-of select="node()" exclude-result-prefixes="#all"/>
                                 </xsl:copy>
                             </xsl:when>
                             <xsl:otherwise>
-                                <xsl:copy-of select="node()"/>
+                                <xsl:copy-of select="node()" exclude-result-prefixes="#all"/>
                             </xsl:otherwise>
                         </xsl:choose>
                     </xsl:for-each>
@@ -1429,7 +1429,7 @@
 
     <xsl:template name="f:attlist.colgroup">
         <xsl:call-template name="f:attrs"/>
-        <xsl:copy-of select="@span"/>
+        <xsl:copy-of select="@span" exclude-result-prefixes="#all"/>
         <xsl:call-template name="f:cellhvalign"/>
         <!--
             @width could potentially be inferred from the CSS,
@@ -1448,7 +1448,7 @@
 
     <xsl:template name="f:attlist.col">
         <xsl:call-template name="f:attrs"/>
-        <xsl:copy-of select="@span"/>
+        <xsl:copy-of select="@span" exclude-result-prefixes="#all"/>
         <xsl:call-template name="f:cellhvalign"/>
         <!--
             @width could potentially be inferred from the CSS,
@@ -1498,7 +1498,7 @@
 
     <xsl:template name="f:attlist.th">
         <xsl:call-template name="f:attrs"/>
-        <xsl:copy-of select="@headers|@scope|@rowspan|@colspan"/>
+        <xsl:copy-of select="@headers|@scope|@rowspan|@colspan" exclude-result-prefixes="#all"/>
         <xsl:call-template name="f:cellhvalign"/>
     </xsl:template>
 
@@ -1511,8 +1511,25 @@
 
     <xsl:template name="f:attlist.td">
         <xsl:call-template name="f:attrs"/>
-        <xsl:copy-of select="@headers|@scope|@rowspan|@colspan"/>
+        <xsl:copy-of select="@headers|@scope|@rowspan|@colspan" exclude-result-prefixes="#all"/>
         <xsl:call-template name="f:cellhvalign"/>
+    </xsl:template>
+    
+    <xsl:template match="math:*">
+        <xsl:copy exclude-result-prefixes="#all">
+            <xsl:apply-templates select="@* | node()"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:template match="math:*/@*">
+        <xsl:choose>
+            <xsl:when test="local-name() = 'altimg'">
+                <xsl:attribute name="altimg" select="replace(.,'^images/','')"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy-of select="." exclude-result-prefixes="#all"/>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template name="f:copy-preceding-comments">
