@@ -67,7 +67,7 @@
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
         <artifactId>scripts-bom</artifactId>
-        <version>1.11.0</version>
+        <version>1.11.1-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
