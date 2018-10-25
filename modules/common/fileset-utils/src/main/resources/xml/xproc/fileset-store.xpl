@@ -37,8 +37,9 @@
     <px:fileset-join name="fileset.in-memory.in"/>
     <p:sink/>
 
-    <p:documentation>Load zipped files into memory.</p:documentation>
-    <p:delete match="//d:file[not(contains(resolve-uri((@original-href, @href)[1], base-uri(.)), '!/'))]">
+    <p:documentation>Load zipped files into memory (including `bundle:' and `jar:' files).</p:documentation>
+    <p:delete match="//d:file[not(contains(resolve-uri((@original-href, @href)[1], base-uri(.)), '!/'))
+                              and not(@original-href[matches(.,'^(bundle|jar):')])]">
         <p:input port="source">
             <p:pipe step="main" port="fileset.in"/>
         </p:input>
@@ -48,7 +49,7 @@
             <p:pipe step="fileset.in-memory.in" port="result"/>
         </p:input>
     </px:fileset-diff>
-    <px:fileset-load name="in-memory.unzip">
+    <px:fileset-load name="in-memory.unzip" fail-on-not-found="true">
         <p:input port="in-memory">
             <p:empty/>
         </p:input>
