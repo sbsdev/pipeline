@@ -39,6 +39,7 @@
     <module>modules/sbs/braille</module>
     <module>modules/sbs/epub3-dtbook-migrator</module>
     <module>modules/sbs/dtbook-to-odt</module>
+    <module>modules/sbs/dtbook-to-ebook</module>
     <module>cli</module>
     <module>gui</module>
     <module>updater/cli</module>

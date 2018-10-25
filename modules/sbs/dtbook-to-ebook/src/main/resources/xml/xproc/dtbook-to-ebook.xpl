@@ -8,7 +8,7 @@
     xmlns:odt="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
     xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0"
     exclude-inline-prefixes="#all"
-    type="sbs:dtbook-to-ebook" name="dtbook-to-ebook" version="1.0">
+    type="sbs:dtbook-to-ebook" name="main" version="1.0">
 
     <p:documentation xmlns="http://www.w3.org/1999/xhtml">
         <h1 px:role="name">DTBook to E-Book (SBS)</h1>
@@ -53,7 +53,7 @@
 
       <px:dtbook-load name="dtbook">
         <p:input port="source">
-          <p:pipe step="dtbook-to-odt" port="source"/>
+          <p:pipe step="main" port="source"/>
         </p:input>
       </px:dtbook-load>
 
@@ -130,6 +130,9 @@
         </p:input>
       </p:xslt>
 
+      <p:identity name="dtbook-xml-preprocessed">
+      </p:identity>
+      
       <!-- ======================= -->
       <!-- Convert DTBook to EPUB3 -->
       <!-- ======================= -->
