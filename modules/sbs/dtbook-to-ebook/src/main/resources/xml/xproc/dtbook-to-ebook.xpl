@@ -2,11 +2,9 @@
 <p:declare-step
     xmlns:p="http://www.w3.org/ns/xproc"
     xmlns:px="http://www.daisy.org/ns/pipeline/xproc"
-    xmlns:pxi="http://www.daisy.org/ns/pipeline/xproc/internal"
     xmlns:sbs="http://www.sbs.ch/pipeline"
     xmlns:c="http://www.w3.org/ns/xproc-step"
-    xmlns:odt="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
-    xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0"
+    xmlns:html="http://www.w3.org/1999/xhtml"
     exclude-inline-prefixes="#all"
     type="sbs:dtbook-to-ebook" name="main" version="1.0">
 
@@ -154,7 +152,7 @@
       
       <px:fileset-load media-types="application/xhtml+xml" name="load-html">
 	<p:input port="in-memory">
-	  <p:pipe port="in-memory.in" step="html"/>
+	  <p:pipe port="in-memory.out" step="html"/>
 	</p:input>
       </px:fileset-load>
 
