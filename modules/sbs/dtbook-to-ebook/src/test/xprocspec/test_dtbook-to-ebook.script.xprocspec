@@ -66,6 +66,16 @@
       </x:document>
     </x:expect>
 
+    <x:context label="The XHTML document">
+      <x:document type="file" base-uri="temp-dir" href="basic/epub3/basic.epub!/EPUB/basic-1-chapter.xhtml" select="//html:html/html:head/html:link"/>
+    </x:context>
+    <x:expect label="The css link" type="compare">
+      <x:document type="inline">
+	<link xmlns="http://www.w3.org/1999/xhtml"
+	      rel="stylesheet" type="text/css" href="css/accessibility.css"/>
+      </x:document>
+    </x:expect>
+
   </x:scenario>
   
 </x:description>
