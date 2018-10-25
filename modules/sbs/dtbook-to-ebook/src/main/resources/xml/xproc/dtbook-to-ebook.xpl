@@ -72,7 +72,7 @@
           <p:empty/>
         </p:input>
         <p:input port="stylesheet">
-          <p:document href="filterBrlContractionhints.xsl"/>
+          <p:document href="../xslt/filterBrlContractionhints.xsl"/>
         </p:input>
       </p:xslt>
 
@@ -81,7 +81,7 @@
           <p:empty/>
         </p:input>
         <p:input port="stylesheet">
-          <p:document href="filterProcessingInstructions.xsl"/>
+          <p:document href="../xslt/filterProcessingInstructions.xsl"/>
         </p:input>
       </p:xslt>
 
@@ -90,7 +90,7 @@
           <p:empty/>
         </p:input>
         <p:input port="stylesheet">
-          <p:document href="filterTOC.xsl"/>
+          <p:document href="../xslt/filterTOC.xsl"/>
         </p:input>
       </p:xslt>
 
@@ -99,7 +99,7 @@
           <p:empty/>
         </p:input>
         <p:input port="stylesheet">
-          <p:document href="filterComments.xsl"/>
+          <p:document href="../xslt/filterComments.xsl"/>
         </p:input>
       </p:xslt>
 
@@ -108,7 +108,7 @@
           <p:empty/>
         </p:input>
         <p:input port="stylesheet">
-          <p:document href="filterLinenumSpans.xsl"/>
+          <p:document href="../xslt/filterLinenumSpans.xsl"/>
         </p:input>
       </p:xslt>
 
@@ -117,7 +117,7 @@
           <p:empty/>
         </p:input>
         <p:input port="stylesheet">
-          <p:document href="addEmptyHeaders.xsl"/>
+          <p:document href="../xslt/addEmptyHeaders.xsl"/>
         </p:input>
       </p:xslt>
 
@@ -126,12 +126,11 @@
           <p:empty/>
         </p:input>
         <p:input port="stylesheet">
-          <p:document href="addBoilerplate.xsl"/>
+          <p:document href="../xslt/addBoilerplate.xsl"/>
         </p:input>
       </p:xslt>
 
-      <p:identity name="dtbook-xml-preprocessed">
-      </p:identity>
+      <p:identity name="dtbook-xml-preprocessed"/>
       
       <!-- ======================= -->
       <!-- Convert DTBook to EPUB3 -->
@@ -175,6 +174,7 @@
 	</p:input>
 	<p:with-option name="output-dir" select="concat($output-dir,'epub3/')"/>
       </px:nordic-epub3-store.step>
+      <p:sink/>
 	
       <!-- ================================ -->
       <!-- Add a Braille Rendition to EPUB3 -->
