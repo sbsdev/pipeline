@@ -166,7 +166,7 @@
       </p:insert>
 
       <!-- Add the css -->
-      <px:fileset-add-entry media-type="text/plain">
+      <px:fileset-add-entry media-type="text/css">
 	<p:input port="source">
 	  <p:pipe port="fileset.out" step="html"/>
 	</p:input>
