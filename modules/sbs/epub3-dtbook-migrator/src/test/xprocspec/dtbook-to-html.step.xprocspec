@@ -11,28 +11,25 @@
             <p:input port="in-memory.in" sequence="true">
                 <p:empty/>
             </p:input>
-            <p:output port="fileset.out" primary="true">
-                <p:pipe step="dtbook-to-html" port="fileset.out"/>
-            </p:output>
+            <p:output port="fileset.out" primary="true"/>
             <p:output port="in-memory.out" sequence="true">
-                <p:pipe step="dtbook-to-html" port="in-memory.out"/>
-            </p:output>
-            <p:output port="report.out" sequence="true">
-                <p:pipe step="dtbook-to-html" port="report.out"/>
+                <p:pipe step="add-css" port="in-memory.out"/>
             </p:output>
             <p:option name="fail-on-error" required="true"/>
             <p:option name="temp-dir" required="true"/>
             <p:import href="../../main/resources/xml/xproc/step/dtbook-to-html.step.xpl"/>
             <px:nordic-dtbook-to-html.step name="dtbook-to-html">
-                <p:input port="fileset.in">
-                    <p:pipe step="main" port="fileset.in"/>
-                </p:input>
                 <p:input port="in-memory.in">
                     <p:pipe step="main" port="in-memory.in"/>
                 </p:input>
                 <p:with-option name="fail-on-error" select="fail-on-error"/>
                 <p:with-option name="temp-dir" select="$temp-dir"/>
             </px:nordic-dtbook-to-html.step>
+            <px:nordic-html-add-accessibility-css.step name="add-css">
+                <p:input port="in-memory.in">
+                    <p:pipe step="dtbook-to-html" port="in-memory.in"/>
+                </p:input>
+            </px:nordic-html-add-accessibility-css.step>
         </p:declare-step>
     </x:script>
     
