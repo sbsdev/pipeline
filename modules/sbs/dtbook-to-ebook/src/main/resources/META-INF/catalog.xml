@@ -5,4 +5,11 @@
   <uri name="http://www.daisy.org/pipeline/modules/modules/sbs/dtbook-to-ebook/dtbook-to-ebook.xpl"
        uri="../xml/xproc/dtbook-to-ebook.xpl" px:script="true"/>
 
+  <!-- dependencies -->
+  <nextCatalog catalog="org:daisy:pipeline:modules:nordic-epub3-dtbook-migrator"/>
+  <nextCatalog catalog="org:daisy:pipeline:modules:dtbook-utils"/>
+  <nextCatalog catalog="org:daisy:pipeline:modules:file-utils"/>
+  <nextCatalog catalog="org:daisy:pipeline:modules:fileset-utils"/>
+  <nextCatalog catalog="org:daisy:pipeline:modules:braille:epub3-to-epub3"/>
+
 </catalog>
