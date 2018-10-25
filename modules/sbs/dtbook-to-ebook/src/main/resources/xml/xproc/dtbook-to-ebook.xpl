@@ -29,10 +29,10 @@
         </p:documentation>
     </p:option>
 
-    <p:import href="http://www.daisy.org/pipeline/modules/dtbook-to-odt/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/dtbook-utils/library.xpl"/>
-    <p:import href="http://www.daisy.org/pipeline/modules/odt-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl"/>
+    <p:import href="http://www.daisy.org/pipeline/modules/fileset-utils/library.xpl"/>
+    <p:import href="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/library.xpl"/>
 
     <!-- =============== -->
     <!-- CREATE TEMP DIR -->
@@ -57,9 +57,15 @@
         </p:input>
       </px:dtbook-load>
 
-      <!-- ====================== -->
+      <px:fileset-load media-types="application/x-dtbook+xml">
+	<p:input port="in-memory">
+	  <p:pipe step="dtbook" port="in-memory.out"/>
+	</p:input>
+      </px:fileset-load>
+	
+      <!-- ===================== -->
       <!-- Clean the DTBook file -->
-      <!-- ====================== -->
+      <!-- ===================== -->
 
       <p:xslt name="filter-brl-contraction-hints">
         <p:input port="parameters">
@@ -133,21 +139,40 @@
       <!-- 2. Use a different accessibility css -->
       <!-- 3. Include the elements needed for a good braille rendition -->
 
-      <px:nordic-dtbook-to-epub3 name="dtbook-to-epub3">
-        <p:input port="content.xsl">
-          <p:document href="content-sbs.xsl"/>
-        </p:input>
-        <p:input port="fileset.in">
-          <p:pipe step="dtbook" port="fileset.out"/>
-        </p:input>
-        <p:input port="in-memory.in">
-          <p:pipe step="dtbook" port="in-memory.out"/>
-        </p:input>
-        <p:with-option name="temp-dir" select="$temp-dir">
-          <p:pipe step="temp-dir" port="result"/>
-        </p:with-option>
-      </px:nordic-dtbook-to-epub3>
-
+      <px:nordic-dtbook-to-html.step name="html"
+	                             fail-on-error="true">
+	<p:input port="fileset.in">
+	  <p:pipe step="dtbook" port="fileset.out"/>
+	</p:input>
+	<p:input port="in-memory.in">
+	  <p:pipe step="dtbook-xml-preprocessed" port="result"/>
+	</p:input>
+	<p:with-option name="temp-dir" select="concat($temp-dir,'dtbook-to-html/')"/>
+      </px:nordic-dtbook-to-html.step>
+      
+      <px:nordic-html-to-epub3.step name="epub3"
+	                            fail-on-error="true"
+	                            compatibility-mode="true">
+	<p:input port="fileset.in">
+	  <p:pipe step="html" port="fileset.out"/>
+	</p:input>
+	<p:input port="in-memory.in">
+	  <p:pipe step="html" port="in-memory.out"/>
+	</p:input>
+	<p:with-option name="temp-dir" select="concat($temp-dir,'html-to-epub3/')"/>
+      </px:nordic-html-to-epub3.step>
+      
+      <px:nordic-epub3-store.step name="epub3-store"
+	                          fail-on-error="true">
+	<p:input port="fileset.in">
+	  <p:pipe step="epub3" port="fileset.out"/>
+	</p:input>
+	<p:input port="in-memory.in">
+	  <p:pipe step="epub3" port="in-memory.out"/>
+	</p:input>
+	<p:with-option name="output-dir" select="concat($output-dir,'epub3/')"/>
+      </px:nordic-epub3-store.step>
+	
       <!-- ================================ -->
       <!-- Add a Braille Rendition to EPUB3 -->
       <!-- ================================ -->

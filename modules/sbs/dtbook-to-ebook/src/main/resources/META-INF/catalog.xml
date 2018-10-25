@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" xmlns:px="http://www.daisy.org/ns/pipeline">
 
-    <!-- Pipeline 2 scripts -->
-    <uri name="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/dtbook-to-epub3.xpl" uri="../xml/xproc/dtbook-to-epub3.xpl"/><!-- px:script="true"/>-->
-    <uri name="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/epub3-validate.xpl" uri="../xml/xproc/epub3-validate.xpl"/><!-- px:script="true"/>-->
-    <uri name="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/dtbook-validate.xpl" uri="../xml/xproc/dtbook-validate.xpl"/><!-- px:script="true"/>-->
+  <!-- Pipeline 2 script -->
+  <uri name="http://www.daisy.org/pipeline/modules/modules/sbs/dtbook-to-ebook/dtbook-to-ebook.xpl"
+       uri="../xml/xproc/dtbook-to-ebook.xpl" px:script="true"/>
 
 </catalog>
