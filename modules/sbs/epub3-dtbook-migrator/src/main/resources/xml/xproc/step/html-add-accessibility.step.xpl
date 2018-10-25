@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<p:declare-step xmlns:p="http://www.w3.org/ns/xproc" xmlns:c="http://www.w3.org/ns/xproc-step" xmlns:px="http://www.daisy.org/ns/pipeline/xproc" xmlns:d="http://www.daisy.org/ns/pipeline/data"
-    type="px:nordic-html-add-accessibility-css.step" name="main" version="1.0" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:dtbook="http://www.daisy.org/z3986/2005/dtbook/"
-    xmlns:html="http://www.w3.org/1999/xhtml" xmlns:cx="http://xmlcalabash.com/ns/extensions">
+<p:declare-step xmlns:p="http://www.w3.org/ns/xproc" version="1.0"
+		xmlns:px="http://www.daisy.org/ns/pipeline/xproc"
+		xmlns:cx="http://xmlcalabash.com/ns/extensions"
+		xmlns:html="http://www.w3.org/1999/xhtml"
+		type="px:nordic-html-add-accessibility-css.step"
+		name="main">
 
     <p:input port="fileset.in" primary="true"/>
     <p:input port="in-memory.in" sequence="true">
