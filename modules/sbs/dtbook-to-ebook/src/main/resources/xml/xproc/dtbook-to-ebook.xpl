@@ -4,6 +4,7 @@
     xmlns:px="http://www.daisy.org/ns/pipeline/xproc"
     xmlns:sbs="http://www.sbs.ch/pipeline"
     xmlns:c="http://www.w3.org/ns/xproc-step"
+    xmlns:d="http://www.daisy.org/ns/pipeline/data"
     xmlns:html="http://www.w3.org/1999/xhtml"
     exclude-inline-prefixes="#all"
     type="sbs:dtbook-to-ebook" name="main" version="1.0">
@@ -31,6 +32,7 @@
     <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/fileset-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/library.xpl"/>
+    <p:import href="http://www.daisy.org/pipeline/modules/braille/epub3-to-epub3/epub3-to-epub3.xpl"/>
 
     <!-- =============== -->
     <!-- CREATE TEMP DIR -->
@@ -197,7 +199,7 @@
 	<p:input port="in-memory.in">
 	  <p:pipe step="epub3" port="in-memory.out"/>
 	</p:input>
-	<p:with-option name="output-dir" select="concat($output-dir,'epub3/')"/>
+	<p:with-option name="output-dir" select="concat($temp-dir,'epub3/')"/>
       </px:nordic-epub3-store.step>
       <p:sink/>
 	
@@ -205,9 +207,12 @@
       <!-- Add a Braille Rendition to EPUB3 -->
       <!-- ================================ -->
 
-      <!-- =========== -->
-      <!-- Store EPUB3 -->
-      <!-- =========== -->
+      <px:epub3-to-epub3>
+        <p:with-option name="source" select="//d:file[1]/resolve-uri(@href,base-uri(.))">
+          <p:pipe step="epub3-store" port="fileset.out"/>
+        </p:with-option>
+        <p:with-option name="output-dir" select="$output-dir"/>
+      </px:epub3-to-epub3>
 
     </p:group>
 

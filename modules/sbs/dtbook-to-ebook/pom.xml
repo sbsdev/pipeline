@@ -87,6 +87,22 @@
         test dependencies
     -->
     <dependency>
+      <groupId>org.daisy.pipeline.modules.braille</groupId>
+      <artifactId>liblouis-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.daisy.pipeline.modules.braille</groupId>
+      <artifactId>liblouis-native</artifactId>
+      <classifier>linux</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.daisy.pipeline.modules.braille</groupId>
+      <artifactId>liblouis-tables</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.daisy.pipeline.build</groupId>
       <artifactId>modules-test-helper</artifactId>
       <version>1.0.2-SNAPSHOT</version>

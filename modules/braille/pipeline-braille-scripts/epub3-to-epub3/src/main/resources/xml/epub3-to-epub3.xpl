@@ -115,5 +115,6 @@ specific.
             <p:pipe step="convert" port="epub.out.in-memory"/>
         </p:input>
     </px:fileset-store>
+    <p:sink/>
     
 </p:declare-step>
