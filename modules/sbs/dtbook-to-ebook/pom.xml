@@ -20,8 +20,15 @@
     <dependencies>
       <dependency>
 	<groupId>org.daisy.pipeline.modules</groupId>
-	<artifactId>scripts-pom</artifactId>
+	<artifactId>scripts-bom</artifactId>
 	<version>1.11.1-SNAPSHOT</version>
+	<type>pom</type>
+	<scope>import</scope>
+      </dependency>
+      <dependency>
+	<groupId>org.daisy.pipeline.modules.braille</groupId>
+	<artifactId>braille-modules-bom</artifactId>
+	<version>1.10.2-SNAPSHOT</version>
 	<type>pom</type>
 	<scope>import</scope>
       </dependency>
@@ -36,6 +43,13 @@
 	<groupId>org.daisy.pipeline.modules</groupId>
 	<artifactId>common-utils-bom</artifactId>
 	<version>1.11.0</version>
+	<type>pom</type>
+	<scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.daisy.pipeline</groupId>
+	<artifactId>framework-bom</artifactId>
+	<version>1.11.1-SNAPSHOT</version>
 	<type>pom</type>
 	<scope>import</scope>
       </dependency>
@@ -75,14 +89,12 @@
     <dependency>
       <groupId>org.daisy.pipeline.build</groupId>
       <artifactId>modules-test-helper</artifactId>
+      <version>1.0.1</version>
       <scope>test</scope>
     </dependency>
-    <!--
-        because of bug in lou_indexTables we need to include liblouis-tables even though we're not using it
-    -->
     <dependency>
-      <groupId>org.daisy.pipeline.modules.braille</groupId>
-      <artifactId>liblouis-tables</artifactId>
+      <groupId>org.daisy.pipeline</groupId>
+      <artifactId>calabash-adapter</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
