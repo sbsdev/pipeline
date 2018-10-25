@@ -46,43 +46,43 @@
       <px:copy-resource name="dtbook-to-html.step.store1" cx:depends-on="mkdir">
 	<p:with-option name="href" select="resolve-uri('../../../css/accessibility.css',$doc-base)"/>
 	<p:with-option name="target"
-		       select="resolve-uri('css/accessibility.css', $temp-dir)"/>
+		       select="resolve-uri('css/accessibility.css', $html-base)"/>
       </px:copy-resource>
       <px:copy-resource name="dtbook-to-html.step.store2" cx:depends-on="mkdir">
 	<p:with-option name="href" select="resolve-uri('../../../css/fonts/opendyslexic/OpenDyslexic-Regular.otf',$doc-base)"/>
 	<p:with-option name="target"
 		       select="resolve-uri('css/fonts/opendyslexic/OpenDyslexic-Regular.otf',
-			       $temp-dir)"/>
+			       $html-base)"/>
       </px:copy-resource>
       <px:copy-resource name="dtbook-to-html.step.store3" cx:depends-on="mkdir">
 	<p:with-option name="href" select="resolve-uri('../../../css/fonts/opendyslexic/OpenDyslexic-Italic.otf',$doc-base)"/>
 	<p:with-option name="target"
 		       select="resolve-uri('css/fonts/opendyslexic/OpenDyslexic-Italic.otf',
-			       $temp-dir)"/>
+			       $html-base)"/>
       </px:copy-resource>
       <px:copy-resource name="dtbook-to-html.step.store4" cx:depends-on="mkdir">
 	<p:with-option name="href" select="resolve-uri('../../../css/fonts/opendyslexic/OpenDyslexic-Bold.otf',$doc-base)"/>
 	<p:with-option name="target"
 		       select="resolve-uri('css/fonts/opendyslexic/OpenDyslexic-Bold.otf',
-			       $temp-dir)"/>
+			       $html-base)"/>
       </px:copy-resource>
       <px:copy-resource name="dtbook-to-html.step.store5" cx:depends-on="mkdir">
 	<p:with-option name="href" select="resolve-uri('../../../css/fonts/opendyslexic/OpenDyslexic-BoldItalic.otf',$doc-base)"/>
 	<p:with-option name="target"
 		       select="resolve-uri('css/fonts/opendyslexic/OpenDyslexic-BoldItalic.otf',
-			       $temp-dir)"/>
+			       $html-base)"/>
       </px:copy-resource>
       <px:copy-resource name="dtbook-to-html.step.store6" cx:depends-on="mkdir">
 	<p:with-option name="href" select="resolve-uri('../../../css/fonts/opendyslexic/OpenDyslexicMono-Regular.otf',$doc-base)"/>
 	<p:with-option name="target"
 		       select="resolve-uri('css/fonts/opendyslexic/OpenDyslexicMono-Regular.otf',
-			       $temp-dir)"/>
+			       $html-base)"/>
       </px:copy-resource>
       <px:copy-resource name="dtbook-to-html.step.store7" cx:depends-on="mkdir">
 	<p:with-option name="href" select="resolve-uri('../../../css/fonts/opendyslexic/LICENSE.txt',$doc-base)"/>
 	<p:with-option name="target"
 		       select="resolve-uri('css/fonts/opendyslexic/LICENSE.txt',
-			       $temp-dir)"/>
+			       $html-base)"/>
       </px:copy-resource>
       <p:identity>
 	<p:input port="source">

@@ -28,7 +28,7 @@
             </px:nordic-dtbook-to-html.step>
             <px:nordic-html-add-accessibility-css.step name="add-css">
                 <p:input port="in-memory.in">
-                    <p:pipe step="dtbook-to-html" port="in-memory.in"/>
+                    <p:pipe step="dtbook-to-html" port="in-memory.out"/>
                 </p:input>
             </px:nordic-html-add-accessibility-css.step>
         </p:declare-step>
