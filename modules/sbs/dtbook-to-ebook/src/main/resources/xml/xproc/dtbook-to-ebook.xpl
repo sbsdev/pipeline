@@ -152,14 +152,41 @@
 	<p:with-option name="temp-dir" select="concat($temp-dir,'dtbook-to-html/')"/>
       </px:nordic-dtbook-to-html.step>
       
+      <px:fileset-load media-types="application/xhtml+xml" name="load-html">
+	<p:input port="in-memory">
+	  <p:pipe port="in-memory.in" step="html"/>
+	</p:input>
+      </px:fileset-load>
+
+      <!-- Link to the CSS style sheet from the HTML. -->
+      <p:insert match="/html:html/html:head" position="last-child" name="insert-css-link">
+	<p:input port="insertion">
+          <p:inline exclude-inline-prefixes="#all">
+            <link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="css/accessibility.css"/>
+          </p:inline>
+	</p:input>
+      </p:insert>
+
+      <!-- Add the css -->
+      <px:fileset-add-entry media-type="text/plain">
+	<p:input port="source">
+	  <p:pipe port="fileset.out" step="html"/>
+	</p:input>
+	<p:with-option name="href" select="resolve-uri('css/accessibility.css', base-uri(/))"/>
+	<p:with-option name="original-href" select="resolve-uri('../../../css/accessibility.css', base-uri(/))">
+	  <p:inline>
+	    <irrelevant/>
+	  </p:inline>
+	</p:with-option>
+      </px:fileset-add-entry>
+
       <px:nordic-html-to-epub3.step name="epub3"
 	                            fail-on-error="true"
 	                            compatibility-mode="true">
-	<p:input port="fileset.in">
-	  <p:pipe step="html" port="fileset.out"/>
-	</p:input>
 	<p:input port="in-memory.in">
-	  <p:pipe step="html" port="in-memory.out"/>
+	  <!-- for now the in-memory contains only the html document,
+	       we're ignoring other stuff that it could contain -->
+	  <p:pipe step="insert-css-link" port="result"/>
 	</p:input>
 	<p:with-option name="temp-dir" select="concat($temp-dir,'html-to-epub3/')"/>
       </px:nordic-html-to-epub3.step>
