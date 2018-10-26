@@ -62,7 +62,7 @@
 	  <p:pipe step="dtbook" port="in-memory.out"/>
 	</p:input>
       </px:fileset-load>
-	
+
       <!-- ===================== -->
       <!-- Clean the DTBook file -->
       <!-- ===================== -->
@@ -131,16 +131,12 @@
       </p:xslt>
 
       <p:identity name="dtbook-xml-preprocessed"/>
-      
+
       <!-- ======================= -->
       <!-- Convert DTBook to EPUB3 -->
       <!-- ======================= -->
 
-      <!-- Invoke the nordic migrator here with the following changes: -->
-      <!-- 1. Do not include the fonts -->
-      <!-- 2. Use a different accessibility css -->
-      <!-- 3. Include the elements needed for a good braille rendition -->
-
+      <!-- Use the dtbook to html step from the nordic migrator -->
       <px:nordic-dtbook-to-html.step name="html"
 	                             fail-on-error="true">
 	<p:input port="fileset.in">
@@ -151,14 +147,16 @@
 	</p:input>
 	<p:with-option name="temp-dir" select="concat($temp-dir,'dtbook-to-html/')"/>
       </px:nordic-dtbook-to-html.step>
-      
+
+      <!-- Instead of adding fonts and the default accessibility css from the nordic
+           migrator we include a simple accessibility css -->
       <px:fileset-load media-types="application/xhtml+xml" name="load-html">
 	<p:input port="in-memory">
 	  <p:pipe port="in-memory.out" step="html"/>
 	</p:input>
       </px:fileset-load>
 
-      <!-- Link to the CSS style sheet from the HTML. -->
+      <!-- Add a link to the CSS style sheet -->
       <p:insert match="/html:html/html:head" position="last-child" name="insert-css-link">
 	<p:input port="insertion">
           <p:inline exclude-inline-prefixes="#all">
@@ -167,7 +165,7 @@
 	</p:input>
       </p:insert>
 
-      <!-- Add the css -->
+      <!-- Add the css file to the fileset -->
       <px:fileset-add-entry media-type="text/css">
 	<p:input port="source">
 	  <p:pipe port="fileset.out" step="html"/>
@@ -180,6 +178,7 @@
 	</p:with-option>
       </px:fileset-add-entry>
 
+      <!-- Use the default html to epub3 converter from the nordic migrator -->
       <px:nordic-html-to-epub3.step name="epub3"
 	                            fail-on-error="true"
 	                            compatibility-mode="true">
@@ -190,7 +189,7 @@
 	</p:input>
 	<p:with-option name="temp-dir" select="concat($temp-dir,'html-to-epub3/')"/>
       </px:nordic-html-to-epub3.step>
-      
+
       <px:nordic-epub3-store.step name="epub3-store"
 	                          fail-on-error="true">
 	<p:input port="fileset.in">
@@ -202,7 +201,7 @@
 	<p:with-option name="output-dir" select="concat($temp-dir,'epub3/')"/>
       </px:nordic-epub3-store.step>
       <p:sink/>
-	
+
       <!-- ================================ -->
       <!-- Add a Braille Rendition to EPUB3 -->
       <!-- ================================ -->
