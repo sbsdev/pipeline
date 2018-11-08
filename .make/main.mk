@@ -6,14 +6,14 @@ GRADLE_MODULES    := $(patsubst %/build.gradle,%,$(filter %/build.gradle,$(GRADL
 MODULES            = $(MAVEN_MODULES) $(GRADLE_MODULES)
 GITREPOS          := $(shell find * -name .gitrepo -exec dirname {} \;)
 MVN               := mvn --batch-mode --settings "$(ROOT_DIR)/$(MVN_SETTINGS)" $(MVN_PROPERTIES)
-MVN_LOG           := tee -a $(ROOT_DIR)/maven.log \
-                     | cut -c1-1000 \
-                     | pcregrep -M "^\[INFO\] -+\n\[INFO\] Building .*\n\[INFO\] -+$$|^\[(ERROR|WARNING)\]"; \
-                     test $${PIPESTATUS[0]} -eq 0
+MVN_LOG           := cat>>$(ROOT_DIR)/maven.log
 override GRADLE   := M2_HOME=$(ROOT_DIR)/$(TARGET_DIR)/.gradle-settings $(GRADLE) $(MVN_PROPERTIES)
 EVAL              := :
 
-export ROOT_DIR MY_DIR TARGET_DIR MVN MVN_LOG MVN_RELEASE_CACHE_REPO GRADLE HOST_PLATFORM MAKE MAKEFLAGS MAKECMDGOALS
+export ROOT_DIR MY_DIR TARGET_DIR MVN MVN_LOG MVN_RELEASE_CACHE_REPO GRADLE HOST_PLATFORM MAKE
+# MAKECMDGOALS used in gradle-release.sh and mvn-release.sh
+export MAKECMDGOALS
+# MAKEFLAGS exported by default
 
 rwildcard = $(shell [ -d $1 ] && find $1 -type f | sed 's/ /\\ /g')
 # alternative, but does not support spaces in file names:
@@ -169,7 +169,7 @@ $(TARGET_DIR)/.gradle-settings/conf/settings.xml : $(MVN_SETTINGS)
 .SECONDARY : .maven-deps.mk
 .maven-deps.mk : $(TARGET_DIR)/maven-modules $(TARGET_DIR)/effective-pom.xml $(TARGET_DIR)/gradle-pom.xml | $(SAXON)
 	MAVEN_MODULES=$$(cat $< 2>/dev/null) && \
-	rm -f $$(for m in $$MAVEN_MODULES; do echo "$$m/.deps.mk"; done) && \
+	rm -f $$(for m in $$MAVEN_MODULES; do echo "$(TARGET_DIR)/mk/$$m/.deps.mk"; done) && \
 	if ! java -cp $(SAXON) net.sf.saxon.Transform \
 	          -s:$(word 2,$^) \
 	          -xsl:$(MY_DIR)/make-maven-deps.mk.xsl \
@@ -182,27 +182,35 @@ $(TARGET_DIR)/.gradle-settings/conf/settings.xml : $(MVN_SETTINGS)
 	          DOC_DIRS="$$(for m in $$MAVEN_MODULES; do test -e $$m/doc && echo $$m/doc; done )" \
 	          INDEX_FILES="$$(for m in $$MAVEN_MODULES; do test -e $$m/index.md && echo $$m/index.md; done )" \
 	          RELEASE_DIRS="$$(for x in $(GITREPOS); do [ -e $$x/bom/pom.xml ] || [ -e $$x/maven/bom/pom.xml ] && echo $$x; done )" \
+	          OUTPUT_BASEDIR="$(TARGET_DIR)/mk" \
 	          OUTPUT_FILENAME=".deps.mk" \
 	          >/dev/null \
 	; then \
-		rm -f $$(for m in $$MAVEN_MODULES; do echo "$$m/.deps.mk"; done) && \
+		rm -f $$(for m in $$MAVEN_MODULES; do echo "$(TARGET_DIR)/mk/$$m/.deps.mk"; done) && \
 		exit 1; \
 	fi
 
 ifneq ($(MAKECMDGOALS), clean)
-$(addsuffix /.deps.mk,$(MAVEN_MODULES)) : .maven-deps.mk
+$(addsuffix /.deps.mk,$(addprefix $(TARGET_DIR)/mk/,$(MAVEN_MODULES))) : .maven-deps.mk
 	if ! test -e $@; then \
+		mkdir -p $(dir $@) && \
 		echo "\$$(error $@ could not be generated)" >$@; \
 	fi
 	touch $@
 endif
 
 ifneq ($(MAKECMDGOALS), clean)
-$(addsuffix /.deps.mk,$(GRADLE_MODULES)) : $(GRADLE_FILES)
-	if ! $(MY_DIR)/make-gradle-deps.mk.sh $$(dirname $@) >$@; then \
+$(addsuffix /.deps.mk,$(addprefix $(TARGET_DIR)/mk/,$(GRADLE_MODULES))) : $(GRADLE_FILES)
+	mkdir -p $(dir $@)
+	module=$$(dirname $@) && \
+	module=$${module#$(TARGET_DIR)/mk/} && \
+	if ! $(MY_DIR)/make-gradle-deps.mk.sh $$module >$@; then \
 		echo "\$$(error $@ could not be generated)" >$@; \
 	fi
 endif
+
+PHONY : $(addprefix eclipse-,$(MODULES))
+$(addprefix eclipse-,$(MODULES)) : eclipse-% : %/.project
 
 # mvn-eclipse.sh requires parent poms to be installed because it uses `mvn --projects ...`
 $(addsuffix /.project,$(MODULES)) : parents
@@ -270,19 +278,18 @@ clean : clean-eclipse
 	rm -rf $(TARGET_DIR)
 	rm -f maven.log
 	find * -name .last-tested -exec rm -r "{}" \;
-	find * -name .deps.mk -exec rm -r "{}" \;
 
 .PHONY : clean-eclipse
 clean-eclipse :
 	rm -rf .metadata
 
 ifeq ($(MAKECMDGOALS), clean)
-include $(shell find * -name .deps.mk)
+include $(shell test -d $(TARGET_DIR)/mk && find $(TARGET_DIR)/mk -name .deps.mk)
 else
 ifeq ($(MAKECMDGOALS), clean-eclipse)
-include $(shell find * -name .deps.mk)
+include $(shell test -d $(TARGET_DIR)/mk && find $(TARGET_DIR)/mk -name .deps.mk)
 else
--include $(addsuffix /.deps.mk,$(MODULES) $(MAVEN_AGGREGATORS))
+-include $(addsuffix /.deps.mk,$(addprefix $(TARGET_DIR)/mk/,$(MODULES) $(MAVEN_AGGREGATORS)))
 endif
 endif
 

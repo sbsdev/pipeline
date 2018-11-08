@@ -18,6 +18,7 @@
 	    directories from which multiple modules are released at once
 	-->
 	<xsl:param name="RELEASE_DIRS"/>
+	<xsl:param name="OUTPUT_BASEDIR"/>
 	<xsl:param name="OUTPUT_FILENAME"/>
 	
 	<xsl:output method="xml" indent="yes"/>
@@ -173,7 +174,8 @@
 													                      /pom:dependencies
 													                      /pom:dependency[string(pom:groupId)=string(current()/pom:groupId) and
 													                                      string(pom:artifactId)=string(current()/pom:artifactId) and
-													                                      string(pom:type)=string(current()/pom:type)]
+													                                      string(pom:type)=string(current()/pom:type) and
+													                                      string(pom:classifier)=string(current()/pom:classifier)]
 													                      /pom:version"/>
 													<pom:version>
 														<xsl:choose>
@@ -219,7 +221,7 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:result-document href="{concat($module,'/',$OUTPUT_FILENAME)}" method="text">
+		<xsl:result-document href="{concat($OUTPUT_BASEDIR,'/',$module,'/',$OUTPUT_FILENAME)}" method="text">
 			<xsl:value-of select="concat($dirname,'VERSION')"/>
 			<xsl:text> := </xsl:text>
 			<xsl:value-of select="$version"/>
@@ -256,6 +258,19 @@
 						<xsl:value-of select="concat($dirname,.,'/.last-tested')"/>
 					</xsl:for-each>
 					<xsl:text>&#x0A;</xsl:text>
+					<xsl:if test="not($module='.')">
+						<xsl:text>&#x0A;</xsl:text>
+						<xsl:text>.PHONY : </xsl:text>
+						<xsl:value-of select="concat('eclipse-',$module)"/>
+						<xsl:text>&#x0A;</xsl:text>
+						<xsl:value-of select="concat('eclipse-',$module)"/>
+						<xsl:text> :</xsl:text>
+						<xsl:for-each select="$module-pom/pom:project/pom:modules/pom:module">
+							<xsl:text> \&#x0A;&#x09;</xsl:text>
+							<xsl:value-of select="concat('eclipse-',$dirname,.)"/>
+						</xsl:for-each>
+						<xsl:text>&#x0A;</xsl:text>
+					</xsl:if>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="concat($dirname,'.last-tested : %/.last-tested : %/.test | .group-eval')"/>
@@ -671,7 +686,7 @@
 							<xsl:when test="$project/pom:dependencies/pom:dependency
 							                [string(pom:groupId)=string(current()/pom:groupId) and
 							                 string(pom:artifactId)=string(current()/pom:artifactId) and
-							                 string(pom:type)=string(current()/pom:type) and
+							                 (pom:type/string(),'jar')[1]=(current()/pom:type/string(),'jar')[1] and
 							                 string(pom:classifier)=string(current()/pom:classifier)]">
 								<!-- already handled -->
 							</xsl:when>
@@ -686,10 +701,11 @@
 							<xsl:when test="$project/pom:dependencyManagement/pom:dependencies/pom:dependency
 							                [string(pom:groupId)=string(current()/pom:groupId) and
 							                 string(pom:artifactId)=string(current()/pom:artifactId)]">
-								<xsl:value-of select="$project/pom:dependencyManagement/pom:dependencies/pom:dependency
-								                      [string(pom:groupId)=string(current()/pom:groupId) and
-								                       string(pom:artifactId)=string(current()/pom:artifactId)]
-								                      /pom:version"/>
+								<xsl:value-of select="($project/pom:dependencyManagement/pom:dependencies/pom:dependency
+								                       [string(pom:groupId)=string(current()/pom:groupId) and
+								                        string(pom:artifactId)=string(current()/pom:artifactId)]
+								                       /(.[string(pom:classifier)=string(current()/pom:classifier)],.)
+								                       /pom:version)[1]"/>
 							</xsl:when>
 							<xsl:otherwise>
 								<!-- might be transitive dependency, but not supported here -->
