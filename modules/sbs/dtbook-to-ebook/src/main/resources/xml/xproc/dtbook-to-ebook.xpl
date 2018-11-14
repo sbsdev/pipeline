@@ -206,12 +206,13 @@
       <!-- Add a Braille Rendition to EPUB3 -->
       <!-- ================================ -->
 
-      <px:epub3-to-epub3>
-        <p:with-option name="source" select="//d:file[1]/resolve-uri(@href,base-uri(.))">
-          <p:pipe step="epub3-store" port="fileset.out"/>
-        </p:with-option>
-        <p:with-option name="output-dir" select="$output-dir"/>
-      </px:epub3-to-epub3>
+      <!-- Disabled until the board figures out if we really want a Braille Rendition -->
+      <!-- <px:epub3-to-epub3> -->
+      <!--   <p:with-option name="source" select="//d:file[1]/resolve-uri(@href,base-uri(.))"> -->
+      <!--     <p:pipe step="epub3-store" port="fileset.out"/> -->
+      <!--   </p:with-option> -->
+      <!--   <p:with-option name="output-dir" select="$output-dir"/> -->
+      <!-- </px:epub3-to-epub3> -->
 
     </p:group>
 
