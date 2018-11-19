@@ -30,6 +30,7 @@
 
     <p:import href="http://www.daisy.org/pipeline/modules/dtbook-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl"/>
+    <p:import href="http://www.daisy.org/pipeline/modules/common-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/fileset-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/nordic-epub3-dtbook-migrator/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/braille/epub3-to-epub3/epub3-to-epub3.xpl"/>
@@ -130,6 +131,8 @@
         </p:input>
       </p:xslt>
 
+      <px:message severity="INFO" message="DTBook preprocessing done"/>
+      
       <p:identity name="dtbook-xml-preprocessed"/>
 
       <!-- ======================= -->
@@ -178,6 +181,8 @@
 	</p:with-option>
       </px:fileset-add-entry>
 
+      <px:message severity="INFO" message="Added accessibility CSS"/>
+      
       <!-- Use the default html to epub3 converter from the nordic migrator -->
       <px:nordic-html-to-epub3.step name="epub3"
 	                            fail-on-error="true"
@@ -200,6 +205,9 @@
 	</p:input>
 	<p:with-option name="output-dir" select="concat($temp-dir,'epub3/')"/>
       </px:nordic-epub3-store.step>
+      
+      <px:message severity="INFO" message="EPUB 3 created"/>
+      
       <p:sink/>
 
       <!-- ================================ -->
