@@ -214,7 +214,7 @@
 	<p:input port="in-memory.in">
 	  <p:pipe step="epub3" port="in-memory.out"/>
 	</p:input>
-	<p:with-option name="output-dir" select="concat($temp-dir,'epub3/')"/>
+	<p:with-option name="output-dir" select="$output-dir"/>
       </px:nordic-epub3-store.step>
       
       <px:message severity="INFO" message="EPUB 3 created"/>
