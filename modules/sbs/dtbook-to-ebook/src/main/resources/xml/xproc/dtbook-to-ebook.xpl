@@ -6,6 +6,7 @@
     xmlns:c="http://www.w3.org/ns/xproc-step"
     xmlns:d="http://www.daisy.org/ns/pipeline/data"
     xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns:cx="http://xmlcalabash.com/ns/extensions"
     exclude-inline-prefixes="#all"
     type="sbs:dtbook-to-ebook" name="main" version="1.0">
 
@@ -28,6 +29,16 @@
         </p:documentation>
     </p:option>
 
+    <!--
+        FIXME: rename to "status" (https://github.com/daisy/pipeline-framework/issues/121)
+    -->
+    <p:output port="validation-status" px:media-type="application/vnd.pipeline.status+xml">
+        <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+            <h2 px:role="name">Status</h2>
+            <p px:role="desc">Whether or not the conversion was successful.</p>
+        </p:documentation>
+    </p:output>
+    
     <p:import href="http://www.daisy.org/pipeline/modules/dtbook-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/common-utils/library.xpl"/>
@@ -208,8 +219,6 @@
       
       <px:message severity="INFO" message="EPUB 3 created"/>
       
-      <p:sink/>
-
       <!-- ================================ -->
       <!-- Add a Braille Rendition to EPUB3 -->
       <!-- ================================ -->
@@ -223,5 +232,15 @@
       <!-- </px:epub3-to-epub3> -->
 
     </p:group>
-
+    <p:identity name="result.fileset"/>
+    <p:sink/>
+    
+    <p:identity name="status" cx:depends-on="result.fileset">
+      <p:input port="source">
+        <p:inline>
+          <d:validation-status result="ok"/>
+        </p:inline>
+      </p:input>
+    </p:identity>
+    
   </p:declare-step>

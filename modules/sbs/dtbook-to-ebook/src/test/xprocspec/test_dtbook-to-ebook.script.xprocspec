@@ -5,6 +5,7 @@
     xmlns:c="http://www.w3.org/ns/xproc-step"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:epub="http://www.idpf.org/2007/ops"
+    xmlns:d="http://www.daisy.org/ns/pipeline/data"
     script="http://www.daisy.org/pipeline/modules/modules/sbs/dtbook-to-ebook/dtbook-to-ebook.xpl">
   
   <x:scenario label="basic">
@@ -33,6 +34,14 @@
       </x:input>
       <x:option name="output-dir" select="concat($temp-dir,'basic/')"/>
     </x:call>
+    <x:context label="The status">
+      <x:document type="port" port="validation-status"/>
+    </x:context>
+    <x:expect label="The job should succeed" type="compare">
+      <x:document type="inline">
+	<d:validation-status result="ok"/>
+      </x:document>
+    </x:expect>
     <x:context label="The EPUB content">
       <x:document type="zip" base-uri="temp-dir" href="basic/basic.epub" ordered="true"/>
     </x:context>
