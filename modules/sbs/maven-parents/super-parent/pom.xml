@@ -5,11 +5,11 @@
 
   <groupId>ch.sbs</groupId>
   <artifactId>super-parent</artifactId>
-  <version>1.6-SNAPSHOT</version>
+  <version>1.8-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>SBS Parent POM</name>
-
+  <description>Parent POM for all Maven based projects at SBS</description>
   <url>https://github.com/sbsdev/</url>
 
   <organization>
@@ -51,14 +51,14 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>sbs-nexus-snapshots</id>
-      <name>SBS Nexus Snapshots</name>
-      <url>http://repo:8081/nexus/content/repositories/snapshots/</url>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
     </snapshotRepository>
     <repository>
-      <id>sbs-nexus-releases</id>
-      <name>SBS Nexus Releases</name>
-      <url>http://repo:8081/nexus/content/repositories/releases/</url>
+      <id>sonatype-nexus-staging</id>
+      <name>Nexus Release Repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
   </distributionManagement>
 
@@ -75,6 +75,7 @@
     <connection>scm:git:git://github.com/sbsdev/maven-parents.git</connection>
     <developerConnection>scm:git:ssh://git@github.com:sbsdev/maven-parents.git</developerConnection>
     <tag>HEAD</tag>
+    <url>https://github.com/sbsdev/maven-parents/tree/master</url>
   </scm>
 
   <build>
