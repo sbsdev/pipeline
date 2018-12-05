@@ -12,7 +12,7 @@
   <xsl:template name="boilerplate">
     <level1>
       <h1>Zu diesem Buch</h1>
-      <p>Dieses E-Book im DAISY-Format ist die ausschliesslich für die Nutzung durch seh- und lesebehinderte Menschen bestimmte zugängliche Version eines urheberrechtlich geschützten Werks. Sie können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht weiter verbreiten oder öffentlich zugänglich machen.</p>
+      <p>Dieses E-Book im EPUB-Format ist die ausschliesslich für die Nutzung durch seh- und lesebehinderte Menschen bestimmte zugängliche Version eines urheberrechtlich geschützten Werks. Sie können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht weiter verbreiten oder öffentlich zugänglich machen.</p>
       <xsl:if test="//dtb:meta[lower-case(@name)='prod:source']/@content = 'electronicData'">
         <p>Wir danken dem Verlag für die freundliche Bereitstellung der elektronischen Textdaten.</p>
       </xsl:if>
