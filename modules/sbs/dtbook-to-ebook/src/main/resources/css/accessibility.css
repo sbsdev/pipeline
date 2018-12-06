@@ -48,6 +48,14 @@ p:hover, li:hover {
 
 /* SBS specific changes */
 
+list[type="ol"] {
+    list-style-type: decimal;
+}
+
+list[type="ul"] {
+    list-style-type: circle;
+}
+
 .poem{
   margin-left:3em;
 }
