@@ -7,5 +7,5 @@
 	remote = git@github.com:daisy/osgi-libs.git
 	branch = master
 	commit = a9b34283fd1d4286c3d1b170d1a57951fc9a7cf3
-	parent = e3057e592dcc5b4457657b8618ee12b97237c779
+	parent = 17f16851ee46e90a2b8ac7add2c9dfe62d0e56d2
 	cmdver = 0.3.1
