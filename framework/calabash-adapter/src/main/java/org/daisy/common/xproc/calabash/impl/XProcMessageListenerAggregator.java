@@ -121,7 +121,7 @@ public class XProcMessageListenerAggregator implements XProcMessageListener{
 	@Override
 	public void warning(Throwable throwable) {
 		for(XProcMessageListener l:mListeners){
-			l.warning(throwable);
+			l.error(throwable);
 		}
 
 	}

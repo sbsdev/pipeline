@@ -26,17 +26,21 @@ public class slf4jXProcMessageListener implements XProcMessageListener {
     /** The default logger. */
     private static Logger defaultLogger = LoggerFactory.getLogger("com.xmlcalabash");
 
+    /** The log. */
+    private Logger log = defaultLogger;
+
     /* (non-Javadoc)
      * @see com.xmlcalabash.core.XProcMessageListener#error(com.xmlcalabash.core.XProcRunnable, net.sf.saxon.s9api.XdmNode, java.lang.String, net.sf.saxon.s9api.QName)
      */
     @Override
 	public void error(XProcRunnable step, XdmNode node, String message, QName code) {
-        Logger log;
+
         if (step != null) {
             log = LoggerFactory.getLogger(step.getClass());
         } else {
             log = defaultLogger;
         }
+
         log.error(XprocMessageHelper.logLine(step, node, message, code));
     }
 
@@ -45,7 +49,8 @@ public class slf4jXProcMessageListener implements XProcMessageListener {
      */
     @Override
 	public void error(Throwable exception) {
-        Logger log = defaultLogger;
+
+
         log.error(XprocMessageHelper.errorLogline(exception));
     }
 
@@ -54,7 +59,6 @@ public class slf4jXProcMessageListener implements XProcMessageListener {
      */
     @Override
 	public void warning(XProcRunnable step, XdmNode node, String message) {
-        Logger log;
         if (step != null) {
             log = LoggerFactory.getLogger(step.getClass());
         } else {
@@ -68,7 +72,6 @@ public class slf4jXProcMessageListener implements XProcMessageListener {
      */
     @Override
 	public void info(XProcRunnable step, XdmNode node, String message) {
-        Logger log;
         if (step != null) {
             log = LoggerFactory.getLogger(step.getClass());
         } else {
@@ -82,7 +85,6 @@ public class slf4jXProcMessageListener implements XProcMessageListener {
      */
     @Override
 	public void fine(XProcRunnable step, XdmNode node, String message) {
-        Logger log;
         if (step != null) {
             log = LoggerFactory.getLogger(step.getClass());
         } else {
@@ -96,7 +98,6 @@ public class slf4jXProcMessageListener implements XProcMessageListener {
      */
     @Override
 	public void finer(XProcRunnable step, XdmNode node, String message) {
-        Logger log;
         if (step != null) {
             log = LoggerFactory.getLogger(step.getClass());
         } else {
@@ -110,7 +111,6 @@ public class slf4jXProcMessageListener implements XProcMessageListener {
      */
     @Override
 	public void finest(XProcRunnable step, XdmNode node, String message) {
-        Logger log;
         if (step != null) {
             log = LoggerFactory.getLogger(step.getClass());
         } else {
@@ -124,8 +124,8 @@ public class slf4jXProcMessageListener implements XProcMessageListener {
 	 */
 	@Override
 	public void warning(Throwable exception) {
-		Logger log = defaultLogger;
-		log.warn(XprocMessageHelper.errorLogline(exception));
+		 log.warn(XprocMessageHelper.errorLogline(exception));
+
 	}
 
 
