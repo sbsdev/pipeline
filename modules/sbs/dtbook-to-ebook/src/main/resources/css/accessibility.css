@@ -21,9 +21,25 @@ samp{
    overrides stylesheets. The text is colored dark blue to
    assist with "glare" issues, but also to make the black
    symbols subtly stand out. */
-body{
+body {
   font-size:14px;
-  line-height:200%;
+  /* normal line height is 1.2
+   (https://developer.mozilla.org/en-US/docs/Web/CSS/line-height#Values).
+
+   W3C recommends "Line spacing (leading) is at least space-and-a-half
+   within paragraphs"
+   (https://www.w3.org/TR/2008/REC-WCAG20-20081211/#visual-audio-contrast-visual-presentation).
+
+   MDN Web Docs recommends: "Use a minimum value of 1.5 for
+   line-height for main paragraph content. This will help people
+   experiencing low vision conditions, as well as people with
+   cognitive concerns such as Dyslexia. If the page is zoomed to
+   increase the text size, using a unitless value ensures that the
+   line height will scale proportionately
+   (https://developer.mozilla.org/en-US/docs/Web/CSS/line-height#Accessibility_concerns).
+
+   So we multiply 1.2 by 1.5 which results in 1.8. */
+  line-height:1.8;
   background:snow;
   margin:auto 0;
   padding:0 100;
