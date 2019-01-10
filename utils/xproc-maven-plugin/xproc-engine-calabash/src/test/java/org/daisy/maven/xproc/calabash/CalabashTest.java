@@ -3,7 +3,6 @@ package org.daisy.maven.xproc.calabash;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import com.google.common.collect.ImmutableMap;
@@ -37,9 +36,6 @@ public class CalabashTest {
 	}
 	
 	private static String readFileContents(File file) throws FileNotFoundException {
-		try {
-			return new Scanner(file).useDelimiter("\\Z").next(); }
-		catch (NoSuchElementException e) {
-			return ""; }
+		return new Scanner(file).useDelimiter("\\Z").next();
 	}
 }
