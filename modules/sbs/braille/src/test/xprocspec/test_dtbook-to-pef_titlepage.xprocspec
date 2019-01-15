@@ -3,7 +3,7 @@
                xmlns:sbs="http://www.sbs.ch"
                script="http://www.sbs.ch/pipeline/modules/braille/dtbook-to-pef.xpl">
 
-  <x:scenario label="titlepage_normal_g0">
+  <x:scenario label="titlepage_normal_g0" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_titlepages/normal.xml"/>
@@ -20,7 +20,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_normal_g1">
+  <x:scenario label="titlepage_normal_g1" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_titlepages/normal.xml"/>
@@ -37,7 +37,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_normal_g2">
+  <x:scenario label="titlepage_normal_g2" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_titlepages/normal.xml"/>
@@ -54,7 +54,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_rucksack_g0">
+  <x:scenario label="titlepage_rucksack_g0" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_titlepages/rucksack.xml"/>
@@ -71,7 +71,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_rucksack_g1">
+  <x:scenario label="titlepage_rucksack_g1" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_titlepages/rucksack.xml"/>
@@ -88,7 +88,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_rucksack_g2">
+  <x:scenario label="titlepage_rucksack_g2" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_titlepages/rucksack.xml"/>
@@ -105,7 +105,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_sjw_g0">
+  <x:scenario label="titlepage_sjw_g0" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_titlepages/sjw.xml"/>
@@ -122,7 +122,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_sjw_g1">
+  <x:scenario label="titlepage_sjw_g1" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_titlepages/sjw.xml"/>
@@ -139,7 +139,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="titlepage_sjw_g2">
+  <x:scenario label="titlepage_sjw_g2" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_titlepages/sjw.xml"/>
@@ -309,7 +309,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="br-in-doctitle">
+  <x:scenario label="br-in-doctitle" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="inline">

@@ -82,10 +82,34 @@
     <!-- for testing purposes -->
     <p:input port="parameters" kind="parameter" primary="false"/>
     
-    <p:import href="http://www.daisy.org/pipeline/modules/braille/dtbook-to-pef/library.xpl"/>
-    <p:import href="http://www.daisy.org/pipeline/modules/braille/xml-to-pef/library.xpl"/>
-    <p:import href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl"/>
-    <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl"/>
+    <p:import href="http://www.daisy.org/pipeline/modules/braille/dtbook-to-pef/library.xpl">
+        <p:documentation>
+            px:dtbook-to-pef.convert,
+            px:dtbook-to-pef.store
+        </p:documentation>
+    </p:import>
+    <p:import href="http://www.daisy.org/pipeline/modules/common-utils/library.xpl">
+        <p:documentation>
+            px:message
+        </p:documentation>
+    </p:import>
+    <p:import href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl">
+        <p:documentation>
+            pef:store
+        </p:documentation>
+    </p:import>
+    <p:import href="http://www.daisy.org/pipeline/modules/braille/common-utils/library.xpl">
+        <p:documentation>
+            px:merge-parameters,
+            px:delete-parameters,
+            px:add-parameters
+        </p:documentation>
+    </p:import>
+    <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl">
+        <p:documentation>
+            px:tempdir
+        </p:documentation>
+    </p:import>
     
     <p:in-scope-names name="in-scope-names"/>
     <px:merge-parameters>

@@ -9,9 +9,15 @@
                 xmlns:f="http://my-functions"
                 exclude-result-prefixes="#all">
     
-    <xsl:include href="http://www.daisy.org/pipeline/modules/braille/common-utils/library.xsl">
-      <!-- for pf:warn -->
-    </xsl:include>
+    <!-- <xsl:include href="http://www.daisy.org/pipeline/modules/braille/common-utils/library.xsl"/> -->
+
+    <!--
+        temporary implementation of pf:warn (will be in http://www.daisy.org/pipeline/modules/braille/common-utils/library.xsl soon)
+    -->
+    <xsl:template name="pf:warn">
+        <xsl:param name="msg"/>
+        <xsl:message select="$msg"/>
+    </xsl:template>
     
     <xsl:template match="dtb:a/@class[.='pageref']|
                          html:a/@class[.='pageref']">

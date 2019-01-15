@@ -236,7 +236,7 @@ br.braille-volume-break-grade-#{$contraction-grade} {
 #generated-document-toc,
 #generated-volume-toc {
     page: toc;
-    counter-set: page 1;
+    counter-set: pre-page 1;
 }
 
 #generated-document-toc::-obfl-on-toc-start,
@@ -702,7 +702,10 @@ frontmatter level2,
 
 #cover-author {
     display: block;
-    -obfl-vertical-position:5;
+    // working around a bug in Dotify by using padding-top instead of vertical-position
+    // https://github.com/brailleapps/dotify.formatter.impl/issues/92
+    padding-top: 5;
+    // -obfl-vertical-position:5;
     text-indent: 0;
 }
 
@@ -772,13 +775,19 @@ frontmatter level2,
 #copyright-blurb {
     display: block;
     text-indent: 0;
-    -obfl-vertical-position:1;
+    // working around a bug in Dotify by using padding-top instead of vertical-position
+    // https://github.com/brailleapps/dotify.formatter.impl/issues/92
+    padding-top: 1;
+    // -obfl-vertical-position:1;
 }
 
 #sjw-blurb {
     display: block;
     text-indent: 0;
-    -obfl-vertical-position:1;
+    // working around a bug in Dotify by using padding-top instead of vertical-position
+    // https://github.com/brailleapps/dotify.formatter.impl/issues/92
+    padding-top: 1;
+    // -obfl-vertical-position:1;
 }
 
 .flush-bottom {

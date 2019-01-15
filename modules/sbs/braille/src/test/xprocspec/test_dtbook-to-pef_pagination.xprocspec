@@ -377,7 +377,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="4.8.105_ex2_page_break_line_french" xfail="true">
+  <x:scenario label="4.8.105_ex2_page_break_line_french" pending="true">
     <x:documentation>
       Broken:
       - @counter-style not supported yet
@@ -404,7 +404,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="4.8.105_ex3_page_break_line_french_schematic" xfail="true">
+  <x:scenario label="4.8.105_ex3_page_break_line_french_schematic" pending="true">
     <x:documentation>
       Broken:
       - string(..., start) does not behave as expected (print page number at beginning of page is

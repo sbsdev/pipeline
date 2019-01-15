@@ -4,7 +4,7 @@
                xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
                script="http://www.sbs.ch/pipeline/modules/braille/dtbook-to-pef.xpl">
   
-  <x:scenario label="footnotes">
+  <x:scenario label="footnotes" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_4.4.66_footnotes/test_4.4.66.xml"/>
@@ -48,7 +48,7 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="endnotes-volume">
+  <x:scenario label="endnotes-volume" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_4.4.67_endnotes_volume/test_4.4.67.xml"/>
@@ -92,7 +92,7 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="endnotes-book-group-by-volume">
+  <x:scenario label="endnotes-book-group-by-volume" xfail="true">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_4.4.92_endnotes_book_group_by_volume/test_4.4.92.xml"/>

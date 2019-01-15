@@ -169,7 +169,7 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 			brailleModule("dotify-formatter"),
 			brailleModule("dtbook-to-pef"),
 			brailleModule("epub3-to-pef"),
-			brailleModule("epub3-to-epub3"),
+			pipelineModule("epub3-to-epub3"),
 			pipelineModule("common-utils"),
 			pipelineModule("file-utils"),
 			pipelineModule("fileset-utils"),

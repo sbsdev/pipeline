@@ -68,12 +68,35 @@
     <!-- for testing purposes -->
     <p:input port="parameters" kind="parameter" primary="false"/>
     
-    <p:import href="http://www.daisy.org/pipeline/modules/braille/epub3-to-pef/library.xpl"/>
-    <p:import href="http://www.daisy.org/pipeline/modules/braille/xml-to-pef/library.xpl"/>
-    <p:import href="http://www.daisy.org/pipeline/modules/common-utils/library.xpl"/>
-    <p:import href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl"/>
-    <p:import href="http://www.daisy.org/pipeline/modules/fileset-utils/library.xpl"/>
-    <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl"/>
+    <p:import href="http://www.daisy.org/pipeline/modules/braille/epub3-to-pef/library.xpl">
+        <p:documentation>
+            px:epub3-to-pef.load,
+            px:epub3-to-pef.convert,
+            px:epub3-to-pef.store
+        </p:documentation>
+    </p:import>
+    <p:import href="http://www.daisy.org/pipeline/modules/common-utils/library.xpl">
+        <p:documentation>
+            px:message
+        </p:documentation>
+    </p:import>
+    <p:import href="http://www.daisy.org/pipeline/modules/braille/pef-utils/library.xpl">
+        <p:documentation>
+            pef:store
+        </p:documentation>
+    </p:import>
+    <p:import href="http://www.daisy.org/pipeline/modules/braille/common-utils/library.xpl">
+        <p:documentation>
+            px:merge-parameters,
+            px:delete-parameters,
+            px:add-parameters
+        </p:documentation>
+    </p:import>
+    <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl">
+        <p:documentation>
+            px:tempdir
+        </p:documentation>
+    </p:import>
     
     <p:in-scope-names name="in-scope-names"/>
     <px:merge-parameters>
@@ -163,7 +186,6 @@
         </p:input>
     </p:identity>
     <px:message message="Storing PEF"/>
-    <p:delete match="/*/@xml:base"/>
     <px:epub3-to-pef.store>
         <p:with-option name="epub" select="$epub"/>
         <p:input port="opf">
