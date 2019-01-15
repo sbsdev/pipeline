@@ -44,6 +44,7 @@
     <p:option name="temp-dir"/>
     <p:option name="include-preview"/>
     <p:option name="include-brf"/>
+    <p:option name="include-obfl"/>
     <p:option name="left-margin"/>
     <p:option name="duplex"/>
     <p:option name="levels-in-footer"/>

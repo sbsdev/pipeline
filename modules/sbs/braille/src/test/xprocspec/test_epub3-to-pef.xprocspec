@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <x:description xmlns:x="http://www.daisy.org/ns/xprocspec"
                xmlns:sbs="http://www.sbs.ch"
+               xmlns:d="http://www.daisy.org/ns/pipeline/data"
                script="http://www.sbs.ch/pipeline/modules/braille/epub3-to-pef.xpl">
   
   <x:scenario label="basic">
@@ -42,6 +43,10 @@
       <x:option name="temp-dir" select="concat($temp-dir,'temp-dir/')"/>
     </x:call>
     -->
+    <x:context label="the validation-status port">
+      <x:document type="port" port="validation-status"/>
+    </x:context>
+    <x:expect label="the job should not fail" type="xpath" test="/d:validation-status[@result='ok']"/>
     <x:context label="result">
       <x:document type="file" base-uri="temp-dir" href="output-dir/test_various/123456.pef"/>
     </x:context>

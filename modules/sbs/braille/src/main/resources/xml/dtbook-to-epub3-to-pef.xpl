@@ -11,6 +11,7 @@
 	
 	<p:input port="source" primary="true"/>
 	<p:input port="parameters" kind="parameter" primary="false"/>
+	<p:output port="validation-status"/>
 	
 	<!--
 	    Stylesheets apply to EPUB3 but are resolved relative to DTBook
@@ -25,6 +26,7 @@
 	<p:option name="ascii-file-format"/>
 	<p:option name="include-preview"/>
 	<p:option name="include-brf"/>
+	<p:option name="include-obfl"/>
 	<p:option name="page-width"/>
 	<p:option name="page-height"/>
 	<p:option name="left-margin"/>
@@ -163,6 +165,7 @@
 		<p:with-option name="ascii-file-format" select="$ascii-file-format"/>
 		<p:with-option name="include-preview" select="$include-preview"/>
 		<p:with-option name="include-brf" select="$include-brf"/>
+		<p:with-option name="include-obfl" select="$include-obfl"/>
 		<p:with-option name="page-width" select="$page-width"/>
 		<p:with-option name="page-height" select="$page-height"/>
 		<p:with-option name="left-margin" select="$left-margin"/>

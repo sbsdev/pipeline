@@ -22,6 +22,10 @@
         </p:documentation>
     </p:option>
     
+    <p:output port="validation-status" px:media-type="application/vnd.pipeline.status+xml">
+        <p:pipe step="convert" port="status"/>
+    </p:output>
+    
     <p:option name="pef-output-dir"/>
     <p:option name="brf-output-dir"/>
     <p:option name="preview-output-dir"/>
@@ -33,6 +37,7 @@
     <p:option name="ascii-file-format"/>
     <p:option name="include-preview"/>
     <p:option name="include-brf"/>
+    <p:option name="include-obfl"/>
     <p:option name="page-width"/>
     <p:option name="page-height"/>
     <p:option name="left-margin"/>
@@ -110,6 +115,7 @@
                                            ascii-file-format
                                            include-brf
                                            include-preview
+                                           include-obfl
                                            pef-output-dir
                                            brf-output-dir
                                            preview-output-dir
@@ -171,6 +177,7 @@
         </p:with-option>
         <p:with-option name="apply-document-specific-stylesheets" select="$apply-document-specific-stylesheets"/>
         <p:with-option name="transform" select="concat('(formatter:dotify)(translator:sbs)(grade:',$contraction-grade,')')"/>
+        <p:with-option name="include-obfl" select="$include-obfl"/>
         <p:input port="parameters">
             <p:pipe port="result" step="input-options"/>
         </p:input>
@@ -191,6 +198,9 @@
         <p:input port="opf">
             <p:pipe step="load" port="opf"/>
         </p:input>
+        <p:input port="obfl">
+            <p:pipe step="convert" port="obfl"/>
+        </p:input>
         <p:with-option name="include-brf" select="$include-brf"/>
         <p:with-option name="include-preview" select="$include-preview"/>
         <p:with-option name="ascii-file-format" select="$ascii-file-format"/>
@@ -202,27 +212,39 @@
     <!--
         store as single volume BRF (will overwrite PEF too)
     -->
-    <p:identity>
+    <p:count>
         <p:input port="source">
             <p:pipe step="convert" port="in-memory.out"/>
         </p:input>
-    </p:identity>
+    </p:count>
     <p:choose>
-        <p:when test="$include-brf='true' and $brf-output-dir!='' and count(//pef:volume) &gt; 1">
-            <p:variable name="name" select="if (ends-with(lower-case($epub),'.epub')) then replace($epub,'^.*/([^/]*)\.[^/\.]*$','$1')
-                                           else (/opf:package/opf:metadata/dc:identifier[not(@refines)], 'unknown-identifier')[1]">
-                <p:pipe step="load" port="opf"/>
-            </p:variable>
-            <pef:store>
-                <p:with-option name="href" select="concat($pef-output-dir,'/',$name,'.pef')"/>
-                <p:with-option name="brf-dir-href" select="$brf-output-dir"/>
-                <p:with-option name="brf-name-pattern" select="$name"/>
-                <p:with-option name="brf-single-volume-name" select="$name"/>
-                <p:with-option name="brf-file-format" select="concat($ascii-file-format,'(locale:',(//pef:meta/dc:language,'und')[1],')')"/>
-            </pef:store>
+        <p:when test="number(string(/*))=0">
+            <p:sink/>
         </p:when>
         <p:otherwise>
-            <p:sink/>
+            <p:identity>
+                <p:input port="source">
+                    <p:pipe step="convert" port="in-memory.out"/>
+                </p:input>
+            </p:identity>
+            <p:choose>
+                <p:when test="$include-brf='true' and $brf-output-dir!='' and count(//pef:volume) &gt; 1">
+                    <p:variable name="name" select="if (ends-with(lower-case($epub),'.epub')) then replace($epub,'^.*/([^/]*)\.[^/\.]*$','$1')
+                                                    else (/opf:package/opf:metadata/dc:identifier[not(@refines)], 'unknown-identifier')[1]">
+                        <p:pipe step="load" port="opf"/>
+                    </p:variable>
+                    <pef:store>
+                        <p:with-option name="href" select="concat($pef-output-dir,'/',$name,'.pef')"/>
+                        <p:with-option name="brf-dir-href" select="$brf-output-dir"/>
+                        <p:with-option name="brf-name-pattern" select="$name"/>
+                        <p:with-option name="brf-single-volume-name" select="$name"/>
+                        <p:with-option name="brf-file-format" select="concat($ascii-file-format,'(locale:',(//pef:meta/dc:language,'und')[1],')')"/>
+                    </pef:store>
+                </p:when>
+                <p:otherwise>
+                    <p:sink/>
+                </p:otherwise>
+            </p:choose>
         </p:otherwise>
     </p:choose>
     

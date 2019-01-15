@@ -20,6 +20,10 @@
         </p:documentation>
     </p:input>
     
+    <p:output port="validation-status" px:media-type="application/vnd.pipeline.status+xml">
+        <p:pipe step="convert" port="status"/>
+    </p:output>
+    
     <p:option name="pef-output-dir"/>
     <p:option name="brf-output-dir"/>
     <p:option name="preview-output-dir"/>
@@ -30,6 +34,7 @@
     <p:option name="ascii-file-format"/>
     <p:option name="include-preview"/>
     <p:option name="include-brf"/>
+    <p:option name="include-obfl"/>
     <p:option name="page-width"/>
     <p:option name="page-height"/>
     <p:option name="left-margin"/>
@@ -122,6 +127,7 @@
                                            ascii-file-format
                                            include-brf
                                            include-preview
+                                           include-obfl
                                            pef-output-dir
                                            brf-output-dir
                                            preview-output-dir
@@ -152,6 +158,7 @@
         <p:with-option name="temp-dir" select="string(/c:result)">
             <p:pipe step="temp-dir" port="result"/>
         </p:with-option>
+        <p:with-option name="include-obfl" select="$include-obfl"/>
         <p:with-option name="stylesheet" select="string-join((
                                                    resolve-uri('group-starting-with-linenum.xsl'),
                                                    resolve-uri('handle-toc-and-running-line.xsl'),
@@ -176,6 +183,9 @@
     <px:dtbook-to-pef.store>
         <p:input port="dtbook">
             <p:pipe step="main" port="source"/>
+        </p:input>
+            <p:input port="obfl">
+            <p:pipe step="convert" port="obfl"/>
         </p:input>
         <p:with-option name="include-brf" select="$include-brf"/>
         <p:with-option name="include-preview" select="$include-preview"/>
