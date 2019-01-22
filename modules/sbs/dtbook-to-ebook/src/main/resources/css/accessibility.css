@@ -64,11 +64,11 @@ p:hover, li:hover {
 
 /* SBS specific changes */
 
-list[type="ol"] {
+ol {
     list-style-type: decimal;
 }
 
-list[type="ul"] {
+ul {
     list-style-type: circle;
 }
 

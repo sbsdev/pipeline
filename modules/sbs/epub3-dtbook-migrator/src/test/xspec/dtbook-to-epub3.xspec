@@ -2372,7 +2372,7 @@
                 </dtbook:list>
             </x:context>
             <x:expect label="the resulting element should be a ol">
-                <html:ol id="..." class="list-style-type-none">
+                <html:ol id="...">
                     <html:li id="...">TEXT</html:li>
                 </html:ol>
             </x:expect>
@@ -2384,7 +2384,7 @@
                 </dtbook:list>
             </x:context>
             <x:expect label="the resulting element should be a ul">
-                <html:ul id="..." class="list-style-type-none">
+                <html:ul id="...">
                     <html:li id="...">TEXT</html:li>
                 </html:ul>
             </x:expect>

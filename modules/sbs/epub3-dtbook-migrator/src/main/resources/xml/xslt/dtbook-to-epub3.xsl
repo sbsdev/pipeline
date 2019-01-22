@@ -1386,7 +1386,7 @@
         <xsl:param name="marker-type" select="''"/>
         <xsl:call-template name="f:attrs">
             <xsl:with-param name="classes" tunnel="yes"
-                            select="if (ancestor-or-self::dtbook:list[f:classes(.)='toc']) then ()
+                            select="if (ancestor-or-self::dtbook:list[f:classes(.)='toc'] or @type=('ol','ul')) then ()
                                     else (if (not($parse-list-marker) or $marker-type='') then ('list-style-type-none') else (),
                                           if (@type='pl') then 'preformatted' else ())" />
             <xsl:with-param name="except-types" select="if (ancestor-or-self::dtbook:list[f:classes(.)='toc']) then 'toc' else ()" tunnel="yes"/>
