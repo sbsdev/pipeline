@@ -51,10 +51,6 @@ if [ $RUNNER = DOCKER ]; then
              org.apache.maven.plugins:maven-dependency-plugin:3.0.0:copy \
              -Dartifact=org.daisy.pipeline:assembly:$ASSEMBLY_VERSION:deb:all \
              -DoutputDirectory=docker/debs
-    eval mvn $MVN_OPTS \
-             org.apache.maven.plugins:maven-dependency-plugin:3.0.0:copy \
-             -Dartifact=org.daisy.pipeline.modules.braille:mod-sbs:$MOD_SBS_VERSION:deb:all \
-             -DoutputDirectory=docker/debs
     
     # Build docker image
     docker build docker
@@ -69,18 +65,6 @@ else # $RUNNER = NATIVE
              -Dartifact=org.daisy.pipeline:assembly:$ASSEMBLY_VERSION:zip:$SERVER_PLATFORM \
              -DoutputDirectory=.
     unzip *.zip
-    eval mvn $MVN_OPTS \
-             org.apache.maven.plugins:maven-dependency-plugin:3.0.0:copy \
-             -Dartifact=org.daisy.pipeline.modules.braille:mod-sbs:$MOD_SBS_VERSION:jar \
-             -DoutputDirectory=daisy-pipeline/modules/
-    eval mvn $MVN_OPTS \
-             org.apache.maven.plugins:maven-dependency-plugin:3.0.0:copy \
-             -Dartifact=ch.sbs.pipeline:sbs-braille-tables:$SBS_BRAILLE_TABLES_VERSION:jar \
-             -DoutputDirectory=daisy-pipeline/modules/
-    eval mvn $MVN_OPTS \
-             org.apache.maven.plugins:maven-dependency-plugin:3.0.0:copy \
-             -Dartifact=ch.sbs.pipeline:sbs-hyphenation-tables:$SBS_HYPHENATION_TABLES_VERSION:jar \
-             -DoutputDirectory=daisy-pipeline/modules/
 fi
 
 # Launch pipeline and wait for the web service it to be up
@@ -89,6 +73,7 @@ function pipeline_launch {
     if [ $RUNNER = "DOCKER" ]; then
         CONTAINER_ID=$(docker run -d -p 0.0.0.0:$WS_PORT:8181 $IMAGE_ID)
     else
+        JAVA_HOME=`/usr/libexec/java_home -v 9` \
         $CURDIR/native/daisy-pipeline/bin/pipeline2 >$CURDIR/tmp/log &
         SERVER_PID=$!
     fi
