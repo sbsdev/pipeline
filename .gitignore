@@ -1,6 +1,5 @@
 *~
 .DS_Store
-.deps.mk
 .last-tested
 /*.deb
 /*.rpm
