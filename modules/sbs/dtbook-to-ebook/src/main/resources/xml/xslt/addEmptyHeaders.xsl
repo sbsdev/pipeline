@@ -47,6 +47,13 @@
     </xsl:apply-templates>
   </xsl:template>
 
+  <!-- Convert the fake sections on the title page to divs -->
+  <xsl:template match="dtb:frontmatter//dtb:level1[@class='titlepage']/dtb:level2">
+    <xsl:element name="div" namespace="http://www.daisy.org/z3986/2005/dtbook/">
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:element>
+  </xsl:template>
+
   <!-- Add an empty header to all level1 w/o h1 in the rearmatter -->
   <xsl:template match="dtb:rearmatter//dtb:level1[not(dtb:h1)]">
     <xsl:variable name="total" select="count(../dtb:level1[not(dtb:h1)])"/>
