@@ -1,3 +1,6 @@
+.PHONY : default
+default : help
+
 .PHONY : all
 all : check-sbs dist-deb
 
@@ -14,13 +17,18 @@ MVN_PROPERTIES          := -Dworkspace="$(CURDIR)/$(MVN_WORKSPACE)" \
 MVN_RELEASE_CACHE_REPO  := $(MVN_CACHE)
 GRADLE                  := $(CURDIR)/libs/dotify/dotify.api/gradlew
 
+ifneq ($(MAKECMDGOALS),)
+ifneq ($(MAKECMDGOALS), help)
 ifneq ($(MAKECMDGOALS), dump-maven-cmd)
 ifneq ($(MAKECMDGOALS), dump-gradle-cmd)
 ifneq ($(MAKECMDGOALS), clean-website)
 include .make/main.mk
 assembly/BASEDIR := assembly
 include assembly/deps.mk
+-include webui/.deps.mk
 -include it/sbs-benchmark/.deps.mk
+endif
+endif
 endif
 endif
 endif
@@ -55,30 +63,32 @@ dist-deb : pipeline2-$(assembly/VERSION)_debian.deb
 dist-rpm : pipeline2-$(assembly/VERSION)_redhat.rpm
 
 .PHONY : dist-docker-image
-dist-docker-image : assembly/.dependencies
+dist-docker-image : assembly/.compile-dependencies
 	unset MAKECMDGOALS && \
 	$(MAKE) -C assembly docker
 
 .PHONY : dist-webui-deb
-dist-webui-deb : assembly/.dependencies
+dist-webui-deb : assembly/.compile-dependencies
 	# see webui README for instructions on how to make a signed package for distribution
 	cd webui && \
-	./activator clean debian:packageBin | $(MVN_LOG)
+	./activator -Dmvn.settings.localRepository="file:$(CURDIR)/$(MVN_WORKSPACE)" clean debian:packageBin | $(MVN_LOG)
 	mv webui/target/*deb .
 
 .PHONY : dist-webui-rpm
-dist-webui-rpm : assembly/.dependencies
+dist-webui-rpm : assembly/.compile-dependencies
 	# see webui README for instructions on how to make a signed package for distribution
 	cd webui && \
-	./activator clean rpm:packageBin
+	./activator -Dmvn.settings.localRepository="file:$(CURDIR)/$(MVN_WORKSPACE)" clean rpm:packageBin
 	mv webui/target/rpm/RPMS/noarch/*.rpm .
 
 ifeq ($(shell uname), Darwin)
 dev_launcher := assembly/target/assembly-$(assembly/VERSION)-mac/daisy-pipeline/bin/pipeline2
 dp2 := cli/build/bin/darwin_386/dp2
+with-java-11 = JAVA_HOME=`/usr/libexec/java_home -v 11` $(1)
 else
 dev_launcher := assembly/target/assembly-$(assembly/VERSION)-linux/daisy-pipeline/bin/pipeline2
 dp2 := cli/build/bin/linux_386/dp2
+with-java-11 = $(1)
 endif
 
 .PHONY : dp2
@@ -86,30 +96,29 @@ dp2 : $(dp2)
 
 .PHONY : run
 run : $(dev_launcher)
-	$< shell
+	$(call with-java-11,$< shell)
 
 .PHONY : run-gui
 run-gui : $(dev_launcher)
-	$< gui
+	$(call with-java-11,$< gui shell)
 
 .PHONY : run-cli
 run-cli :
-	echo "dp2 () { test -e $(dp2) || make $(dp2) && curl http://localhost:8181/ws/alive >/dev/null 2>/dev/null || make $(dev_launcher) && JAVA_HOME=`/usr/libexec/java_home -v 9` $(dp2) --debug false --starting true --exec_line $(CURDIR)/$(dev_launcher) --ws_timeup 30 \"\$$@\"; }"
+	echo "dp2 () { test -e $(dp2) || make $(dp2) && curl http://localhost:8181/ws/alive >/dev/null 2>/dev/null || make $(dev_launcher) && $(call with-java-11,$(dp2) --debug false --starting true --exec_line $(CURDIR)/$(dev_launcher) --ws_timeup 30 \"\$$@\"); }"
 	echo '# Run this command to configure your shell: '
 	echo '# eval $$(make $@)'
 
 .PHONY : run-webui
-run-webui : # webui/.dependencies
+run-webui : webui/.compile-dependencies
 	if [ ! -d webui/dp2webui ]; then cp -r webui/dp2webui-cleandb webui/dp2webui ; fi
 	cd webui && \
-	./activator run
+	./activator -Dmvn.settings.localRepository="file:$(CURDIR)/$(MVN_WORKSPACE)" run
 
 .PHONY : run-docker
 run-docker : dist-docker-image
-	cd assembly && \
 	docker run --name pipeline --detach \
 	       -e PIPELINE2_WS_HOST=0.0.0.0 \
-	       -p 8181:8181 daisyorg/pipeline2
+	       -p 8181:8181 daisyorg/pipeline-assembly
 
 .PHONY : check
 
@@ -166,7 +175,7 @@ pipeline2-$(assembly/VERSION)_redhat.rpm \
 	| .group-eval
 	+$(EVAL) cp $< $@
 
-$(dev_launcher) : assembly/.dependencies | .maven-init .group-eval
+$(dev_launcher) : assembly/.compile-dependencies | .maven-init .group-eval
 	+$(call eval-for-host-platform,./assembly-make.sh,dev-launcher)
 
 .PHONY : benchmark
@@ -200,42 +209,52 @@ it/sbs-benchmark/.deps.mk : it/sbs-benchmark/conf
 	done >$@
 
 .SECONDARY : assembly/.install.deb
-assembly/.install.deb : assembly/.dependencies | .maven-init .group-eval
+assembly/.install.deb : assembly/.compile-dependencies | .maven-init .group-eval
 	+$(call eval-for-host-platform,./assembly-make.sh,deb)
 
 .SECONDARY : assembly/.install.rpm
-assembly/.install.rpm : assembly/.dependencies | .maven-init .group-eval
+assembly/.install.rpm : assembly/.compile-dependencies | .maven-init .group-eval
 	+$(call eval-for-host-platform,./assembly-make.sh,rpm)
 
 .SECONDARY : assembly/.install-linux.zip
-assembly/.install-linux.zip : assembly/.dependencies | .maven-init .group-eval
+assembly/.install-linux.zip : assembly/.compile-dependencies | .maven-init .group-eval
 	+$(call eval-for-host-platform,./assembly-make.sh,zip-linux)
 
 .SECONDARY : assembly/.install-minimal.zip
-assembly/.install-minimal.zip : assembly/.dependencies | .maven-init .group-eval
+assembly/.install-minimal.zip : assembly/.compile-dependencies | .maven-init .group-eval
 	+$(call eval-for-host-platform,./assembly-make.sh,zip-minimal)
 
 .SECONDARY : assembly/.install-mac.zip
-assembly/.install-mac.zip : assembly/.dependencies | .maven-init .group-eval
+assembly/.install-mac.zip : assembly/.compile-dependencies | .maven-init .group-eval
 	+$(call eval-for-host-platform,./assembly-make.sh,zip-mac)
 
 .SECONDARY : assembly/.install-win.zip
-assembly/.install-win.zip : assembly/.dependencies | .maven-init .group-eval
+assembly/.install-win.zip : assembly/.compile-dependencies | .maven-init .group-eval
 	+$(call eval-for-host-platform,./assembly-make.sh,zip-win)
 
 .SECONDARY : assembly/.install.dmg
-assembly/.install.dmg : assembly/.dependencies | .maven-init .group-eval
+assembly/.install.dmg : assembly/.compile-dependencies | .maven-init .group-eval
 	+$(call eval-for-host-platform,./assembly-make.sh,dmg)
 
 .SECONDARY : assembly/.install.exe
-assembly/.install.exe : assembly/.dependencies | .maven-init .group-eval
+assembly/.install.exe : assembly/.compile-dependencies | .maven-init .group-eval
 	+$(call eval-for-host-platform,./assembly-make.sh,exe)
 
+webui/.deps.mk : webui/build.sbt
+	if ! bash .make/make-webui-deps.mk.sh >$@; then \
+		echo "\$$(error $@ could not be generated)" >$@; \
+	fi
+
+clean : clean-webui-deps
+.PHONY : clean-webui-deps
+clean-webui-deps :
+	rm -f webui/.deps.mk
+
 # FIXME: hard code dependency because unpack-cli-{mac,win,linux} are inside profiles
-assembly/.dependencies : \
-	$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/cli/2.1.1-SNAPSHOT/cli-2.1.1-SNAPSHOT-darwin_386.zip \
-	$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/cli/2.1.1-SNAPSHOT/cli-2.1.1-SNAPSHOT-linux_386.zip \
-	$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/cli/2.1.1-SNAPSHOT/cli-2.1.1-SNAPSHOT-windows_386.zip
+# assembly/.compile-dependencies : \
+# 	$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/cli/2.1.2-SNAPSHOT/cli-2.1.2-SNAPSHOT-darwin_386.zip \
+# 	$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/cli/2.1.2-SNAPSHOT/cli-2.1.2-SNAPSHOT-linux_386.zip \
+# 	$(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/cli/2.1.2-SNAPSHOT/cli-2.1.2-SNAPSHOT-windows_386.zip
 
 modules/sbs/braille/.install.deb : modules/sbs/braille/.install
 modules/sbs/dtbook-to-odt/.install.deb : modules/sbs/dtbook-to-odt/.install
@@ -282,11 +301,11 @@ modules/braille/libhyphen-utils/libhyphen-native/.install-windows.jar: \
 gradle-get-dependency-version = $(shell cat $(1)/build.gradle | perl -ne 'print "$$1\n" if /["'"'"']$(subst .,\.,$(2)):(.+)["'"'"']/')
 
 ifeq ($(call gradle-get-dependency-version,libs/dotify/dotify.formatter.impl,org.daisy.dotify:dotify.api), $(libs/dotify/dotify.api/VERSION))
-libs/dotify/dotify.formatter.impl/.dependencies : \
+libs/dotify/dotify.formatter.impl/.compile-dependencies : \
 	$(MVN_LOCAL_REPOSITORY)/org/daisy/dotify/dotify.api/$(libs/dotify/dotify.api/VERSION)/dotify.api-$(libs/dotify/dotify.api/VERSION).jar
 endif
 ifeq ($(call gradle-get-dependency-version,libs/dotify/dotify.formatter.impl,org.daisy.dotify:dotify.common), $(libs/dotify/dotify.common/VERSION))
-libs/dotify/dotify.formatter.impl/.dependencies : \
+libs/dotify/dotify.formatter.impl/.compile-dependencies : \
 	$(MVN_LOCAL_REPOSITORY)/org/daisy/dotify/dotify.common/$(libs/dotify/dotify.common/VERSION)/dotify.common-$(libs/dotify/dotify.common/VERSION).jar
 endif
 
@@ -393,6 +412,7 @@ go-offline :
 checked :
 	touch $(addsuffix /.last-tested,$(MODULES))
 
+poms : website/target/maven/pom.xml
 website/target/maven/pom.xml : $(addprefix website/src/_data/,modules.yml api.yml versions.yml)
 	$(MAKE) -C website target/maven/pom.xml
 
@@ -408,7 +428,7 @@ serve-website publish-website clean-website :
 # this dependency is also defined in website/Makefile, but we need to repeat it here to enable the transitive dependency below
 website serve-website publish-website : | $(addprefix website/target/maven/,javadoc doc sources xprocdoc)
 
-$(addprefix website/target/maven/,javadoc doc sources xprocdoc) : website/target/maven/.dependencies
+$(addprefix website/target/maven/,javadoc doc sources xprocdoc) : website/target/maven/.compile-dependencies
 	rm -rf $@
 	target=$@ && \
 	$(MAKE) -C website $${target#website/}
@@ -457,6 +477,8 @@ help :
 	echo "	Incrementally compile code and run the GUI locally"                                                     >&2
 	echo "make run-webui:"                                                                                          >&2
 	echo "	Compile and run web UI locally"                                                                         >&2
+	echo "make run-cli:"                                                                                            >&2
+	echo "	Get the command for compiling and running CLI locally"                                                  >&2
 	echo "make run-docker:"                                                                                         >&2
 	echo "	Incrementally compile code and run a server inside a Docker container"                                  >&2
 	echo "make website:"                                                                                            >&2
