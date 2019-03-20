@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.daisy.pipeline.modules</groupId>
     <artifactId>tts-modules-parent</artifactId>
-    <version>1.11.2-SNAPSHOT</version>
+    <version>1.12.1-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -47,6 +47,11 @@
     <dependency>
       <groupId>org.daisy.pipeline.build</groupId>
       <artifactId>modules-test-helper</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.daisy.pipeline</groupId>
+      <artifactId>framework-volatile</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
