@@ -1,3 +1,4 @@
+MVN ?= mvn
 JEKYLL_SRC_DIR := src
 SHELL := bash
 RUBY := bundle exec
@@ -85,10 +86,6 @@ $(JEKYLL_DIR)/$(meta_file) : $(META_JEKYLL_DIR)/_site
 		rm -f $@; \
 		exit 1; \
 	fi
-	# FIXME: grotesque hack!
-	tail -n+20 $@ > $@.tmp
-	head -n20 $@ >> $@.tmp
-	mv $@.tmp $@
 
 $(META_JEKYLL_DIR)/_site : %/_site : %/$(meta_file) %/modules %/api $(META_JEKYLL_FILES)
 	cd $(dir $@) && $(JEKYLL) build --destination $(CURDIR)/$@$(baseurl)
@@ -157,7 +154,7 @@ $(MAVEN_DIR)/sources : $(MAVEN_DIR)/pom.xml
 	rm -rf $(MAVEN_DIR)/xprocdoc
 	rm -rf $(MAVEN_DIR)/sources
 	cd $(MAVEN_DIR) && \
-	if ! mvn --quiet $(MVN_OPTS) "process-sources"; then \
+	if ! $(MVN) "process-sources" >/dev/null ; then \
 		rm -rf $(MAVEN_DIR)/doc; \
 		rm -rf $(MAVEN_DIR)/javadoc; \
 		exit 1; \
@@ -188,6 +185,10 @@ ws :
 .PHONY : publish
 publish : all
 	make/publish.sh $(JEKYLL_DIR)/_site$(baseurl)
+
+.PHONY : publish-wiki
+publish-wiki :
+	make/publish-wiki.sh
 
 .PHONY : clean
 clean :
