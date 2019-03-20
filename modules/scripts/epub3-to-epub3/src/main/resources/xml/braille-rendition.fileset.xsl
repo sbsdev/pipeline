@@ -21,10 +21,10 @@
 	</xsl:template>
 	
 	<xsl:template match="opf:manifest/opf:item">
-		<xsl:variable name="default-href" select="resolve-uri(@href,base-uri(.))"/>
+		<xsl:variable name="default-href" select="resolve-uri(@href,pf:base-uri(.))"/>
 		<xsl:variable name="original-href"
-		              select="($epub.in.fileset//d:file[resolve-uri(@href,base-uri(.))=$default-href]/@original-href
-		                                       /resolve-uri(.,base-uri(parent::*)),
+		              select="($epub.in.fileset//d:file[resolve-uri(@href,pf:base-uri(.))=$default-href]/@original-href
+		                                       /resolve-uri(.,pf:base-uri(parent::*)),
 		                       $default-href)[1]"/>
 		<xsl:element name="d:file">
 			<xsl:choose>

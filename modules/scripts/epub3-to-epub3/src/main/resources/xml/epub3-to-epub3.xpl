@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<p:declare-step type="px:epub3-to-epub3" version="1.0"
+<p:declare-step type="px:epub3-to-epub3.script" version="1.0"
                 xmlns:p="http://www.w3.org/ns/xproc"
                 xmlns:px="http://www.daisy.org/ns/pipeline/xproc"
                 exclude-inline-prefixes="#all"
@@ -23,7 +23,7 @@
         </p:documentation>
     </p:option>
     
-    <p:option name="braille-translator" required="false" px:data-type="transform-query" select="'(translator:liblouis)'">
+    <p:option name="braille-translator" required="false" px:type="transform-query" select="'(translator:liblouis)'">
         <p:documentation>
             <h2 px:role="name">Braille translator query</h2>
         </p:documentation>
@@ -79,33 +79,24 @@ specific.
     <p:import href="epub3-to-epub3.convert.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/fileset-utils/library.xpl"/>
     
-    <px:fileset-create name="target.base.fileset">
-        <p:with-option name="base"
-                       select="concat($output-dir,'/',replace(replace($source,'(\.epub|/mimetype)$',''),'^.*/([^/]+)$','$1'),'.epub!/')"/>
-    </px:fileset-create>
-    
     <px:epub3-to-epub3.load name="load">
         <p:with-option name="epub" select="$source"/>
-        <p:input port="target-base">
-            <p:pipe step="target.base.fileset" port="result"/>
-        </p:input>
     </px:epub3-to-epub3.load>
     
-    <px:epub3-to-epub3.convert name="convert">
+    <px:epub3-to-epub3 name="convert">
         <p:input port="epub.in.fileset">
             <p:pipe step="load" port="fileset"/>
         </p:input>
         <p:input port="epub.in.in-memory">
             <p:pipe step="load" port="in-memory"/>
         </p:input>
-        <p:with-option name="epub-base" select="base-uri(/*)">
-            <p:pipe step="target.base.fileset" port="result"/>
-        </p:with-option>
+        <p:with-option name="result-base"
+                       select="concat($output-dir,'/',replace(replace($source,'(\.epub|/mimetype)$',''),'^.*/([^/]+)$','$1'),'.epub!/')"/>
         <p:with-option name="braille-translator" select="$braille-translator"/>
         <p:with-option name="stylesheet" select="$stylesheet"/>
         <p:with-option name="apply-document-specific-stylesheets" select="$apply-document-specific-stylesheets"/>
         <p:with-option name="set-default-rendition-to-braille" select="$set-default-rendition-to-braille"/>
-    </px:epub3-to-epub3.convert>
+    </px:epub3-to-epub3>
     
     <px:fileset-store>
         <p:input port="fileset.in">

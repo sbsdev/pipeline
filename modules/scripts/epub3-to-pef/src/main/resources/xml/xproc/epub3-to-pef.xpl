@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<p:declare-step type="px:epub3-to-pef" version="1.0"
+<p:declare-step type="px:epub3-to-pef.script" version="1.0"
                 xmlns:p="http://www.w3.org/ns/xproc"
                 xmlns:px="http://www.daisy.org/ns/pipeline/xproc"
                 xmlns:c="http://www.w3.org/ns/xproc-step"
@@ -41,7 +41,7 @@ When `include-obfl` is set to true, the conversion may fail but still output a d
 
     <p:option name="stylesheet" px:sequence="true">
         <p:pipeinfo>
-            <px:data-type>
+            <px:type>
                 <choice>
                     <data type="anyFileURI" datatypeLibrary="http://www.daisy.org/ns/pipeline/xproc">
                         <documentation xml:lang="en">File path relative to input EPUB 3.</documentation>
@@ -50,7 +50,7 @@ When `include-obfl` is set to true, the conversion may fail but still output a d
                         <documentation xml:lang="en">Any other absolute URI</documentation>
                     </data>
                 </choice>
-            </px:data-type>
+            </px:type>
         </p:pipeinfo>
     </p:option>
     
@@ -109,6 +109,7 @@ even though the provided CSS is more specific.
     <p:option name="pef-output-dir"/>
     <p:option name="brf-output-dir"/>
     <p:option name="preview-output-dir"/>
+    <p:option name="obfl-output-dir"/>
     <p:option name="temp-dir"/>
     
     <!-- ======= -->
@@ -118,6 +119,7 @@ even though the provided CSS is more specific.
     <p:import href="http://www.daisy.org/pipeline/modules/braille/common-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/common-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl"/>
+    <p:import href="http://www.daisy.org/pipeline/modules/fileset-utils/library.xpl"/>
     
     <!-- ================================================= -->
     <!-- Create a <c:param-set/> of the options            -->
@@ -126,7 +128,7 @@ even though the provided CSS is more specific.
     <!-- pass all the variables all the time.              -->
     <!-- ================================================= -->
     <p:in-scope-names name="in-scope-names"/>
-    <px:delete-parameters name="input-options"
+    <px:delete-parameters name="input-options" px:message="Collecting parameters" px:progress=".01"
                           parameter-names="stylesheet
                                            apply-document-specific-stylesheets
                                            transform
@@ -138,30 +140,35 @@ even though the provided CSS is more specific.
                                            pef-output-dir
                                            brf-output-dir
                                            preview-output-dir
+                                           obfl-output-dir
                                            temp-dir">
         <p:input port="source">
             <p:pipe port="result" step="in-scope-names"/>
         </p:input>
     </px:delete-parameters>
-    <p:sink/>
     
     <!-- =============== -->
     <!-- CREATE TEMP DIR -->
     <!-- =============== -->
-    <px:tempdir name="temp-dir">
+    <px:tempdir name="temp-dir" px:message="Creating temporary directory" px:progress=".01">
         <p:with-option name="href" select="if ($temp-dir!='') then $temp-dir else $pef-output-dir"/>
     </px:tempdir>
     
     <!-- =========== -->
     <!-- LOAD EPUB 3 -->
     <!-- =========== -->
-    <px:message message="Loading EPUB"/>
-    <px:epub3-to-pef.load name="load">
+    <px:epub3-to-pef.load name="load" px:message="Loading EPUB" px:progress=".03">
         <p:with-option name="epub" select="$epub"/>
         <p:with-option name="temp-dir" select="concat(string(/c:result),'load/')">
             <p:pipe step="temp-dir" port="result"/>
         </p:with-option>
     </px:epub3-to-pef.load>
+    <px:fileset-load name="opf" media-types="application/oebps-package+xml">
+        <p:input port="in-memory">
+            <p:pipe step="load" port="in-memory.out"/>
+        </p:input>
+    </px:fileset-load>
+    <p:sink/>
     
     <!-- ============= -->
     <!-- EPUB 3 TO PEF -->
@@ -171,8 +178,8 @@ even though the provided CSS is more specific.
             <p:pipe port="fileset.out" step="load"/>
         </p:input>
     </p:identity>
-    <px:message message="Done loading EPUB, starting conversion to PEF"/>
-    <px:epub3-to-pef.convert default-stylesheet="http://www.daisy.org/pipeline/modules/braille/epub3-to-pef/css/default.css" name="convert">
+    <px:epub3-to-pef name="convert" px:message="Converting from EPUB to PEF" px:progress=".90"
+                     default-stylesheet="http://www.daisy.org/pipeline/modules/braille/epub3-to-pef/css/default.css">
         <p:with-option name="epub" select="$epub"/>
         <p:input port="in-memory.in">
             <p:pipe port="in-memory.out" step="load"/>
@@ -187,7 +194,7 @@ even though the provided CSS is more specific.
         <p:input port="parameters">
             <p:pipe port="result" step="input-options"/>
         </p:input>
-    </px:epub3-to-pef.convert>
+    </px:epub3-to-pef>
     <p:sink/>
     
     <!-- ========= -->
@@ -198,12 +205,11 @@ even though the provided CSS is more specific.
             <p:pipe step="convert" port="in-memory.out"/>
         </p:input>
     </p:identity>
-    <px:message message="Storing PEF"/>
     <p:delete match="/*/@xml:base"/>
-    <px:epub3-to-pef.store>
+    <px:epub3-to-pef.store px:message="Storing PEF" px:progress=".05">
         <p:with-option name="epub" select="$epub"/>
         <p:input port="opf">
-            <p:pipe step="load" port="opf"/>
+            <p:pipe step="opf" port="result"/>
         </p:input>
         <p:input port="obfl">
             <p:pipe step="convert" port="obfl"/>
@@ -215,6 +221,7 @@ even though the provided CSS is more specific.
         <p:with-option name="pef-output-dir" select="$pef-output-dir"/>
         <p:with-option name="brf-output-dir" select="$brf-output-dir"/>
         <p:with-option name="preview-output-dir" select="$preview-output-dir"/>
+        <p:with-option name="obfl-output-dir" select="$obfl-output-dir"/>
     </px:epub3-to-pef.store>
     
 </p:declare-step>
