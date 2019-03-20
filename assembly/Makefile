@@ -1,6 +1,7 @@
 MVN ?= mvn
 MVN_LOG ?= cat
 DOCKER := docker
+SHELL  := /bin/bash
 
 .PHONY : default
 ifeq ($(shell uname), Darwin)
@@ -38,7 +39,8 @@ help :
 	echo "make check|check-docker:"                                             >&2
 	echo "	Tests the Docker image"                                             >&2
 
-assembly/VERSION     := 1.11.2-SNAPSHOT
+# FIXME: don't hard-code
+assembly/VERSION     := 1.12.1-SNAPSHOT
 assembly/BASEDIR     := .
 MVN_LOCAL_REPOSITORY ?= $(HOME)/.m2/repository
 
@@ -112,10 +114,14 @@ $(MVN_LOCAL_REPOSITORY)/org/daisy/pipeline/assembly/$(assembly/VERSION)/assembly
 endif
 
 .PHONY : docker
-docker : target/assembly-$(assembly/VERSION)-linux/daisy-pipeline/bin/pipeline2
+docker : target/assembly-$(assembly/VERSION)-linux/daisy-pipeline/bin/pipeline2 src/main/docker/OpenJDK11-jdk_x64_linux_hotspot_11_28.tar.gz
 	cp Dockerfile.without_builder target/assembly-$(assembly/VERSION)-linux/Dockerfile
+	tar -zxvf src/main/docker/OpenJDK11-jdk_x64_linux_hotspot_11_28.tar.gz -C target/assembly-$(assembly/VERSION)-linux/
 	cd target/assembly-$(assembly/VERSION)-linux && \
 	$(DOCKER) build -t daisyorg/pipeline-assembly .
+
+src/main/docker/OpenJDK11-jdk_x64_linux_hotspot_11_28.tar.gz :
+	curl -L -o $@ "https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11%2B28/$(notdir $@)"
 
 .PHONY : dev-launcher
 ifeq ($(shell uname), Darwin)
@@ -148,6 +154,9 @@ check : check-docker
 .PHONY : check-docker
 check-docker :
 	bash src/test/resources/test-docker-image.sh
+
+.PHONY : --without-persistence
+--without-persistence : -Pwithout-persistence
 
 #                          generate-resources      process-resources      prepare-package       package
 #                          ---------------         -----------------      ---------------       -------
@@ -196,12 +205,14 @@ PROFILES :=                 \
 	unpack-updater-mac      \
 	unpack-updater-win      \
 	unpack-updater-gui-win  \
+	without-persistence     \
 	dev-launcher
 
 .PHONY : mvn
 mvn :
 ifndef DUMP_PROFILES
-	$(MVN) clean install $(shell $(MAKE) -qs DUMP_PROFILES=true $(MAKECMDGOALS)) | $(MVN_LOG)
+	set -o pipefail; \
+	$(MVN) clean install $(shell $(MAKE) -qs DUMP_PROFILES=true -- $(MAKECMDGOALS)) | $(MVN_LOG)
 endif
 
 .PHONY : $(addprefix -P,$(PROFILES))
