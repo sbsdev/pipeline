@@ -7,5 +7,5 @@
 	remote = git@github.com:daisy/xprocspec.git
 	branch = master
 	commit = c6a36838824933ebb7e3891e871cbd1f4fc1f4d5
-	parent = daf77b786ad6a51b0b79bd0b8b9dee60c8ea581a
+	parent = 78232b39195abfa93a180442ad3e1b98483b982d
 	cmdver = 0.3.1

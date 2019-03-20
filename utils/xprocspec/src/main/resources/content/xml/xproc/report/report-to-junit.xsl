@@ -35,8 +35,15 @@
 
             <xsl:choose>
                 <xsl:when test="$errors">
-                    <xsl:attribute name="name" select="'compilationError'"/>
-                    <xsl:attribute name="package" select="'org.daisy.xprocspec'"/>
+                    <xsl:choose>
+                        <xsl:when test="$errors/@scenario-label">
+                            <xsl:attribute name="name" select="$errors/@scenario-label"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="name" select="'compilationError'"/>
+                            <xsl:attribute name="package" select="'org.daisy.xprocspec'"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
 
                     <properties>
                         <xsl:for-each select="@*">
