@@ -6,13 +6,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.google.common.collect.ForwardingList;
+
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
+import cz.vutbr.web.css.Rule;
 import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
+import cz.vutbr.web.css.RuleMargin;
+import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
 import cz.vutbr.web.css.Selector.SelectorPart;
+import cz.vutbr.web.css.StyleSheet;
 import cz.vutbr.web.csskit.AbstractRuleBlock;
 
 import org.daisy.braille.css.SelectorImpl.PseudoElementImpl;
@@ -23,7 +29,7 @@ import org.daisy.braille.css.SelectorImpl.PseudoElementImpl;
  * processors internally, and as such the resulting style attributes are not
  * valid in an input document.
  */
-public class InlinedStyle implements Cloneable, Iterable<RuleBlock<?>> {
+public class InlineStyle implements Cloneable, Iterable<RuleBlock<?>> {
 	
 	private final static BrailleCSSParserFactory parserFactory = new BrailleCSSParserFactory();
 	private static final SelectorPart dummyElementSelectorPart;
@@ -34,38 +40,47 @@ public class InlinedStyle implements Cloneable, Iterable<RuleBlock<?>> {
 	
 	private final static RuleMainBlock emptyBlock = new RuleMainBlock();
 
-	// FIXME: instead of splitting up beforehand and concatenating in
-	// iterator(), we could also split up on the fly in getMainStyle(),
-	// getPseudoStyles() etc.
 	private Optional<RuleMainBlock> mainStyle;
-	private List<RulePseudoElementBlock> pseudoStyles;
-	private List<RuleTextTransform> textTransformDefs;
+	private List<RuleBlock<?>> nestedStyles;
 	
-	public InlinedStyle(String style) {
-		pseudoStyles = new ArrayList<RulePseudoElementBlock>();
-		textTransformDefs = new ArrayList<RuleTextTransform>();
+	public InlineStyle(String style) {
+		this(style, BrailleCSSParserFactory.Context.ELEMENT);
+	}
+	
+	public InlineStyle(String style, BrailleCSSParserFactory.Context context) {
+		nestedStyles = new ArrayList<RuleBlock<?>>();
 		List<Declaration> mainDeclarations = new ArrayList<Declaration>();
-		for (RuleBlock<?> block : parserFactory.parseInlinedStyle(style)) {
+		for (RuleBlock<?> block : parserFactory.parseInlineStyle(style, context)) {
 			if (block == null) {}
 			else if (block instanceof RuleSet) {
 				RuleSet set = (RuleSet)block;
 				List<CombinedSelector> selectors = set.getSelectors();
 				assertThat(selectors.size() == 1); // because no commas in selector
 				CombinedSelector combinedSelector = selectors.get(0);
-				assertThat(combinedSelector.size() == 1); // because no combinators in selector
 				Selector selector = combinedSelector.get(0);
 				assertThat(selector.size() >= 1); // because first part of selector is always the style attribute's parent element
-				assertThat(dummyElementSelectorPart.equals(selector.get(0))); // see BrailleCSSParserFactory.parseInlinedStyle()
-				assertThat(selector.size() <= 2); // because there can be at most one other selector part: a (stacked) pseudo-element
-				if (selector.size() == 2) {
-					SelectorPart part = selector.get(1);
-					assertThat(part instanceof PseudoElementImpl);
-					pseudoStyles.add(new RulePseudoElementBlock((PseudoElementImpl)part, set));
-				} else {
+				assertThat(dummyElementSelectorPart.equals(selector.get(0))); // see BrailleCSSParserFactory.parseInlineStyle()
+				if (selector.size() == 1 && combinedSelector.size() == 1) {
 					mainDeclarations.addAll(set);
+				} else {
+					List<Selector> relativeSelector = new ArrayList<Selector>();
+					selector.remove(0);
+					if (selector.size() > 0) {
+						relativeSelector.add(selector);
+					}
+					relativeSelector.addAll(combinedSelector.subList(1, combinedSelector.size()));
+					nestedStyles.add(new RuleRelativeBlock(relativeSelector, set));
 				}
-			} else if (block instanceof RuleTextTransform) {
-				textTransformDefs.add((RuleTextTransform)block);
+			} else if (block instanceof RuleTextTransform
+			           || block instanceof RulePage
+			           || block instanceof RuleVolume
+			           || block instanceof RuleMargin
+			           || block instanceof RuleVolumeArea
+			           || block instanceof RuleRelativePage
+			           || block instanceof RuleRelativeVolume
+			           || block instanceof AnyAtRule
+			           ) {
+				nestedStyles.add(block);
 			} else {
 				throw new RuntimeException("coding error");
 			}
@@ -80,14 +95,9 @@ public class InlinedStyle implements Cloneable, Iterable<RuleBlock<?>> {
 			return emptyBlock;
 	}
 	
-	public Iterator<RulePseudoElementBlock> getPseudoStyles() {
-		return filterNonEmpty(pseudoStyles.listIterator());
-	}
-	
 	public Iterator<RuleBlock<?>> iterator() {
 		final Iterator<RuleMainBlock> mainStyleItr = filterNonEmpty(mainStyle.listIterator());
-		final Iterator<RulePseudoElementBlock> pseudoStylesItr = filterNonEmpty(pseudoStyles.listIterator());
-		final Iterator<RuleTextTransform> textTransformDefsItr = filterNonEmpty(textTransformDefs.listIterator());
+		final Iterator<RuleBlock<?>> nestedStylesItr = filterNonEmpty(nestedStyles.listIterator());
 		return new Iterator<RuleBlock<?>>() {
 			int cursor = 0;
 			public boolean hasNext() {
@@ -96,11 +106,8 @@ public class InlinedStyle implements Cloneable, Iterable<RuleBlock<?>> {
 					if (mainStyleItr.hasNext())
 						return true;
 				case 1:
-					if (pseudoStylesItr.hasNext())
-						return true;
-				case 2:
 				default:
-					return textTransformDefsItr.hasNext();
+					return nestedStylesItr.hasNext();
 				}
 			}
 			public RuleBlock<?> next() {
@@ -110,12 +117,8 @@ public class InlinedStyle implements Cloneable, Iterable<RuleBlock<?>> {
 						return mainStyleItr.next();
 					cursor++;
 				case 1:
-					if (pseudoStylesItr.hasNext())
-						return pseudoStylesItr.next();
-					cursor++;
-				case 2:
 				default:
-					return textTransformDefsItr.next();
+					return nestedStylesItr.next();
 				}
 			}
 			public void remove() {
@@ -124,10 +127,8 @@ public class InlinedStyle implements Cloneable, Iterable<RuleBlock<?>> {
 					mainStyleItr.remove();
 					break;
 				case 1:
-					pseudoStylesItr.remove();
-					break;
-				case 2:
-					textTransformDefsItr.remove();
+				default:
+					nestedStylesItr.remove();
 				}
 			}
 		};
@@ -139,16 +140,16 @@ public class InlinedStyle implements Cloneable, Iterable<RuleBlock<?>> {
 	
 	@Override
 	public Object clone() {
-		InlinedStyle clone; {
+		InlineStyle clone; {
 			try {
-				clone = (InlinedStyle)super.clone(); }
+				clone = (InlineStyle)super.clone(); }
 			catch (CloneNotSupportedException e) {
 				throw new InternalError("coding error"); }}
 		if (mainStyle.isPresent())
 			clone.mainStyle = new Optional<RuleMainBlock>(mainStyle.get());
-		clone.pseudoStyles = new ArrayList<RulePseudoElementBlock>();
-		for (RulePseudoElementBlock b : pseudoStyles)
-			clone.pseudoStyles.add((RulePseudoElementBlock)b.clone());
+		clone.nestedStyles = new ArrayList<RuleBlock<?>>();
+		for (RuleBlock<?> b : nestedStyles)
+			clone.nestedStyles.add((RuleBlock<?>)b.clone());
 		return clone;
 	}
 	
@@ -164,22 +165,92 @@ public class InlinedStyle implements Cloneable, Iterable<RuleBlock<?>> {
 		}
 	}
 	
-	public static class RulePseudoElementBlock extends AbstractRuleBlock<Declaration> {
+	public static class RuleRelativeBlock extends AbstractRuleBlock<Declaration> {
 		
-		private final PseudoElementImpl pseudo;
+		private final List<Selector> selector;
 		
-		private RulePseudoElementBlock(PseudoElementImpl pseudo, List<Declaration> declarations) {
-			this.pseudo = pseudo;
+		public RuleRelativeBlock(List<Selector> selector, List<Declaration> declarations) {
+			this.selector = new ArrayList<Selector>(selector);
 			replaceAll(declarations);
 		}
 		
-		public PseudoElementImpl getPseudoElement() {
-			return pseudo;
+		public List<Selector> getSelector() {
+			return selector;
+		}
+	}
+	
+	private static abstract class ForwardingRuleBlock<E> extends ForwardingList<E> {
+		
+		final RuleBlock<E> delegate;
+		
+		ForwardingRuleBlock(RuleBlock<E> delegate) {
+			this.delegate = delegate;
+		}
+		
+		public List<E> delegate() {
+			return delegate;
+		}
+		
+		public StyleSheet getStyleSheet() {
+			return delegate.getStyleSheet();
+		}
+		
+		public void setStyleSheet(StyleSheet sheet) {
+			delegate.setStyleSheet(sheet);
+		}
+		
+		public List<E> asList() {
+			return delegate.asList();
+		}
+		
+		public Rule<E> replaceAll(List<E> replacement) {
+			return delegate.replaceAll(replacement);
+		}
+		
+		public Rule<E> unlock() {
+			return delegate.unlock();
+		}
+	}
+	
+	public static class RuleRelativePage extends ForwardingRuleBlock<Rule<?>> implements RuleBlock<Rule<?>> {
+		
+		private final RulePage page;
+		
+		public RuleRelativePage(RulePage page) {
+			super(page);
+			if (page.getName() != null || page.getPseudo() == null)
+				throw new RuntimeException();
+			this.page = page;
+		}
+		
+		public RulePage asRulePage() {
+			return page;
 		}
 		
 		@Override
-		public boolean isEmpty() {
-			return false;
+		public RuleRelativePage clone() {
+			return new RuleRelativePage((RulePage)delegate.clone());
+		}
+	}
+	
+	public static class RuleRelativeVolume extends ForwardingRuleBlock<Rule<?>> implements RuleBlock<Rule<?>> {
+		
+		private final RuleVolume volume;
+		
+		public RuleRelativeVolume(RuleVolume volume) {
+			super(volume);
+			if (volume.getPseudo() == null)
+				throw new RuntimeException();
+			this.volume = volume;
+		}
+		
+		public RuleVolume asRuleVolume() {
+			return volume;
+		}
+		
+		@Override
+		public RuleRelativeVolume clone() {
+			return new RuleRelativeVolume((RuleVolume)delegate.clone());
 		}
 	}
 	

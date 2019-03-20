@@ -9,6 +9,7 @@ import CSSTreeParser;
 
 @header {
 package org.daisy.braille.css;
+import java.util.Arrays;
 import cz.vutbr.web.css.CombinedSelector;
 import cz.vutbr.web.css.Declaration;
 import cz.vutbr.web.css.MediaQuery;
@@ -16,9 +17,12 @@ import cz.vutbr.web.css.RuleBlock;
 import cz.vutbr.web.css.RuleFactory;
 import cz.vutbr.web.css.RuleList;
 import cz.vutbr.web.css.RuleMargin;
+import cz.vutbr.web.css.RulePage;
 import cz.vutbr.web.css.RuleSet;
 import cz.vutbr.web.css.Selector;
+import cz.vutbr.web.css.Selector.ElementName;
 import cz.vutbr.web.csskit.RuleArrayList;
+import cz.vutbr.web.csskit.antlr.SimplePreparator;
 }
 
 @members {
@@ -49,6 +53,7 @@ unknown_atrule returns [RuleBlock<?> stmnt]
 @init { $stmnt = null; }
     : (v=volume) { $stmnt = v; }
     | (tt=text_transform_def) { $stmnt = tt; }
+    | (aar=any_atrule) { $stmnt = aar; }
     | INVALID_ATSTATEMENT { gCSSTreeParser.debug("Skipping invalid at statement"); }
     ;
 
@@ -56,19 +61,25 @@ volume returns [RuleVolume stmnt]
 @init {
     String pseudo = null;
     String pseudoFuncArg = null;
+    CommonTree pos = null;
 }
     : ^(VOLUME
         ( ^(PSEUDOCLASS i=IDENT)
-           { pseudo = i.getText(); }
+           { pos = i; pseudo = i.getText(); }
         | ^(PSEUDOCLASS f=FUNCTION n=NUMBER)
-           { pseudo = f.getText();
+           { pos = f;
+             pseudo = f.getText();
              pseudoFuncArg = n.getText(); }
         )?
         decl=declarations
         areas=volume_areas
       )
       {
-        $stmnt = preparator.prepareRuleVolume(decl, areas, pseudo, pseudoFuncArg);
+        try {
+            $stmnt = preparator.prepareRuleVolume(decl, areas, pseudo, pseudoFuncArg);
+        } catch (IllegalArgumentException e) {
+            gCSSTreeParser.error(pos, e.getMessage());
+        }
       }
     ;
 
@@ -88,10 +99,18 @@ volume_areas returns [List<RuleVolumeArea> list]
     ;
 
 volume_area returns [RuleVolumeArea area]
+@init {
+    List<RulePage> pages = null;
+}
     : ^( a=VOLUME_AREA
-         decl=declarations )
+         decl=declarations
+         // nested anonymous page rules allowed in case of inline style
+         (p=page {
+             if (pages == null) pages = new ArrayList<RulePage>();
+             pages.add(p);
+         })*)
       {
-        $area = preparator.prepareRuleVolumeArea(a.getText().substring(1), decl);
+        $area = preparator.prepareRuleVolumeArea(a.getText().substring(1), decl, pages);
       }
     ;
 
@@ -99,6 +118,27 @@ text_transform_def returns [RuleTextTransform def]
     : ^( TEXT_TRANSFORM n=IDENT decl=declarations ) {
           $def = preparator.prepareRuleTextTransform(n.getText(), decl);
       }
+    ;
+
+any_atrule returns [AnyAtRule stmnt]
+@init {
+    List<AnyAtRule> childrules = new ArrayList<AnyAtRule>();
+}
+    : ^(  at=(VENDOR_ATRULE|ATKEYWORD)
+          decl=declarations
+          ^( SET ( r=any_atrule { childrules.add(r); } )* )
+        ) {
+          String name = at.getText().substring(1);
+          AnyAtRule aar = new AnyAtRule(name);
+          if (decl != null) aar.addAll(decl);
+          if (childrules != null) aar.addAll(childrules);
+          if (aar.isEmpty())
+              gCSSTreeParser.debug("Empty AnyAtRule was omited");
+          else {
+              gCSSTreeParser.info("Create @" + name + " as with:\n{}", aar);
+              $stmnt = aar;
+          }
+        }
     ;
 
 // @Override
@@ -110,9 +150,10 @@ pseudo returns [Selector.PseudoPage pseudoPage]
           try {
               $pseudoPage = gCSSTreeParser.rf.createPseudoClass(name);
           } catch (Exception e1) {
-              // maybe a single colon was used for a pseudo element
+              // maybe a single colon was used for a pseudo element, or it'a custom pseudo class,
+              // which we implement via a pseudo element
               try {
-                  $pseudoPage = gCSSTreeParser.rf.createPseudoElement(name);
+                  $pseudoPage = new SelectorImpl.PseudoElementImpl(":" + name);
                   gCSSTreeParser.warn(i, "Use a double colon for pseudo element ::" + name); }
               catch (Exception e2) {
                   gCSSTreeParser.error(i, "invalid pseudo declaration :" + name);
@@ -214,6 +255,51 @@ relative_selector returns [CombinedSelector combinedSelector]
     ;
 
 /*
+ * Rule with selector relative to a certain element. An ampersand indicates that the relative
+ * selector should be "chained" onto the element selector (cfr. the "parent reference" in SASS).
+ */
+relative_rule returns [RuleSet rs]
+@init {
+    boolean attach = false;
+    List<Selector> sel = new ArrayList<Selector>();
+    boolean invalid = false;
+}
+    : ^(RULE
+        ((s=selector) {
+            attach = true;
+            // may not start with a type selector
+            if (s.size() > 0 && s.get(0) instanceof ElementName) {
+                invalid = true;
+            }
+            sel.add(s);
+         }
+         | (c=combinator s=selector) {
+            sel.add(s.setCombinator(c));
+         }
+        )
+        (c=combinator s=selector {
+            sel.add(s.setCombinator(c));
+        })*
+        decl=declarations
+      ) {
+          if (!invalid) {
+              CombinedSelector cs = (CombinedSelector)gCSSTreeParser.rf.createCombinedSelector().unlock();
+              Selector first = (Selector)gCSSTreeParser.rf.createSelector().unlock();
+              first.add(gCSSTreeParser.rf.createElementDOM(((SimplePreparator)preparator).elem, false)); // inlinePriority does not matter
+              if (attach) {
+                  first.addAll(sel.get(0));
+                  sel.remove(0);
+              }
+              cs.add(first);
+              cs.addAll(sel);
+              $rs = gCSSTreeParser.rf.createSet();
+              $rs.replaceAll(decl);
+              $rs.setSelectors(Arrays.asList(cs));
+          }
+      }
+    ;
+
+/*
  * Simple list of declarations.
  */
 simple_inlinestyle returns [List<Declaration> style]
@@ -223,42 +309,42 @@ simple_inlinestyle returns [List<Declaration> style]
     ;
 
 /*
- * Format allowed in style attributes that are the result of
- * "inlining" a style sheet attached to a document. Inlining is an
- * operation intended to be done by CSS processors internally, and as
- * such the resulting style attributes are not valid in an input
- * document. See the "inlinestyle" rule for what is allowed in style
- * attributes of an input document.
+ * Syntax of style attributes according to http://braillespecs.github.io/braille-css/#style-attribute.
  */
-inlinedstyle returns [RuleList rules]
+// @Override
+inlinestyle returns [RuleList rules]
 @init {
     $rules = gCSSTreeParser.rules = new RuleArrayList();
 }
-    : ^(INLINESTYLE decl=declarations) {
-          RuleBlock<?> b = preparator.prepareInlineRuleSet(decl, null);
-          $rules.add(b);
-      }
-    | ^(INLINESTYLE (ib=inlineblock {
+    : ^(INLINESTYLE (ib=inlineblock {
           // TODO: check that there is at most one block of simple
           // declarations, that all page at-rules have a different
           // pseudo-class, etc.
-          $rules.add(ib);
+          if (ib != null) {
+              $rules.add(ib);
+          }
       })+ )
     ;
 
 inlineblock returns [RuleBlock<?> b]
-    : irs=inlineset { $b = irs; }
+    : ^(RULE decl=declarations) {
+          $b = preparator.prepareInlineRuleSet(decl, null);
+      }
     | tt=text_transform_def { $b = tt; }
-
-// TODO: allowed as well but skip for now:
-//  | p=page { $b = p; }
-
-// TODO: need a slightly different format that allows @page inside @begin and @end:
-//  | v=volume { $b = v; }
+    | p=page { $b = p; }
+    | v=volume { $b = v; }
+    | pm=margin { $b = pm; }
+    | va=volume_area { $b = va; }
+    | aa=any_atrule { $b = aa; }
+    | ^(AMPERSAND
+         (rr=relative_rule { $b = rr; }
+         |p=page { $b = new InlineStyle.RuleRelativePage(p); } // relative @page pseudo rule
+         |v=volume { $b = new InlineStyle.RuleRelativeVolume(v); } // relative @volume pseudo rule
+         ))
     ;
 
 // TODO: move to CSSTreeParser.g
-page returns [RuleBlock<?> stmnt]
+page returns [RulePage stmnt]
 @init {
     List<RuleSet> rules = null;
     List<RuleMargin> margins = null;
@@ -278,6 +364,6 @@ page returns [RuleBlock<?> stmnt]
               })*
           )
       ) {
-          $stmnt = preparator.prepareRulePage(decl, margins, null, pseudo);
+          $stmnt = (RulePage)preparator.prepareRulePage(decl, margins, null, pseudo);
       }
     ;
