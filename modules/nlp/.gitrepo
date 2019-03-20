@@ -7,5 +7,5 @@
 	remote = git@github.com:daisy/pipeline-mod-nlp.git
 	branch = master
 	commit = 9054848e187e36800bd4062a0f5a4a618f83236e
-	parent = 9664b499e88aa0eb8b740b54e50d10c7451774dd
+	parent = 2e40c2198bc1d443821624ae0b909eeb2b33395f
 	cmdver = 0.3.1
