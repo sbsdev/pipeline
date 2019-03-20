@@ -2038,7 +2038,7 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="titlepage-docauthor-doctitle" focus="">
+  <x:scenario label="titlepage-docauthor-doctitle">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="inline">
