@@ -124,6 +124,7 @@ public class Calabash implements XProcEngine {
 		if (!equal(nextCatalogFile, currentCatalogFile) || nextURIResolver != currentURIResolver) {
 			if (nextCatalogFile != null) {
 				CatalogManager catalogManager = new CatalogManager();
+				// catalogManager.debug.setDebug(5);
 				catalogManager.setUseStaticCatalog(false);
 				catalogManager.setCatalogFiles(nextCatalogFile);
 				currentRuntime.setURIResolver(fallingBackURIResolver(jarURIResolver(), nextURIResolver, new CatalogResolver(catalogManager))); }
@@ -141,6 +142,16 @@ public class Calabash implements XProcEngine {
 	                Map<String,String> outputs,
 	                Map<String,String> options,
 	                Map<String,Map<String,String>> parameters)
+			throws XProcExecutionException {
+		run(pipeline, inputs, outputs, options, parameters, null);
+	}
+	
+	public void run(String pipeline,
+	                Map<String,List<String>> inputs,
+	                Map<String,String> outputs,
+	                Map<String,String> options,
+	                Map<String,Map<String,String>> parameters,
+	                Map<String,?> context)
 			throws XProcExecutionException {
 		XProcRuntime runtime = runtime();
 		try {
