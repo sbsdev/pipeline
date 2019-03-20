@@ -129,7 +129,7 @@
             <head>
               <style media="embossed" type="text/css">
                 body { counter-set: page 99 }
-                pagenum { string-set: print-page content(), first-print-page content() }
+                pagenum { string-set: print-page content(), foo "'bar'" }
               </style>
             </head>
             <body>
@@ -145,7 +145,45 @@
     <x:expect label="result" type="compare">
       <x:document type="inline">
         <body style="counter-set: page 0 page 99;">
-          <pagenum style="string-set: print-page content(), first-print-page content();">1</pagenum>
+          <pagenum style="string-set: print-page content(), foo '\27bar\27';">1</pagenum>
+        </body>
+      </x:document>
+    </x:expect>
+  </x:scenario>
+  
+  <!--
+      line-height
+  -->
+  <x:scenario label="test_04">
+    <x:call step="css:inline">
+      <x:input port="source">
+        <x:document type="inline">
+          <document>
+            <head>
+              <style media="embossed" type="text/css">
+                h { line-height: .50 }
+                p { line-height: 1.0 }
+                div { line-height: 165.0% }
+              </style>
+            </head>
+            <body>
+              <h/>
+              <p/>
+              <div/>
+            </body>
+          </document>
+        </x:document>
+      </x:input>
+    </x:call>
+    <x:context label="result">
+      <x:document type="port" port="result" select="//body"/>
+    </x:context>
+    <x:expect label="result" type="compare">
+      <x:document type="inline">
+        <body>
+          <h style="line-height: 0.5;"/>
+          <p style="line-height: 1;"/>
+          <div style="line-height: 165%;"/>
         </body>
       </x:document>
     </x:expect>

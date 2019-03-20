@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.function.Supplier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,16 +22,17 @@ import java.util.regex.Pattern;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 
 import com.google.common.base.Function;
-import com.google.common.base.Splitter;
-import static com.google.common.base.Objects.firstNonNull;
+import static com.google.common.base.MoreObjects.firstNonNull;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterators;
+
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.toArray;
 import static com.google.common.collect.Iterators.forArray;
@@ -66,7 +68,10 @@ import cz.vutbr.web.css.TermFunction;
 import cz.vutbr.web.css.TermIdent;
 import cz.vutbr.web.css.TermInteger;
 import cz.vutbr.web.css.TermList;
+import cz.vutbr.web.css.TermNumber;
 import cz.vutbr.web.css.TermPair;
+import cz.vutbr.web.css.TermString;
+import cz.vutbr.web.css.TermPercent;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory;
 import cz.vutbr.web.csskit.antlr.CSSParserFactory.SourceType;
 import cz.vutbr.web.csskit.DefaultNetworkProcessor;
@@ -83,7 +88,6 @@ import io.bit3.jsass.Options;
 import io.bit3.jsass.Output;
 import io.bit3.jsass.OutputStyle;
 
-import net.sf.saxon.dom.DocumentOverNodeInfo;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
@@ -91,6 +95,7 @@ import net.sf.saxon.trans.XPathException;
 
 import org.apache.commons.io.input.BOMInputStream;
 
+import org.daisy.braille.css.AnyAtRule;
 import org.daisy.braille.css.BrailleCSSDeclarationTransformer;
 import org.daisy.braille.css.BrailleCSSParserFactory;
 import org.daisy.braille.css.BrailleCSSProperty;
@@ -101,9 +106,19 @@ import org.daisy.braille.css.RuleVolumeArea;
 import org.daisy.braille.css.SelectorImpl.PseudoElementImpl;
 import org.daisy.braille.css.SimpleInlineStyle;
 import org.daisy.braille.css.SupportedBrailleCSS;
+
+import org.daisy.common.calabash.XMLCalabashHelper;
+import org.daisy.common.saxon.SaxonHelper;
+import org.daisy.common.stax.BaseURIAwareXMLStreamWriter;
+import static org.daisy.common.stax.XMLStreamWriterHelper.writeAttribute;
+import static org.daisy.common.stax.XMLStreamWriterHelper.writeCharacters;
+import static org.daisy.common.stax.XMLStreamWriterHelper.writeComment;
+import static org.daisy.common.stax.XMLStreamWriterHelper.writeProcessingInstruction;
+import static org.daisy.common.stax.XMLStreamWriterHelper.writeStartElement;
+import org.daisy.common.transform.DOMToXMLStreamTransformer;
+import org.daisy.common.transform.TransformerException;
 import org.daisy.common.xproc.calabash.XProcStepProvider;
-import org.daisy.pipeline.braille.common.calabash.DomToStreamTransform;
-import org.daisy.pipeline.braille.common.TransformationException;
+
 import static org.daisy.pipeline.braille.common.util.Strings.join;
 import static org.daisy.pipeline.braille.common.util.Strings.normalizeSpace;
 import static org.daisy.pipeline.braille.common.util.URIs.asURI;
@@ -165,7 +180,7 @@ public class CssInlineStep extends DefaultStep {
 						Source resolved; {
 							try {
 								resolved = _resolver.resolve(abs.toString(), ""); }
-							catch (TransformerException e) {
+							catch (javax.xml.transform.TransformerException e) {
 								throw new IOException(e); }}
 						if (resolved != null && resolved instanceof StreamSource)
 							is = ((StreamSource)resolved).getInputStream();
@@ -195,7 +210,7 @@ public class CssInlineStep extends DefaultStep {
 					Source resolved; {
 						try {
 							resolved = _resolver.resolve(asURI(url).toString(), ""); }
-						catch (TransformerException e) {
+						catch (javax.xml.transform.TransformerException e) {
 							throw new IOException(e); }}
 					if (resolved != null && resolved instanceof StreamSource)
 						is = ((StreamSource)resolved).getInputStream();
@@ -295,20 +310,14 @@ public class CssInlineStep extends DefaultStep {
 	public void run() throws SaxonApiException {
 		super.run();
 		try {
-			XdmNode source = sourcePipe.read();
-			Document doc = (Document)DocumentOverNodeInfo.wrap(source.getUnderlyingNode());
-			URI base = asURI(doc.getBaseURI());
-			URL[] defaultSheets; {
-				StringTokenizer t = new StringTokenizer(getOption(_default_stylesheet, ""));
-				ArrayList<URL> l = new ArrayList<URL>();
-				while (t.hasMoreTokens())
-					l.add(asURL(base.resolve(asURI(t.nextToken()))));
-				defaultSheets = toArray(l, URL.class);
-			}
 			String medium = getOption(_media, DEFAULT_MEDIUM);
 			QName attributeName = getOption(_attribute_name, DEFAULT_ATTRIBUTE_NAME);
 			inMemoryResolver.setContext(contextPipe);
-			resultPipe.write(new CssInlineTransform(runtime, network, defaultSheets, medium, attributeName).transform(source)); }
+			XMLCalabashHelper.transform(
+				new CssInlineTransformer(network, getOption(_default_stylesheet, ""), medium, SaxonHelper.jaxpQName(attributeName)),
+				sourcePipe,
+				resultPipe,
+				runtime); }
 		catch (Exception e) {
 			logger.error("css:inline failed", e);
 			throw new XProcException(step.getNode(), e); }
@@ -333,10 +342,9 @@ public class CssInlineStep extends DefaultStep {
 				documents.resetReader();
 				while (documents.moreDocuments()) {
 					XdmNode doc = documents.read();
-					XdmNode root = S9apiUtils.getDocumentElement(doc);
-					URI docUri = normalizeUri(root.getBaseURI()); // can not use doc.getBaseURI() because it is not modified by
-					                                          // px:fileset-load (when @href != @original-href)
+					URI docUri = normalizeUri(doc.getBaseURI());
 					if (docUri.equals(uri)) {
+						XdmNode root = S9apiUtils.getDocumentElement(doc);
 						if (XProcConstants.c_result.equals(root.getNodeName())
 						    && root.getAttributeValue(_content_type) != null
 						    && root.getAttributeValue(_content_type).startsWith("text/"))
@@ -382,7 +390,7 @@ public class CssInlineStep extends DefaultStep {
 	
 	private static URIResolver fallback(final URIResolver... resolvers) {
 		return new URIResolver() {
-			public Source resolve(String href, String base) throws TransformerException {
+			public Source resolve(String href, String base) throws javax.xml.transform.TransformerException {
 				Iterator<URIResolver> iterator = forArray(resolvers);
 				while (iterator.hasNext()) {
 					Source source = iterator.next().resolve(href, base);
@@ -437,39 +445,49 @@ public class CssInlineStep extends DefaultStep {
 	private static final RuleFactory brailleRuleFactory = new BrailleCSSRuleFactory();
 	private static final CSSParserFactory brailleParserFactory = new BrailleCSSParserFactory();
 	
-	private static class CssInlineTransform extends DomToStreamTransform {
+	private static class CssInlineTransformer implements DOMToXMLStreamTransformer {
 		
 		private final NetworkProcessor network;
-		private final URL[] defaultSheets;
+		private final String defaultStyleSheet;
 		private final String medium;
-		private final QName attributeName;
+		private final javax.xml.namespace.QName attributeName;
 		private final List<CascadedStyle> styles;
 		
-		public CssInlineTransform(XProcRuntime xproc,
-		                          NetworkProcessor network,
-		                          URL[] defaultSheets,
-		                          String medium,
-		                          QName attributeName) {
-			super(xproc);
+		public CssInlineTransformer(NetworkProcessor network,
+		                            String defaultStyleSheet,
+		                            String medium,
+		                            javax.xml.namespace.QName attributeName) {
 			this.network = network;
-			this.defaultSheets = defaultSheets;
+			this.defaultStyleSheet = defaultStyleSheet;
 			this.medium = medium;
 			this.attributeName = attributeName;
 			this.styles = new ArrayList<CascadedStyle>();
 		}
 		
-		private Writer writer;
+		private BaseURIAwareXMLStreamWriter writer;
 		
-		protected void _transform(Document document, Writer writer) throws TransformationException {
+		public void transform(Iterator<Document> input, Supplier<BaseURIAwareXMLStreamWriter> output) throws TransformerException {
 			
-			this.writer = writer;
+			Document document = Iterators.getOnlyElement(input);
+			this.writer = output.get();
 			
 			try {
-				
-				// get base URI of document element instead of document because
-				// unzipped files have an empty base URI, but an xml:base
-				// attribute may have been added to their document element
-				URI baseURI = new URI(document.getDocumentElement().getBaseURI());
+				URI baseURI = new URI(document.getBaseURI());
+				URL baseURL; {
+					if (baseURI == null || baseURI.toString().equals(""))
+						// handling the case where base URI is empty, although this should in theory never happen
+						// FIXME: find out why it happens
+						baseURL = null;
+					else
+						baseURL = asURL(baseURI);
+				}
+				URL[] defaultSheets; {
+					StringTokenizer t = new StringTokenizer(defaultStyleSheet);
+					ArrayList<URL> l = new ArrayList<URL>();
+					while (t.hasMoreTokens())
+						l.add(asURL(baseURI.resolve(asURI(t.nextToken()))));
+					defaultSheets = toArray(l, URL.class);
+				}
 				
 				CascadedStyle style = new CascadedStyle();
 				styles.add(style);
@@ -481,7 +499,7 @@ public class CssInlineStep extends DefaultStep {
 							stylesheet = brailleParserFactory.append(sheet, network, null, SourceType.URL, stylesheet, sheet);
 					// CSSParserFactory injected via CSSFactory in CSSAssignTraversal.<init>
 					CSSFactory.registerCSSParserFactory(brailleParserFactory);
-					stylesheet = CSSFactory.getUsedStyles(document, null, asURL(baseURI), new MediaSpec(medium), network, stylesheet);
+					stylesheet = CSSFactory.getUsedStyles(document, null, baseURL, new MediaSpec(medium), network, stylesheet);
 					// DeclarationTransformer injected via CSSFactory in SingleMapNodeData.<init>
 					// SupportedCSS injected via CSSFactory in SingleMapNodeData.<init>, Repeater.assignDefaults, Variator.assignDefaults
 					CSSFactory.registerDeclarationTransformer(brailleDeclarationTransformer);
@@ -506,18 +524,21 @@ public class CssInlineStep extends DefaultStep {
 						for (RuleVolume r : filter(stylesheet, RuleVolume.class)) {
 							String name = "auto";
 							String pseudo = firstNonNull(r.getPseudo(), "");
+							if (pseudo.equals("nth(1)")) pseudo = "first";
+							else if (pseudo.equals("nth-last(1)")) pseudo = "last";
 							Map<String,RuleVolume> volumeRule = style.volumeRules.get(name);
 							if (volumeRule == null) {
 								volumeRule = new HashMap<String,RuleVolume>();
 								style.volumeRules.put(name, volumeRule); }
 							if (volumeRule.containsKey(pseudo))
-								volumeRule.put(pseudo, makeVolumeRule(name, "".equals(pseudo) ? null : pseudo,
+								volumeRule.put(pseudo, makeVolumeRule("".equals(pseudo) ? null : pseudo,
 								                                      ImmutableList.of(r, volumeRule.get(pseudo))));
 							else
 								volumeRule.put(pseudo, r);
 						}
 					}
 					style.textTransformRules = filter(stylesheet, RuleTextTransform.class);
+					style.otherAtRules = filter(stylesheet, AnyAtRule.class);
 				} else if (medium.equals("print")) {
 					stylesheet = (StyleSheet)printRuleFactory.createStyleSheet().unlock();
 					if (defaultSheets != null)
@@ -529,7 +550,7 @@ public class CssInlineStep extends DefaultStep {
 					// RuleFactory injected via CSSFactory in SimplePreparator.<init>, CSSTreeParser.<init>
 					CSSFactory.registerCSSParserFactory(printParserFactory);
 					CSSFactory.registerRuleFactory(printRuleFactory);
-					stylesheet = CSSFactory.getUsedStyles(document, null, asURL(baseURI), new MediaSpec(medium), network, stylesheet);
+					stylesheet = CSSFactory.getUsedStyles(document, null, baseURL, new MediaSpec(medium), network, stylesheet);
 					// DeclarationTransformer injected via CSSFactory in SingleMapNodeData.<init>
 					// SupportedCSS injected via CSSFactory in SingleMapNodeData.<init>, Repeater.assignDefaults, Variator.assignDefaults
 					CSSFactory.registerDeclarationTransformer(printDeclarationTransformer);
@@ -539,12 +560,13 @@ public class CssInlineStep extends DefaultStep {
 					throw new RuntimeException("medium " + medium + " not supported");
 				}
 				
-				writer.startDocument(baseURI);
+				writer.setBaseURI(baseURI);
+				writer.writeStartDocument();
 				traverse(document.getDocumentElement());
-				writer.endDocument();
+				writer.writeEndDocument();
 				
 			} catch (Exception e) {
-				throw new TransformationException(e);
+				throw new TransformerException(e);
 			}
 		}
 		
@@ -553,20 +575,21 @@ public class CssInlineStep extends DefaultStep {
 			Map<String,Map<String,RulePage>> pageRules;
 			Map<String,Map<String,RuleVolume>> volumeRules;
 			Iterable<RuleTextTransform> textTransformRules;
+			Iterable<AnyAtRule> otherAtRules;
 		}
 		
 		private boolean isRoot = true;
 		
-		private void traverse(Node node) throws XPathException, URISyntaxException {
+		private void traverse(Node node) throws XPathException, URISyntaxException, XMLStreamException {
 			
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element elem = (Element)node;
-				writer.copyStartElement(elem);
+				writeStartElement(writer, elem);
 				NamedNodeMap attributes = node.getAttributes();
-				for (int i=0; i<attributes.getLength(); i++) {
+				for (int i = 0; i < attributes.getLength(); i++) {
 					Node attr = attributes.item(i);
 					if (!(attr.getPrefix() == null && "style".equals(attr.getLocalName())))
-						writer.copyAttribute(attr); }
+						writeAttribute(writer, attr); }
 				StringBuilder style = new StringBuilder();
 				for (CascadedStyle cs : styles) {
 					NodeData nodeData = cs.styleMap.get(elem);
@@ -591,20 +614,25 @@ public class CssInlineStep extends DefaultStep {
 								insertVolumeStyle(style, volumeRule, cs.pageRules); }
 						if (cs.textTransformRules != null)
 							for (RuleTextTransform r : cs.textTransformRules)
-								insertTextTransformDefinition(style, r); }}
+								insertTextTransformDefinition(style, r);
+						if (cs.otherAtRules != null)
+							for (AnyAtRule r : cs.otherAtRules) {
+								if (style.length() > 0 && !style.toString().endsWith("} ")) {
+									style.insert(0, "{ ");
+									style.append("} "); }
+								insertAtRule(style, r); }}}
 				if (normalizeSpace(style).length() > 0) {
-					writer.addAttribute(attributeName, style.toString().trim()); }
+					writeAttribute(writer, attributeName, style.toString().trim()); }
 				isRoot = false;
-				writer.startContent();
 				for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling())
 					traverse(child);
-				writer.endElement(); }
+				writer.writeEndElement(); }
 			else if (node.getNodeType() == Node.COMMENT_NODE)
-				writer.copyComment(node);
+				writeComment(writer, node);
 			else if (node.getNodeType() == Node.TEXT_NODE)
-				writer.copyText(node);
+				writeCharacters(writer, node);
 			else if (node.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE)
-				writer.copyPI(node);
+				writeProcessingInstruction(writer, node);
 			else
 				throw new UnsupportedOperationException("Unexpected node type");
 		}
@@ -639,6 +667,20 @@ public class CssInlineStep extends DefaultStep {
 			if (term instanceof TermInteger) {
 				TermInteger integer = (TermInteger)term;
 				return "" + integer.getIntValue(); }
+			else if (term instanceof TermNumber) {
+				TermNumber number = (TermNumber)term;
+				Double value = number.getValue().doubleValue();
+				if (value == Math.floor(value))
+					return "" + value.intValue();
+				else
+					return "" + value; }
+			else if (term instanceof TermPercent) {
+				TermPercent percent = (TermPercent)term;
+				Double value = percent.getValue().doubleValue();
+				if (value == Math.floor(value))
+					return "" + value.intValue() + "%";
+				else
+					return "" + value + "%"; }
 			else if (term instanceof TermList && !(term instanceof TermFunction)) {
 				TermList list = (TermList)term;
 				String s = "";
@@ -656,6 +698,9 @@ public class CssInlineStep extends DefaultStep {
 				TermPair<?,?> pair = (TermPair<?,?>)term;
 				Object val = pair.getValue();
 				return "" + pair.getKey() + " " + (val instanceof Term ? termToString.apply((Term)val) : val.toString()); }
+			else if (term instanceof TermString) {
+				TermString string = (TermString)term;
+				return "'" + string.getValue().replaceAll("\n", "\\\\A").replaceAll("'", "\\\\27") + "'"; }
 			else
 				return term.toString().replaceAll("^[,/ ]+", "");
 		}
@@ -678,10 +723,10 @@ public class CssInlineStep extends DefaultStep {
 	
 	private static void pseudoElementToString(StringBuilder builder, PseudoElement elem) {
 		if (elem instanceof PseudoElementImpl) {
-			builder.append(elem);
+			builder.append("&").append(elem);
 			return; }
 		else {
-			builder.append("::").append(elem.getName());
+			builder.append("&::").append(elem.getName());
 			String[] args = elem.getArguments();
 			if (args.length > 0)
 				builder.append("(").append(join(args, ", ")).append(")"); }
@@ -689,9 +734,6 @@ public class CssInlineStep extends DefaultStep {
 	
 	private static void insertPseudoStyle(StringBuilder builder, NodeData nodeData, PseudoElement elem,
 	                                      Map<String,Map<String,RulePage>> pageRules) {
-		if (builder.length() > 0 && !builder.toString().endsWith("} ")) {
-			builder.insert(0, "{ ");
-			builder.append("} "); }
 		pseudoElementToString(builder, elem);
 		builder.append(" { ");
 		insertStyle(builder, nodeData);
@@ -707,9 +749,6 @@ public class CssInlineStep extends DefaultStep {
 	}
 	
 	private static void insertPageStyle(StringBuilder builder, RulePage pageRule, boolean topLevel) {
-		if (topLevel && builder.length() > 0 && !builder.toString().endsWith("} ")) {
-			builder.insert(0, "{ ");
-			builder.append("} "); }
 		builder.append("@page");
 		String pseudo = pageRule.getPseudo();
 		if (pseudo != null && !"".equals(pseudo))
@@ -826,22 +865,19 @@ public class CssInlineStep extends DefaultStep {
 	}
 	
 	private static void insertVolumeStyle(StringBuilder builder, Map<String,RuleVolume> volumeRule, Map<String,Map<String,RulePage>> pageRules) {
-		for (RuleVolume r : volumeRule.values())
+		for (Map.Entry<String,RuleVolume> r : volumeRule.entrySet())
 			insertVolumeStyle(builder, r, pageRules);
 	}
 	
-	private static void insertVolumeStyle(StringBuilder builder, RuleVolume volumeRule, Map<String,Map<String,RulePage>> pageRules) {
-		if (builder.length() > 0 && !builder.toString().endsWith("} ")) {
-			builder.insert(0, "{ ");
-			builder.append("} "); }
+	private static void insertVolumeStyle(StringBuilder builder, Map.Entry<String,RuleVolume> volumeRule, Map<String,Map<String,RulePage>> pageRules) {
 		builder.append("@volume");
-		String pseudo = volumeRule.getPseudo();
+		String pseudo = volumeRule.getKey();
 		if (pseudo != null && !"".equals(pseudo))
 			builder.append(":").append(pseudo);
 		builder.append(" { ");
-		for (Declaration decl : filter(volumeRule, Declaration.class))
+		for (Declaration decl : filter(volumeRule.getValue(), Declaration.class))
 			insertDeclaration(builder, decl);
-		for (RuleVolumeArea volumeArea : filter(volumeRule, RuleVolumeArea.class))
+		for (RuleVolumeArea volumeArea : filter(volumeRule.getValue(), RuleVolumeArea.class))
 			insertVolumeAreaStyle(builder, volumeArea, pageRules);
 		builder.append("} ");
 	}
@@ -850,7 +886,7 @@ public class CssInlineStep extends DefaultStep {
 		builder.append("@").append(ruleVolumeArea.getVolumeArea().value).append(" { ");
 		StringBuilder innerStyle = new StringBuilder();
 		Map<String,RulePage> pageRule = null;
-		for (Declaration decl : ruleVolumeArea)
+		for (Declaration decl : filter(ruleVolumeArea, Declaration.class))
 			if ("page".equals(decl.getProperty()))
 				pageRule = getPageRule(join(decl, " ", termToString), pageRules);
 			else
@@ -861,16 +897,21 @@ public class CssInlineStep extends DefaultStep {
 	}
 	
 	private static void insertTextTransformDefinition(StringBuilder builder, RuleTextTransform rule) {
-		if (builder.length() > 0 && !builder.toString().endsWith("} ")) {
-			builder.insert(0, "{ ");
-			builder.append("} "); }
 		builder.append("@text-transform ").append(rule.getName()).append(" { ");
 		for (Declaration decl : rule)
 			insertDeclaration(builder, decl);
 		builder.append("} ");
 	}
 	
-	// TODO: what about volumes that match both :first and :last?
+	private static void insertAtRule(StringBuilder builder, AnyAtRule rule) {
+		builder.append("@").append(rule.getName()).append(" { ");
+		for (Declaration decl : filter(rule, Declaration.class))
+			insertDeclaration(builder, decl);
+		for (AnyAtRule r : filter(rule, AnyAtRule.class))
+			insertAtRule(builder, r);
+		builder.append("} ");
+	}
+	
 	private static Map<String,RuleVolume> getVolumeRule(String name, Map<String,Map<String,RuleVolume>> volumeRules) {
 		Map<String,RuleVolume> auto = volumeRules.get("auto");
 		Map<String,RuleVolume> named = null;
@@ -884,28 +925,50 @@ public class CssInlineStep extends DefaultStep {
 			pseudos.addAll(named.keySet());
 		if (auto != null)
 			pseudos.addAll(auto.keySet());
+		// Create a special rule for volumes that match both :first and :last (i.e. for the case
+		// there is only a single volume)
+		// FIXME: The order in which rules are defined currently does not affect the
+		// precedence. ':first' rules always override ':last' rules.
+		if (pseudos.contains("first") && pseudos.contains("last"))
+			pseudos.add("only");
 		for (String pseudo : pseudos) {
-			boolean noPseudo = "".equals(pseudo);
 			from = new ArrayList<RuleVolume>();
 			if (named != null) {
 				r = named.get(pseudo);
 				if (r != null) from.add(r);
-				if (!noPseudo) {
+				if ("only".equals(pseudo)) {
+					r = named.get("first");
+					if (r != null) from.add(r);
+					r = named.get("last");
+					if (r != null) from.add(r); }
+				if (!"".equals(pseudo)) {
 					r = named.get("");
 					if (r != null) from.add(r); }}
 			if (auto != null) {
 				r = auto.get(pseudo);
 				if (r != null) from.add(r);
-				if (!noPseudo) {
+				if ("only".equals(pseudo)) {
+					r = auto.get("first");
+					if (r != null) from.add(r);
+					r = auto.get("last");
+					if (r != null) from.add(r); }
+				if (!"".equals(pseudo)) {
 					r = auto.get("");
 					if (r != null) from.add(r); }}
-			result.put(pseudo, makeVolumeRule(name, noPseudo ? null : pseudo, from)); }
+			result.put(pseudo,
+			           makeVolumeRule(
+			               // "only" is not a valid pseudo name so we drop it. The value we pass to
+			               // makeVolumeRule() does not matter anyway as long as we use the
+			               // corresponding key of the map where we store the volume rule to
+			               // serialize the rule.
+			               ("".equals(pseudo) || "only".equals(pseudo)) ? null : pseudo,
+			               from)); }
 		return result;
 	}
 	
 	private static final Pattern FUNCTION = Pattern.compile("(nth|nth-last)\\(([1-9][0-9]*)\\)");
 	
-	private static RuleVolume makeVolumeRule(String name, String pseudo, List<RuleVolume> from) {
+	private static RuleVolume makeVolumeRule(String pseudo, List<RuleVolume> from) {
 		String arg = null;
 		if (pseudo != null) {
 			Matcher m = FUNCTION.matcher(pseudo);
@@ -929,7 +992,7 @@ public class CssInlineStep extends DefaultStep {
 						volumeRule.add(volumeAreaRule);
 						volumeAreaRule.replaceAll(a); }
 					else
-						for (Declaration d : a)
+						for (Declaration d : filter(a, Declaration.class))
 							if (getDeclaration(volumeAreaRule, d.getProperty()) == null)
 								volumeAreaRule.add(d); }
 		return volumeRule;

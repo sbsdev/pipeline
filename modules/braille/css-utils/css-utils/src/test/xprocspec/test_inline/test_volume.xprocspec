@@ -34,7 +34,7 @@
       <x:document type="port" port="result" select="//document"/>
     </x:context>
     <x:expect label="root-style" type="xpath" test="/*/@style"
-              equals="'@volume { min-length: 80; max-length: 100; } @volume:last { min-length: 0; max-length: 100; } @volume:nth(2) { max-length: auto; min-length: 80; } @volume:first { max-length: 120; min-length: 80; }'"/>
+              equals="'@volume { min-length: 80; max-length: 100; } @volume:last { min-length: 0; max-length: 100; } @volume:only { max-length: 120; min-length: 0; } @volume:nth(2) { max-length: auto; min-length: 80; } @volume:first { max-length: 120; min-length: 80; }'"/>
   </x:scenario>
   
   <x:scenario label="test_02">
@@ -208,6 +208,31 @@
         </body>
       </x:document>
     </x:expect>
+  </x:scenario>
+  
+  <x:scenario label="test_07">
+    <x:call step="css:inline">
+      <x:input port="source">
+        <x:document type="inline">
+          <document>
+            <head>
+              <style media="embossed" type="text/css">
+                @-obfl-volume-transition {
+                  @any-interrupted {
+                    content: flow(volume-end);
+                  }
+                }
+              </style>
+            </head>
+          </document>
+        </x:document>
+      </x:input>
+    </x:call>
+    <x:context label="result">
+      <x:document type="port" port="result" select="//document"/>
+    </x:context>
+    <x:expect label="root-style" type="xpath" test="/*/@style"
+              equals="'@-obfl-volume-transition { @any-interrupted { content: flow(volume-end); } }'"/>
   </x:scenario>
   
 </x:description>

@@ -214,6 +214,7 @@ public abstract class AbstractBrailleTranslator extends AbstractTransform implem
 				
 				// for collapsing spaces
 				private boolean lastCharIsSpace = false;
+				private int forcedBreakCount = 0;
 				
 				/**
 				 * Fill the character (charBuffer) and soft wrap opportunity (wrapInfo) buffers while normalising and collapsing spaces
@@ -474,6 +475,7 @@ public abstract class AbstractBrailleTranslator extends AbstractTransform implem
 					
 					// force hard break
 					if (force) {
+						forcedBreakCount++;
 						String rv = charBuffer.substring(0, limit);
 						flushBuffers(limit);
 						return rv; }
@@ -517,6 +519,8 @@ public abstract class AbstractBrailleTranslator extends AbstractTransform implem
 					wrapInfo = new ArrayList<Byte>(wrapInfo);
 					boolean save_lastCharIsSpace = lastCharIsSpace;
 					lastCharIsSpace = false;
+					int save_forcedBreakCount = forcedBreakCount;
+					forcedBreakCount = 0;
 					fillRow(Integer.MAX_VALUE, true, false);
 					String remainder = charBuffer.toString();
 					inputStream = save_inputStream;
@@ -524,6 +528,7 @@ public abstract class AbstractBrailleTranslator extends AbstractTransform implem
 					charBuffer = save_charBuffer;
 					wrapInfo = save_wrapInfo;
 					lastCharIsSpace = save_lastCharIsSpace;
+					forcedBreakCount = save_forcedBreakCount;
 					return remainder;
 				}
 				
@@ -562,12 +567,16 @@ public abstract class AbstractBrailleTranslator extends AbstractTransform implem
 					return clone;
 				}
 				
+				// FIXME: support METRIC_HYPHEN_COUNT
 				public boolean supportsMetric(String metric) {
-					return false;
+					return METRIC_FORCED_BREAK.equals(metric);
 				}
 				
 				public double getMetric(String metric) {
-					throw new UnsupportedMetricException("Metric not supported: " + metric);
+					if (METRIC_FORCED_BREAK.equals(metric))
+						return forcedBreakCount;
+					else
+						throw new UnsupportedMetricException("Metric not supported: " + metric);
 				}
 				
 				private static final BrailleStream emptyBrailleStream = new BrailleStream() {

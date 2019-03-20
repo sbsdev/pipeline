@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:opf="http://www.idpf.org/2007/opf" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:opf="http://www.idpf.org/2007/opf" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pef="http://www.daisy.org/ns/2008/pef">
     
     <xsl:variable name="metadata" select="collection()[2]//opf:metadata"/>
     
@@ -39,7 +39,7 @@
     </xsl:template>
     
     <!-- avoid SXXP0005 -->
-    <xsl:template match="/pef:*" xmlns:pef="http://www.daisy.org/ns/2008/pef">
+    <xsl:template match="/pef:*">
         <xsl:copy>
             <xsl:apply-templates select="@*|node()"/>
         </xsl:copy>

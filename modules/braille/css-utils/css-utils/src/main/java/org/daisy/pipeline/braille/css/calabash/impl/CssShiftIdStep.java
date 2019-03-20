@@ -1,6 +1,8 @@
 package org.daisy.pipeline.braille.css.calabash.impl;
 
 import java.util.ArrayList;
+import java.util.function.Supplier;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -8,12 +10,14 @@ import java.util.Stack;
 import java.util.TreeMap;
 
 import javax.xml.namespace.QName;
+import static javax.xml.stream.XMLStreamConstants.END_DOCUMENT;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
-import com.google.common.base.Splitter;
+import com.google.common.collect.Iterators;
 
 import com.xmlcalabash.core.XProcException;
 import com.xmlcalabash.core.XProcStep;
@@ -27,9 +31,19 @@ import net.sf.saxon.Configuration;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
+import org.daisy.common.calabash.XMLCalabashHelper;
+import org.daisy.common.saxon.SaxonHelper;
+import org.daisy.common.stax.BaseURIAwareXMLStreamReader;
+import org.daisy.common.stax.BaseURIAwareXMLStreamWriter;
+import org.daisy.common.stax.XMLStreamWriterHelper.BufferedXMLStreamWriter;
+import org.daisy.common.stax.XMLStreamWriterHelper.FutureWriterEvent;
+import static org.daisy.common.stax.XMLStreamWriterHelper.writeAttribute;
+import static org.daisy.common.stax.XMLStreamWriterHelper.writeAttributes;
+import static org.daisy.common.stax.XMLStreamWriterHelper.writeEvent;
+import static org.daisy.common.stax.XMLStreamWriterHelper.writeStartElement;
+import org.daisy.common.transform.TransformerException;
+import org.daisy.common.transform.XMLStreamToXMLStreamTransformer;
 import org.daisy.common.xproc.calabash.XProcStepProvider;
-import org.daisy.pipeline.braille.common.saxon.StreamToStreamTransform;
-import org.daisy.pipeline.braille.common.TransformationException;
 import static org.daisy.pipeline.braille.common.util.Strings.join;
 
 import org.osgi.service.component.annotations.Component;
@@ -89,30 +103,39 @@ public class CssShiftIdStep extends DefaultStep {
 	public void run() throws SaxonApiException {
 		super.run();
 		try {
-			XdmNode source = sourcePipe.read();
 			// Two passes: one for shifting id, second for updating references.
 			// Alternative is to combine the two and make use of FutureEvent for forward references.
+			// FIXME: create a XMLStreamToXMLStreamTransformer.compose(XMLStreamToXMLStreamTransformer...)
+			//        function which applies transformers from right to left?
 			Map<String,String> idMap = new TreeMap<String,String>();
-			XdmNode tmp = new ShiftIdTransform(runtime.getConfiguration().getProcessor().getUnderlyingConfiguration(), idMap)
-				.transform(source.getUnderlyingNode());
-			resultPipe.write(
-				new UpdateRefsTransform(runtime.getConfiguration().getProcessor().getUnderlyingConfiguration(), idMap)
-				.transform(tmp.getUnderlyingNode())); }
+			Configuration config = runtime.getProcessor().getUnderlyingConfiguration();
+			Iterator<XdmNode> tmp = SaxonHelper.transform(
+				new ShiftIdTransformer(idMap),
+				Iterators.transform(XMLCalabashHelper.readPipe(sourcePipe), XdmNode::getUnderlyingNode),
+				config);
+			tmp = SaxonHelper.transform(
+				new UpdateRefsTransformer(idMap),
+				Iterators.transform(tmp, XdmNode::getUnderlyingNode),
+				config);
+			XMLCalabashHelper.writePipe(resultPipe, tmp);
+		}
 		catch (Exception e) {
 			logger.error("pxi:shift-id failed", e);
 			throw new XProcException(step.getNode(), e); }
 	}
 	
-	private static class ShiftIdTransform extends StreamToStreamTransform {
+	private static class ShiftIdTransformer implements XMLStreamToXMLStreamTransformer {
 		
 		final Map<String,String> idMap;
 		
-		public ShiftIdTransform(Configuration configuration, Map<String,String> idMap) {
-			super(configuration);
+		public ShiftIdTransformer(Map<String,String> idMap) {
 			this.idMap = idMap;
 		}
 		
-		protected void _transform(XMLStreamReader reader, BufferedWriter writer) throws TransformationException {
+		public void transform(Iterator<BaseURIAwareXMLStreamReader> input, Supplier<BaseURIAwareXMLStreamWriter> output)
+				throws TransformerException {
+			XMLStreamReader reader = Iterators.getOnlyElement(input);
+			BufferedXMLStreamWriter writer = new BufferedXMLStreamWriter(output.get());
 			boolean insideInlineBox = false;
 			Stack<Boolean> blockBoxes = new Stack<Boolean>();
 			Stack<Boolean> inlineBoxes = new Stack<Boolean>();
@@ -120,16 +143,16 @@ public class CssShiftIdStep extends DefaultStep {
 			ShiftedId shiftedId = null;
 			try {
 				writer.writeStartDocument(); // why is this needed?
-				while (true)
+				loop: while (true)
 					try {
 						int event = reader.next();
 						switch (event) {
 						case START_ELEMENT: {
-							writer.copyEvent(event, reader);
+							writeEvent(writer, event, reader);
 							boolean isInlineBox = false;
 							boolean isBlockBox = false;
 							if (insideInlineBox)
-								writer.copyAttributes(reader);
+								writeAttributes(writer, reader);
 							else {
 								boolean isBox = CSS_BOX.equals(reader.getName());
 								String id = null;
@@ -144,7 +167,7 @@ public class CssShiftIdStep extends DefaultStep {
 												isInlineBox = true;
 											else if ("block".equalsIgnoreCase(value))
 												isBlockBox = true;
-										writer.writeAttribute(name, value); }}
+										writeAttribute(writer, name, value); }}
 								if (isBlockBox || isInlineBox)
 									if (shiftedId != null) {
 										shiftedId.render();
@@ -154,7 +177,7 @@ public class CssShiftIdStep extends DefaultStep {
 										if (!pendingId.isEmpty())
 											pendingId.add(id);
 										else
-											writer.writeAttribute(CSS_ID, id);
+											writeAttribute(writer, CSS_ID, id);
 									if (!pendingId.isEmpty()) {
 										id = pendingId.get(pendingId.size() - 1);
 										for (String oldId : pendingId)
@@ -162,7 +185,7 @@ public class CssShiftIdStep extends DefaultStep {
 												idMap.put(oldId, id);
 										pendingId.clear();
 										if (id != null)
-											writer.writeAttribute(CSS_ID, id); }}
+											writeAttribute(writer, CSS_ID, id); }}
 								else if (id != null)
 									pendingId.add(id);
 								if (isInlineBox)
@@ -187,10 +210,13 @@ public class CssShiftIdStep extends DefaultStep {
 								writer.writeEvent(shiftedId); }
 							if (isInlineBox)
 								insideInlineBox = false;
-							writer.copyEvent(event, reader);
+							writeEvent(writer, event, reader);
 							break; }
+						case END_DOCUMENT:
+							writeEvent(writer, event, reader);
+							break loop;
 						default:
-							writer.copyEvent(event, reader); }}
+							writeEvent(writer, event, reader); }}
 					catch (NoSuchElementException e) {
 						break; }
 				if (!pendingId.isEmpty())
@@ -202,10 +228,10 @@ public class CssShiftIdStep extends DefaultStep {
 					shiftedId.render();
 				writer.flush(); }
 			catch (XMLStreamException e) {
-				throw new TransformationException(e); }
+				throw new TransformerException(e); }
 		}
 		
-		private class ShiftedId implements FutureEvent {
+		private class ShiftedId implements FutureWriterEvent {
 			
 			private List<String> ids;
 			private boolean ready = false;
@@ -224,7 +250,7 @@ public class CssShiftIdStep extends DefaultStep {
 				ready = true;
 			}
 			
-			public void writeTo(Writer writer) throws XMLStreamException {
+			public void writeTo(XMLStreamWriter writer) throws XMLStreamException {
 				if (!ready)
 					throw new XMLStreamException("not ready");
 				if (ids != null) {
@@ -232,8 +258,8 @@ public class CssShiftIdStep extends DefaultStep {
 					for (String oldId : ids)
 						if (!oldId.equals(id))
 							idMap.put(oldId, id);
-					writer.writeStartElement(CSS__);
-					writer.writeAttribute(CSS_ID, id);
+					writeStartElement(writer, CSS__);
+					writeAttribute(writer, CSS_ID, id);
 					writer.writeEndElement(); }
 			}
 			
@@ -243,23 +269,25 @@ public class CssShiftIdStep extends DefaultStep {
 		}
 	}
 	
-	private static class UpdateRefsTransform extends StreamToStreamTransform {
+	private static class UpdateRefsTransformer implements XMLStreamToXMLStreamTransformer {
 		
 		final Map<String,String> idMap;
 		
-		public UpdateRefsTransform(Configuration configuration, Map<String,String> idMap) {
-			super(configuration);
+		public UpdateRefsTransformer(Map<String,String> idMap) {
 			this.idMap = idMap;
 		}
 		
-		protected void _transform(XMLStreamReader reader, BufferedWriter writer) throws TransformationException {
+		public void transform(Iterator<BaseURIAwareXMLStreamReader> input, Supplier<BaseURIAwareXMLStreamWriter> output)
+				throws TransformerException {
+			XMLStreamReader reader = Iterators.getOnlyElement(input);
+			BufferedXMLStreamWriter writer = new BufferedXMLStreamWriter(output.get());
 			try {
-				while (true)
+				loop: while (true)
 					try {
 						int event = reader.next();
 						switch (event) {
 						case START_ELEMENT: {
-							writer.copyEvent(event, reader);
+							writeEvent(writer, event, reader);
 							QName elemName = reader.getName();
 							boolean isCounter = CSS_COUNTER.equals(elemName);
 							String counterTarget = null;
@@ -272,29 +300,32 @@ public class CssShiftIdStep extends DefaultStep {
 								else if (isCounter && _TARGET.equals(attrName)) {
 									counterTarget = attrValue;
 								} else {
-									writer.writeAttribute(attrName, attrValue);
+									writeAttribute(writer, attrName, attrValue);
 								}
 							}
 							if (anchor != null) {
 								if (idMap.containsKey(anchor)) {
 									anchor = idMap.get(anchor);
 								}
-								writer.writeAttribute(CSS_ANCHOR, anchor);
+								writeAttribute(writer, CSS_ANCHOR, anchor);
 							}
 							if (counterTarget != null) {
 								if (idMap.containsKey(counterTarget)) {
 									counterTarget = idMap.get(counterTarget);
 								}
-								writer.writeAttribute(_TARGET, counterTarget);
+								writeAttribute(writer, _TARGET, counterTarget);
 							}
 							break; }
+						case END_DOCUMENT:
+							writeEvent(writer, event, reader);
+							break loop;
 						default:
-							writer.copyEvent(event, reader); }}
+							writeEvent(writer, event, reader); }}
 					catch (NoSuchElementException e) {
 						break; }
 				writer.flush(); }
 			catch (XMLStreamException e) {
-				throw new TransformationException(e); }
+				throw new TransformerException(e); }
 		}
 	}
 	
