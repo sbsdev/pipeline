@@ -47,6 +47,8 @@ public class DtbookToOdtWithAsciimathmlMockTest {
 			systemPackage("javax.xml.stream;version=\"1.0.1\""),
 			systemPackage("com.sun.org.apache.xml.internal.resolver"),
 			systemPackage("com.sun.org.apache.xml.internal.resolver.tools"),
+			systemPackage("javax.xml.bind"),
+			mavenBundle("org.daisy.pipeline.build:modules-test-helper:?"), // required for some reason (DtbookToOdtTest.java influence)
 			thisBundle(),
 			bundle("reference:file:" + PathUtils.getBaseDir() + "/target/test-classes/asciimath-utils-mock/"),
 			mavenBundlesWithDependencies(
@@ -60,6 +62,8 @@ public class DtbookToOdtWithAsciimathmlMockTest {
 				logbackClassic(),
 				// xprocspec
 				xprocspec(),
+				mavenBundle("org.daisy.pipeline:calabash-adapter:?"),
+				mavenBundle("org.daisy.pipeline:framework-volatile:?"),
 				mavenBundle("org.daisy.maven:xproc-engine-daisy-pipeline:?"))
 		);
 	}

@@ -129,7 +129,7 @@
         <!-- CONVERT DTBOOK TO ODT -->
         <!-- ===================== -->
         
-        <px:dtbook-to-odt.convert name="odt">
+        <px:dtbook-to-odt name="odt">
             <p:input port="content.xsl">
                 <p:document href="content-sbs.xsl"/>
             </p:input>
@@ -163,7 +163,7 @@
             <p:with-param port="parameters" name="page_numbers_float" select="$page-numbers-float"/>
             <p:with-param port="parameters" name="line_numbers" select="$line-numbers"/>
             <p:with-param port="parameters" name="phonetics" select="$phonetics"/>
-        </px:dtbook-to-odt.convert>
+        </px:dtbook-to-odt>
         
         <!-- ========= -->
         <!-- STORE ODT -->
