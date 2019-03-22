@@ -89,7 +89,7 @@
     
     <p:import href="http://www.daisy.org/pipeline/modules/braille/dtbook-to-pef/library.xpl">
         <p:documentation>
-            px:dtbook-to-pef.convert,
+            px:dtbook-to-pef,
             px:dtbook-to-pef.store
         </p:documentation>
     </p:import>
@@ -113,6 +113,11 @@
     <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl">
         <p:documentation>
             px:tempdir
+        </p:documentation>
+    </p:import>
+    <p:import href="http://www.daisy.org/pipeline/modules/dtbook-utils/library.xpl">
+        <p:documentation>
+            px:dtbook-load
         </p:documentation>
     </p:import>
     
@@ -147,13 +152,22 @@
     </px:tempdir>
     <p:sink/>
     
+    <!-- ======= -->
+    <!-- LOAD -->
+    <!-- ======= -->
+    <px:dtbook-load name="load">
+        <p:input port="source">
+            <p:pipe step="main" port="source"/>
+        </p:input>
+    </px:dtbook-load>
+    
     <!-- ============= -->
     <!-- DTBOOK TO PEF -->
     <!-- ============= -->
-    <px:dtbook-to-pef.convert name="convert"
-                              default-stylesheet="http://www.daisy.org/pipeline/modules/braille/dtbook-to-pef/css/default.css">
-        <p:input port="source">
-            <p:pipe step="main" port="source"/>
+    <px:dtbook-to-pef name="convert"
+                      default-stylesheet="http://www.daisy.org/pipeline/modules/braille/dtbook-to-pef/css/default.css">
+        <p:input port="source.in-memory">
+            <p:pipe step="load" port="in-memory.out"/>
         </p:input>
         <p:with-option name="temp-dir" select="string(/c:result)">
             <p:pipe step="temp-dir" port="result"/>
@@ -175,7 +189,7 @@
         <p:input port="parameters">
             <p:pipe port="result" step="input-options"/>
         </p:input>
-    </px:dtbook-to-pef.convert>
+    </px:dtbook-to-pef>
     
     <!-- ========= -->
     <!-- STORE PEF -->

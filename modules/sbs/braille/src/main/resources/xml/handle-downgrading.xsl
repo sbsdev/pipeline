@@ -31,7 +31,7 @@
                     <!--
                         TODO: check if string
                     -->
-                    <xsl:attribute name="single-word" select="$props[@name='single-word']/@value/substring(., 2, string-length(.)-2)"/>
+                    <xsl:attribute name="single-word" select="css:parse-string($props[@name='single-word']/@value)/@value"/>
                     <xsl:if test="not($props[@name='open'])">
                         <xsl:message terminate="yes"
                                      select="concat('@text-transform &quot;',$name,'&quot; does not define &quot;open&quot;')"/>
@@ -39,7 +39,7 @@
                     <!--
                         TODO: check if string
                     -->
-                    <xsl:attribute name="open" select="$props[@name='open']/@value/substring(., 2, string-length(.)-2)"/>
+                    <xsl:attribute name="open" select="css:parse-string($props[@name='open']/@value)/@value"/>
                     <xsl:if test="not($props[@name='open'])">
                         <xsl:message terminate="yes"
                                      select="concat('@text-transform &quot;',$name,'&quot; does not define &quot;close&quot;')"/>
@@ -47,7 +47,7 @@
                     <!--
                         TODO: check if string
                     -->
-                    <xsl:attribute name="close" select="$props[@name='close']/@value/substring(., 2, string-length(.)-2)"/>
+                    <xsl:attribute name="close" select="css:parse-string($props[@name='close']/@value)/@value"/>
                 </css:text-transform>
             </xsl:if>
         </xsl:for-each>

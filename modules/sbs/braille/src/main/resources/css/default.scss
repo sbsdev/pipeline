@@ -795,6 +795,10 @@ frontmatter level2,
     text-indent: 0;
     -obfl-vertical-align: before;
     -obfl-vertical-position: 27;
+    // to make tests pass, but see https://github.com/brailleapps/dotify.formatter.impl/issues/95
+    #cover-verso:has(+ .titlepage, + [epub|type~='titlepage']) > & {
+        -obfl-vertical-position: 28;
+    }
 }
 
 #cover-year {

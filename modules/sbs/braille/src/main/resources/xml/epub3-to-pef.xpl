@@ -76,7 +76,7 @@
     <p:import href="http://www.daisy.org/pipeline/modules/braille/epub3-to-pef/library.xpl">
         <p:documentation>
             px:epub3-to-pef.load,
-            px:epub3-to-pef.convert,
+            px:epub3-to-pef,
             px:epub3-to-pef.store
         </p:documentation>
     </p:import>
@@ -100,6 +100,11 @@
     <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl">
         <p:documentation>
             px:tempdir
+        </p:documentation>
+    </p:import>
+    <p:import href="http://www.daisy.org/pipeline/modules/fileset-utils/library.xpl">
+        <p:documentation>
+            px:fileset-load
         </p:documentation>
     </p:import>
     
@@ -144,6 +149,12 @@
             <p:pipe step="temp-dir" port="result"/>
         </p:with-option>
     </px:epub3-to-pef.load>
+    <px:fileset-load name="opf" media-types="application/oebps-package+xml">
+        <p:input port="in-memory">
+            <p:pipe step="load" port="in-memory.out"/>
+        </p:input>
+    </px:fileset-load>
+    <p:sink/>
     
     <!-- ============= -->
     <!-- EPUB 3 TO PEF -->
@@ -154,9 +165,9 @@
         </p:input>
     </p:identity>
     <px:message message="Done loading EPUB, starting conversion to PEF"/>
-    <px:epub3-to-pef.convert default-stylesheet="http://www.daisy.org/pipeline/modules/braille/epub3-to-pef/css/default.css"
-                             content-media-types="application/xhtml+xml application/sbs-xhtml+xml"
-                             name="convert">
+    <px:epub3-to-pef default-stylesheet="http://www.daisy.org/pipeline/modules/braille/epub3-to-pef/css/default.css"
+                     content-media-types="application/xhtml+xml application/sbs-xhtml+xml"
+                     name="convert">
         <p:with-option name="epub" select="$epub"/>
         <p:input port="in-memory.in">
             <p:pipe port="in-memory.out" step="load"/>
@@ -181,7 +192,7 @@
         <p:input port="parameters">
             <p:pipe port="result" step="input-options"/>
         </p:input>
-    </px:epub3-to-pef.convert>
+    </px:epub3-to-pef>
     <p:sink/>
     
     <!-- ========= -->
@@ -196,7 +207,7 @@
     <px:epub3-to-pef.store>
         <p:with-option name="epub" select="$epub"/>
         <p:input port="opf">
-            <p:pipe step="load" port="opf"/>
+            <p:pipe step="opf" port="result"/>
         </p:input>
         <p:input port="obfl">
             <p:pipe step="convert" port="obfl"/>
@@ -231,7 +242,7 @@
                 <p:when test="$include-brf='true' and $brf-output-dir!='' and count(//pef:volume) &gt; 1">
                     <p:variable name="name" select="if (ends-with(lower-case($epub),'.epub')) then replace($epub,'^.*/([^/]*)\.[^/\.]*$','$1')
                                                     else (/opf:package/opf:metadata/dc:identifier[not(@refines)], 'unknown-identifier')[1]">
-                        <p:pipe step="load" port="opf"/>
+                        <p:pipe step="opf" port="result"/>
                     </p:variable>
                     <pef:store>
                         <p:with-option name="href" select="concat($pef-output-dir,'/',$name,'.pef')"/>

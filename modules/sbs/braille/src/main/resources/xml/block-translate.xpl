@@ -3,6 +3,7 @@
             xmlns:p="http://www.w3.org/ns/xproc"
             xmlns:pxi="http://www.daisy.org/ns/pipeline/xproc/internal"
             xmlns:css="http://www.daisy.org/ns/pipeline/braille-css"
+            xmlns:html="http://www.w3.org/1999/xhtml"
             exclude-inline-prefixes="#all">
 
 	<p:option name="contraction-grade" required="true"/>
@@ -52,5 +53,39 @@
 		<p:with-param name="hyphenation" select="'true'"/>
 		<p:with-param name="no-wrap" select="$no-wrap"/>
 	</p:xslt>
+	
+	<!--
+		This is to force the base URI of all elements to be the same, because for some reason some
+		parts would otherwise get a different base URI.
+	-->
+	<p:group>
+		<p:documentation>
+			First make base URIs explicit using the p:add-xml-base step, then remove the
+			attributes. Because simply deleting an attribute named xml:base with p:delete does not
+			change the actual base URI of the element, we first change the value using
+			p:add-attribute.
+		</p:documentation>
+		<p:add-xml-base/>
+		<p:choose>
+			<p:documentation>
+				For EPUBs, only change the base URIs within each body element. This is needed to
+				handle cross-references correctly.
+			</p:documentation>
+			<p:when test="/*/html:body or /_/*/html:body">
+				<p:viewport match="/*/html:body | /_/*/html:body">
+					<p:add-attribute match="*[@xml:base]" attribute-name="xml:base">
+						<p:with-option name="attribute-value" select="/*/@xml:base"/>
+					</p:add-attribute>
+					<p:delete match="@xml:base"/>
+				</p:viewport>
+			</p:when>
+			<p:otherwise>
+				<p:add-attribute match="*[@xml:base]" attribute-name="xml:base">
+					<p:with-option name="attribute-value" select="/*/@xml:base"/>
+				</p:add-attribute>
+				<p:delete match="@xml:base"/>
+			</p:otherwise>
+		</p:choose>
+	</p:group>
 	
 </p:pipeline>

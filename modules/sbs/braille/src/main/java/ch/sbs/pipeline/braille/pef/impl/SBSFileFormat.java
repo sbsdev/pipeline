@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
 
 import org.daisy.braille.api.embosser.EmbosserWriter;
@@ -257,7 +257,7 @@ public class SBSFileFormat implements FileFormat, FactoryProperties {
 	
 	@Override
 	public String toString() {
-		return Objects.toStringHelper("ch.sbs.pipeline.braille.pef.impl.SBSFileFormat").toString();
+		return MoreObjects.toStringHelper("ch.sbs.pipeline.braille.pef.impl.SBSFileFormat").toString();
 	}
 	
 	@Component(

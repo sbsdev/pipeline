@@ -181,18 +181,16 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 			// logging
 			"org.slf4j:jul-to-slf4j:?",
 			"org.daisy.pipeline:logging-activator:?",
-			// FIXME: Dotify needs older version of jing
-			"org.daisy.libs:jing:20120724.0.0",
 		};
 	}
 	
 	@Override @Configuration
 	public Option[] config() {
 		return options(
+			// FIXME: Dotify and epubcheck need older version of jing
+			mavenBundle("org.daisy.libs:jing:20120724.0.0"),
 			composite(super.config()),
-			vmOption("-Xmx8g"),
-			// second version of guava needed for epubcheck-adapter
-			mavenBundle("com.google.guava:guava:14.0.1"));
+			vmOption("-Xmx8g"));
 	}
 	
 	private Iterable<CSSStyledText> styledText(String... textAndStyle) {

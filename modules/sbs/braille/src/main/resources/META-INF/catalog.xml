@@ -3,15 +3,15 @@
   <!-- scripts -->
   <uri name="http://www.sbs.ch/pipeline/modules/braille/dtbook-to-pef.xpl"
        uri="../xml/dtbook-to-pef.xpl"
-       px:script="true"
+       px:content-type="script" px:id="sbs:dtbook-to-pef"
        px:extends="http://www.sbs.ch/pipeline/modules/braille/internal/xml-to-pef.options.xpl"/>
   <uri name="http://www.sbs.ch/pipeline/modules/braille/epub3-to-pef.xpl"
        uri="../xml/epub3-to-pef.xpl"
-       px:script="true"
+       px:content-type="script" px:id="sbs:epub3-to-pef"
        px:extends="http://www.sbs.ch/pipeline/modules/braille/internal/xml-to-pef.options.xpl"/>
   <uri name="http://www.sbs.ch/pipeline/modules/braille/epub3-to-epub3.xpl"
        uri="../xml/epub3-to-epub3.xpl"
-       px:script="true"
+       px:content-type="script" px:id="sbs:epub3-to-epub3"
        px:extends="http://www.daisy.org/pipeline/modules/braille/epub3-to-epub3/epub3-to-epub3.xpl"/>
 
   <!-- abstract script (option defaults and documentation) -->
@@ -36,6 +36,7 @@
   <nextCatalog catalog="org:daisy:pipeline:modules:common-utils"/>
   <nextCatalog catalog="org:daisy:pipeline:modules:file-utils"/>
   <nextCatalog catalog="org:daisy:pipeline:modules:fileset-utils"/>
+  <nextCatalog catalog="org:daisy:pipeline:modules:dtbook-utils"/>
   <nextCatalog catalog="ch:sbs:pipeline:sbs-braille-tables"/>
   <nextCatalog catalog="ch:sbs:pipeline:sbs-hyphenation-tables"/>
   <nextCatalog catalog="org:daisy:pipeline:modules:braille:dtbook-to-pef"/>

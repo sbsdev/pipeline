@@ -11,8 +11,8 @@ import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Objects.ToStringHelper;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
@@ -304,7 +304,7 @@ public interface SBSTranslator {
 			
 			@Override
 			public String toString() {
-				ToStringHelper s = Objects.toStringHelper(SBSTranslator.class.getSimpleName());
+				ToStringHelper s = MoreObjects.toStringHelper(SBSTranslator.class.getSimpleName());
 				if (grade != null)
 					s.add("grade", grade);
 				else
