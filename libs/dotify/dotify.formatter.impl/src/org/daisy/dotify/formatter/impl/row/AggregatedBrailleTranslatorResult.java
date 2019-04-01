@@ -172,41 +172,47 @@ class AggregatedBrailleTranslatorResult implements BrailleTranslatorResult {
 			if (current.countRemaining() < limit - row.length()) {
 				String remainder = current.getTranslatedRemainder();
 				failIf(remainder.isEmpty());
-				backup.push(State.save(this, row));
-				row += remainder;
-				currentIndex++;
-				current = computeNext();
-				if (current == null) {
-					break; // everything fits on a line; return
-				} // there is more content; try fitting the next segment
-			} else { // segment does not fit on the line, try breaking it
-				while (true) {
-					String r = current.nextTranslatedRow(limit - row.length(), force, wholeWordsOnly);
-					if (!r.isEmpty()) {
-						row += r;
-						break o; // segment was broken; return
-					} else if (!current.hasNext()) {
-						// The BrailleTranslatorResult wrongly indicated that it had more rows. Not sure whether this is
-						// an error? Just ignore for now.
-						current = computeNext();
-						failIf(current == null); // if everything would fit on a line we would have detected it already
-						// there is more content, try breaking the next segment
+				if (remainder.contains("\n")) {
+					// remainder contains a forced line break
+				} else {
+					backup.push(State.save(this, row));
+					row += remainder;
+					currentIndex++;
+					current = computeNext();
+					if (current == null) {
+						break; // everything fits on a line; return
 					} else {
-						if (force) {
-							throw new RuntimeException("corrupt BrailleTranslatorResult: " + current + ": "
-							                           + "hasNext() is true but nextTranslatedRow("+ (limit - row.length()) + ", true)"
-							                           + " returns empty string");
-						}
-						if (backup.isEmpty()) {
-							failIf(!row.isEmpty());
-							break o; // return empty row
-						} else {
-							failIf(row.isEmpty());
-							row = backup.pop().restore(this, row); // backup to the previous segment
-							current = computeNext();
-							failIf(current == null);
-							// try breaking the previous segment
-						}
+						continue; // there is more content; try fitting the next segment
+					}
+				}
+			}
+			// segment does not fit on the line, try breaking it
+			while (true) {
+				String r = current.nextTranslatedRow(limit - row.length(), force, wholeWordsOnly);
+				if (!r.isEmpty()) {
+					row += r;
+					break o; // segment was broken; return
+				} else if (!current.hasNext()) {
+					// The BrailleTranslatorResult wrongly indicated that it had more rows. Not sure whether this is
+					// an error? Just ignore for now.
+					current = computeNext();
+					failIf(current == null); // if everything would fit on a line we would have detected it already
+					// there is more content, try breaking the next segment
+				} else {
+					if (force) {
+						throw new RuntimeException("corrupt BrailleTranslatorResult: " + current + ": "
+						                           + "hasNext() is true but nextTranslatedRow("+ (limit - row.length()) + ", true)"
+						                           + " returns empty string");
+					}
+					if (backup.isEmpty()) {
+						failIf(!row.isEmpty());
+						break o; // return empty row
+					} else {
+						failIf(row.isEmpty());
+						row = backup.pop().restore(this, row); // backup to the previous segment
+						current = computeNext();
+						failIf(current == null);
+						// try breaking the previous segment
 					}
 				}
 			}
