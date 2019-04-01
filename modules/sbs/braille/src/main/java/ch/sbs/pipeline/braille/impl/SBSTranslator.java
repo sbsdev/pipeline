@@ -326,6 +326,7 @@ public interface SBSTranslator {
 
 			private void failIfOtherStyleAttached(SimpleInlineStyle style, TermList values) {
 				style.removeProperty("hyphens");
+				style.removeProperty("white-space");
 				if (values.size() > 1 || style.size() > 1)
 					throw new RuntimeException("Translator does not support '" + style +"'");
 			}
@@ -357,6 +358,9 @@ public interface SBSTranslator {
 										else if (tt.equals("volumes")) {
 											failIfOtherStyleAttached(style, values);
 											return translateVolumesCount(s.getText()); }
+										else if (tt.equals("volume-end")) {
+											failIfOtherStyleAttached(style, values);
+											return translateVolumeNumberGenitiv(s.getText()); }
 										else if (tt.equals("linenum")) {
 											failIfOtherStyleAttached(style, values);
 											return Optional.of(translateLineNumber(s.getText())).asSet(); }
@@ -441,6 +445,54 @@ public interface SBSTranslator {
 				return translator.transform(Optional.of(new CSSStyledText(ret)).asSet());
 			}
 			
+			private java.lang.Iterable<String> translateVolumeNumberGenitiv(String number) {
+				Matcher m = NUMBER.matcher(number);
+				String ret;
+				if (!m.matches())
+					throw new RuntimeException("'" + number + "' is not a valid volume number");
+				switch (number) {
+				case "1":
+					ret = "ersten";
+				    break;
+				case "2":
+				    ret = "zweiten";
+				    break;
+				case "3":
+				    ret = "dritten";
+				    break;
+				case "4":
+				    ret = "vierten";
+				    break;
+				case "5":
+				    ret = "fünften";
+				    break;
+				case "6":
+				    ret = "sechsten";
+				    break;
+				case "7":
+				    ret = "siebten";
+				    break;
+				case "8":
+				    ret = "achten";
+				    break;
+				case "9":
+				    ret = "neunten";
+				    break;
+				case "10":
+				    ret = "zehnten";
+				    break;
+				case "11":
+				    ret = "elften";
+				    break;
+				case "12":
+				    ret = "zwölften";
+				    break;
+				default:
+					return Optional.of(translateNaturalNumber(Integer.parseInt(number))).asSet();
+				}
+				return translator.transform(Optional.of(new CSSStyledText(ret)).asSet());
+			}
+
 			private java.lang.Iterable<String> translateVolumesCount(String number) {
 				Matcher m = NUMBER.matcher(number);
 				if (!m.matches())

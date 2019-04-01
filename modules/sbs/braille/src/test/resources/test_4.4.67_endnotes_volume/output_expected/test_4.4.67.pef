@@ -307,6 +307,9 @@
           <row>⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
           <row>⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
           <row>⠃⠇⠁⠄⠠⠔⠼⠁⠚</row>
+          <row/>
+          <row>⠀⠀⠀⠀⠀⠀⠀⠀⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒</row>
+          <row>⠀⠀⠀⠑⠝⠙⠑⠀⠙⠑⠎⠀⠑⠗⠎⠞⠑⠝⠀⠃⠁⠝⠙⠑⠎</row>
         </page>
       </section>
       <section>
@@ -338,9 +341,6 @@
           <row>⠠⠔⠼⠁⠚⠀⠙⠊⠑⠎⠀⠊⠎⠞⠀⠙⠑⠗⠀⠅⠕⠍⠍⠑⠝⠞⠁⠗</row>
           <row>⠀⠀⠵⠥⠀⠋⠥⠎⠎⠝⠕⠞⠑⠀⠼⠁⠚</row>
           <row/>
-          <!--
-              in test_4.4.67.txt: ENDE DES BANDES
-          -->
         </page>
       </section>
     </volume>
@@ -376,8 +376,9 @@
           <row>⠃⠇⠕⠀⠃⠇⠕⠀⠃⠇⠕⠀⠃⠇⠕⠀⠃⠇⠕⠀⠃⠇⠕⠀⠃⠇⠕</row>
           <!--
               in test_4.4.67.txt: page number offset because note pages numbered
+              in test_4.4.67.txt: #AC,/ (⠼⠁⠉⠂⠲; 13-14) instead of #AD (⠼⠁⠙; 14)
           -->
-          <row>⠸⠼⠁⠉⠂⠲⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠼⠁⠁</row>
+          <row>⠸⠼⠁⠙⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠼⠁⠁</row>
         </page>
         <page>
           <row>⠃⠇⠕⠀⠃⠇⠕⠀⠃⠇⠕⠀⠃⠇⠕⠀⠃⠇⠕⠀⠃⠇⠕⠀⠃⠇⠕</row>
@@ -496,9 +497,9 @@
           <row>⠃⠇⠁⠄⠠⠔⠼⠁⠑</row>
           <row/>
           <row/>
-          <row/>
-          <row/>
-          <row/>
+          <row>⠀⠀⠀⠀⠀⠀⠀⠀⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒</row>
+          <row>⠀⠀⠀⠀⠀⠀⠑⠝⠙⠑⠀⠙⠑⠎⠀⠃⠥⠉⠓⠑⠎</row>
+          <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠶⠶⠶⠶⠶⠶</row>
           <row/>
           <!--
               in test_4.4.67.txt: page number offset because note pages numbered
@@ -524,10 +525,6 @@
           <row>⠀⠀⠵⠥⠀⠋⠥⠎⠎⠝⠕⠞⠑⠀⠼⠁⠙</row>
           <row>⠠⠔⠼⠁⠑⠀⠙⠊⠑⠎⠀⠊⠎⠞⠀⠙⠑⠗⠀⠅⠕⠍⠍⠑⠝⠞⠁⠗</row>
           <row>⠀⠀⠵⠥⠀⠋⠥⠎⠎⠝⠕⠞⠑⠀⠼⠁⠑</row>
-          <row/>
-          <!--
-              in test_4.4.67.txt: ENDE DES BUCHES
-          -->
         </page>
       </section>
     </volume>

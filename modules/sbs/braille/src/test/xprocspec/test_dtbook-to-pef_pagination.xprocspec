@@ -189,7 +189,7 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="4.5.82_ex2_parts_without_print_page_number">
+  <x:scenario label="4.5.82_ex2_parts_without_print_page_number" pending="different results between in direct conversion and via epub">
     <x:call>
       <x:input port="source">
         <x:document type="file" href="../resources/test_4.5.82_ex2_parts_without_print_page_number/test_4.5.82.xml"/>

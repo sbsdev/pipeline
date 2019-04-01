@@ -135,6 +135,44 @@
           <row>⠀⠀⠀⠀⠀⠀⠀⠀⠙⠁⠝⠅⠎⠁⠛⠥⠝⠛⠀⠀⠀⠀⠀⠀⠀⠀⠼⠑</row> <!-- centering of heading slightly changed -->
         </page>
       </section>
+      <!--
+          FIXME: additional section comes from the empty end-of-book announcement which has a
+          different page style than the "Danksagung" section (but not via epub3 because the
+          end-of-book text is inserted after the last bodymatter which is the Danksagung section
+          itself)
+      -->
+      <section>
+        <page>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row>⠸⠼⠊⠀⠀⠀⠀⠀⠀⠀⠙⠁⠝⠅⠎⠁⠛⠥⠝⠛⠀⠀⠀⠀⠀⠀⠼⠛</row>
+        </page>
+      </section>
     </volume>
   </body>
 </pef>

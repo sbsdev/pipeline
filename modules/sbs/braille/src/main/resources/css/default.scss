@@ -132,25 +132,6 @@ $include-production-notes: false !default;
     }
 }
 
-brl|volume[brl|grade='#{$contraction-grade}'] {
-    display: block;
-    volume-break-before: always;
-}
-
-br[class^=braille-volume-break] {
-    display: none;
-    /* cancel default behavior of br (newline) */
-    &::before {
-        content: none;
-    }
-}
-
-br.braille-volume-break,
-br.braille-volume-break-grade-#{$contraction-grade} {
-    display: block;
-    volume-break-before: always;
-}
-
 @volume {
     @begin {
 	page:auto;
@@ -176,6 +157,99 @@ br.braille-volume-break-grade-#{$contraction-grade} {
             page: auto;
             content: flow(endnotes-container);
         }
+    }
+}
+
+/* End-of-volume announcements */
+%end-of-volume {
+    display: block;
+    content: "⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒\A Ende des ";
+    white-space: pre-line;
+    text-align: center;
+    margin-top: 1;
+    &::after {
+        &::before {
+            content: -obfl-evaluate('$volume');
+            text-transform: volume-end;
+        }
+        content: " bandes";
+    }
+}
+
+book,
+html {
+    &::alternate {
+        flow: end-of-volume;
+        // @extend %end-of-volume; // does not work correctly
+        display: block;
+        content: "⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒\A Ende des ";
+        white-space: pre-line;
+        text-align: center;
+        margin-top: 1;
+        &::after {
+            &::before {
+                content: -obfl-evaluate('$volume');
+                text-transform: volume-end;
+            }
+            content: " bandes";
+        }
+    }
+}
+
+@-obfl-volume-transition {
+    @any-interrupted {
+        content: flow(end-of-volume);
+    }
+}
+
+br[class^=braille-volume-break] {
+    display: none;
+    /* cancel default behavior of br (newline) */
+    &::before {
+        content: none;
+    }
+}
+
+brl|volume[brl|grade='#{$contraction-grade}'],
+br.braille-volume-break,
+br.braille-volume-break-grade-#{$contraction-grade} {
+    display: block;
+    &::before {
+        // @extend %end-of-volume; // does not work correctly
+        display: block;
+        content: "⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒\A Ende des ";
+        white-space: pre-line;
+        text-align: center;
+        margin-top: 1;
+        &::after {
+            &::before {
+                content: -obfl-evaluate('$volume');
+                text-transform: volume-end;
+            }
+            content: " bandes";
+        }
+    }
+    &::after {
+        display: block;
+        volume-break-before: always;
+    }
+}
+
+/* End-of-book announcement */
+bodymatter:not(:has(~ rearmatter)),
+rearmatter,
+/*body|section*/[epub|type~='bodymatter']:not(:has(~ [epub|type~='bodymatter'], ~ [epub|type~='rearmatter'])),
+/*body|section*/[epub|type~='rearmatter']:not(:has(~ [epub|type~='rearmatter'])) {
+    &::after::before { // ::after::after is for chapter-notes
+        display: block;
+        // Two empty lines needed before announcement.
+        // One line (padding) is part of content, the other line is done with margin-top.
+        // In the case of only one volume (no end-of-book announcement) and endnotes are present, "margin-top: 2"
+        // would result in two empty lines before the endnotes instead of 1.
+        content: -obfl-evaluate('(if (= $volumes 1) "" "\A ⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒\A Ende des buches\A ⠶⠶⠶⠶⠶⠶")');
+        margin-top: 1;
+        white-space: pre-line;
+        text-align: center;
     }
 }
 
@@ -249,6 +323,7 @@ br.braille-volume-break-grade-#{$contraction-grade} {
     margin-left:4;
     margin-right:4;
     margin-bottom:1;
+    padding-top: 1;
     -obfl-underline:⠤;
     page-break-before: always;
 }
@@ -414,7 +489,7 @@ a[epub|type~='noteref'] {
     [epub|type~='frontmatter'],
     [epub|type~='bodymatter'],
     [epub|type~='rearmatter'] {
-        &:has(noteref, a[epub|type~='noteref'])::after {
+        &:has(noteref, a[epub|type~='noteref'])::after::after { // ::after::before is for end-of-book announcement
             content: flow(chapter-notes);
             &::before {
                 display: block;
@@ -428,7 +503,7 @@ a[epub|type~='noteref'] {
 } @else if ($footnotes-placement == 'end-of-volume') {
     book,
     html {
-        &:has(noteref, a[epub|type~='noteref'])::alternate {
+        &:has(noteref, a[epub|type~='noteref'])::alternate(2) { // ::alternate is for end-of-volume announcement
             flow: volume-notes-title;
             display: block;
             margin-top: 1;
@@ -440,7 +515,7 @@ a[epub|type~='noteref'] {
 } @else if ($footnotes-placement == 'end-of-book') {
     book,
     html {
-        &:has(noteref, a[epub|type~='noteref'])::alternate {
+        &:has(noteref, a[epub|type~='noteref'])::alternate(2) { // ::alternate is for end-of-volume announcement
             display: -obfl-list-of-references;
             flow: endnotes-container;
             content: -obfl-collection(endnotes);
@@ -601,10 +676,6 @@ frontmatter > level1.toc,
 bodymatter > level1,
 rearmatter > level1 {
     page-break-before:always;
-}
-
-brl|volume + level1 {
-    page-break-before: auto;
 }
 
 level1 {
@@ -1090,7 +1161,7 @@ table.table-matrix-transposed {
  * the default rules. For example:
  *
  *     table:not([class]) {
- *        extend %table-reset
+ *        @extend %table-reset
  *     }
  */
 table%table-reset {

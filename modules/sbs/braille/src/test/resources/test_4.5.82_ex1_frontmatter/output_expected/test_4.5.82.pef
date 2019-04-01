@@ -134,6 +134,10 @@
           <row>⠃⠇⠕⠀⠃⠇⠕⠀⠃⠇⠕⠀⠃⠇⠕⠀⠃⠇⠕⠀⠃⠇⠕⠄</row>
           <row>⠸⠼⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠼⠁</row>
         </page>
+        <!--
+            FIXME: additional page comes from margin-top of empty end-of-book announcement
+        -->
+        <page/>
       </section>
     </volume>
   </body>
