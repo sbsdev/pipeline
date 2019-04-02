@@ -44,16 +44,12 @@ class ScenarioData extends BlockProcessor {
 		return size;
 	}
 	
-	private boolean isDataEmpty() {
-		return (dataGroups.isEmpty()||dataGroups.peek().getGroup().isEmpty());
-	}
-	
 	protected boolean hasSequence() {
 		return !dataGroups.isEmpty();
 	}
 	
 	private boolean hasResult() {
-		return !isDataEmpty();
+		return !dataGroups.isEmpty();
 	}
 	
 	protected boolean maybeNewRowGroupSequence(BreakBefore breakBefore, VerticalSpacing vs) {
