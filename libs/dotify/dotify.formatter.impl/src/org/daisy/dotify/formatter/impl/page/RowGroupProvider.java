@@ -125,7 +125,7 @@ class RowGroupProvider {
 			//TODO: Does this interfere with collapsing margins?
 			if (shouldAddGroupForEmptyContent()) {
 				RowGroup.Builder rgb = setPropertiesForFirstContentRowGroup(
-					new RowGroup.Builder(master.getRowSpacing(), new ArrayList<RowImpl>()).mergeable(true), 
+					new RowGroup.Builder(master.getRowSpacing(), new ArrayList<RowImpl>()).mergeable(true).skippable(true),
 					bc.getRefs(),
 					g
 				);
