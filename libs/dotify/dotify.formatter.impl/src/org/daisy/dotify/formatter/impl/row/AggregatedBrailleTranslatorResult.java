@@ -155,10 +155,16 @@ class AggregatedBrailleTranslatorResult implements BrailleTranslatorResult {
 
 	@Override
 	public String nextTranslatedRow(int limit, boolean force, boolean wholeWordsOnly) {
-		String row = nextTranslatedRowInner(limit, false, wholeWordsOnly);
-		if (force && row.isEmpty())
-			row = nextTranslatedRowInner(limit, true, wholeWordsOnly);
-		return row;
+		if (force) {
+			// Try without force first because the way nextTranslatedRowInner works we could otherwise
+			// miss some valid break points.
+			// We need to make a copy because if a preserved line break would result in an empty row, that
+			// preserved line break would be consumed so the next call would not yield an empty string
+			// anymore (but it should, even with force).
+			if (!(new AggregatedBrailleTranslatorResult(this).nextTranslatedRowInner(limit, false, wholeWordsOnly).isEmpty()))
+				force = false;
+		}
+		return nextTranslatedRowInner(limit, force, wholeWordsOnly);
 	}
 	
 	private String nextTranslatedRowInner(int limit, boolean force, boolean wholeWordsOnly) {
@@ -189,7 +195,7 @@ class AggregatedBrailleTranslatorResult implements BrailleTranslatorResult {
 			// segment does not fit on the line, try breaking it
 			while (true) {
 				String r = current.nextTranslatedRow(limit - row.length(), force, wholeWordsOnly);
-				if (!r.isEmpty()) {
+				if (force || !r.isEmpty()) {
 					row += r;
 					break o; // segment was broken; return
 				} else if (!current.hasNext()) {
