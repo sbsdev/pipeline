@@ -19,7 +19,7 @@ before_install:
   # see https://github.com/travis-ci/travis-cookbooks/issues/964
   - rm -f /opt/jdk_switcher/jdk_switcher.sh
 script:
-  - make check-sbs
+  - make RUBY=ruby check-sbs
 after_failure:
  - cat maven.log
 # after_success:
