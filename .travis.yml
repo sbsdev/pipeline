@@ -20,6 +20,12 @@ before_install:
   - rm -f /opt/jdk_switcher/jdk_switcher.sh
 script:
   - make RUBY=ruby check-sbs
+before_cache:
+  - source <(curl -fsSL https://raw.github.com/daisy/maven-parents/travis/before_cache)
+cache:
+  directories:
+    - $HOME/.m2/cached-repository
+    - assembly/src/main/docker
 after_failure:
  - cat maven.log
 # after_success:
