@@ -4,16 +4,8 @@ FROM maven:3.5-jdk-8 as builder
 RUN apt-get update && apt-get install -y \
     libxml2-utils \
     make \
-	golang
-
-# for some reason `make dist-zip-linux` needs jekyll and a very
-# obscure ruby gem
-RUN apt-get update && apt-get install -y \
-    gcc \
-    jekyll \
-    ruby-dev \
-    ruby-nokogiri
-RUN gem install commaparty
+    golang \
+    ruby-bundler
 
 ADD . /usr/src/pipeline2
 WORKDIR /usr/src/pipeline2
