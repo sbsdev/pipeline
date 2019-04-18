@@ -1,4 +1,6 @@
-# .maven-cache
-.maven-workspace
+# Ignore everything...
+**
 
-**/target
+# ... except Dockerfile and .git
+!/Dockerfile
+!/.git/

@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
 
 ADD . /usr/src/pipeline2
 WORKDIR /usr/src/pipeline2
+RUN git checkout-index -af
 RUN if ! make dist-zip-linux; then \
       if [ -e .make-target/commands ]; then \
         echo "cat .make-target/commands" && \
