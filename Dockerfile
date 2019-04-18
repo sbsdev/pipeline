@@ -5,11 +5,13 @@ RUN apt-get update && apt-get install -y \
     libxml2-utils \
     make \
     golang \
-    ruby-bundler
+    ruby-bundler \
+    ruby-dev \
+    zlib1g-dev
 
 ADD . /usr/src/pipeline2
 WORKDIR /usr/src/pipeline2
-RUN if ! make MVN_LOG='cat>>$(ROOT_DIR)/maven.log' dist-zip-linux; then \
+RUN if ! make dist-zip-linux; then \
       if [ -e .make-target/commands ]; then \
         echo "cat .make-target/commands" && \
         cat .make-target/commands | sed 's/^/> /g'; \
@@ -23,7 +25,7 @@ RUN if ! make MVN_LOG='cat>>$(ROOT_DIR)/maven.log' dist-zip-linux; then \
 RUN cd assembly/target && unzip assembly-*-linux.zip
 
 # then use the build artifacts to create an image where the pipeline is installed
-FROM openjdk:8-jre
+FROM openjdk:11-jre
 LABEL maintainer="Christian Egli <christian.egli@sbs.ch>"
 COPY --from=builder /usr/src/pipeline2/assembly/target/daisy-pipeline /opt/daisy-pipeline2
 ENV PIPELINE2_WS_LOCALFS=false \
