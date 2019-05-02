@@ -80,7 +80,6 @@
                 <p:add-attribute match="/*/d:file[@indent='true']" attribute-name="indent" attribute-value="false" name="epub3-store.step.store-epub3.set-indent-false">
                     <!-- temporary workaround until https://github.com/daisy/pipeline-modules-common/issues/69 is fixed -->
                 </p:add-attribute>
-                <p:add-attribute match="/*/d:file[ends-with(@media-type,'+xml') or ends-with(@media-type,'/xml')]" attribute-name="encoding" attribute-value="us-ascii" name="epub3-store.step.store-epub3.set-ascii-encoding"/>
                 <px:fileset-store name="epub3-store.step.store-epub3.fileset-store">
                     <p:input port="in-memory.in">
                         <p:pipe port="in-memory.in" step="main"/>
