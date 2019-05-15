@@ -23,11 +23,15 @@ RUN if ! make dist-zip-linux; then \
       exit 1; \
     fi
 RUN cd assembly/target && unzip assembly-*-linux.zip
+RUN make -C assembly src/main/docker/OpenJDK11-jdk_x64_linux_hotspot_11_28.tar.gz
+RUN tar -zxvf assembly/src/main/docker/OpenJDK11-jdk_x64_linux_hotspot_11_28.tar.gz -C assembly/target/
 
 # then use the build artifacts to create an image where the pipeline is installed
-FROM openjdk:11-jre
+FROM debian:stretch
 LABEL maintainer="Christian Egli <christian.egli@sbs.ch>"
 COPY --from=builder /usr/src/pipeline2/assembly/target/daisy-pipeline /opt/daisy-pipeline2
+COPY --from=builder /usr/src/pipeline2/assembly/target/jdk-11+28 /opt/jdk-11+28
+ENV JAVA_HOME=/opt/jdk-11+28
 ENV PIPELINE2_WS_LOCALFS=false \
     PIPELINE2_WS_AUTHENTICATION=true \
     PIPELINE2_WS_AUTHENTICATION_CLIENTKEY=clientid \
