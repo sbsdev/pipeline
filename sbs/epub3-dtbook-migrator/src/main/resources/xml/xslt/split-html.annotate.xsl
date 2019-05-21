@@ -11,6 +11,12 @@
     <xsl:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xsl"/>
     
     <xsl:param name="output-dir" required="yes"/>
+    
+    <xsl:template match="@* | node()" mode="#all">
+        <xsl:copy exclude-result-prefixes="#all">
+            <xsl:apply-templates select="@* | node()" mode="#current"/>
+        </xsl:copy>
+    </xsl:template>
 
     <xsl:template match="/*">
 
@@ -47,15 +53,15 @@
 
                             <xsl:choose>
                                 <xsl:when test="$division='part'">
-                                    <xsl:copy-of select="node()[not((self::section | self::article)[f:types(.)=$division-types])]" exclude-result-prefixes="#all"/>
+                                    <xsl:apply-templates select="node()[not((self::section | self::article)[f:types(.)=$division-types])]"/>
 
                                 </xsl:when>
                                 <xsl:when test="$partition='bodymatter'">
-                                    <xsl:copy-of select="node()[not(self::section[f:types(.)='rearnotes'])]" exclude-result-prefixes="#all"/>
+                                    <xsl:apply-templates select="node()[not(self::section[f:types(.)='rearnotes'])]"/>
 
                                 </xsl:when>
                                 <xsl:otherwise>
-                                    <xsl:copy-of select="node()" exclude-result-prefixes="#all"/>
+                                    <xsl:apply-templates select="node()"/>
 
                                 </xsl:otherwise>
                             </xsl:choose>
@@ -64,6 +70,22 @@
                 </xsl:copy>
             </xsl:for-each>
 
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:template match="*[f:types(.)='pagebreak' and exists(ancestor::section[1][f:types(.) = 'rearnotes' and exists(following-sibling::section[not(f:types(.) = 'rearnotes')])])]"/>
+    
+    <xsl:template match="section">
+        <xsl:copy exclude-result-prefixes="#all">
+            <xsl:apply-templates select="@* | node()"/>
+            
+            <xsl:if test="not(ancestor-or-self::*/f:types(.) = 'rearnotes') and following-sibling::section[1]/f:types(.) = 'rearnotes'">
+                <xsl:for-each select="(following-sibling::section intersect following-sibling::section[not(f:types(.) = 'rearnotes')][1]/preceding-sibling::section)//*[f:types(.) = 'pagebreak']">
+                    <div>
+                        <xsl:apply-templates select="@* | node()"/>
+                    </div>
+                </xsl:for-each>
+            </xsl:if>
         </xsl:copy>
     </xsl:template>
 

@@ -5,7 +5,7 @@
 
     <xsl:import href="http://www.daisy.org/pipeline/modules/common-utils/numeral-conversion.xsl"/>
     <!--<xsl:import href="../../../../test/xspec/mock/numeral-conversion.xsl"/>-->
-	<xsl:import href="epub3-vocab.xsl"/>
+    <xsl:import href="epub3-vocab.xsl"/>
 
     <xsl:param name="allow-links" select="false()"/>
     <xsl:param name="normalize-space-in-h" select="true()"/>
@@ -474,17 +474,30 @@
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="html:aside[f:types(.)='epigraph']|
-                         html:p[f:types(.)='epigraph']">
-        <epigraph>
-            <xsl:call-template name="f:attlist.epigraph"/>
-            <xsl:apply-templates select="node()"/>
-        </epigraph>
+    <!-- <epigraph> is not allowed in nordic DTBook. Using p instead. -->
+    <xsl:template match="html:*[f:types(.)='epigraph']">
+        <xsl:message select="'&lt;epigraph&gt; is not allowed in nordic DTBook. Prefer using p with a epigraph class when possible.'"/>
+        <xsl:choose>
+            <xsl:when test="exists(self::html:aside | self::html:section) and exists(html:h1 | html:h2 | html:h3 | html:h4 | html:h5 | html:h6 | html:aside | html:section)">
+                <xsl:element name="level{f:level(.)}">
+                    <xsl:call-template name="f:attlist.epigraph"/>
+                    <xsl:apply-templates select="node()"/>
+                </xsl:element>
+            </xsl:when>
+            <xsl:otherwise>
+                <epigraph>
+                    <xsl:call-template name="f:attrs">
+                        <xsl:with-param name="except-classes" select="'epigraph'" tunnel="yes"/>
+                    </xsl:call-template>
+                    <xsl:apply-templates select="node()"/>
+                </epigraph>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template name="f:attlist.epigraph">
         <xsl:call-template name="f:attrs">
-            <xsl:with-param name="except-classes" select="'epigraph'" tunnel="yes"/>
+            <xsl:with-param name="classes" select="'epigraph'" tunnel="yes"/>
         </xsl:call-template>
     </xsl:template>
 
