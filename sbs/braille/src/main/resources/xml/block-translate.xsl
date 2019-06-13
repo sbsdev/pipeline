@@ -12,7 +12,7 @@
 	<xsl:import href="functions.xsl"/>
 	<xsl:import href="select-braille-table.xsl"/>
 	
-	<xsl:include href="http://www.daisy.org/pipeline/modules/braille/css-utils/transform/block-translator-template.xsl"/>
+	<xsl:include href="http://www.daisy.org/pipeline/modules/braille/css-utils/transform/abstract-block-translator.xsl"/>
 	<xsl:include href="handle-elements.xsl"/>
 	
 	<xsl:param name="text-transform-query-base" select="'(input:text-css)(output:braille)(translator:sbs)(locale:de)'"/>

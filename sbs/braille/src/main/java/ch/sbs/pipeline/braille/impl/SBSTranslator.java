@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.net.URI;
+import static java.nio.file.Files.createTempDirectory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +29,9 @@ import cz.vutbr.web.css.TermList;
 import org.daisy.braille.css.BrailleCSSProperty.TextTransform;
 import org.daisy.braille.css.SimpleInlineStyle;
 
+import org.daisy.common.file.URIs;
+import org.daisy.common.file.URLs;
+
 import org.daisy.pipeline.braille.common.AbstractBrailleTranslator;
 import org.daisy.pipeline.braille.common.AbstractTransformProvider;
 import org.daisy.pipeline.braille.common.AbstractTransformProvider.util.Function;
@@ -47,10 +51,10 @@ import static org.daisy.pipeline.braille.common.Query.util.mutableQuery;
 import org.daisy.pipeline.braille.common.TransformProvider;
 import static org.daisy.pipeline.braille.common.TransformProvider.util.dispatch;
 import static org.daisy.pipeline.braille.common.TransformProvider.util.memoize;
+import static org.daisy.pipeline.braille.common.util.Files.normalize;
 import static org.daisy.pipeline.braille.common.util.Files.unpack;
 import static org.daisy.pipeline.braille.common.util.Iterables.combinations;
 import static org.daisy.pipeline.braille.common.util.Locales.parseLocale;
-import static org.daisy.pipeline.braille.common.util.URIs.asURI;
 import org.daisy.pipeline.braille.libhyphen.LibhyphenHyphenator;
 import org.daisy.pipeline.braille.liblouis.LiblouisTranslator;
 
@@ -59,7 +63,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.ComponentContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,11 +88,11 @@ public interface SBSTranslator {
 		private URI virtualDisTable;
 		
 		@Activate
-		private void activate(ComponentContext context, final Map<?,?> properties) {
-			href = asURI(context.getBundleContext().getBundle().getEntry("xml/block-translate.xpl"));
-			File f = new File(makeUnpackDir(context), "virtual.dis");
-			unpack(context.getBundleContext().getBundle().getEntry("/liblouis/virtual.dis"), f);
-			virtualDisTable = asURI(f);
+		void activate(final Map<?,?> properties) {
+			href = URIs.asURI(URLs.getResourceFromJAR("/xml/block-translate.xpl", SBSTranslator.class));
+			File f = new File(makeUnpackDir(), "virtual.dis");
+			unpack(URLs.getResourceFromJAR("/liblouis/virtual.dis", SBSTranslator.class), f);
+			virtualDisTable = URIs.asURI(f);
 			grade0Table = liblouisTable("sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti," + // no sbs-whitespace.mod
 			                            "sbs-numsign.mod,sbs-litdigit-upper.mod,sbs-de-core.mod,sbs-de-g0-core.mod," +
 			                            "sbs-de-hyph-none.mod,sbs-de-accents-ch.mod,sbs-special.mod");
@@ -332,9 +335,11 @@ public interface SBSTranslator {
 			}
 
 			private final FromStyledTextToBraille fromStyledTextToBraille = new FromStyledTextToBraille() {
-				public java.lang.Iterable<String> transform(java.lang.Iterable<CSSStyledText> styledText) {
-					if (size(styledText) == 1) {
-						CSSStyledText s = styledText.iterator().next();
+				public java.lang.Iterable<String> transform(java.lang.Iterable<CSSStyledText> styledText, int from, int to) {
+					List<CSSStyledText> list = newArrayList(styledText);
+					int len = list.size();
+					for (int i = 0; i < len; i++) {
+						CSSStyledText s = list.get(i);
 						SimpleInlineStyle style = s.getStyle();
 						if (style != null) {
 							CSSProperty val = style.getProperty("text-transform");
@@ -345,29 +350,29 @@ public interface SBSTranslator {
 										String tt = ((TermIdent)t).getValue();
 										if (tt.equals("print-page")) {
 											failIfOtherStyleAttached(style, values);
-											return Optional.of(translatePrintPageNumber(s.getText())).asSet(); }
+											list.set(i, new CSSStyledText(translatePrintPageNumber(s.getText()), "text-transform: none")); }
 										else if (tt.equals("toc-page")) {
 											failIfOtherStyleAttached(style, values);
-											return Optional.of(translateBraillePageNumberInToc(s.getText())).asSet(); }
+											list.set(i, new CSSStyledText(translateBraillePageNumberInToc(s.getText()), "text-transform: none")); }
 										else if (tt.equals("toc-print-page")) {
 											failIfOtherStyleAttached(style, values);
-											return Optional.of(translatePrintPageNumberInToc(s.getText())).asSet(); }
+											list.set(i, new CSSStyledText(translatePrintPageNumberInToc(s.getText()), "text-transform: none")); }
 										else if (tt.equals("volume")) {
 											failIfOtherStyleAttached(style, values);
-											return translateVolumeNumber(s.getText()); }
+											list.set(i, translateVolumeNumber(s.getText())); }
 										else if (tt.equals("volumes")) {
 											failIfOtherStyleAttached(style, values);
-											return translateVolumesCount(s.getText()); }
+											list.set(i, translateVolumesCount(s.getText())); }
 										else if (tt.equals("volume-end")) {
 											failIfOtherStyleAttached(style, values);
-											return translateVolumeNumberGenitiv(s.getText()); }
+											list.set(i, translateVolumeNumberGenitiv(s.getText())); }
 										else if (tt.equals("linenum")) {
 											failIfOtherStyleAttached(style, values);
-											return Optional.of(translateLineNumber(s.getText())).asSet(); }
+											list.set(i, new CSSStyledText(translateLineNumber(s.getText()), "text-transform: none")); }
 										else if (tt.equals("roman-num")) {
 											failIfOtherStyleAttached(style, values);
-											return translateRomanNumber(s.getText()); }}}}}}
-					return translator.transform(styledText);
+											list.set(i, translateRomanNumber(s.getText())); }}}}}}
+					return translator.transform(list, from, to);
 				}
 			};
 
@@ -397,7 +402,7 @@ public interface SBSTranslator {
 				return translateNaturalNumber(Integer.parseInt(number));
 			}
 
-			private java.lang.Iterable<String> translateVolumeNumber(String number) {
+			private CSSStyledText translateVolumeNumber(String number) {
 				Matcher m = NUMBER.matcher(number);
 				String ret;
 				if (!m.matches())
@@ -440,12 +445,12 @@ public interface SBSTranslator {
 				    ret = "Zwölfter";
 				    break;
 				default:
-				    return Optional.of(translateNaturalNumber(Integer.parseInt(number))).asSet();
+				    return new CSSStyledText(translateNaturalNumber(Integer.parseInt(number)), "text-transform: none");
 				}
-				return translator.transform(Optional.of(new CSSStyledText(ret)).asSet());
+				return new CSSStyledText(ret);
 			}
 			
-			private java.lang.Iterable<String> translateVolumeNumberGenitiv(String number) {
+			private CSSStyledText translateVolumeNumberGenitiv(String number) {
 				Matcher m = NUMBER.matcher(number);
 				String ret;
 				if (!m.matches())
@@ -488,12 +493,12 @@ public interface SBSTranslator {
 				    ret = "zwölften";
 				    break;
 				default:
-					return Optional.of(translateNaturalNumber(Integer.parseInt(number))).asSet();
+					return new CSSStyledText(translateNaturalNumber(Integer.parseInt(number)), "text-transform: none");
 				}
-				return translator.transform(Optional.of(new CSSStyledText(ret)).asSet());
+				return new CSSStyledText(ret);
 			}
 
-			private java.lang.Iterable<String> translateVolumesCount(String number) {
+			private CSSStyledText translateVolumesCount(String number) {
 				Matcher m = NUMBER.matcher(number);
 				if (!m.matches())
 					throw new RuntimeException("'" + number + "' is not a valid number");
@@ -536,9 +541,9 @@ public interface SBSTranslator {
 				    ret = "Zwölf";
 				    break;
 				default:
-				    return Optional.of(translateNaturalNumber(Integer.parseInt(number))).asSet();
+				    return new CSSStyledText(translateNaturalNumber(Integer.parseInt(number)), "text-transform: none");
 				}
-				return translator.transform(Optional.of(new CSSStyledText(ret)).asSet());
+				return new CSSStyledText(ret);
 			}
 			
 			private final static int LINENUM_WIDTH = 2;
@@ -569,11 +574,18 @@ public interface SBSTranslator {
 				return b.toString();
 			}
 			
-			private java.lang.Iterable<String> translateRomanNumber(String number) {
-				if (Character.isUpperCase(number.charAt(0))) // we assume that if the first char is uppercase the rest is also uppercase
-					return romanNumberTranslator.transform(Optional.of(new CSSStyledText("\u2566" + number)).asSet());
-				else // presumably the roman number is in lower case
-					return romanNumberTranslator.transform(Optional.of(new CSSStyledText("\u2569" + number)).asSet());
+			private final static String GROSSBUCHSTABENFOLGE = "╦"; // U+2566 - defined in sbs-special.cti
+			private final static String KLEINBUCHSTABE       = "╩"; // U+2569 - defined in sbs-special.cti
+			
+			private CSSStyledText translateRomanNumber(String number) {
+				String indic = Character.isUpperCase(number.charAt(0))
+					// we assume that if the first char is uppercase the rest is also uppercase
+					? GROSSBUCHSTABENFOLGE
+					// presumably the roman number is in lower case
+					: KLEINBUCHSTABE;
+				return new CSSStyledText(
+					romanNumberTranslator.transform(Optional.of(new CSSStyledText(indic + number)).asSet()).iterator().next(),
+					"text-transform: none");
 			}
 		}
 		
@@ -619,13 +631,21 @@ public interface SBSTranslator {
 		private TransformProvider.util.MemoizingProvider<LibhyphenHyphenator> libhyphenHyphenatorProvider
 		= memoize(dispatch(libhyphenHyphenatorProviders));
 		
-		private static File makeUnpackDir(ComponentContext context) {
-			File directory;
-			for (int i = 0; true; i++) {
-				directory = context.getBundleContext().getDataFile("resources" + i);
-				if (!directory.exists()) break; }
-			directory.mkdirs();
+		private static File makeUnpackDir() {
+			File directory; {
+				try {
+					directory = createTempDirectory("pipeline-").toFile(); }
+				catch (Exception e) {
+					throw new RuntimeException("Could not create temporary directory", e); }
+				directory.deleteOnExit();
+			}
+			directory = normalize(directory);
 			return directory;
+		}
+		
+		@Override
+		public ToStringHelper toStringHelper() {
+			return MoreObjects.toStringHelper(SBSTranslator.Provider.class.getName());
 		}
 		
 		private static final Logger logger = LoggerFactory.getLogger(SBSTranslator.class);

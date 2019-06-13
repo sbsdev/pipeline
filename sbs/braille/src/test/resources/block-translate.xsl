@@ -24,7 +24,7 @@
 		<xsl:param name="result-style" as="element()*" tunnel="yes"> <!-- css:property* -->
 			<!--
 			    The default is also set in the root matcher of the "identify-blocks" mode in
-			    block-translator-template.xsl, but needs to be repeated here for the XSpec tests.
+			    abstract-block-translator.xsl, but needs to be repeated here for the XSpec tests.
 			-->
 			<xsl:call-template name="css:computed-properties">
 				<xsl:with-param name="properties" select="$text-properties"/>
