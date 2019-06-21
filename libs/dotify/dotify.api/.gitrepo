@@ -7,5 +7,5 @@
 	remote = git@github.com:sbsdev/dotify.api.git
 	branch = master
 	commit = 33471e47e048e5d673fdfd31329844efc948cbe7
-	parent = bff012a7a18ab5397a8ab90833fe01ef6352a81a
+	parent = 8ea736d247c1ac1eff99b6530a185fd46d374b04
 	cmdver = 0.3.1
