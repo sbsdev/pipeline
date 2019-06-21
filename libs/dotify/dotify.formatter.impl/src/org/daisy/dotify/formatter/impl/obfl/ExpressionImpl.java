@@ -2,11 +2,12 @@ package org.daisy.dotify.formatter.impl.obfl;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
@@ -24,7 +25,7 @@ import org.daisy.dotify.api.text.IntegerOutOfRange;
  * must be surrounded with parentheses.
  * </p>
  * <p>
- * The following operators are defined: +, -, *, /, %, =, &lt;, &lt;=, >, >=,
+ * The following operators are defined: +, -, *, /, %, =, &lt;, &lt;=, &gt;, &gt;=,
  * &amp;, |
  * </p>
  * <p>
@@ -55,6 +56,7 @@ import org.daisy.dotify.api.text.IntegerOutOfRange;
  */
 class ExpressionImpl implements Expression {
 	private static final Logger logger = Logger.getLogger(ExpressionImpl.class.getCanonicalName());
+	private static final Map<String, Instant> CONFIGURATION_WARNING_ISSUED = Collections.synchronizedMap(new HashMap<>());
 	private HashMap<String, Object> localVars;
 	private Map<String, Object> globalVars;
 	private final Integer2TextFactoryMakerService integer2textFactoryMaker;
@@ -141,7 +143,7 @@ class ExpressionImpl implements Expression {
 		} else if ("%".equals(operator)) {
 			return modulo(args);
 		} else if ("=".equals(operator)) {
-			return equals(args);
+			return equalsOp(args);
 		} else if ("<".equals(operator)) {
 			return smallerThan(args);
 		}  else if ("<=".equals(operator)) {
@@ -226,7 +228,8 @@ class ExpressionImpl implements Expression {
 		return ret;
 	}
 	
-	private static boolean equals(Object[] input) {
+	//Renamed method because PMD is a bit stupid 
+	private static boolean equalsOp(Object[] input) {
 		try {
 			for (int i=1; i<input.length; i++) { 
 				if (((Double)(input[i-1])).doubleValue()!=((Double)(input[i])).doubleValue()) {
@@ -384,10 +387,14 @@ class ExpressionImpl implements Expression {
 			Integer2Text  t = integer2textFactoryMaker.newInteger2Text(input[1].toString());
 			return t.intToText(val);
 		} catch (Integer2TextConfigurationException e) {
-			logger.log(Level.WARNING, "Unsupported locale: " + input[1], e);
+			Instant t = CONFIGURATION_WARNING_ISSUED.get(input[1].toString());
+			if (t==null || Instant.now().isAfter(t.plusSeconds(10))) {
+				CONFIGURATION_WARNING_ISSUED.put(input[1].toString(), Instant.now());
+				logger.warning("Locale not supported: " + input[1]);
+			}
 			return Integer.toString(val);
 		} catch (IntegerOutOfRange e) {
-			logger.log(Level.WARNING, "Integer out of range: " + input[0], e);
+			logger.warning("Integer out of range: " + input[0]);
 			return Integer.toString(val);
 		}
 	}

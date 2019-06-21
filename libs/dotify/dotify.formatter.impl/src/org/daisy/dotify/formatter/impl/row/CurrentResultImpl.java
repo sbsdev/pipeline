@@ -174,9 +174,7 @@ class CurrentResultImpl implements CurrentResult {
 		int contentLen = StringTools.length(tabSpace) + StringTools.length(row.getText());
 		boolean force = contentLen == 0;
 		//don't know if soft hyphens need to be replaced, but we'll keep it for now
-		String next = !btr.hasNext()
-			? ""
-			: softHyphenPattern.matcher(btr.nextTranslatedRow(m1.getMaxLength(row) - contentLen, force, wholeWordsOnly)).replaceAll("");
+		String next = softHyphenPattern.matcher(btr.nextTranslatedRow(m1.getMaxLength(row) - contentLen, force, wholeWordsOnly)).replaceAll("");
 		if ("".equals(next) && "".equals(tabSpace)) {
 			row.text(m1.getPreContent() + trailingWsBraillePattern.matcher(row.getText()).replaceAll(""));
 		} else {

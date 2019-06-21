@@ -28,15 +28,15 @@ import org.daisy.dotify.formatter.impl.core.LayoutMaster;
 import org.daisy.dotify.formatter.impl.core.PaginatorException;
 import org.daisy.dotify.formatter.impl.core.TransitionContent;
 import org.daisy.dotify.formatter.impl.core.TransitionContent.Type;
-import org.daisy.dotify.formatter.impl.datatype.VolumeKeepPriority;
 import org.daisy.dotify.formatter.impl.row.AbstractBlockContentManager;
 import org.daisy.dotify.formatter.impl.row.RowImpl;
+import org.daisy.dotify.formatter.impl.search.BlockLineLocation;
 import org.daisy.dotify.formatter.impl.search.DefaultContext;
-import org.daisy.dotify.formatter.impl.search.DocumentSpace;
 import org.daisy.dotify.formatter.impl.search.PageDetails;
 import org.daisy.dotify.formatter.impl.search.PageId;
 import org.daisy.dotify.formatter.impl.search.SequenceId;
 import org.daisy.dotify.formatter.impl.search.TransitionProperties;
+import org.daisy.dotify.formatter.impl.search.VolumeKeepPriority;
 
 public class PageSequenceBuilder2 {
 	private final FormatterContext context;
@@ -60,11 +60,14 @@ public class PageSequenceBuilder2 {
 	private int dataGroupsIndex;
 	private boolean nextEmpty = false;
 
+	private BlockLineLocation cbl;
+	private BlockLineLocation pcbl;
+
 	//From view, temporary
 	private final int fromIndex;
 	private int toIndex;
-	
-	public PageSequenceBuilder2(int fromIndex, LayoutMaster master, int pageOffset, BlockSequence seq, FormatterContext context, DefaultContext rcontext, SequenceId seqId) {
+
+	public PageSequenceBuilder2(int fromIndex, LayoutMaster master, int pageOffset, BlockSequence seq, FormatterContext context, DefaultContext rcontext, SequenceId seqId, BlockLineLocation blc) {
 		this.fromIndex = fromIndex;
 		this.toIndex = fromIndex;
 		this.master = master;
@@ -92,7 +95,9 @@ public class PageSequenceBuilder2 {
 		this.cd = new CollectionData(staticAreaContent, blockContext, master, collection);
 		this.dataGroupsIndex = 0;
 		this.seqId = seqId;
-		PageDetails details = new PageDetails(master.duplex(), new PageId(pageCount, getGlobalStartIndex(), seqId), pageOffset);
+		this.cbl = blc;
+		this.pcbl = null;
+		PageDetails details = new PageDetails(master.duplex(), new PageId(pageCount, getGlobalStartIndex(), seqId), cbl, pageOffset);
 		this.fieldResolver = new FieldResolver(master, context, rcontext.getRefs(), details);
 	}
 
@@ -116,6 +121,8 @@ public class PageSequenceBuilder2 {
 		this.nextEmpty = template.nextEmpty;
 		this.fromIndex = template.fromIndex;
 		this.toIndex = template.toIndex;
+		this.cbl = template.cbl;
+		this.pcbl = template.pcbl;
 	}
 	
 	public static PageSequenceBuilder2 copyUnlessNull(PageSequenceBuilder2 template) {
@@ -136,18 +143,20 @@ public class PageSequenceBuilder2 {
 	public PageId nextPageId(int offset) {
 		return new PageId(pageCount+offset, getGlobalStartIndex(), seqId);
 	}
+	
+	public BlockLineLocation currentBlockLineLocation() {
+		return cbl;
+	}
 
 	private PageImpl newPage(int pageNumberOffset) {
-		PageDetails details = new PageDetails(master.duplex(), new PageId(pageCount, getGlobalStartIndex(), seqId), pageNumberOffset);
+		PageDetails details = new PageDetails(master.duplex(), new PageId(pageCount, getGlobalStartIndex(), seqId), cbl, pageNumberOffset);
 		PageImpl ret = new PageImpl(fieldResolver, details, master, context, staticAreaContent);
 		pageCount ++;
 		if (keepNextSheets>0) {
 			ret.setAllowsVolumeBreak(false);
 		}
-		if (!master.duplex() || pageCount%2==0) {
-			if (keepNextSheets>0) {
-				keepNextSheets--;
-			}
+		if ((!master.duplex() || pageCount%2==0) && keepNextSheets>0) {
+			keepNextSheets--;
 		}
 		return ret;
 	}
@@ -183,6 +192,9 @@ public class PageSequenceBuilder2 {
 	private PageImpl nextPageInner(int pageNumberOffset, boolean hyphenateLastLine, Optional<TransitionContent> transitionContent, boolean wasSplitInSequence, boolean isFirst) throws PaginatorException, RestartPaginationException // pagination must be restarted in PageStructBuilder.paginateInner
 	{
 		PageImpl current = newPage(pageNumberOffset);
+		if (pcbl!=null) {
+			blockContext.getRefs().setNextPageDetailsInSequence(pcbl, current.getDetails());
+		}
 		if (nextEmpty) {
 			nextEmpty = false;
 			return current;
@@ -337,12 +349,19 @@ public class PageSequenceBuilder2 {
 						 head.addAll(0, anyTransitionText); 
 					 }
 				}
+				//TODO: Get last row
+				if (!head.isEmpty()) {
+					int s = head.size();
+					RowGroup gr = head.get(s-1);
+					pcbl = cbl;
+					cbl = gr.getLineProperties().getBlockLineLocation();
+				}
 				addRows(head, current);
 				current.setAvoidVolumeBreakAfter(getVolumeKeepPriority(res.getDiscarded(), getVolumeKeepPriority(res.getHead(), VolumeKeepPriority.empty())));
 				if (context.getTransitionBuilder().getProperties().getApplicationRange()!=ApplicationRange.NONE) {
 					// no need to do this, unless there is an active transition builder
 					boolean hasBlockBoundary = blockBoundary.isPresent()?blockBoundary.get():res.getHead().stream().filter(r->r.isLastRowGroupInBlock()).findFirst().isPresent();
-					bc.getRefs().keepTransitionProperties(current.getDetails().getPageId(), new TransitionProperties(current.getAvoidVolumeBreakAfter(), hasBlockBoundary));
+					bc.getRefs().keepTransitionProperties(current.getDetails().getPageLocation(), new TransitionProperties(current.getAvoidVolumeBreakAfter(), hasBlockBoundary));
 				}
 				for (RowGroup rg : res.getDiscarded()) {
 					addProperties(current, rg);
@@ -380,6 +399,7 @@ public class PageSequenceBuilder2 {
 				}
 			}
 		}
+
 		return current;
 	}
 	
@@ -467,13 +487,6 @@ public class PageSequenceBuilder2 {
 	private boolean hasPageAreaCollection() {
 		return master.getPageArea()!=null && collection!=null;
 	}
-	
-	@FunctionalInterface
-	interface MarkerRef {
-		boolean hasMarkerWithName(String name);
-	}
-	
-
 	
 	private void addProperties(PageImpl p, RowGroup rg) {
 		p.addIdentifiers(rg.getIdentifiers());
@@ -580,10 +593,15 @@ public class PageSequenceBuilder2 {
 	}
 	
 	public int getSizeLast() {
-		if (master.duplex() && (size() % 2)==1) {
-			return size() + 1;
+		return getSizeLast(fromIndex);
+	}
+	
+	public int getSizeLast(int fromIndex) {
+		int size = getToIndex()-fromIndex;
+		if (master.duplex() && (size % 2)==1) {
+			return size + 1;
 		} else {
-			return size();
+			return size;
 		}
 	}
 	

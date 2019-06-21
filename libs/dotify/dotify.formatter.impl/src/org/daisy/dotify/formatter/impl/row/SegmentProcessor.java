@@ -5,11 +5,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.daisy.dotify.api.formatter.Context;
 import org.daisy.dotify.api.formatter.Marker;
+import org.daisy.dotify.api.translator.AttributeWithContext;
 import org.daisy.dotify.api.translator.BrailleTranslatorResult;
+import org.daisy.dotify.api.translator.DefaultAttributeWithContext;
 import org.daisy.dotify.api.translator.Translatable;
+import org.daisy.dotify.api.translator.TranslatableWithContext;
 import org.daisy.dotify.api.translator.TranslationException;
 import org.daisy.dotify.formatter.impl.common.FormatterCoreContext;
 import org.daisy.dotify.formatter.impl.row.RowImpl.Builder;
@@ -20,13 +25,17 @@ import org.daisy.dotify.formatter.impl.segment.Evaluate;
 import org.daisy.dotify.formatter.impl.segment.IdentifierSegment;
 import org.daisy.dotify.formatter.impl.segment.LeaderSegment;
 import org.daisy.dotify.formatter.impl.segment.MarkerSegment;
-import org.daisy.dotify.formatter.impl.segment.PageNumberReferenceSegment;
+import org.daisy.dotify.formatter.impl.segment.PageNumberReference;
 import org.daisy.dotify.formatter.impl.segment.Segment;
+import org.daisy.dotify.formatter.impl.segment.Segment.SegmentType;
+import org.daisy.dotify.formatter.impl.segment.Style;
 import org.daisy.dotify.formatter.impl.segment.TextSegment;
 
 class SegmentProcessor implements SegmentProcessing {
 	private final List<Segment> segments;
 	private final CrossReferenceHandler refs;
+	private final AttributeWithContext attr;
+
 	private Context context;
 	private final boolean significantContent;
 	private final SegmentProcessorContext spc;
@@ -36,10 +45,10 @@ class SegmentProcessor implements SegmentProcessing {
 	private final ArrayList<Marker> groupMarkers;
 	private final ArrayList<String> groupAnchors;
 	private final ArrayList<String> groupIdentifiers;
-	private AggregatedBrailleTranslatorResult.Builder pending;
+	private AggregatedBrailleTranslatorResult.Builder layoutOrApplyAfterLeader;
 	private String currentLeaderMode;
+	private boolean seenSegmentAfterLeader;
 	private final LeaderManager leaderManager;
-	private LeaderSegment nextLeader = null;
 	private ListItem item;
 	private int forceCount;
 	private int minLeft;
@@ -50,14 +59,15 @@ class SegmentProcessor implements SegmentProcessing {
 	private String blockId;
 
 	SegmentProcessor(String blockId, List<Segment> segments, int flowWidth, CrossReferenceHandler refs, Context context, int available, BlockMargin margins, FormatterCoreContext fcontext, RowDataProperties rdp) {
-		this.segments = Collections.unmodifiableList(segments);
 		this.refs = refs;
+		this.segments = Collections.unmodifiableList(removeStyles(segments).collect(Collectors.toList()));
+		this.attr = buildAttributeWithContext(null, segments);
 		this.context = context;
 		this.groupMarkers = new ArrayList<>();
 		this.groupAnchors = new ArrayList<>();
 		this.groupIdentifiers = new ArrayList<>();
 		this.leaderManager = new LeaderManager();
-		this.significantContent = calculateSignificantContent(segments, context, rdp);
+		this.significantContent = calculateSignificantContent(this.segments, context, rdp);
 		this.spc = new SegmentProcessorContext(fcontext, rdp, margins, flowWidth, available);
 		this.blockId = blockId;
 		initFields();
@@ -74,14 +84,16 @@ class SegmentProcessor implements SegmentProcessing {
 		this.groupMarkers = new ArrayList<>(template.groupMarkers);
 		this.groupIdentifiers = new ArrayList<>(template.groupIdentifiers);
 		this.leaderManager = new LeaderManager(template.leaderManager);
-		this.pending = template.pending==null?null:new AggregatedBrailleTranslatorResult.Builder(template.pending);
+		this.layoutOrApplyAfterLeader = template.layoutOrApplyAfterLeader==null?null:new AggregatedBrailleTranslatorResult.Builder(template.layoutOrApplyAfterLeader);
 		this.currentLeaderMode = template.currentLeaderMode;
+		this.seenSegmentAfterLeader = template.seenSegmentAfterLeader;
 		this.item = template.item;
 		this.forceCount = template.forceCount;
 		this.minLeft = template.minLeft;
 		this.minRight = template.minRight;
 		this.empty  = template.empty;
 		this.segments = template.segments;
+		this.attr = template.attr;
 		this.segmentIndex = template.segmentIndex;
 		this.cr = template.cr!=null?template.cr.copy():null;
 		this.closed = template.closed;
@@ -89,7 +101,97 @@ class SegmentProcessor implements SegmentProcessing {
 		this.blockId = template.blockId;
 	}
 	
-	private static boolean calculateSignificantContent(List<Segment> segments, Context context, RowDataProperties rdp) {
+	/**
+	 * Filters the input list to remove styles (if present). Segments inside styles are inserted
+	 * at the current location in the list.
+	 * @param segments segments containing styles
+	 * @return a stream of segments without styles
+	 */
+	private static Stream<Segment> removeStyles(List<Segment> segments) {
+		return segments.stream()
+				.flatMap(v->v.getSegmentType()==SegmentType.Style?removeStyles(((Style)v).getSegments()):Stream.of(v));
+	}
+
+	/**
+	 * <p>Builds a text attribute for the input segments with the specified name.
+	 * Style segments will be mapped into named text attributes which can
+	 * be passed to a marker processor or braille translator and thus be
+	 * used for applying the styling.</p>
+	 * 
+	 * <p>In this process, the boundaries of styles will be modified in order to
+	 * ensure that markers adhere to the text in a line breaking
+	 * situation.</p>
+	 * 
+	 * @param name the name of this text attribute (may be null)
+	 * @param in the segments
+	 * @return a text attribute
+	 */
+	private static DefaultAttributeWithContext buildAttributeWithContext(String name, List<Segment> in) {
+		DefaultAttributeWithContext.Builder b;
+		// Trim style scope
+		int start = -1;
+		int end = -1;
+		boolean trimStart = false;
+		boolean trimEnd = false;
+		int i = 0;
+		if (name!=null) {
+			// Scan segments for style scope
+			for (Segment v : in) {
+				// If significant content is encountered, set start and end of trim zone.
+				if (v.getSegmentType()==SegmentType.Text || v.getSegmentType()==SegmentType.Evaluate || v.getSegmentType()==SegmentType.Reference || v.getSegmentType()==SegmentType.Style) {
+					if (start<0) {
+						start = i;
+						end = i;
+					} else {
+						end = i;
+					}
+				}
+				i++;
+			}
+			trimStart = start>0 && in.size()>1;
+			trimEnd = end<in.size()-1 && in.size()>1;
+			if (trimStart) {
+				b = new DefaultAttributeWithContext.Builder();
+			} else {
+				b = new DefaultAttributeWithContext.Builder(name);
+			}
+		} else {
+			b = new DefaultAttributeWithContext.Builder();
+		}
+		i = 0;
+		int sw = 0;
+		int w = 0;
+		for (Segment v : in) {
+			if (trimStart && i==start) {
+				DefaultAttributeWithContext.Builder c = b;
+				b = new DefaultAttributeWithContext.Builder(name);
+				b.add(c.build(sw));
+				sw = 0;
+			}
+			if (v.getSegmentType()==SegmentType.Style) {
+				Style s = ((Style)v);
+				DefaultAttributeWithContext a = buildAttributeWithContext(s.getName(), s.getSegments());
+				b.add(a);
+				w += a.getWidth();
+				sw += a.getWidth();
+			} else {
+				DefaultAttributeWithContext a = new DefaultAttributeWithContext.Builder().build(1);
+				b.add(a);
+				w ++;
+				sw ++;
+			}
+			if (trimEnd && i==end) {
+				DefaultAttributeWithContext.Builder c = b;
+				b = new DefaultAttributeWithContext.Builder();
+				b.add(c.build(sw));
+				sw = 0;
+			}
+			i++;
+		}
+		return b.build(w);
+	}
+	
+	private static boolean calculateSignificantContent(Iterable<Segment> segments, Context context, RowDataProperties rdp) {
 		for (Segment s : segments) {
 			switch (s.getSegmentType()) {
 				case Marker:
@@ -107,6 +209,10 @@ class SegmentProcessor implements SegmentProcessing {
 						return true;
 					}
 					break;
+				case Style:
+					if (!calculateSignificantContent(((Style)s).getSegments(), context, rdp)) {
+						break;
+					}
 				case NewLine:
 				case Leader:
 				case Reference:
@@ -121,8 +227,9 @@ class SegmentProcessor implements SegmentProcessing {
 		segmentIndex = 0;
 		currentRow = null;
 		leaderManager.discardAllLeaders();
-		pending = null;
+		layoutOrApplyAfterLeader = null;
 		currentLeaderMode = null;
+		seenSegmentAfterLeader = false;
 		item = spc.getRdp().getListItem();
 		minLeft = spc.getFlowWidth();
 		minRight = spc.getFlowWidth();
@@ -134,14 +241,42 @@ class SegmentProcessor implements SegmentProcessing {
 		}
 		// produce group markers and anchors
 		getNext(false, LineProperties.DEFAULT);
+		for (Segment s : segments)
+			switch (s.getSegmentType()) {
+			case Reference:
+				PageNumberReference rs = (PageNumberReference)s;
+				if (refs!=null) {
+					rs.setResolver(()->{
+							Integer page = refs.getPageNumber(rs.getRefId());
+							if (page==null) {
+								return "??";
+							} else {
+								return "" + rs.getNumeralStyle().format(page);
+							}
+						});
+				} else {
+					rs.setResolver(()->"??");
+				}
+				break;
+			case Evaluate:
+				Evaluate e = (Evaluate)s;
+				e.setResolver(()->e.getExpression().render(getContext()));
+				break;
+			default:
+			}
 	}
 
-	boolean couldTriggerNewRow() {
+	private boolean couldTriggerNewRow() {
 		if (!hasSegments()) {
 			//There's a lot of conditions to keep track of here, but hopefully we can simplify later on
 			return !closed && (currentRow!=null || !empty && spc.getRdp().getUnderlineStyle()!=null || leaderManager.hasLeader());
 		}
-		Segment s = segments.get(segmentIndex);
+		
+		return couldTriggerNewRow(segmentIndex);
+	}
+	
+	private boolean couldTriggerNewRow(int index) {
+		Segment s = segments.get(index);
 		switch (s.getSegmentType()) {
 			case Marker:
 			case Anchor:
@@ -150,10 +285,28 @@ class SegmentProcessor implements SegmentProcessing {
 			case Evaluate:
 				return !((Evaluate)s).getExpression().render(context).isEmpty();
 			case Text:
-				return !((TextSegment)s).getText().isEmpty();
+				if (((TextSegment)s).getText().isEmpty()) {
+					TextSegment ts = (TextSegment)s;
+					if (canMergeWithSegmentAtIndex(ts, index+1)) {
+						return couldTriggerNewRow(index+1);
+					} else {
+						return false;
+					}
+				} else {
+					return true;
+				}
 			default:
 				return true;
 		}
+	}
+	
+	private boolean canMergeWithSegmentAtIndex(TextSegment ts, int index) {
+		return	// There's a next segment
+				index<segments.size()  
+				// and that segment is a text segment
+				&& segments.get(index).getSegmentType()==SegmentType.Text 
+				// and it has the same properties
+				&& ((TextSegment)segments.get(index)).getTextProperties().equals(ts.getTextProperties());
 	}
 
 	boolean hasMoreData() {
@@ -165,17 +318,13 @@ class SegmentProcessor implements SegmentProcessing {
 	}
 
 	void prepareNext() {
-		if (nextLeader != null) {
-			leaderManager.addLeader(nextLeader);
-			nextLeader = null;
-		}
 		if (!hasMoreData()) {
 			throw new IllegalStateException();
 		}
 		if (cr == null) {
 			if (!hasSegments() && !closed) {
 				closed = true;
-				cr = new CloseResult(spc, layoutPending());
+				cr = new CloseResult(spc, layoutLeader());
 			} else {
 				cr = loadNextSegment().orElse(null);
 			}
@@ -230,21 +379,31 @@ class SegmentProcessor implements SegmentProcessing {
 		switch (s.getSegmentType()) {
 			case NewLine:
 				//flush
-				return Optional.of(new NewLineResult(spc, layoutPending()));
+				return Optional.of(new NewLineResult(spc, layoutLeader()));
 			case Text:
-				return layoutTextSegment((TextSegment)s);
+				int len = 1;
+				int fromIndex = segmentIndex-1;
+				TextSegment ts = (TextSegment)s;
+				while (canMergeWithSegmentAtIndex(ts, segmentIndex)) {
+					len++;
+					segmentIndex++;
+				}
+				return layoutTextSegment(ts, fromIndex, len);
 			case Leader:
 				return layoutLeaderSegment((LeaderSegment)s);
 			case Reference:
-				return layoutPageSegment((PageNumberReferenceSegment)s);
+				return layoutPageSegment((PageNumberReference)s);
 			case Evaluate:
 				return layoutEvaluate((Evaluate)s);
 			case Marker:
-				return applyMarker((MarkerSegment)s);
+				applyAfterLeader((MarkerSegment)s);
+				return Optional.empty();
 			case Anchor:
-				return applyAnchor((AnchorSegment)s);
+				applyAfterLeader((AnchorSegment)s);
+				return Optional.empty();
 			case Identifier:
-				return applyIdentifier((IdentifierSegment)s);
+				applyAfterLeader((IdentifierSegment)s);
+				return Optional.empty();
 			default:
 				return Optional.empty();
 		}
@@ -276,85 +435,101 @@ class SegmentProcessor implements SegmentProcessing {
 		return r;
 	}
 
-	private Optional<CurrentResult> layoutTextSegment(TextSegment ts) {
+	private Optional<CurrentResult> layoutTextSegment(TextSegment ts, int fromIndex, int length) {
 		String mode = ts.getTextProperties().getTranslationMode();
 		BrailleTranslatorResult btr = null;
 		if (!ts.canMakeResult()) {
-			Translatable spec = Translatable.text(
-					spc.getFormatterContext().getConfiguration().isMarkingCapitalLetters()?
-					ts.getText():ts.getText().toLowerCase()
-			)
-			.locale(ts.getTextProperties().getLocale())
-			.hyphenate(ts.getTextProperties().isHyphenating())
-			.attributes(ts.getTextAttribute()).build();
+			int toIndex = fromIndex+length;
+			TranslatableWithContext spec = TranslatableWithContext.from(segments, fromIndex, toIndex)
+			.attributes(attr)
+			.build();
 			btr = toResult(spec, mode);
 			ts.storeResult(btr);
 		} else {
 			btr = ts.newResult();
 		}
-		appendToPending(btr, mode);
+		if (leaderManager.hasLeader()) {
+			layoutAfterLeader(btr, mode);
+		} else {
+			CurrentResult cr = new CurrentResultImpl(spc, btr, mode);
+			return Optional.of(cr);
+		}
 		return Optional.empty();
 	}
 	
 	private Optional<CurrentResult> layoutLeaderSegment(LeaderSegment ls) {
 		try {
-			return layoutPending();
+			if (leaderManager.hasLeader()) {
+				return layoutLeader();
+			}
+			return Optional.empty();
 		} finally {
-			nextLeader = ls;
+			leaderManager.addLeader(ls);
 		}
 	}
 
-	private Optional<CurrentResult> layoutPageSegment(PageNumberReferenceSegment rs) {
-		Integer page = null;
-		if (refs!=null) {
-			page = refs.getPageNumber(rs.getRefId());
-		}
+	private Optional<CurrentResult> layoutPageSegment(PageNumberReference rs) {
 		//TODO: translate references using custom language?
-		Translatable spec;
-		if (page==null) {
-			spec = Translatable.text("??").locale(null).build();
+		TranslatableWithContext spec;
+		spec = TranslatableWithContext.from(segments, segmentIndex-1)
+				.attributes(attr)
+				.build();
+		if (leaderManager.hasLeader()) {
+			layoutAfterLeader(spec, null);
 		} else {
-			String txt = "" + rs.getNumeralStyle().format(page);
-			spec = Translatable.text(
-					spc.getFormatterContext().getConfiguration().isMarkingCapitalLetters()?txt:txt.toLowerCase()
-					).locale(null).attributes(rs.getTextAttribute(txt.length())).build();
+			String mode = null;
+			BrailleTranslatorResult btr = toResult(spec, null);
+			CurrentResult cr = new CurrentResultImpl(spc, btr, mode);
+			return Optional.of(cr);
 		}
-		appendToPending(toResult(spec, null), null);
 		return Optional.empty();
 	}
 	
 	private Optional<CurrentResult> layoutEvaluate(Evaluate e) {
-		String txt = e.getExpression().render(context);
-		if (!txt.isEmpty()) { // Don't create a new row if the evaluated expression is empty
+		if (!e.peek().isEmpty()) { // Don't create a new row if the evaluated expression is empty
 		                    // Note: this could be handled more generally (also for regular text) in layout().
-			Translatable spec = Translatable.text(spc.getFormatterContext().getConfiguration().isMarkingCapitalLetters()?txt:txt.toLowerCase()).
-					locale(e.getTextProperties().getLocale()).
-					hyphenate(e.getTextProperties().isHyphenating()).
-					attributes(e.getTextAttribute(txt.length())).
-					build();
-			appendToPending(toResult(spec, null), null);
+			TranslatableWithContext spec = TranslatableWithContext.from(segments, segmentIndex-1)
+					.attributes(attr)
+					.build();
+			if (leaderManager.hasLeader()) {
+				layoutAfterLeader(spec, null);
+			} else {
+				String mode = null;
+				BrailleTranslatorResult btr = toResult(spec, mode);
+				CurrentResult cr = new CurrentResultImpl(spc, btr, mode);
+				return Optional.of(cr);
+			}
 		}
 		return Optional.empty(); 
 	}
 	
-	private void appendToPending(BrailleTranslatorResult result, String mode) {
-		if (pending == null) {
-			pending = new AggregatedBrailleTranslatorResult.Builder();
+	private void layoutAfterLeader(TranslatableWithContext spec, String mode) {
+		layoutAfterLeader(toResult(spec, mode), mode);
+	}
+
+	private void layoutAfterLeader(BrailleTranslatorResult result, String mode) {
+		if (leaderManager.hasLeader()) {
+			if (layoutOrApplyAfterLeader == null) {
+				layoutOrApplyAfterLeader = new AggregatedBrailleTranslatorResult.Builder();
+				// use the mode of the first following segment to translate the leader pattern (or
+				// the mode of the first preceding segment)
+				if (!seenSegmentAfterLeader) {
+					currentLeaderMode = mode;
+					seenSegmentAfterLeader = true;
+				}
+			}
+			layoutOrApplyAfterLeader.add(result);
+		} else {
+			throw new RuntimeException("Error in code.");
 		}
-		// use the mode of the first following segment to translate the leader pattern (or
-		// the mode of the first preceding segment)
-		if (pending.isEmpty()) {
-			currentLeaderMode = mode;
-		}
-		pending.add(result);
 	}
 	
-	private Optional<CurrentResult> applyMarker(MarkerSegment marker) {
-		if (leaderManager.hasLeader() || (pending != null && !pending.isEmpty())) {
-			if (pending == null) {
-				pending = new AggregatedBrailleTranslatorResult.Builder();
+	private void applyAfterLeader(MarkerSegment marker) {
+		if (leaderManager.hasLeader()) {
+			if (layoutOrApplyAfterLeader == null) {
+				layoutOrApplyAfterLeader = new AggregatedBrailleTranslatorResult.Builder();
 			}
-			pending.add(marker);
+			layoutOrApplyAfterLeader.add(marker);
 		} else {
 			if (currentRow==null) {
 				groupMarkers.add(marker);
@@ -362,15 +537,14 @@ class SegmentProcessor implements SegmentProcessing {
 				currentRow.addMarker(marker);
 			}
 		}
-		return Optional.empty();
 	}
 	
-	private Optional<CurrentResult> applyAnchor(final AnchorSegment anchor) {
-		if (leaderManager.hasLeader() || (pending != null && !pending.isEmpty())) {
-			if (pending == null) {
-				pending = new AggregatedBrailleTranslatorResult.Builder();
+	private void applyAfterLeader(final AnchorSegment anchor) {
+		if (leaderManager.hasLeader()) {
+			if (layoutOrApplyAfterLeader == null) {
+				layoutOrApplyAfterLeader = new AggregatedBrailleTranslatorResult.Builder();
 			}
-			pending.add(anchor);
+			layoutOrApplyAfterLeader.add(anchor);
 		} else {
 			if (currentRow==null) {
 				groupAnchors.add(anchor.getReferenceID());
@@ -378,15 +552,14 @@ class SegmentProcessor implements SegmentProcessing {
 				currentRow.addAnchor(anchor.getReferenceID());
 			}
 		}
-		return Optional.empty();
 	}
 	
-	private Optional<CurrentResult> applyIdentifier(final IdentifierSegment identifier) {
-		if (leaderManager.hasLeader() || (pending != null && !pending.isEmpty())) {
-			if (pending == null) {
-				pending = new AggregatedBrailleTranslatorResult.Builder();
+	private void applyAfterLeader(final IdentifierSegment identifier) {
+		if (leaderManager.hasLeader()) {
+			if (layoutOrApplyAfterLeader == null) {
+				layoutOrApplyAfterLeader = new AggregatedBrailleTranslatorResult.Builder();
 			}
-			pending.add(identifier);
+			layoutOrApplyAfterLeader.add(identifier);
 		} else {
 			if (currentRow==null) {
 				groupIdentifiers.add(identifier.getName());
@@ -394,26 +567,27 @@ class SegmentProcessor implements SegmentProcessing {
 				currentRow.addIdentifier(identifier.getName());
 			}
 		}
-		return Optional.empty();
 	}
 	
-	private Optional<CurrentResult> layoutPending() {
-		if ((pending == null || pending.isEmpty()) && !leaderManager.hasLeader() && !hasListItem()) {
-			return Optional.empty();
-		} else {
+	private Optional<CurrentResult> layoutLeader() {
+		if (leaderManager.hasLeader()) {
+			// layout() sets currentLeader to null
 			BrailleTranslatorResult btr;
 			String mode;
-			if (pending == null || pending.isEmpty()) {
+			if (layoutOrApplyAfterLeader == null) {
 				btr = toResult("");
 				mode = null;
 			} else {
-				btr = pending.build();
+				btr = layoutOrApplyAfterLeader.build();
 				mode = currentLeaderMode;
-				pending = null;
+				
+				layoutOrApplyAfterLeader = null;
+				seenSegmentAfterLeader = false;
 			}
 			CurrentResult cr = new CurrentResultImpl(spc, btr, mode);
 			return Optional.of(cr);
 		}
+		return Optional.empty();
 	}
 
 	private BrailleTranslatorResult toResult(String c) {
@@ -421,6 +595,14 @@ class SegmentProcessor implements SegmentProcessing {
 	}
 	
 	private BrailleTranslatorResult toResult(Translatable spec, String mode) {
+		try {
+			return spc.getFormatterContext().getTranslator(mode).translate(spec);
+		} catch (TranslationException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private BrailleTranslatorResult toResult(TranslatableWithContext spec, String mode) {
 		try {
 			return spc.getFormatterContext().getTranslator(mode).translate(spec);
 		} catch (TranslationException e) {
@@ -449,6 +631,10 @@ class SegmentProcessor implements SegmentProcessing {
 	
 	void setContext(DefaultContext context) {
 		this.context = context;
+	}
+	
+	private Context getContext() {
+		return context;
 	}
 	
 	int getForceCount() {

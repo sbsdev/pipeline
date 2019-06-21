@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.daisy.dotify.api.engine.LayoutEngineException;
 import org.daisy.dotify.api.writer.PagedMediaWriterConfigurationException;
-import org.junit.Ignore;
 import org.junit.Test;
 @SuppressWarnings("javadoc")
 public class LeaderTest extends AbstractFormatterEngineTest {
@@ -15,13 +14,8 @@ public class LeaderTest extends AbstractFormatterEngineTest {
 	}
 	
 	@Test
-	public void testLeaderSimpleRight_01() throws LayoutEngineException, IOException, PagedMediaWriterConfigurationException {
+	public void testLeaderSimpleRight() throws LayoutEngineException, IOException, PagedMediaWriterConfigurationException {
 		testPEF("resource-files/leader-right-simple-input.obfl", "resource-files/leader-right-simple-expected.pef", false);
-	}
-	
-	@Test
-	public void testLeaderSimpleRight_02() throws LayoutEngineException, IOException, PagedMediaWriterConfigurationException {
-		testPEF("resource-files/leader-right-simple2-input.obfl", "resource-files/leader-right-simple2-expected.pef", false);
 	}
 	
 	@Test
