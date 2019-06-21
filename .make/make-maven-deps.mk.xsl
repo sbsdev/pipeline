@@ -20,6 +20,7 @@
 	<xsl:param name="RELEASE_DIRS"/>
 	<xsl:param name="OUTPUT_BASEDIR"/>
 	<xsl:param name="OUTPUT_FILENAME"/>
+	<xsl:param name="VERBOSE"/>
 	
 	<xsl:output method="xml" indent="yes"/>
 	
@@ -162,12 +163,15 @@
 					                                                 pom:version=$version]">
 						<xsl:variable name="managed-internal-runtime-dependencies" as="element()">
 							<xsl:variable name="dependencyManagement" select="pom:dependencyManagement"/>
+							<xsl:variable name="dependencies" select="pom:dependencies"/>
 							<pom:projects>
+								<!-- for all other projects -->
 								<xsl:for-each select="$internal-runtime-dependencies/pom:project">
 									<xsl:copy>
 										<xsl:copy-of select="pom:groupId"/>
 										<xsl:copy-of select="pom:artifactId"/>
 										<pom:dependencies>
+											<!-- for all runtime dependencies of that project -->
 											<xsl:for-each select="pom:dependencies/pom:dependency">
 												<xsl:copy>
 													<xsl:copy-of select="pom:groupId"/>
@@ -184,15 +188,22 @@
 													                                      string(pom:classifier)=string(current()/pom:classifier)]
 													                      /pom:version"/>
 													<pom:version>
+														<xsl:attribute name="managed-from" select="pom:version"/>
 														<xsl:choose>
 															<xsl:when test="$managed-version">
 																<xsl:value-of select="$managed-version"/>
 															</xsl:when>
 															<xsl:otherwise>
-																<xsl:text>DUMMY</xsl:text>
+																<xsl:text>DUMMY</xsl:text> <!-- not managed -->
 															</xsl:otherwise>
 														</xsl:choose>
 													</pom:version>
+													<xsl:copy-of select="$dependencies
+													                     /pom:dependency[string(pom:groupId)=string(current()/pom:groupId) and
+													                                     string(pom:artifactId)=string(current()/pom:artifactId) and
+													                                     string(pom:type)=string(current()/pom:type) and
+													                                     string(pom:classifier)=string(current()/pom:classifier)]
+													                     /pom:exclusions"/>
 												</xsl:copy>
 											</xsl:for-each>
 										</pom:dependencies>
@@ -200,8 +211,12 @@
 								</xsl:for-each>
 							</pom:projects>
 						</xsl:variable>
+						<xsl:if test="$VERBOSE='true'">
+							<xsl:message select="concat('Dependency tree of ',$groupId,':',$artifactId,':',$version,':')"/>
+						</xsl:if>
 						<xsl:apply-templates select=".">
 							<xsl:with-param name="managed-internal-runtime-dependencies" select="$managed-internal-runtime-dependencies"/>
+							<xsl:with-param name="indent" select="'  '"/>
 						</xsl:apply-templates>
 					</xsl:for-each>
 				</xsl:otherwise>
@@ -697,6 +712,8 @@
 		    dependency scope of this project if this template is used to compute transitive dependencies
 		-->
 		<xsl:param name="scope" as="xs:string?" select="()"/>
+		<xsl:param name="exclusions" select="()"/>
+		<xsl:param name="indent" as="xs:string" select="''"/>
 		<xsl:if test="not(exists($scope)) or $scope=('compile','provided','runtime','test')">
 			<xsl:variable name="project" select="."/>
 			<!--
@@ -721,7 +738,10 @@
 				                                     else
 				                                       $scope)
 				                                   else ''"/>
-				<xsl:if test="not($scope='')">
+				<xsl:if test="not($scope='')
+				              and not(self::pom:dependency
+				                      and $exclusions[string(pom:artifactId)=string(current()/pom:artifactId) and
+				                                      string(pom:groupId)=string(current()/pom:groupId)])">
 					<xsl:variable name="groupId" select="pom:groupId"/>
 					<xsl:variable name="artifactId" select="pom:artifactId"/>
 					<xsl:variable name="version">
@@ -771,6 +791,7 @@
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:variable>
+					<xsl:variable name="managed-from" select="pom:version/@managed-from"/>
 					<xsl:if test="ends-with($version, '-SNAPSHOT')">
 						<xsl:variable name="type">
 							<xsl:choose>
@@ -808,6 +829,19 @@
 							</xsl:if>
 						</dependency>
 					</xsl:if>
+					<xsl:if test="$VERBOSE='true'">
+						<!--
+						    FIXME: "managed from" is sometimes computed with respect to the snapshot
+						    version (version declared in the module) while it appears to be with
+						    respect to a released version
+						-->
+						<xsl:message select="concat($indent,
+						                            if (self::pom:plugin) then (pom:groupId,'org.apache.maven.plugins')[1] else pom:groupId,
+						                            ':',pom:artifactId,
+						                            if ($version='DUMMY') then '' else concat(':',$version),
+						                            ':',$scope,
+						                            if ($managed-from and not($version=('DUMMY',$managed-from))) then concat(' (managed from ',$managed-from,')') else '')"/>
+					</xsl:if>
 					<!--
 					    Compute transitive dependencies
 					    
@@ -832,6 +866,8 @@
 						                                                                                pom:artifactId=$artifactId]">
 							<xsl:with-param name="managed-internal-runtime-dependencies" select="$managed-internal-runtime-dependencies"/>
 							<xsl:with-param name="scope" select="$scope"/>
+							<xsl:with-param name="exclusions" select="pom:exclusions/pom:exclusion"/>
+							<xsl:with-param name="indent" select="concat($indent,'  ')"/>
 						</xsl:apply-templates>
 					</xsl:if>
 				</xsl:if>

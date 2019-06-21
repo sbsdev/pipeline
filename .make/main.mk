@@ -7,7 +7,7 @@ MODULES            = $(MAVEN_MODULES) $(GRADLE_MODULES)
 GITREPOS          := $(shell find * -name .gitrepo -exec dirname {} \;)
 MVN               := mvn --batch-mode --settings "$(ROOT_DIR)/$(MVN_SETTINGS)" $(MVN_PROPERTIES)
 MVN_LOG           := cat>>$(ROOT_DIR)/maven.log
-override GRADLE   := M2_HOME=$(ROOT_DIR)/$(TARGET_DIR)/.gradle-settings $(GRADLE) $(MVN_PROPERTIES)
+GRADLE            := M2_HOME=$(ROOT_DIR)/$(TARGET_DIR)/.gradle-settings $(ROOT_DIR)/$(MY_DIR)/gradle.sh $(MVN_PROPERTIES)
 EVAL              := :
 
 export ROOT_DIR MY_DIR TARGET_DIR MVN MVN_LOG MVN_RELEASE_CACHE_REPO GRADLE HOST_PLATFORM MAKE
@@ -15,7 +15,7 @@ export ROOT_DIR MY_DIR TARGET_DIR MVN MVN_LOG MVN_RELEASE_CACHE_REPO GRADLE HOST
 export MAKECMDGOALS
 # MAKEFLAGS exported by default
 
-rwildcard = $(shell [ -d $1 ] && find $1 -type f | sed 's/ /\\ /g')
+rwildcard = $(shell [ -d $1 ] && find $1 -type f -name '$2' | sed 's/ /\\ /g')
 # alternative, but does not support spaces in file names:
 #rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
@@ -188,6 +188,7 @@ $(TARGET_DIR)/.gradle-settings/conf/settings.xml : $(MVN_SETTINGS)
 	          RELEASE_DIRS="$$(for x in $(GITREPOS); do [ -e $$x/bom/pom.xml ] || [ -e $$x/maven/bom/pom.xml ] && echo $$x; done )" \
 	          OUTPUT_BASEDIR="$(TARGET_DIR)/mk" \
 	          OUTPUT_FILENAME=".deps.mk" \
+	          VERBOSE="$$([[ -n $${VERBOSE+x} ]] && echo true || echo false)" \
 	          >/dev/null \
 	; then \
 		rm -f $$(for m in $$MAVEN_MODULES; do echo "$(TARGET_DIR)/mk/$$m/.deps.mk"; done) && \
@@ -296,6 +297,14 @@ include $(shell for f in $(addsuffix /.deps.mk,$(addprefix $(TARGET_DIR)/mk/,$(M
                 test -e $$f && echo $$f; done)
 else
 -include $(addsuffix /.deps.mk,$(addprefix $(TARGET_DIR)/mk/,$(MODULES) $(MAVEN_AGGREGATORS)))
+endif
+endif
+
+ifdef SKIP_GROUP_EVAL_TARGET
+.SILENT:
+else
+ifndef VERBOSE
+.SILENT:
 endif
 endif
 
