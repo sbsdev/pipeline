@@ -4,12 +4,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.daisy.pipeline.modules.braille</groupId>
-    <artifactId>braille-modules-parent</artifactId>
+    <groupId>org.daisy.pipeline.modules</groupId>
+    <artifactId>modules-parent</artifactId>
     <version>1.12.1-SNAPSHOT</version>
-    <relativePath>../../maven/parent/</relativePath>
+    <relativePath>../../../parent/</relativePath>
   </parent>
 
+  <groupId>org.daisy.pipeline.modules.braille</groupId>
   <artifactId>pef-calabash</artifactId>
   <version>3.2.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
@@ -53,11 +54,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <!--
         runtime dependencies
     -->
@@ -74,32 +70,19 @@
       <artifactId>logging-activator</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.daisy.pipeline</groupId>
-      <artifactId>framework-volatile</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.daisy.pipeline.build</groupId>
-      <artifactId>modules-test-helper</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
+
+  <properties>
+    <expose-services>
+      org.daisy.pipeline.braille.pef.impl.ConfigurableFileFormat$Provider,
+      org.daisy.pipeline.braille.pef.calabash.impl.PEF2TextStep$Provider,
+      org.daisy.pipeline.braille.pef.calabash.impl.Text2PEFStep$Provider,
+      org.daisy.pipeline.braille.pef.calabash.impl.ValidateStep$Provider
+    </expose-services>
+  </properties>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.ops4j.pax.exam</groupId>
-        <artifactId>maven-paxexam-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-depends-file</id>
-            <goals>
-              <goal>generate-depends-file</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -107,14 +90,14 @@
           <instructions>
             <Import-Package>
               net.sf.saxon.*;version="${saxon.versionRange}",
+              !org.daisy.common.spi,
               *
             </Import-Package>
-            <_dsannotations>
-              org.daisy.pipeline.braille.pef.impl.ConfigurableFileFormat$Provider,
-              org.daisy.pipeline.braille.pef.calabash.impl.PEF2TextStep$Provider,
-              org.daisy.pipeline.braille.pef.calabash.impl.Text2PEFStep$Provider,
-              org.daisy.pipeline.braille.pef.calabash.impl.ValidateStep$Provider
-            </_dsannotations>
+            <Private-Package>
+              org.daisy.pipeline.braille.pef.impl;-split-package:=first,
+              ${generated-packages}
+              {local-packages}
+            </Private-Package>
             <Provide-Capability>
               xproc.step;name="{http://www.daisy.org/ns/2008/pef}pef2text",
               xproc.step;name="{http://www.daisy.org/ns/2008/pef}text2pef",
@@ -122,15 +105,6 @@
             </Provide-Capability>
           </instructions>
         </configuration>
-        <executions>
-          <execution>
-            <id>bundle-before-test</id>
-            <phase>generate-test-resources</phase>
-            <goals>
-              <goal>bundle</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

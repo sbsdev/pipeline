@@ -4,12 +4,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.daisy.pipeline.modules.braille</groupId>
-    <artifactId>braille-modules-parent</artifactId>
+    <groupId>org.daisy.pipeline.modules</groupId>
+    <artifactId>modules-parent</artifactId>
     <version>1.12.1-SNAPSHOT</version>
-    <relativePath>../../maven/parent/</relativePath>
+    <relativePath>../../../parent/</relativePath>
   </parent>
 
+  <groupId>org.daisy.pipeline.modules.braille</groupId>
   <artifactId>dotify-calabash</artifactId>
   <version>2.1.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
@@ -54,13 +55,20 @@
       <artifactId>css-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <!--
+        for processing org.daisy.pipeline.braille.dotify.calabash.impl.IdentifyProvider_SPI and
+        org.daisy.pipeline.braille.dotify.calabash.impl.Integer2TextFactoryMaker_SPI in generate-spi-classes
+        FIXME: in generate-spi-classes, skip compilation of excluded classes completely (currently
+        only the processing of annotations is skipped)
+    -->
+    <dependency>
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>annotation</artifactId>
+      <version>2.3.0</version>
+      <scope>provided</scope>
     </dependency>
     <!--
         runtime dependencies
@@ -113,32 +121,17 @@
       <artifactId>logging-activator</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.daisy.pipeline</groupId>
-      <artifactId>framework-volatile</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.daisy.pipeline.build</groupId>
-      <artifactId>modules-test-helper</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
+
+  <properties>
+    <expose-services>
+      org.daisy.pipeline.braille.dotify.calabash.impl.FileToOBFLStep$Provider,
+      org.daisy.pipeline.braille.dotify.calabash.impl.OBFLToPEFStep$Provider
+    </expose-services>
+  </properties>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.ops4j.pax.exam</groupId>
-        <artifactId>maven-paxexam-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-depends-file</id>
-            <goals>
-              <goal>generate-depends-file</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -146,24 +139,15 @@
           <instructions>
             <Import-Package>
               net.sf.saxon.*;version="${saxon.versionRange}",
+              !org.daisy.common.spi,
               *
             </Import-Package>
-            <_dsannotations>*</_dsannotations>
             <Provide-Capability>
               xproc.step;name="{http://code.google.com/p/dotify/}obfl-to-pef",
               xproc.step;name="{http://code.google.com/p/dotify/}file-to-obfl"
             </Provide-Capability>
           </instructions>
         </configuration>
-        <executions>
-          <execution>
-            <id>bundle-before-test</id>
-            <phase>generate-test-resources</phase>
-            <goals>
-              <goal>bundle</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

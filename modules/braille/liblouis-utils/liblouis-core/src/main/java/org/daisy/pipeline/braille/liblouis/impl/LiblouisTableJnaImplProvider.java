@@ -1,16 +1,29 @@
 package org.daisy.pipeline.braille.liblouis.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import static java.nio.file.Files.createTempDirectory;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import com.google.common.base.Function;
 import static com.google.common.base.Functions.toStringFunction;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
-import static com.google.common.collect.Iterables.toArray;
 import static com.google.common.collect.Iterables.transform;
+import static com.google.common.collect.Sets.newHashSet;
 
+import static org.daisy.common.file.URIs.asURI;
+import static org.daisy.common.file.URLs.asURL;
+import org.daisy.common.file.URLs;
 import org.daisy.pipeline.braille.common.AbstractTransformProvider;
 import org.daisy.pipeline.braille.common.AbstractTransformProvider.util.Iterables;
 import static org.daisy.pipeline.braille.common.AbstractTransformProvider.util.logSelect;
@@ -26,20 +39,13 @@ import static org.daisy.pipeline.braille.common.TransformProvider.util.varyLocal
 import static org.daisy.pipeline.braille.common.util.Files.unpack;
 import static org.daisy.pipeline.braille.common.util.Files.asFile;
 import static org.daisy.pipeline.braille.common.util.Strings.join;
-import static org.daisy.pipeline.braille.common.util.URIs.asURI;
 import org.daisy.pipeline.braille.common.WithSideEffect;
-
 import org.daisy.pipeline.braille.liblouis.LiblouisTable;
 import org.daisy.pipeline.braille.liblouis.LiblouisTableResolver;
 
 import org.liblouis.Louis;
 import org.liblouis.CompilationException;
-import static org.liblouis.Logger.Level.ALL;
-import static org.liblouis.Logger.Level.DEBUG;
-import static org.liblouis.Logger.Level.INFO;
-import static org.liblouis.Logger.Level.WARN;
-import static org.liblouis.Logger.Level.ERROR;
-import static org.liblouis.Logger.Level.FATAL;
+import org.liblouis.Logger.Level;
 import org.liblouis.TableResolver;
 import org.liblouis.Translator;
 
@@ -49,7 +55,6 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.ComponentContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,85 +90,118 @@ public class LiblouisTableJnaImplProvider extends AbstractTransformProvider<Libl
 		}
 	}
 	
-	private final static boolean LIBLOUIS_EXTERNAL = Boolean.getBoolean("org.daisy.pipeline.braille.liblouis.external");
-	
 	private LiblouisTableRegistry tableRegistry;
-	
-	// Hold a reference to avoid garbage collection
-	private TableResolver _tableResolver;
-	private org.liblouis.Logger _logger;
 	
 	private File unicodeDisFile;
 	private File spacesFile;
 	
+	private void registerTableResolver() {
+		Louis.setTableResolver(new TableResolver() {
+				private final Map<String,URL> aggregatorTables = new HashMap<String,URL>();
+				@Override
+				public URL resolve(String table, URL base) {
+					logger.debug("Resolving " + table + (base != null ? " against base " + base : ""));
+					// if we are resolving an include rule from a generated aggregator table, resolve without base
+					if (aggregatorTables.containsValue(base))
+						base = null;
+					File baseFile = base == null ? null : asFile(base); // base is expected to be a file
+					File[] resolved = tableRegistry.resolveLiblouisTable(new LiblouisTable(table), baseFile);
+					if (resolved != null) {
+						logger.debug("Resolved to " + join(resolved, ","));
+						if (resolved.length == 1)
+							return asURL(resolved[0]);
+						else {
+							// if it is a comma separated table list, create a single file that includes all the sub-tables
+							if (aggregatorTables.containsKey(table)) {
+								URL u = aggregatorTables.get(table);
+								logger.debug("... aggregated into " + u);
+								return u;
+							}
+							try {
+								StringBuilder b = new StringBuilder();
+								for (File f : resolved)
+									b.append("include ").append(asURI(f.getCanonicalFile()).toASCIIString()).append('\n');
+								InputStream in = new ByteArrayInputStream(b.toString().getBytes(StandardCharsets.UTF_8));
+								File f = createTempFile("aggregator-", ".tbl");
+								f.delete();
+								Files.copy(in, f.toPath());
+								f = f.getCanonicalFile();
+								URL u = asURL(f);
+								aggregatorTables.put(table, u);
+								logger.debug("... aggregated into " + u);
+								return u;
+							} catch (IOException e) {
+								throw new RuntimeException(e); // should not happen
+							}
+						}
+					}
+					logger.error("Table could not be resolved");
+					return null;
+				}
+				@Override
+				public Set<String> list() {
+					return newHashSet(
+						transform(
+							tableRegistry.listAllTableFiles(),
+							toStringFunction()));
+				}
+			}
+		);
+	}
+	
+	// WARNING: only one instance of LiblouisTableJnaImplProvider should be created because
+	// setLibraryPath, setTableResolver and setLogger are global functions
 	@Activate
-	protected void activate(ComponentContext context) {
+	protected void activate() {
 		logger.debug("Loading liblouis service");
-		logger.debug("liblouis version: {}", Louis.getLibrary().lou_version());
 		try {
 			tableRegistry.onPathChange(
 				new Function<LiblouisTableRegistry,Void>() {
 					public Void apply(LiblouisTableRegistry r) {
-						indexed = false;
+						// re-register table resolver so that liblouis-java re-indexes tables
+						registerTableResolver();
 						invalidateCache();
 						return null; }});
-			final LiblouisTableResolver tableResolver = tableRegistry;
-			_tableResolver = new TableResolver() {
-				public File[] invoke(String table, File base) {
-					logger.debug("Resolving " + table + (base != null ? " against base " + base : ""));
-					File[] resolved = tableResolver.resolveLiblouisTable(new LiblouisTable(table), base);
-					if (resolved != null)
-						logger.debug("Resolved to " + join(resolved, ","));
-					else
-						logger.error("Table could not be resolved");
-					return resolved; }};
-			Louis.getLibrary().lou_registerTableResolver(_tableResolver);
-			unicodeDisFile = new File(makeUnpackDir(context), "unicode.dis");
+			registerTableResolver();
+			// invoke after table resolver registered because otherwise default tables will be unpacked for no reason
+			logger.debug("liblouis version: {}", Louis.getVersion());
+			unicodeDisFile = new File(makeUnpackDir(), "unicode.dis");
 			unpack(
-				context.getBundleContext().getBundle().getEntry("/tables/unicode.dis"),
+				URLs.getResourceFromJAR("/tables/unicode.dis", LiblouisTableJnaImplProvider.class),
 				unicodeDisFile);
-			spacesFile = new File(makeUnpackDir(context), "spaces.cti");
+			spacesFile = new File(makeUnpackDir(), "spaces.cti");
 			unpack(
-				context.getBundleContext().getBundle().getEntry("/tables/spaces.cti"),
+				URLs.getResourceFromJAR("/tables/spaces.cti", LiblouisTableJnaImplProvider.class),
 				spacesFile);
-			_logger = new org.liblouis.Logger() {
-				public void invoke(int level, String message) {
-					switch (level) {
-					case ALL: logger.trace(message); break;
-					case DEBUG: logger.debug(message); break;
-					case INFO: logger.debug("INFO: " + message); break;
-					case WARN: logger.debug("WARN: " + message); break;
-					// FIXME: capture these and include them into CompilationException or TranslationException
-					case ERROR: logger.error(message); break;
-					case FATAL: logger.error(message); break; }}};
-			Louis.getLibrary().lou_registerLogCallback(_logger); }
+			Louis.setLogger(new org.liblouis.Logger() {
+					@Override
+					public void log(Level level, String message) {
+						switch (level) {
+						case ALL: logger.trace(message); break;
+						case DEBUG: logger.debug(message); break;
+						case INFO: logger.debug("INFO: " + message); break;
+						case WARN: logger.debug("WARN: " + message); break;
+						// FIXME: capture these and include them into CompilationException or TranslationException
+						case ERROR: logger.error(message); break;
+						case FATAL: logger.error(message); break; }}}); }
 		catch (Throwable e) {
 			logger.error("liblouis service could not be loaded", e);
 			throw e; }
 	}
 	
-	private static File makeUnpackDir(ComponentContext context) {
-		File directory;
-		for (int i = 0; true; i++) {
-			directory = context.getBundleContext().getDataFile("resources" + i);
-			if (!directory.exists()) break; }
-		directory.mkdirs();
-		return directory;
+	private static File makeUnpackDir() {
+		File tmpDirectory; {
+			try {
+				tmpDirectory = createTempDirectory("pipeline-").toFile(); }
+			catch (Exception e) {
+				throw new RuntimeException("Could not create temporary directory", e); }
+			tmpDirectory.deleteOnExit();
+		}
+		return tmpDirectory;
 	}
 	
-	private boolean indexed = false;
-	
-	private void lazyIndex() {
-		if (indexed)
-			return;
-		logger.debug("Indexing tables");
-		Louis.getLibrary().lou_indexTables(
-			toArray(
-				transform(
-					tableRegistry.listAllTableFiles(),
-					toStringFunction()),
-			String.class));
-		indexed = true;
+	private static File createTempFile(String prefix, String suffix) throws IOException {
+		return File.createTempFile(prefix, suffix, makeUnpackDir());
 	}
 	
 	@Deactivate
@@ -180,7 +218,7 @@ public class LiblouisTableJnaImplProvider extends AbstractTransformProvider<Libl
 		policy = ReferencePolicy.STATIC
 	)
 	protected void bindLibrary(NativePath path) {
-		if (LIBLOUIS_EXTERNAL)
+		if (LiblouisExternalNativePath.LIBLOUIS_EXTERNAL)
 			logger.info("Using external liblouis");
 		else {
 			URI libraryPath = path.get("liblouis").iterator().next();
@@ -267,8 +305,9 @@ public class LiblouisTableJnaImplProvider extends AbstractTransformProvider<Libl
 											throw new NoSuchElementException(); }
 										b.append(":" + v); }
 									b.append(" "); }
-								lazyIndex();
-								table = Louis.getLibrary().lou_findTable(b.toString()); }
+								try {
+									table = Translator.find(b.toString()).getTable(); }
+								catch (CompilationException e) {}}
 							if (table != null) {
 								if (whiteSpace)
 									table = asURI(spacesFile) + "," + table;

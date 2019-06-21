@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableList;
 import static com.google.common.collect.Iterables.size;
 
@@ -19,6 +21,8 @@ import org.daisy.dotify.api.translator.BrailleTranslatorFactory;
 import org.daisy.dotify.api.translator.Translatable;
 import org.daisy.dotify.api.translator.TranslationException;
 import org.daisy.dotify.api.translator.TranslatorConfigurationException;
+import org.daisy.dotify.api.translator.TranslatorMode;
+import org.daisy.dotify.api.translator.TranslatorType;
 
 import org.daisy.pipeline.braille.common.AbstractBrailleTranslator;
 import org.daisy.pipeline.braille.common.AbstractBrailleTranslator.util.DefaultLineBreaker;
@@ -43,6 +47,8 @@ import static org.daisy.pipeline.braille.common.TransformProvider.util.varyLocal
 import static org.daisy.pipeline.braille.common.util.Locales.parseLocale;
 import static org.daisy.pipeline.braille.common.util.Strings.join;
 import org.daisy.pipeline.braille.dotify.DotifyTranslator;
+
+import org.osgi.framework.FrameworkUtil;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -80,12 +86,15 @@ public class DotifyTranslatorImpl extends AbstractBrailleTranslator implements D
 	}
 	
 	private final FromStyledTextToBraille fromStyledTextToBraille = new FromStyledTextToBraille() {
-		public java.lang.Iterable<String> transform(java.lang.Iterable<CSSStyledText> styledText) {
+		public java.lang.Iterable<String> transform(java.lang.Iterable<CSSStyledText> styledText, int from, int to) {
 			int size = size(styledText);
-			String[] braille = new String[size];
+			if (to < 0) to = size;
+			String[] braille = new String[to - from];
 			int i = 0;
-			for (CSSStyledText t : styledText)
-				braille[i++] = DotifyTranslatorImpl.this.transform(t.getText(), t.getStyle());
+			for (CSSStyledText t : styledText) {
+				if (i >= from && i < to)
+					braille[i - from] = DotifyTranslatorImpl.this.transform(t.getText(), t.getStyle());
+				i++; }
 			return Arrays.asList(braille);
 		}
 	};
@@ -97,8 +106,8 @@ public class DotifyTranslatorImpl extends AbstractBrailleTranslator implements D
 		
 	private final LineBreakingFromStyledText lineBreakingFromStyledText
 	= new DefaultLineBreaker() {
-		protected BrailleStream translateAndHyphenate(final java.lang.Iterable<CSSStyledText> styledText) {
-			return new FullyHyphenatedAndTranslatedString(join(fromStyledTextToBraille.transform(styledText)));
+		protected BrailleStream translateAndHyphenate(final java.lang.Iterable<CSSStyledText> styledText, int from, int to) {
+			return new FullyHyphenatedAndTranslatedString(join(fromStyledTextToBraille.transform(styledText)), from, to);
 		}
 	};
 	
@@ -172,7 +181,7 @@ public class DotifyTranslatorImpl extends AbstractBrailleTranslator implements D
 								logger.error("Invalid locale", e);
 								return empty; }
 						}
-						final String mode = BrailleTranslatorFactory.MODE_UNCONTRACTED;
+						final String mode = TranslatorMode.Builder.withType(TranslatorType.UNCONTRACTED).build().toString();
 						String v = null;
 						if (q.containsKey("hyphenator"))
 							v = q.removeOnly("hyphenator").getValue().get();
@@ -242,6 +251,8 @@ public class DotifyTranslatorImpl extends AbstractBrailleTranslator implements D
 			policy = ReferencePolicy.DYNAMIC
 		)
 		protected void bindBrailleFilterFactoryService(BrailleFilterFactoryService service) {
+			if (!OSGiHelper.inOSGiContext())
+				service.setCreatedWithSPI();
 			factoryServices.add(service);
 			invalidateCache();
 		}
@@ -279,7 +290,21 @@ public class DotifyTranslatorImpl extends AbstractBrailleTranslator implements D
 		private TransformProvider.util.MemoizingProvider<Hyphenator> hyphenatorProvider
 		= memoize(dispatch(hyphenatorProviders));
 		
+		@Override
+		public ToStringHelper toStringHelper() {
+			return MoreObjects.toStringHelper(DotifyTranslatorImpl.Provider.class.getName());
+		}
 	}
 	
 	private static final Logger logger = LoggerFactory.getLogger(DotifyTranslatorImpl.class);
+	
+	private static abstract class OSGiHelper {
+		static boolean inOSGiContext() {
+			try {
+				return FrameworkUtil.getBundle(OSGiHelper.class) != null;
+			} catch (NoClassDefFoundError e) {
+				return false;
+			}
+		}
+	}
 }

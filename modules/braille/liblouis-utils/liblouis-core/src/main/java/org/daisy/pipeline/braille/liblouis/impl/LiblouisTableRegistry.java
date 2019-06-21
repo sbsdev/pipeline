@@ -12,14 +12,13 @@ import com.google.common.base.Predicate;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
 
+import static org.daisy.common.file.URIs.asURI;
+import static org.daisy.common.file.URLs.asURL;
 import org.daisy.pipeline.braille.common.ResourcePath;
 import org.daisy.pipeline.braille.common.ResourceRegistry;
 import static org.daisy.pipeline.braille.common.util.Files.asFile;
 import static org.daisy.pipeline.braille.common.util.Files.fileName;
 import static org.daisy.pipeline.braille.common.util.Predicates.matchesGlobPattern;
-import static org.daisy.pipeline.braille.common.util.URIs.asURI;
-import static org.daisy.pipeline.braille.common.util.URLs.asURL;
-
 import org.daisy.pipeline.braille.liblouis.LiblouisTable;
 import org.daisy.pipeline.braille.liblouis.LiblouisTablePath;
 import org.daisy.pipeline.braille.liblouis.LiblouisTableResolver;
@@ -48,7 +47,7 @@ public class LiblouisTableRegistry extends ResourceRegistry<LiblouisTablePath> i
 		cardinality = ReferenceCardinality.MULTIPLE,
 		policy = ReferencePolicy.DYNAMIC
 	)
-	private void _register(LiblouisTablePath path) {
+	protected void _register(LiblouisTablePath path) {
 		register(path);
 		applyPathChangeCallbacks();
 	}
@@ -78,6 +77,8 @@ public class LiblouisTableRegistry extends ResourceRegistry<LiblouisTablePath> i
 			for (ResourcePath path : paths) {
 				tableFiles[i] = asFile(path.resolve(subTable));
 				if (tableFiles[i] != null) {
+					logger.trace("Table " + subTable + " was found in " + path);
+					// moving path the first position, so that it will be tried first next time
 					paths.remove(path);
 					paths.add(0, path);
 					break; }}
@@ -92,7 +93,7 @@ public class LiblouisTableRegistry extends ResourceRegistry<LiblouisTablePath> i
 
 		private static final URI identifier = asURI("file:/");
 		
-		private static final Predicate<String> isLiblouisTable = matchesGlobPattern("*.{dis,ctb,cti,uti,utb,dic}");
+		private static final Predicate<String> isLiblouisTable = matchesGlobPattern("*.{dis,ctb,cti,uti,utb,dic,tbl}");
 		
 		public URI getIdentifier() {
 			return identifier;
@@ -111,6 +112,11 @@ public class LiblouisTableRegistry extends ResourceRegistry<LiblouisTablePath> i
 		
 		public URI canonicalize(URI resource) {
 			return asURI(resolve(resource));
+		}
+		
+		@Override
+		public String toString() {
+			return identifier.toString();
 		}
 	}
 	

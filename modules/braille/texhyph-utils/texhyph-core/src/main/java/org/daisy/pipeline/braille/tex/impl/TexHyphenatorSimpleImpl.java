@@ -6,6 +6,11 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Locale;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
+
+import static org.daisy.common.file.URIs.asURI;
+import static org.daisy.common.file.URLs.asURL;
 import org.daisy.pipeline.braille.common.AbstractHyphenator;
 import org.daisy.pipeline.braille.common.AbstractTransformProvider;
 import org.daisy.pipeline.braille.common.AbstractTransformProvider.util.Function;
@@ -18,8 +23,6 @@ import org.daisy.pipeline.braille.common.Query.MutableQuery;
 import static org.daisy.pipeline.braille.common.Query.util.mutableQuery;
 import static org.daisy.pipeline.braille.common.util.Files.isAbsoluteFile;
 import static org.daisy.pipeline.braille.common.util.Locales.parseLocale;
-import static org.daisy.pipeline.braille.common.util.URIs.asURI;
-import static org.daisy.pipeline.braille.common.util.URLs.asURL;
 import org.daisy.pipeline.braille.tex.TexHyphenator;
 
 import org.osgi.service.component.annotations.Activate;
@@ -170,6 +173,11 @@ public class TexHyphenatorSimpleImpl extends AbstractTransformProvider<TexHyphen
 		if (resolvedTable == null)
 			throw new RuntimeException("Hyphenation table " + table + " could not be resolved");
 		return resolvedTable;
+	}
+	
+	@Override
+	public ToStringHelper toStringHelper() {
+		return MoreObjects.toStringHelper(TexHyphenatorSimpleImpl.class.getName());
 	}
 	
 	private static final Logger logger = LoggerFactory.getLogger(TexHyphenatorSimpleImpl.class);

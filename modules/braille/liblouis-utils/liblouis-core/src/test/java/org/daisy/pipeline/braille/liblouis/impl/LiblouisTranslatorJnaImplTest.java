@@ -3,58 +3,40 @@ package org.daisy.pipeline.braille.liblouis.impl;
 import java.io.File;
 import java.net.URL;
 import java.net.URISyntaxException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 import cz.vutbr.web.css.TermList;
 import cz.vutbr.web.csskit.TermIdentImpl;
 import cz.vutbr.web.csskit.TermListImpl;
 
-import static com.google.common.io.Files.createTempDir;
-
 import org.daisy.braille.css.SimpleInlineStyle;
 
+import static org.daisy.common.file.URLs.asURL;
+
 import org.daisy.pipeline.braille.common.AbstractHyphenator;
-import org.daisy.pipeline.braille.common.AbstractResourcePath;
 import org.daisy.pipeline.braille.common.CSSStyledText;
 import org.daisy.pipeline.braille.common.Hyphenator;
 import org.daisy.pipeline.braille.common.NativePath;
-import org.daisy.pipeline.braille.common.ResourcePath;
-import org.daisy.pipeline.braille.common.StandardNativePath;
 import static org.daisy.pipeline.braille.common.util.Files.asFile;
-import static org.daisy.pipeline.braille.common.util.URIs.asURI;
-import static org.daisy.pipeline.braille.common.util.URLs.asURL;
-import org.daisy.pipeline.braille.liblouis.impl.LiblouisNativePathForLinux;
 import org.daisy.pipeline.braille.liblouis.impl.LiblouisTranslatorJnaImplProvider.LiblouisTranslatorImpl;
-import org.daisy.pipeline.braille.liblouis.LiblouisTranslator.Typeform;
+import org.daisy.pipeline.junit.OSGiLessRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
+import org.junit.runner.RunWith;
 import org.junit.Test;
 
 import org.liblouis.CompilationException;
 import org.liblouis.Louis;
 import org.liblouis.Translator;
 
+@RunWith(OSGiLessRunner.class)
 public class LiblouisTranslatorJnaImplTest {
 	
-	private static short typeformFromInlineCSS(String style) {
-		return LiblouisTranslatorJnaImplProvider.typeformFromInlineCSS(new SimpleInlineStyle(style));
-	}
-	
-	@Ignore // this doesn't work anymore because the print properties
-			// text-decoration, font-weight and color are not supported by
-			// org.daisy.braille.css.SimpleInlineStyle
-	@Test
-	public void testTypeformFromInlineCSS() {
-		assertEquals(Typeform.BOLD + Typeform.UNDERLINE,
-		             typeformFromInlineCSS(
-			             " text-decoration: underline ;font-weight: bold  ; hyphens:auto; color: #FF00FF "));
-	}
-
 	private static String textFromTextTransform(String text, String... textTransform) {
 		TermList list = new TermListImpl() {};
 		for (String t : textTransform)
@@ -72,19 +54,6 @@ public class LiblouisTranslatorJnaImplTest {
 			textFromTextTransform("Ik ben Moos", "uppercase", "lowercase"));
 		assertEquals("Ik ben Moos",
 			textFromTextTransform("Ik ben Moos", "foo", "bar"));
-	}
-	
-	private static short typeformFromTextTransform(String... textTransform) {
-		TermList list = new TermListImpl() {};
-		for (String t : textTransform)
-			list.add((new TermIdentImpl() {}).setValue(t));
-		return LiblouisTranslatorJnaImplProvider.typeformFromTextTransform(list);
-	}
-	
-	@Test
-	public void testTypeformFromTextTransform() {
-		assertEquals(Typeform.BOLD + Typeform.UNDERLINE,
-			typeformFromTextTransform("louis-bold", "ital", "louis-under", "foo"));
 	}
 	
 	@Test
@@ -105,20 +74,45 @@ public class LiblouisTranslatorJnaImplTest {
 		assertEquals("volleyballederen", lines.nextLine(26, false));
 		assertFalse(lines.hasNext());
 		
-		NativePath liblouisNativePath = new LiblouisNativePath();
 		Louis.setLibraryPath(asFile(liblouisNativePath.resolve(liblouisNativePath.get("liblouis").iterator().next())));
-		File table = new File(LiblouisTranslatorJnaImplTest.class.getResource("/table_paths/table_path_1/foobar.ctb").toURI());
+		File table = new File(LiblouisTranslatorJnaImplTest.class.getResource("/tables/foobar.ctb").toURI());
+		
+		// FIXME: fix in liblouis-java
+		Louis.setTableResolver(new org.liblouis.TableResolver() {
+				public URL resolve(String table, URL base) {
+					if (base != null && base.toString().startsWith("file:")) {
+						File f = base.toString().endsWith("/")
+							? new File(asFile(base), table)
+							: new File(asFile(base).getParentFile(), table);
+						if (f.exists())
+							return asURL(f);
+					} else if (base == null) {
+						File f = new File(table);
+						if (f.exists())
+							return asURL(f);
+					}
+					return null;
+				}
+				public java.util.Set<String> list() {
+					return new java.util.HashSet<String>();
+				}
+			}
+		);
 		Translator liblouisTranslator = new Translator(table.getAbsolutePath());
 		LiblouisTranslatorImpl.LineBreaker.BrailleStreamImpl stream
 		= new LiblouisTranslatorImpl.LineBreaker.BrailleStreamImpl(
 			liblouisTranslator,
 			hyphenator,
 			null,
-			styledText("volleyballederen volleyballederen", "hyphens:auto"));
+			styledText("volleyballederen volleyballederen", "hyphens:auto"),
+			0, -1);
 		assertEquals("volleyballederen ", stream.next(26, false, true));
 		assertEquals("volleyballederen", stream.next(26, false, true));
 		assertFalse(stream.hasNext());
 	}
+	
+	@Inject
+	public NativePath liblouisNativePath;
 	
 	private static class MockHyphenator extends AbstractHyphenator.util.DefaultLineBreaker {
 		protected Break breakWord(String word, int limit, boolean force) {
@@ -130,36 +124,6 @@ public class LiblouisTranslatorJnaImplTest {
 				return new Break(word, limit, false);
 			else
 				return new Break(word, 0, false);
-		}
-	}
-	
-	private static class LiblouisNativePath extends StandardNativePath {
-		ResourcePath delegate = new AbstractResourcePath() {
-			URI identifier = asURI("http://www.liblouis.org/native/");
-			URL basePath = asURL("jar:"
-			                     + LiblouisNativePathForLinux.class.getProtectionDomain().getCodeSource().getLocation()
-			                     + "!/native/");
-			public URI getIdentifier() {
-				return identifier;
-			}
-			protected URL getBasePath() {
-				return basePath;
-			}
-			protected boolean isUnpacking() {
-				return true;
-			}
-			protected File makeUnpackDir() {
-				return createTempDir();
-			}
-			protected boolean isExecutable(URI resource) {
-				return true;
-			}
-			protected boolean containsResource(URI resource) {
-				return (LiblouisNativePathForLinux.class.getResource("/native/" + resource) != null);
-			}
-		};
-		protected ResourcePath delegate() {
-			return delegate;
 		}
 	}
 	

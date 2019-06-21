@@ -4,14 +4,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.daisy.pipeline.modules.braille</groupId>
-    <artifactId>braille-modules-parent</artifactId>
+    <groupId>org.daisy.pipeline.modules</groupId>
+    <artifactId>modules-parent</artifactId>
     <version>1.12.1-SNAPSHOT</version>
-    <relativePath>../../maven/parent/</relativePath>
+    <relativePath>../../../parent/</relativePath>
   </parent>
 
+  <groupId>org.daisy.pipeline.modules.braille</groupId>
   <artifactId>css-utils</artifactId>
-  <version>3.8.0-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
   <name>DP2 Braille Modules :: css-utils :: css-utils</name>
@@ -61,17 +62,13 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <!--
         runtime dependencies
     -->
     <dependency>
       <groupId>org.daisy.pipeline.modules</groupId>
       <artifactId>common-utils</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.daisy.pipeline.modules</groupId>
@@ -85,29 +82,69 @@
       <artifactId>logging-appender</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.daisy.pipeline</groupId>
-      <artifactId>framework-volatile</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.daisy.pipeline.build</groupId>
-      <artifactId>modules-test-helper</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
+
+  <properties>
+    <expose-services>
+      org.daisy.pipeline.modules.impl.Module_braille_css_utils,
+      org.daisy.pipeline.braille.css.calabash.impl.CssInlineStep$Provider,
+      org.daisy.pipeline.braille.css.calabash.impl.CssShiftIdStep$Provider,
+      org.daisy.pipeline.braille.css.calabash.impl.CssShiftStringSetStep$Provider,
+      org.daisy.pipeline.braille.css.calabash.impl.CssSplitStep$Provider,
+      org.daisy.pipeline.braille.css.saxon.impl.ParseStylesheetDefinition,
+      org.daisy.pipeline.braille.css.saxon.impl.RenderTableByDefinition
+    </expose-services>
+  </properties>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.ops4j.pax.exam</groupId>
-        <artifactId>maven-paxexam-plugin</artifactId>
+        <groupId>org.daisy.maven</groupId>
+        <artifactId>xspec-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>generate-depends-file</id>
+            <id>xspecTest</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.daisy.pipeline.build</groupId>
+        <artifactId>modules-build-helper</artifactId>
+        <executions>
+          <execution>
+            <id>process-catalog</id>
+            <configuration>
+              <!--
+                  avoid name collision
+              -->
+              <moduleName>braille-${project.artifactId}</moduleName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>process-test-catalog</id>
+            <phase>generate-test-sources</phase>
             <goals>
-              <goal>generate-depends-file</goal>
+              <goal>process-test-catalog</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.daisy.pipeline.build</groupId>
+        <artifactId>ds-to-spi-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-spi-test-classes</id>
+            <phase>process-test-sources</phase>
+            <goals>
+              <goal>generate-spi-test-classes</goal>
+            </goals>
+            <configuration>
+              <includes>
+                org.daisy.pipeline.modules.impl.Module_test_module
+              </includes>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -118,27 +155,11 @@
           <instructions>
             <Import-Package>
               net.sf.saxon.*;version="${saxon.versionRange}",
+              !org.daisy.common.spi,
               *
             </Import-Package>
-            <_dsannotations>
-              org.daisy.pipeline.braille.css.calabash.impl.CssInlineStep$Provider,
-              org.daisy.pipeline.braille.css.calabash.impl.CssShiftIdStep$Provider,
-              org.daisy.pipeline.braille.css.calabash.impl.CssShiftStringSetStep$Provider,
-              org.daisy.pipeline.braille.css.calabash.impl.CssSplitStep$Provider,
-              org.daisy.pipeline.braille.css.saxon.impl.ParseStylesheetDefinition,
-              org.daisy.pipeline.braille.css.saxon.impl.RenderTableByDefinition
-            </_dsannotations>
           </instructions>
         </configuration>
-        <executions>
-          <execution>
-            <id>bundle-before-test</id>
-            <phase>generate-test-resources</phase>
-            <goals>
-              <goal>bundle</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

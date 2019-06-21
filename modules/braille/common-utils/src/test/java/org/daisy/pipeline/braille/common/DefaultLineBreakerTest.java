@@ -1,18 +1,14 @@
 package org.daisy.pipeline.braille.common;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.google.common.collect.Lists.newArrayList;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import org.daisy.dotify.api.translator.BrailleTranslatorResult;
 import org.daisy.pipeline.braille.common.AbstractBrailleTranslator;
 import org.daisy.pipeline.braille.common.AbstractHyphenator;
 import org.daisy.pipeline.braille.common.CSSStyledText;
@@ -60,67 +56,14 @@ public class DefaultLineBreakerTest {
 			"ABCDEF",
 			fillLines(translator.lineBreakingFromStyledText().transform(text("abcdef ")), 6));
 		{
-			BrailleTranslator.LineIterator lines = translator.lineBreakingFromStyledText().transform(text("abcdef"));
-			assertEquals("", lines.nextTranslatedRow(3, false));
-			assertEquals("ABCDEF", lines.nextTranslatedRow(100, false));
+				BrailleTranslator.LineIterator lines = translator.lineBreakingFromStyledText().transform(text("abcdef"));
+				assertEquals("", lines.nextTranslatedRow(3, false));
+				assertEquals("ABCDEF", lines.nextTranslatedRow(100, false));
 		}
 		{
-			BrailleTranslator.LineIterator lines = translator.lineBreakingFromStyledText().transform(text("abcdef"));
-			assertEquals("", lines.nextTranslatedRow(0, false));
-			assertEquals("ABCDEF", lines.nextTranslatedRow(100, false));
-		}
-	}
-	
-	@Test
-	public void testProhibitBreak() {
-		TestHyphenator hyphenator = new TestHyphenator();
-		TestTranslator translator = new TestTranslator(hyphenator);
-		{
-			List<BrailleTranslator.LineIterator> segments = new ArrayList<>(); {
-				segments.add(translator.lineBreakingFromStyledText().transform(text("abc\u2060")));
-				segments.add(translator.lineBreakingFromStyledText().transform(text("def")));
-			}
-			assertEquals(
-				"ABCDEF",
-				fillLines(segments.iterator(), 9));
-		}
-		{
-			List<BrailleTranslator.LineIterator> segments = new ArrayList<>(); {
-				segments.add(translator.lineBreakingFromStyledText().transform(text("abc def\u2060")));
-				segments.add(translator.lineBreakingFromStyledText().transform(text("ghi")));
-			}
-			assertEquals(
-				"ABC\n" +
-				"DEFGHI",
-				fillLines(segments.iterator(), 9));
-		}
-		{
-			List<BrailleTranslator.LineIterator> segments = new ArrayList<>(); {
-				segments.add(translator.lineBreakingFromStyledText().transform(text("abc def\u2060")));
-				segments.add(translator.lineBreakingFromStyledText().transform(text("ghi")));
-			}
-			assertEquals(
-				"ABC DEFGHI",
-				fillLines(segments.iterator(), 10));
-		}
-		{
-			List<BrailleTranslator.LineIterator> segments = new ArrayList<>(); {
-				segments.add(translator.lineBreakingFromStyledText().transform(text("abc def  \u2060")));
-				segments.add(translator.lineBreakingFromStyledText().transform(text("ghi")));
-			}
-			assertEquals(
-				"ABC DEF\n" +
-				" GHI",
-				fillLines(segments.iterator(), 11));
-		}
-		{
-			List<BrailleTranslator.LineIterator> segments = new ArrayList<>(); {
-				segments.add(translator.lineBreakingFromStyledText().transform(text("abc def  \u2060")));
-				segments.add(translator.lineBreakingFromStyledText().transform(text("ghi")));
-			}
-			assertEquals(
-				"ABC DEF  GHI",
-				fillLines(segments.iterator(), 12));
+				BrailleTranslator.LineIterator lines = translator.lineBreakingFromStyledText().transform(text("abcdef"));
+				assertEquals("", lines.nextTranslatedRow(0, false));
+				assertEquals("ABCDEF", lines.nextTranslatedRow(100, false));
 		}
 	}
 	
@@ -214,7 +157,9 @@ public class DefaultLineBreakerTest {
 		private final static Pattern WORD_SPLITTER = Pattern.compile("[\\x20\t\\n\\r\\u2800\\xA0]+");
 		
 		private final LineBreakingFromStyledText lineBreaker = new AbstractBrailleTranslator.util.DefaultLineBreaker(' ', '-', null) {
-			protected BrailleStream translateAndHyphenate(final Iterable<CSSStyledText> styledText) {
+			protected BrailleStream translateAndHyphenate(final Iterable<CSSStyledText> styledText, int from, int to) {
+				if (from != 0 && to >= 0)
+					throw new UnsupportedOperationException();
 				return new BrailleStream() {
 					int pos = 0;
 					String text; {
@@ -279,6 +224,9 @@ public class DefaultLineBreakerTest {
 					public String remainder() {
 						return translate(text.substring(pos));
 					}
+					public boolean hasPrecedingSpace() {
+						return false;
+					}
 					@Override
 					public Object clone() {
 						try {
@@ -314,68 +262,5 @@ public class DefaultLineBreakerTest {
 			if (lines.hasNext())
 				sb.append('\n'); }
 		return sb.toString();
-	}
-	
-	private static String fillLines(Iterator<BrailleTranslator.LineIterator> segments, int width) {
-		return fillLines(aggregate(segments), width);
-	}
-	
-	private static BrailleTranslator.LineIterator aggregate(final Iterator<BrailleTranslator.LineIterator> segmentsIterator) {
-		return new BrailleTranslator.LineIterator() {
-			
-			private List<BrailleTranslator.LineIterator> segments = newArrayList(segmentsIterator);
-			
-			public boolean hasNext() {
-				while (true) {
-					if (segments.isEmpty())
-						return false;
-					if (segments.get(0).hasNext())
-						return true;
-					segments = segments.subList(1, segments.size());
-				}
-			}
-			
-			public String nextTranslatedRow(int limit, boolean force, boolean allowHyphens) {
-				String row = fillLine(segments, limit, false, allowHyphens);
-				if (force && row.isEmpty())
-					row = fillLine(segments, limit, true, allowHyphens);
-				return row;
-			}
-			
-			private String fillLine(List<BrailleTranslator.LineIterator> segments, int width, boolean force, boolean allowHyphens) {
-				if (!segments.get(0).hasNext()) {
-					segments.remove(0);
-					return fillLine(segments, width, force, allowHyphens);
-				}
-				if (segments.get(0).countRemaining() < width
-				    || (segments.get(0).countRemaining() == width && segments.size() == 1)) {
-					String line = segments.get(0).getTranslatedRemainder();
-					if (segments.size() == 1) {
-						segments.remove(0);
-						return line;
-					}
-					String s = fillLine(segments.subList(1, segments.size()), width - line.length(), force, allowHyphens);
-					if (!s.isEmpty()) {
-						segments.remove(0);
-						return line + s;
-					}
-				}
-				return segments.get(0).nextTranslatedRow(width, force, allowHyphens);
-			}
-			
-			public BrailleTranslator.LineIterator copy() {
-				List<BrailleTranslator.LineIterator> segmentsCopy = new ArrayList<>(); {
-					for (BrailleTranslator.LineIterator s : segments) {
-						segmentsCopy.add(s.copy());
-					}
-				}
-				return aggregate(segmentsCopy.iterator());
-			}
-			
-			public String getTranslatedRemainder()       { throw new UnsupportedOperationException(); }
-			public int countRemaining()                  { throw new UnsupportedOperationException(); }
-			public boolean supportsMetric(String metric) { throw new UnsupportedOperationException(); }
-			public double getMetric(String metric)       { throw new UnsupportedOperationException(); }
-		};
 	}
 }

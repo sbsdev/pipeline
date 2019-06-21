@@ -10,11 +10,14 @@ import java.net.URI;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
 
+import org.daisy.common.file.URIs;
 import org.daisy.common.xproc.calabash.XProcStepProvider;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.io.ByteStreams;
+
 import com.xmlcalabash.core.XProcConstants;
 import com.xmlcalabash.core.XProcException;
 import com.xmlcalabash.core.XProcRuntime;
@@ -25,10 +28,16 @@ import com.xmlcalabash.model.RuntimeValue;
 import com.xmlcalabash.runtime.XAtomicStep;
 import com.xmlcalabash.util.TreeWriter;
 
+import org.osgi.service.component.annotations.Component;
 
 /**
  * This steps allows to copy any resource from a URI to a file in the file system usign a file scheme URI 
  */
+@Component(
+	name = "pxi:copy-resource",
+	service = { XProcStepProvider.class },
+	property = { "type:String={http://www.daisy.org/ns/pipeline/xproc/internal}copy-resource" }
+)
 public class CopyResourceProvider implements XProcStepProvider {
 
 	/** The logger. */
@@ -86,11 +95,12 @@ public class CopyResourceProvider implements XProcStepProvider {
 
 			boolean failOnError = getOption(_fail_on_error, true);
 
+			// Note that href.getBaseURI() always returns the absolute path of copy-resource.xpl
 			RuntimeValue href = getOption(_href);
-			URI sourceUri= href.getBaseURI().resolve(href.getString());
+			URI sourceUri= URIs.resolve(href.getBaseURI(), href.getString());
 
 			href = getOption(_target);
-			URI destUri = href.getBaseURI().resolve(href.getString());
+			URI destUri = URIs.resolve(href.getBaseURI(), href.getString());
 
 			File target=this.getFile(destUri,sourceUri);
 

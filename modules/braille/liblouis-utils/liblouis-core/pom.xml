@@ -4,19 +4,24 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.daisy.pipeline.modules.braille</groupId>
-    <artifactId>braille-modules-parent</artifactId>
+    <groupId>org.daisy.pipeline.modules</groupId>
+    <artifactId>modules-parent</artifactId>
     <version>1.12.1-SNAPSHOT</version>
-    <relativePath>../../maven/parent</relativePath>
+    <relativePath>../../../parent</relativePath>
   </parent>
 
+  <groupId>org.daisy.pipeline.modules.braille</groupId>
   <artifactId>liblouis-core</artifactId>
-  <version>5.1.0-SNAPSHOT</version>
+  <version>5.0.2-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
   <name>DP2 Braille Modules :: liblouis-utils :: liblouis-core</name>
 
   <dependencies>
+    <dependency>
+      <groupId>org.daisy.pipeline</groupId>
+      <artifactId>common-utils</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.liblouis</groupId>
       <artifactId>liblouis-java</artifactId>
@@ -40,16 +45,6 @@
     <dependency>
       <groupId>org.daisy.pipeline.modules.braille</groupId>
       <artifactId>pef-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -89,51 +84,64 @@
     <dependency>
       <groupId>org.ops4j.pax.exam</groupId>
       <artifactId>pax-exam-container-forked</artifactId>
-      <version>3.3.0</version>
+      <version>4.12.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
+  
+  <properties>
+    <expose-services>
+      org.daisy.pipeline.braille.liblouis.impl.LiblouisHyphenatorJnaImplProvider,
+      org.daisy.pipeline.braille.liblouis.impl.LiblouisTableJnaImplProvider,
+      org.daisy.pipeline.braille.liblouis.impl.LiblouisTableRegistry,
+      org.daisy.pipeline.braille.liblouis.impl.LiblouisTranslatorJnaImplProvider,
+      org.daisy.pipeline.braille.liblouis.impl.LiblouisutdmlProcessBuilderImpl,
+      org.daisy.pipeline.braille.liblouis.impl.LiblouisutdmlConfigRegistry,
+      org.daisy.pipeline.braille.liblouis.pef.impl.LiblouisDisplayTableProvider
+    </expose-services>
+  </properties>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.ops4j.pax.exam</groupId>
-        <artifactId>maven-paxexam-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-depends-file</id>
-            <goals>
-              <goal>generate-depends-file</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-Activator>org.daisy.pipeline.braille.liblouis.impl.Activator</Bundle-Activator>
-            <_dsannotations>
-              org.daisy.pipeline.braille.liblouis.impl.LiblouisHyphenatorJnaImplProvider,
-              org.daisy.pipeline.braille.liblouis.impl.LiblouisTableJnaImplProvider,
-              org.daisy.pipeline.braille.liblouis.impl.LiblouisTableRegistry,
-              org.daisy.pipeline.braille.liblouis.impl.LiblouisTranslatorJnaImplProvider,
-              org.daisy.pipeline.braille.liblouis.impl.LiblouisutdmlProcessBuilderImpl,
-              org.daisy.pipeline.braille.liblouis.pef.impl.LiblouisDisplayTableProvider
-            </_dsannotations>
-            <Service-Component>
-              OSGI-INF/liblouisutdml-config-registry.xml
-            </Service-Component>
+            <Bundle-Activator>org.daisy.pipeline.braille.liblouis.impl.LiblouisExternalNativePath$Activator</Bundle-Activator>
           </instructions>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.daisy.pipeline.build</groupId>
+        <artifactId>ds-to-spi-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>bundle-before-test</id>
-            <phase>generate-test-resources</phase>
+            <id>generate-spi-classes</id>
+            <phase>process-sources</phase>
             <goals>
-              <goal>bundle</goal>
+              <goal>generate-spi-classes</goal>
             </goals>
+            <configuration>
+              <includes>
+                ${expose-services},
+                org.daisy.pipeline.braille.liblouis.impl.LiblouisExternalNativePath
+              </includes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-spi-test-classes</id>
+            <phase>process-test-sources</phase>
+            <goals>
+              <goal>generate-spi-test-classes</goal>
+            </goals>
+            <configuration>
+              <includes>
+                TablePath,
+                DispatchingTableProvider,
+                MockHyphenator$Provider
+              </includes>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -141,6 +149,13 @@
         <groupId>org.daisy.pipeline.build</groupId>
         <artifactId>modules-build-helper</artifactId>
         <executions>
+          <execution>
+            <id>process-test-catalog</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>process-test-catalog</goal>
+            </goals>
+          </execution>
           <execution>
             <id>package-list</id>
             <phase>prepare-package</phase>
@@ -176,7 +191,6 @@
               <links>
                 <link>https://google.github.io/guava/releases/15.0/api/docs</link>
               </links>
-              <excludePackageNames>*.impl:*.impl.*</excludePackageNames>
             </configuration>
           </execution>
         </executions>

@@ -16,6 +16,8 @@ import com.google.common.base.Splitter;
 import static com.google.common.collect.Iterables.toArray;
 import static com.google.common.collect.Iterables.transform;
 
+import static org.daisy.common.file.URIs.asURI;
+import static org.daisy.common.file.URLs.asURL;
 import org.daisy.pipeline.braille.common.AbstractHyphenator;
 import org.daisy.pipeline.braille.common.AbstractHyphenator.util.DefaultLineBreaker;
 import org.daisy.pipeline.braille.common.AbstractTransformProvider;
@@ -39,8 +41,6 @@ import static org.daisy.pipeline.braille.common.util.Strings.extractHyphens;
 import static org.daisy.pipeline.braille.common.util.Strings.insertHyphens;
 import static org.daisy.pipeline.braille.common.util.Strings.join;
 import org.daisy.pipeline.braille.common.util.Tuple2;
-import static org.daisy.pipeline.braille.common.util.URIs.asURI;
-import static org.daisy.pipeline.braille.common.util.URLs.asURL;
 import org.daisy.pipeline.braille.common.WithSideEffect;
 import org.daisy.pipeline.braille.libhyphen.LibhyphenHyphenator;
 import org.daisy.pipeline.braille.libhyphen.LibhyphenTableProvider;
@@ -127,8 +127,11 @@ public class LibhyphenJnaImpl extends AbstractTransformProvider<LibhyphenHyphena
 		MutableQuery q = mutableQuery(query);
 		if (q.containsKey("hyphenator")) {
 			String v = q.removeOnly("hyphenator").getValue().get();
-			if (!"hyphen".equals(v))
-				return fromNullable(fromId(v)); }
+			if (!"hyphen".equals(v)) {
+				if (q.isEmpty())
+					return of(get(asURI(v)));
+				else
+					return fromNullable(fromId(v)); }}
 		String table = null;
 		if (q.containsKey("libhyphen-table"))
 			table = q.removeOnly("libhyphen-table").getValue().get();
@@ -279,6 +282,11 @@ public class LibhyphenJnaImpl extends AbstractTransformProvider<LibhyphenHyphena
 		if (resolvedTable == null)
 			throw new RuntimeException("Hyphenation table " + table + " could not be resolved");
 		return asFile(resolvedTable);
+	}
+	
+	@Override
+	public ToStringHelper toStringHelper() {
+		return MoreObjects.toStringHelper(LibhyphenJnaImpl.class.getName());
 	}
 	
 	private static final Logger logger = LoggerFactory.getLogger(LibhyphenJnaImpl.class);

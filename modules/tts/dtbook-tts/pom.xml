@@ -5,9 +5,9 @@
 
   <parent>
     <groupId>org.daisy.pipeline.modules</groupId>
-    <artifactId>tts-modules-parent</artifactId>
+    <artifactId>modules-parent</artifactId>
     <version>1.12.1-SNAPSHOT</version>
-    <relativePath>../parent</relativePath>
+    <relativePath>../../parent</relativePath>
   </parent>
 
   <version>2.1.1-SNAPSHOT</version>
@@ -18,7 +18,9 @@
   <description>Enriches a DTBook document with break detection and generates audio clips with TTS.</description>
   
   <dependencies>
-    <!-- runtime dependencies -->
+    <!--
+        runtime dependencies
+    -->
     <dependency>
       <groupId>org.daisy.pipeline.modules</groupId>
       <artifactId>css-speech</artifactId>
@@ -51,4 +53,10 @@
     </dependency>
   </dependencies>
 
+  <properties>
+    <expose-services>
+      org.daisy.pipeline.modules.impl.Module_dtbook_tts
+    </expose-services>
+  </properties>
+  
 </project>

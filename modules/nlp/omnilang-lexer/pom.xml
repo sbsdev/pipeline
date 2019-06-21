@@ -5,9 +5,9 @@
 
   <parent>
     <groupId>org.daisy.pipeline.modules</groupId>
-    <artifactId>nlp-modules-parent</artifactId>
+    <artifactId>modules-parent</artifactId>
     <version>1.12.1-SNAPSHOT</version>
-    <relativePath>../parent</relativePath>
+    <relativePath>../../parent</relativePath>
   </parent>
 
   <artifactId>nlp-omnilang-lexer</artifactId>
@@ -31,17 +31,32 @@
       <groupId>org.daisy.pipeline.modules</groupId>
       <artifactId>nlp-lexing</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
+  
+  <properties>
+    <expose-services>
+      org.daisy.pipeline.nlp.lexing.omni.OmnilangLexer
+    </expose-services>
+  </properties>
 
-  <build>
+   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-	    <Export-Package/>
-            <Service-Component>OSGI-INF/omnilang-lex-service.xml</Service-Component>
+            <Export-Package/>
+            <Private-Package>
+              org.daisy.pipeline.nlp.lexing.omni,
+              ${generated-packages}
+              {local-packages}
+            </Private-Package>
           </instructions>
         </configuration>
       </plugin>

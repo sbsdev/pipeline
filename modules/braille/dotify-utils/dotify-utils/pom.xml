@@ -4,12 +4,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.daisy.pipeline.modules.braille</groupId>
-    <artifactId>braille-modules-parent</artifactId>
+    <groupId>org.daisy.pipeline.modules</groupId>
+    <artifactId>modules-parent</artifactId>
     <version>1.12.1-SNAPSHOT</version>
-    <relativePath>../../maven/parent/</relativePath>
+    <relativePath>../../../parent/</relativePath>
   </parent>
 
+  <groupId>org.daisy.pipeline.modules.braille</groupId>
   <artifactId>dotify-utils</artifactId>
   <version>2.1.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
@@ -17,6 +18,10 @@
   <name>DP2 Braille Modules :: dotify-utils :: dotify-utils</name>
 
   <dependencies>
+    <dependency>
+      <groupId>org.daisy.pipeline</groupId>
+      <artifactId>common-utils</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.daisy.pipeline.modules.braille</groupId>
       <artifactId>common-utils</artifactId>
@@ -33,16 +38,6 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <!--
         runtime dependencies
     -->
@@ -54,12 +49,6 @@
     <!--
         optional (but keep mandatory as long as there is only one implementation)
     -->
-    <dependency>
-      <groupId>org.daisy.pipeline.modules.braille</groupId>
-      <artifactId>dotify-saxon</artifactId>
-      <scope>runtime</scope>
-      <!-- <optional>true</optional> -->
-    </dependency>
     <dependency>
       <groupId>org.daisy.pipeline.modules.braille</groupId>
       <artifactId>dotify-calabash</artifactId>
@@ -79,6 +68,13 @@
     -->
   </dependencies>
   
+  <properties>
+    <expose-services>
+      org.daisy.pipeline.modules.impl.Module_dotify_utils,
+      org.daisy.pipeline.braille.dotify.impl.DotifyCSSBlockTransform$Provider
+    </expose-services>
+  </properties>
+  
   <build>
     <plugins>
       <plugin>
@@ -86,16 +82,14 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <!--
-                in order to avoid including services in the same package in other bundles
-            -->
-            <_dsannotations>
-              org.daisy.pipeline.braille.dotify.impl.DotifyCSSBlockTransform$Provider
-            </_dsannotations>
+            <Private-Package>
+              org.daisy.pipeline.braille.dotify.impl;-split-package:=first,
+              ${generated-packages}
+              {local-packages}
+            </Private-Package>
             <Require-Capability>
               xproc.step;filter:="(name={http://code.google.com/p/dotify/}obfl-to-pef)",
-              xproc.step;filter:="(name={http://code.google.com/p/dotify/}file-to-obfl)",
-              xpath.function;filter:="(name={http://code.google.com/p/dotify/}translate)"
+              xproc.step;filter:="(name={http://code.google.com/p/dotify/}file-to-obfl)"
             </Require-Capability>
           </instructions>
         </configuration>
