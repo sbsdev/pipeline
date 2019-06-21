@@ -33,12 +33,12 @@
     <module>modules/tts</module>
     <module>modules/audio</module>
     <module>modules/nlp</module>
-    <module>modules/sbs/maven-parents/super-parent</module>
-    <module>modules/sbs/maven-parents/modules-parent</module>
-    <module>modules/sbs/braille-tables</module>
-    <module>modules/sbs/braille</module>
-    <module>modules/sbs/epub3-dtbook-migrator</module>
-    <module>modules/sbs/dtbook-to-odt</module>
+    <module>sbs/maven-parents/super-parent</module>
+    <module>sbs/maven-parents/modules-parent</module>
+    <module>sbs/braille-tables</module>
+    <module>sbs/braille</module>
+    <module>sbs/epub3-dtbook-migrator</module>
+    <module>sbs/dtbook-to-odt</module>
     <module>cli</module>
     <module>gui</module>
     <module>updater/cli</module>
