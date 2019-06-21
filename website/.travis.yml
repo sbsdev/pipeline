@@ -4,6 +4,9 @@ script:
   - make
 after_success:
   - source .travis/publish.sh
+cache:
+  directories:
+    - gems
 # SBS website deployed from super-project
 branches:
   except:
