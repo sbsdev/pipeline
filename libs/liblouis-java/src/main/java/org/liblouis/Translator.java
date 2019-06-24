@@ -1,11 +1,17 @@
 package org.liblouis;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Set;
 
+import org.liblouis.DisplayTable.StandardDisplayTables;
 import org.liblouis.Louis.LouisLibrary;
 
 import com.sun.jna.Pointer;
@@ -24,9 +30,21 @@ public class Translator {
 	 * could not be compiled.
 	 */
 	public Translator(String table) throws CompilationException {
+		Louis.log(Logger.Level.DEBUG, "Loading table %s", table);
 		if (Louis.getLibrary().lou_getTable(table) == Pointer.NULL)
 			throw new CompilationException("Unable to compile table '" + table + "'");
 		this.table = table;
+	}
+	
+	/**
+	 * @param table The translation table as a URL.
+	 * @throws CompilationException if the table could not be compiled.
+	 */
+	public Translator(URL table) throws CompilationException {
+		Louis.log(Logger.Level.DEBUG, "Loading table %s", table);
+		this.table = Louis.getTableNameForURL(table);
+		if (Louis.getLibrary().lou_getTable(this.table) == Pointer.NULL)
+			throw new CompilationException("Unable to compile table '" + table + "'");
 	}
 	
 	/**
@@ -35,7 +53,8 @@ public class Translator {
 	 * matched table could not be compiled.
 	 */
 	public static Translator find(String query) throws CompilationException {
-		String table = Louis.getLibrary().lou_findTable(query);
+		Louis.log(Logger.Level.DEBUG, "Finding table for query ", query);
+		String table = Louis.findTable(query);
 		if (table == null)
 			throw new CompilationException("No match found for query '" + query + "'");
 		return new Translator(table);
@@ -43,6 +62,21 @@ public class Translator {
 	
 	public String getTable() {
 		return table;
+	}
+	
+	private Set<Typeform> typeforms = null;
+	
+	public Set<Typeform> getSupportedTypeforms() {
+		if (typeforms == null) {
+			typeforms = new HashSet<Typeform>();
+			short value = 1;
+			for (String emphClass : Louis.getLibrary().lou_getEmphClasses(table)) {
+				typeforms.add(new Typeform(emphClass, value, this));
+				value *= 2;
+			}
+			typeforms = Collections.unmodifiableSet(typeforms);
+		}
+		return typeforms;
 	}
 	
 	/**
@@ -65,12 +99,53 @@ public class Translator {
 	 *         <code>null</code>), and the output inter-character attributes (or <code>null</code>
 	 *         if <code>interCharacterAttributes</code> was <code>null</code>).
 	 * @throws TranslationException if the translation could not be completed.
+	 * @throws DisplayException if the braille could not be encoded (due to virtual dots).
 	 */
 	public TranslationResult translate(String text,
-	                                   short[] typeform,
+	                                   Typeform[] typeform,
 	                                   int[] characterAttributes,
 	                                   int[] interCharacterAttributes)
-			throws TranslationException {
+			throws TranslationException, DisplayException {
+		return translate(text, typeform, characterAttributes, interCharacterAttributes, StandardDisplayTables.DEFAULT);
+	}
+	
+	private TranslationResult translate(String text,
+	                                    short[] typeform,
+	                                    int[] characterAttributes,
+	                                    int[] interCharacterAttributes)
+			throws TranslationException, DisplayException {
+		return translate(text, typeform, characterAttributes, interCharacterAttributes, StandardDisplayTables.DEFAULT);
+	}
+	
+	/**
+	 * @param displayTable The display table used to encode the braille.
+	 */
+	public TranslationResult translate(String text,
+	                                   Typeform[] typeform,
+	                                   int[] characterAttributes,
+	                                   int[] interCharacterAttributes,
+	                                   DisplayTable displayTable)
+			throws TranslationException, DisplayException {
+		short[] tf = null;
+		if (typeform != null) {
+			tf = new short[typeform.length];
+			for (int i = 0; i < typeform.length; i++) {
+				if (typeform[i] == null)
+					tf[i] = 0;
+				else if (typeform[i].table != null && !typeform[i].table.equals(this))
+					throw new TranslationException("Can not use a typeform defined in another table.");
+				else tf[i] = typeform[i].value;
+			}
+		}
+		return translate(text, tf, characterAttributes, interCharacterAttributes, displayTable);
+	}
+	
+	private TranslationResult translate(String text,
+	                                    short[] typeform,
+	                                    int[] characterAttributes,
+	                                    int[] interCharacterAttributes,
+	                                    DisplayTable displayTable)
+			throws TranslationException, DisplayException {
 		if (typeform != null)
 			if (typeform.length != text.length())
 				throw new IllegalArgumentException("typeform length must be equal to text length");
@@ -80,7 +155,11 @@ public class Translator {
 		if (interCharacterAttributes != null)
 			if (interCharacterAttributes.length != text.length() - 1)
 				throw new IllegalArgumentException("interCharacterAttributes length must be equal to text length minus 1");
-		WideString inbuf = getWideCharBuffer("text-in", text.length()).write(text);
+		WideString inbuf;
+		try {
+			inbuf = getWideCharBuffer("text-in", text.length()).write(text); }
+		catch (IOException e) {
+			throw new RuntimeException("should not happen", e); }
 		WideString outbuf = getWideCharBuffer("text-out", text.length() * OUTLEN_MULTIPLIER);
 		IntByReference inlen = new IntByReference(text.length());
 		IntByReference outlen = new IntByReference(outbuf.length());
@@ -89,15 +168,19 @@ public class Translator {
 			typeform = Arrays.copyOf(typeform, outbuf.length());
 		if (characterAttributes != null || interCharacterAttributes != null)
 			inputPos = getIntegerBuffer("inputpos", text.length() * OUTLEN_MULTIPLIER);
+		int mode = displayTable != StandardDisplayTables.DEFAULT ? 4 : 0;
 		if (Louis.getLibrary().lou_translate(table, inbuf, inlen, outbuf, outlen, typeform,
-		                                     null, null, inputPos, null, 0) == 0)
+		                                     null, null, inputPos, null, mode) == 0)
 			throw new TranslationException("Unable to complete translation");
-		return new TranslationResult(outbuf, outlen, inputPos, characterAttributes, interCharacterAttributes);
+		return new TranslationResult(outbuf, outlen, inputPos, characterAttributes, interCharacterAttributes, displayTable);
 	}
 	
 	public String backTranslate(String text) throws TranslationException {
-		
-		WideString inbuf = getWideCharBuffer("text-in", text.length()).write(text);
+		WideString inbuf;
+		try {
+			inbuf = getWideCharBuffer("text-in", text.length()).write(text); }
+		catch (IOException e) {
+			throw new RuntimeException("should not happen", e); }
 		WideString outbuf = getWideCharBuffer("text-out", text.length() * OUTLEN_MULTIPLIER);
 		IntByReference inlen = new IntByReference(text.length());
 		IntByReference outlen = new IntByReference(outbuf.length());
@@ -105,8 +188,10 @@ public class Translator {
 		if (Louis.getLibrary().lou_backTranslate(table, inbuf, inlen, outbuf, outlen,
 				null, null, null, null, null, 0) == 0)
 			throw new TranslationException("Unable to complete translation");
-		
-		return outbuf.read(outlen.getValue());
+		try {
+			return outbuf.read(outlen.getValue()); }
+		catch (IOException e) {
+			throw new RuntimeException("should not happen", e); }
 	}
 	
 	/**
@@ -116,7 +201,11 @@ public class Translator {
 	 *         after hard hyphens). Length is equal to the <code>text</code> length minus 1.
 	 */
 	public byte[] hyphenate(String text) throws TranslationException {
-		WideString inbuf = getWideCharBuffer("text-in", text.length()).write(text);
+		WideString inbuf;
+		try {
+			inbuf = getWideCharBuffer("text-in", text.length()).write(text); }
+		catch (IOException e) {
+			throw new RuntimeException("should not happen", e); }
 		int inlen = text.length();
 		byte[] hyphens = getByteBuffer("hyphens-out", inlen);
 		for (int i = 0; i < inlen; i++) hyphens[i] = '0';
@@ -141,13 +230,24 @@ public class Translator {
 		return hyphenPositions;
 	}
 	
+	/**
+	 * Convert a braille string from either Unicode braille or Liblouis' dotsIO format to the
+	 * charset defined by the (display) table.
+	 */
 	public String display(String braille) throws TranslationException {
-		WideString inbuf = getWideCharBuffer("text-in", braille.length()).write(braille);
+		WideString inbuf;
+		try {
+			inbuf = getWideCharBuffer("text-in", braille.length()).write(braille); }
+		catch (IOException e) {
+			throw new RuntimeException("should not happen", e); }
 		int length = braille.length();
 		WideString outbuf = getWideCharBuffer("text-out", braille.length() * OUTLEN_MULTIPLIER);
 		if (Louis.getLibrary().lou_dotsToChar(table, inbuf, outbuf, length, 0) == 0)
 			throw new TranslationException("Unable to complete translation");
-		return outbuf.read(length);
+		try {
+			return outbuf.read(length); }
+		catch (IOException e) {
+			throw new RuntimeException("should not happen", e); }
 	}
 	
 	/*
@@ -155,7 +255,7 @@ public class Translator {
 	 * the maximum output length. This default will handle the case where
 	 * every input character is undefined in the translation table.
 	 */
-	private static final int OUTLEN_MULTIPLIER = WideChar.Constants.CHARSIZE * 2 + 4;
+	private static final int OUTLEN_MULTIPLIER = WideChar.SIZE * 2 + 4;
 	
 	private static Map<String,WideString> WIDECHAR_BUFFERS = new HashMap<String,WideString>();
 	private static Map<String,byte[]> BYTE_BUFFERS = new HashMap<String,byte[]>();

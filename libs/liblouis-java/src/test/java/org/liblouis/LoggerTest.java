@@ -1,24 +1,11 @@
 package org.liblouis;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FilenameFilter;
 import java.io.PrintStream;
-import java.util.Collection;
-
-import static org.apache.commons.io.filefilter.FileFilterUtils.asFileFilter;
-import static org.apache.commons.io.filefilter.FileFilterUtils.trueFileFilter;
-import org.apache.commons.io.FileUtils;
 
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-
-import static org.liblouis.Logger.Level.DEBUG;
-import static org.liblouis.Logger.Level.INFO;
-import static org.liblouis.Logger.Level.WARN;
-import static org.liblouis.Logger.Level.ERROR;
-import static org.liblouis.Logger.Level.FATAL;
 
 public class LoggerTest {
 	
@@ -27,12 +14,12 @@ public class LoggerTest {
 		logger.reset();
 		try { new Translator("unexisting_file"); }
 		catch (CompilationException e) {}
-		assertEquals("[ERROR] Cannot resolve table 'unexisting_file'" + "\n" +
-		             "[ERROR] 1 errors found."                        + "\n" +
-		             "[ERROR] unexisting_file could not be found"     + "\n",
+		assertEquals("[ERROR] Cannot resolve table 'unexisting_file'" + System.getProperty("line.separator") +
+		             "[ERROR] 1 errors found."                        + System.getProperty("line.separator") +
+		             "[ERROR] unexisting_file could not be compiled"  + System.getProperty("line.separator"),
 		             logger.toString());
 		logger.reset();
-		Louis.getLibrary().lou_setLogLevel(FATAL);
+		Louis.setLogLevel(Logger.Level.FATAL);
 		try { new Translator("unexisting_file"); }
 		catch (CompilationException e) {}
 		assertEquals("", logger.toString());
@@ -40,17 +27,9 @@ public class LoggerTest {
 	
 	private final ByteArrayLogger logger;
 	
-	@SuppressWarnings("unchecked")
 	public LoggerTest() {
-		final File testRootDir = new File(this.getClass().getResource("/").getPath());
-		Louis.setLibraryPath(((Collection<File>)FileUtils.listFiles(
-				new File(testRootDir, "../dependency"),
-				asFileFilter(new FilenameFilter() {
-					public boolean accept(File dir, String fileName) {
-						return dir.getName().equals("shared") && fileName.startsWith("liblouis"); }}),
-				trueFileFilter())).iterator().next());
 		logger = new ByteArrayLogger() {
-			public String format(int level, String message) {
+			public String format(Logger.Level level, String message) {
 				switch (level) {
 				case DEBUG: return "[DEBUG] " + message;
 				case INFO: return "[INFO] " + message;
@@ -60,14 +39,14 @@ public class LoggerTest {
 				return null;
 			}
 		};
-		Louis.getLibrary().lou_registerLogCallback(logger);
+		Louis.setLogger(logger);
 	}
 	
 	private abstract class ByteArrayLogger implements Logger {
 		private ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		private PrintStream printStream = new PrintStream(stream);
-		public abstract String format(int level, String message);
-		public void invoke(int level, String message) {
+		public abstract String format(Logger.Level level, String message);
+		public void log(Logger.Level level, String message) {
 			String formattedMessage = format(level, message);
 			if (formattedMessage != null)
 				printStream.println(formattedMessage);

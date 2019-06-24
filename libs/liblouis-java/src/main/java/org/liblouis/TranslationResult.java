@@ -1,5 +1,8 @@
 package org.liblouis;
 
+import java.io.IOException;
+import java.nio.charset.UnmappableCharacterException;
+
 import com.sun.jna.ptr.IntByReference;
 
 public class TranslationResult {
@@ -8,10 +11,16 @@ public class TranslationResult {
 	private int[] characterAttributes = null;
 	private int[] interCharacterAttributes = null;
 	
-	protected TranslationResult(WideString outbuf, IntByReference outlen, int[] inputPos,
-	                            int[] characterAttributes, int[] interCharacterAttributes) {
+	TranslationResult(WideString outbuf, IntByReference outlen, int[] inputPos,
+	                  int[] characterAttributes, int[] interCharacterAttributes,
+	                  DisplayTable displayTable) throws DisplayException {
 		int len = outlen.getValue();
-		this.braille = outbuf.read(len);
+		try {
+			this.braille = outbuf.read(len, displayTable); }
+		catch (UnmappableCharacterException e) {
+			throw new DisplayException("virtual dots present in output", e); }
+		catch (IOException e) {
+			throw new RuntimeException("should not happen", e); }
 		if (characterAttributes != null) {
 			this.characterAttributes = new int[len];
 			for (int outpos = 0; outpos < len; outpos++)

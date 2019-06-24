@@ -1,16 +1,17 @@
 package org.liblouis;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.util.Collection;
-
-import static org.apache.commons.io.filefilter.FileFilterUtils.asFileFilter;
-import static org.apache.commons.io.filefilter.FileFilterUtils.trueFileFilter;
-import org.apache.commons.io.FileUtils;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import static org.liblouis.Louis.asFile;
+import static org.liblouis.Louis.asURL;
 
 public class FindTranslatorTest {
 	
@@ -31,19 +32,41 @@ public class FindTranslatorTest {
 			Translator.find("locale:foo").translate("foobar", null, null, null).getBraille());
 	}
 	
-	@SuppressWarnings("unchecked")
+	@Test
+	public void testListAvailableLocales() {
+		List<String> locales = new ArrayList<String>();
+		for (Table t : Louis.listTables())
+			locales.add(t.getInfo().get("locale"));
+		assertEquals(1, locales.size());
+		assertEquals("foo", locales.get(0));
+	}
+	
 	public FindTranslatorTest() {
-		File testRootDir = new File(this.getClass().getResource("/").getPath());
-		Louis.setLibraryPath(((Collection<File>)FileUtils.listFiles(
-				new File(testRootDir, "../dependency"),
-				asFileFilter(new FilenameFilter() {
-					public boolean accept(File dir, String fileName) {
-						return dir.getName().equals("shared") && fileName.startsWith("liblouis"); }}),
-				trueFileFilter())).iterator().next());
-		File[] tables = new File(testRootDir, "tables").listFiles();
-		String[] tableNames = new String[tables.length];
-		for (int i = 0; i < tableNames.length; i++)
-			tableNames[i] = tables[i].getAbsolutePath();
-		Louis.getLibrary().lou_indexTables(tableNames);
+		File testRootDir = asFile(this.getClass().getResource("/"));
+		final Set<String> tables = new HashSet<String>();
+		for (File f : new File(testRootDir, "tables").listFiles())
+			tables.add(f.getAbsolutePath());
+		Louis.setTableResolver(new TableResolver() {
+				public URL resolve(String table, URL base) {
+					if (table == null)
+						return null;
+					if (base != null && base.toString().startsWith("file:")) {
+						File f = base.toString().endsWith("/")
+							? new File(asFile(base), table)
+							: new File(asFile(base).getParentFile(), table);
+						if (f.exists())
+							return asURL(f);
+					} else if (base == null) {
+						File f = new File(table);
+						if (f.exists())
+							return asURL(f);
+					}
+					return null;
+				}
+				public Set<String> list() {
+					return tables;
+				}
+			}
+		);
 	}
 }

@@ -1,16 +1,15 @@
 package org.liblouis;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.util.Collection;
-
-import static org.apache.commons.io.filefilter.FileFilterUtils.asFileFilter;
-import static org.apache.commons.io.filefilter.FileFilterUtils.trueFileFilter;
-import org.apache.commons.io.FileUtils;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Set;
 
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import static org.liblouis.Louis.asFile;
+import static org.liblouis.Louis.asURL;
 
 public class TableResolverTest {
 	
@@ -30,26 +29,21 @@ public class TableResolverTest {
 			translator.translate("foobar", null, null, null).getBraille());
 	}
 	
-	@SuppressWarnings("unchecked")
 	public TableResolverTest() {
-		final File testRootDir = new File(this.getClass().getResource("/").getPath());
-		Louis.setLibraryPath(((Collection<File>)FileUtils.listFiles(
-				new File(testRootDir, "../dependency"),
-				asFileFilter(new FilenameFilter() {
-					public boolean accept(File dir, String fileName) {
-						return dir.getName().equals("shared") && fileName.startsWith("liblouis"); }}),
-				trueFileFilter())).iterator().next());
-		Louis.getLibrary().lou_registerTableResolver(
-			new TableResolver() {
-				public File[] invoke(String table, File base) {
+		final File testRootDir = asFile(this.getClass().getResource("/"));
+		Louis.setTableResolver(new TableResolver() {
+				public URL resolve(String table, URL base) {
 					if (table == null)
 						return null;
 					File tableFile = new File(testRootDir, table);
 					if (tableFile.exists())
-						return new File[]{tableFile};
+						return asURL(tableFile);
 					if (table.equals("<FOOBAR>"))
-						return invoke("tables/foobar.cti", null);
+						return resolve("tables/foobar.cti", null);
 					return null;
+				}
+				public Set<String> list() {
+					return Collections.emptySet();
 				}
 			}
 		);

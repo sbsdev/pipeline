@@ -1,16 +1,13 @@
 package org.liblouis;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Collection;
 
-import org.apache.commons.io.FileUtils;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-import static org.apache.commons.io.filefilter.FileFilterUtils.asFileFilter;
-import static org.apache.commons.io.filefilter.FileFilterUtils.trueFileFilter;
-import static org.junit.Assert.assertEquals;
+import org.liblouis.DisplayTable.StandardDisplayTables;
+import static org.liblouis.Louis.asFile;
 import static org.liblouis.Utilities.Hyphenation.insertHyphens;
 
 public class TranslatorTest {
@@ -18,8 +15,8 @@ public class TranslatorTest {
 	@Test
 	public void testVersion() {
 		assertEquals(
-			"3.0.0-alpha1",
-			Louis.getLibrary().lou_version());
+			"3.10.0",
+			Louis.getVersion());
 	}
 	
 	@Test(expected=CompilationException.class)
@@ -77,13 +74,49 @@ public class TranslatorTest {
 	@Test
 	public void testTypeform() throws Exception {
 		Translator translator = newTranslator("foobar.cti");
+		Typeform t = Typeform.PLAIN_TEXT;
+		for (Typeform tt : translator.getSupportedTypeforms())
+			t = t.add(tt);
 		assertEquals(
-			"/foobar/",
-			translator.translate("foobar", new short[]{1,1,1,1,1,1}, null, null).getBraille());
+			"_/foobar/_",
+			translator.translate("foobar", new Typeform[]{t,t,t,t,t,t}, null, null).getBraille());
+	}
+	
+	@Test
+	public void testDotsIO() throws Exception {
+		Translator translator = newTranslator("foobar.cti");
+		assertEquals(
+			"⢋⠕⠕⠃⠁⠗",
+			translator.translate("Foobar", null, null, null, StandardDisplayTables.UNICODE).getBraille());
+	}
+
+	@Test(expected=DisplayException.class)
+	public void testDecodingError() throws Exception {
+		Translator translator = newTranslator("foobar.cti");
+		assertEquals(
+			"⠋⠕⠕⠀⠃⠁⠗",
+			translator.translate("foo\tbar", null, null, null, StandardDisplayTables.UNICODE).getBraille());
+	}
+	
+	@Test
+	public void testDotsIOFallback() throws Exception {
+		Translator translator = newTranslator("foobar.cti");
+		assertEquals(
+			"⠋⠕⠕⠀⠃⠁⠗",
+			translator.translate(
+				"foo\tbar", null, null, null,
+				new DisplayTable.UnicodeBrailleDisplayTable(DisplayTable.Fallback.MASK)
+			).getBraille());
 	}
 	
 	private Translator newTranslator(String tables) throws IOException, CompilationException {
-		return new Translator(new File(tablesDir, tables).getCanonicalPath());
+		String[] subTables = tables.split(",");
+		for (int i = 0; i < subTables.length; i++)
+			subTables[i] = new File(tablesDir, subTables[i]).getCanonicalPath();
+		tables = subTables[0];
+		for (int i = 1; i < subTables.length; i++)
+			tables += ("," + subTables[i]);
+		return new Translator(tables);
 	}
 	
 	private byte[] intToByte(int [] array) {
@@ -102,15 +135,8 @@ public class TranslatorTest {
 	
 	private final File tablesDir;
 
-	@SuppressWarnings("unchecked")
 	public TranslatorTest() {
-		File testRootDir = new File(this.getClass().getResource("/").getPath());
+		File testRootDir = asFile(this.getClass().getResource("/"));
 		tablesDir = new File(testRootDir, "tables");
-		Louis.setLibraryPath(((Collection<File>)FileUtils.listFiles(
-				new File(testRootDir, "../dependency"),
-				asFileFilter(new FilenameFilter() {
-					public boolean accept(File dir, String fileName) {
-						return dir.getName().equals("shared") && fileName.startsWith("liblouis"); }}),
-				trueFileFilter())).iterator().next());
 	}
 }
