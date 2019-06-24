@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = git@github.com:sbsdev/sbs-hyphenation-tables.git
+	branch = master
+	commit = f32b01946bbe9c31770066daecdd3e0dcb23df16
+	parent = 1f5db0dbf45090d9cbe70cc8e59488708a763e65
+	cmdver = 0.3.1
