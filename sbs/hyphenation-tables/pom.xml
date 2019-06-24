@@ -6,7 +6,7 @@
   <parent>
     <groupId>ch.sbs.pipeline</groupId>
     <artifactId>modules-parent</artifactId>
-    <version>1.8</version>
+    <version>1.9-SNAPSHOT</version>
     <relativePath />
   </parent>
   
@@ -34,7 +34,38 @@
     <tagNameFormat>v@{project.version}</tagNameFormat>
   </properties>
   
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.daisy.pipeline.modules</groupId>
+        <artifactId>modules-bom</artifactId>
+        <version>1.12.1-SNAPSHOT</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
   <dependencies>
+    <dependency>
+      <groupId>org.daisy.pipeline.modules.braille</groupId>
+      <artifactId>libhyphen-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <version>5.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.daisy.pipeline</groupId>
+      <artifactId>ds-to-spi-runtime</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <!--
+        test dependencies
+    -->
     <dependency>
       <groupId>org.daisy.bindings</groupId>
       <artifactId>jhyphen</artifactId>
@@ -68,6 +99,7 @@
         <directory>src/main/resources</directory>
         <excludes>
           <exclude>tables/*</exclude>
+          <exclude>META-INF/catalog.xml</exclude>
         </excludes>
       </resource>
       <resource>
@@ -193,12 +225,51 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.daisy.pipeline.build</groupId>
+        <artifactId>ds-to-spi-maven-plugin</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>generate-spi-classes</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>generate-spi-classes</goal>
+            </goals>
+            <configuration>
+              <includes>
+                org.daisy.pipeline.braille.libhyphen.impl.LibhyphenTablePath
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.daisy.pipeline.build</groupId>
+        <artifactId>modules-build-helper</artifactId>
+        <version>2.3.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>process-catalog</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>process-catalog</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Import-Package>org.daisy.pipeline.braille.libhyphen</Import-Package>
-            <Service-Component>OSGI-INF/sbs-hyphenation-tables.xml</Service-Component>
+            <Private-Package>
+              org.daisy.pipeline.braille.libhyphen.impl;-split-package:=first
+            </Private-Package>
+            <Import-Package>!org.daisy.common.spi,*</Import-Package>
+            <_dsannotations>
+              org.daisy.pipeline.braille.libhyphen.impl.LibhyphenTablePath
+            </_dsannotations>
+            <_include>${project.build.directory}/generated-resources/process-catalog/bnd.bnd</_include>
           </instructions>
         </configuration>
       </plugin>
