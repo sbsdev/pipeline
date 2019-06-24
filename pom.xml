@@ -30,6 +30,7 @@
     <module>sbs/maven-parents/super-parent</module>
     <module>sbs/maven-parents/modules-parent</module>
     <module>sbs/braille-tables</module>
+    <module>sbs/hyphenation-tables</module>
     <module>sbs/braille</module>
     <module>sbs/epub3-dtbook-migrator</module>
     <module>sbs/dtbook-to-odt</module>
