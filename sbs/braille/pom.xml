@@ -208,7 +208,8 @@
           <instructions>
             <Private-Package>
               ${generated-packages}
-              ch.sbs.pipeline.braille.impl;-split-package:=first
+              ch.sbs.pipeline.braille.impl;-split-package:=first,
+              ch.sbs.pipeline.braille.pef.impl
             </Private-Package>
           </instructions>
         </configuration>
@@ -290,6 +291,16 @@
         <configuration>
           <tagNameFormat>v@{project.version}</tagNameFormat>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.daisy.maven</groupId>
+        <artifactId>xspec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>xspecTest</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

@@ -27,6 +27,7 @@
     <p:option name="pef-output-dir"/>
     <p:option name="brf-output-dir"/>
     <p:option name="preview-output-dir"/>
+    <p:option name="obfl-output-dir"/>
     <p:option name="temp-dir"/>
     
     <p:option name="stylesheet"/>
@@ -136,6 +137,7 @@
                                            pef-output-dir
                                            brf-output-dir
                                            preview-output-dir
+                                           obfl-output-dir
                                            temp-dir"/>
     <px:add-parameters>
         <p:with-param name="skip-margin-top-of-page" select="'true'"/>
@@ -207,6 +209,7 @@
         <p:with-option name="pef-output-dir" select="$pef-output-dir"/>
         <p:with-option name="brf-output-dir" select="$brf-output-dir"/>
         <p:with-option name="preview-output-dir" select="$preview-output-dir"/>
+        <p:with-option name="obfl-output-dir" select="$obfl-output-dir"/>
     </px:dtbook-to-pef.store>
     
     <!--

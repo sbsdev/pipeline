@@ -41,6 +41,7 @@
     <p:option name="pef-output-dir"/>
     <p:option name="brf-output-dir"/>
     <p:option name="preview-output-dir"/>
+    <p:option name="obfl-output-dir"/>
     <p:option name="temp-dir"/>
     <p:option name="include-preview"/>
     <p:option name="include-brf"/>

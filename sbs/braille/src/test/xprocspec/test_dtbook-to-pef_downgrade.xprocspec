@@ -19,10 +19,10 @@
 		  <p>Kurzschrift schrift schrift <span brl:grade="0">Basisschrift</span> kurz kurz kurz</p>
 		  <p>Kurzschrift schrift schrift <span brl:grade="1">Vollschrift schrift schrift</span> kurz kurz kurz</p>
 		  <p>Kurzschrift schrift schrift <span brl:grade="0">Basisschrift schrift schrift</span> kurz kurz kurz</p>
-		  <p>Kurzschrift schrift schrift <span brl:grade="1">Vollschrift/Vollschrift</span> kurz kurz kurz</p>
-		  <p>Kurzschrift schrift schrift <span brl:grade="0">Basisschrift/Basisschrift</span> kurz kurz kurz</p>
-		  <p>Kurzschrift schrift schrift <span brl:grade="1">Vollschrift-­Vollschrift</span> kurz kurz kurz</p>
-		  <p>Kurzschrift schrift schrift <span brl:grade="0">Basisschrift-­Basisschrift</span> kurz kurz kurz</p>
+		  <p>Kurzschrift schrift schrift <span brl:grade="1">Vollschrift/​Vollschrift</span> kurz kurz kurz</p>
+		  <p>Kurzschrift schrift schrift <span brl:grade="0">Basisschrift/​Basisschrift</span> kurz kurz kurz</p>
+		  <p>Kurzschrift schrift schrift <span brl:grade="1">Vollschrift-Vollschrift</span> kurz kurz kurz</p>
+		  <p>Kurzschrift schrift schrift <span brl:grade="0">Basisschrift-Basisschrift</span> kurz kurz kurz</p>
 		</level1>
 	      </bodymatter>
 	    </book>

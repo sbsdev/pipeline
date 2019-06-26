@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.net.URI;
 import static java.nio.file.Files.createTempDirectory;
@@ -14,6 +15,7 @@ import java.util.regex.Pattern;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
@@ -262,10 +264,9 @@ public interface SBSTranslator {
 										                                           htmlOut))); }}); }}));
 		}
 		
-		private final static Pattern PRINT_PAGE_NUMBER = Pattern.compile("(?<first>[0-9]+)?(?:/(?<last>[0-9]+))?");
-		private final static Pattern NUMBER = Pattern.compile("[0-9]+");
 		private final static String PRINT_PAGE_NUMBER_SIGN = "⠸⠼";
 		private final static String NUMBER_SIGN = "⠼";
+		private final static Pattern NUMBER = Pattern.compile("[0-9]+");
 		private final static String[] UPPER_DIGIT_TABLE = new String[]{"⠚","⠁","⠃","⠉","⠙","⠑","⠋","⠛","⠓","⠊"};
 		private final static String[] LOWER_DIGIT_TABLE = new String[]{"⠴","⠂","⠆","⠒","⠲","⠢","⠖","⠶","⠦","⠔"};
 
@@ -336,10 +337,10 @@ public interface SBSTranslator {
 
 			private final FromStyledTextToBraille fromStyledTextToBraille = new FromStyledTextToBraille() {
 				public java.lang.Iterable<String> transform(java.lang.Iterable<CSSStyledText> styledText, int from, int to) {
-					List<CSSStyledText> list = newArrayList(styledText);
-					int len = list.size();
-					for (int i = 0; i < len; i++) {
-						CSSStyledText s = list.get(i);
+					List<CSSStyledText> list = new ArrayList<>();
+					ListIterator<CSSStyledText> iter = newArrayList(styledText).listIterator();
+					segments: while (iter.hasNext()) {
+						CSSStyledText s = iter.next();
 						SimpleInlineStyle style = s.getStyle();
 						if (style != null) {
 							CSSProperty val = style.getProperty("text-transform");
@@ -350,56 +351,106 @@ public interface SBSTranslator {
 										String tt = ((TermIdent)t).getValue();
 										if (tt.equals("print-page")) {
 											failIfOtherStyleAttached(style, values);
-											list.set(i, new CSSStyledText(translatePrintPageNumber(s.getText()), "text-transform: none")); }
+											iter.previous();
+											translatePrintPageNumber(iter, list);
+											continue segments; }
 										else if (tt.equals("toc-page")) {
 											failIfOtherStyleAttached(style, values);
-											list.set(i, new CSSStyledText(translateBraillePageNumberInToc(s.getText()), "text-transform: none")); }
+											list.add(translateBraillePageNumberInToc(s.getText()));
+											continue segments; }
 										else if (tt.equals("toc-print-page")) {
 											failIfOtherStyleAttached(style, values);
-											list.set(i, new CSSStyledText(translatePrintPageNumberInToc(s.getText()), "text-transform: none")); }
+											list.add(translatePrintPageNumberInToc(s.getText()));
+											continue segments; }
 										else if (tt.equals("volume")) {
 											failIfOtherStyleAttached(style, values);
-											list.set(i, translateVolumeNumber(s.getText())); }
+											list.add(translateVolumeNumber(s.getText()));
+											continue segments; }
 										else if (tt.equals("volumes")) {
 											failIfOtherStyleAttached(style, values);
-											list.set(i, translateVolumesCount(s.getText())); }
+											list.add(translateVolumesCount(s.getText()));
+											continue segments; }
 										else if (tt.equals("volume-end")) {
 											failIfOtherStyleAttached(style, values);
-											list.set(i, translateVolumeNumberGenitiv(s.getText())); }
+											list.add(translateVolumeNumberGenitiv(s.getText()));
+											continue segments; }
 										else if (tt.equals("linenum")) {
 											failIfOtherStyleAttached(style, values);
-											list.set(i, new CSSStyledText(translateLineNumber(s.getText()), "text-transform: none")); }
+											list.add(translateLineNumber(s.getText()));
+											continue segments; }
 										else if (tt.equals("roman-num")) {
 											failIfOtherStyleAttached(style, values);
-											list.set(i, translateRomanNumber(s.getText())); }}}}}}
+											list.add(translateRomanNumber(s.getText()));
+											continue segments; }}}}}
+						list.add(s); }
 					return translator.transform(list, from, to);
 				}
 			};
 
-			private String translatePrintPageNumber(String number) {
-				Matcher m = PRINT_PAGE_NUMBER.matcher(number.replaceAll("\u200B",""));
-				if (!m.matches())
-					throw new RuntimeException("'" + number + "' is not a valid print page number or print page number range");
-				StringBuilder b = new StringBuilder();
-				b.append(PRINT_PAGE_NUMBER_SIGN);
-				String first = m.group("first");
-				String last = m.group("last");
-				// TODO: warning if first == null
-				if (first != null) {
-					b.append(translateNaturalNumber(Integer.parseInt(first)));
-					if (last != null)
-						b.append(translateNaturalNumber(Integer.parseInt(last), true)); }
-				else if (last != null)
-					b.append(translateNaturalNumber(Integer.parseInt(last)));
-				return b.toString();
+			private void translatePrintPageNumber(ListIterator<CSSStyledText> iter, List<CSSStyledText> collect) {
+				SimpleInlineStyle s = null;
+				String fullNumber = "";
+				boolean seenNominator = false;
+				boolean seenSlash = false;
+				boolean seenDenominator = false;
+				boolean invalid = false;
+				while (iter.hasNext()) {
+					CSSStyledText next = iter.next();
+					if (s == null)
+						s = next.getStyle();
+					else if (!Objects.equal(next.getStyle(), s)) {
+						iter.previous();
+						break; }
+					String t = next.getText().replaceAll("\u200B","");
+					StringBuilder b = new StringBuilder();
+					fullNumber += t;
+					if (invalid) continue;
+					for (;;) {
+						if (t.isEmpty()) {
+							collect.add(new CSSStyledText(b.toString(), "text-transform: none"));
+							break;
+						} else if (seenDenominator) {
+							invalid = true;
+							break;
+						} else {
+							if (t.startsWith("/")) {
+								if (seenSlash || !seenNominator) {
+									invalid = true;
+									break;
+								} else {
+									seenSlash = true;
+									t = t.substring(1);
+								}
+							} else {
+								Matcher m = NUMBER.matcher(t);
+								if (!m.find() || m.start() != 0) {
+									invalid = true;
+									break;
+								} else {
+									if (!seenNominator) {
+										b.append(PRINT_PAGE_NUMBER_SIGN);
+										b.append(translateNaturalNumber(Integer.parseInt(t.substring(0, m.end()))));
+										seenNominator = true;
+									} else {
+										b.append(translateNaturalNumber(Integer.parseInt(t.substring(0, m.end())), true));
+										seenDenominator = true;
+									}
+									t = t.substring(m.end());
+								}
+							}
+						}
+					}
+				}
+				if (invalid)
+					throw new RuntimeException("'" + fullNumber + "' is not a valid print page number");
 			}
 			
-			private String translatePrintPageNumberInToc(String number) {
-				return translateNaturalNumber(Integer.parseInt(number), true);
+			private CSSStyledText translatePrintPageNumberInToc(String number) {
+				return new CSSStyledText(translateNaturalNumber(Integer.parseInt(number), true), "text-transform: none");
 			}
 
-			private String translateBraillePageNumberInToc(String number) {
-				return translateNaturalNumber(Integer.parseInt(number));
+			private CSSStyledText translateBraillePageNumberInToc(String number) {
+				return new CSSStyledText(translateNaturalNumber(Integer.parseInt(number)), "text-transform: none");
 			}
 
 			private CSSStyledText translateVolumeNumber(String number) {
@@ -548,7 +599,7 @@ public interface SBSTranslator {
 			
 			private final static int LINENUM_WIDTH = 2;
 			
-			private String translateLineNumber(String number) {
+			private CSSStyledText translateLineNumber(String number) {
 				StringBuilder b = new StringBuilder();
 				b.append(translateNaturalNumber(Integer.parseInt(number), false));
 				int l = b.length();
@@ -556,7 +607,7 @@ public interface SBSTranslator {
 					throw new RuntimeException("Line number may not be longer than " + LINENUM_WIDTH + " digits.");
 				for (int i = l; l < LINENUM_WIDTH; l++)
 					b.insert(0, " ");
-				return b.toString();
+				return new CSSStyledText(b.toString(), "text-transform: none");
 			}
 			
 			private String translateNaturalNumber(int number) {

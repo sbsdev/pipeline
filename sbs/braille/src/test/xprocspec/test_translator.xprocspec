@@ -163,8 +163,8 @@
       <x:expect label="result" type="compare">
         <x:document type="inline">
           <p xmlns="http://www.w3.org/1999/xhtml" xml:lang="de-Brai">
-            <span>⠕⠇⠠⠽⠍­⠏⠊­⠻</span>
-            <span>⠕⠇⠠⠽⠍⠏⠊⠻</span>
+            <span>⠕­⠇⠠⠽⠍­⠏⠊­⠻</span>
+            <span>⠕­⠇⠠⠽⠍⠏⠊⠻</span>
             <span style="hyphens: none">⠕⠇⠠⠽⠍⠏⠊⠻</span>
           </p>
         </x:document>
@@ -199,7 +199,7 @@
     <x:expect label="result" type="compare">
       <x:document type="inline">
         <p xmlns="http://www.w3.org/1999/xhtml" xml:lang="de-Brai"
-           style="@text-transform downgrade { system: -sbs-indicators; open: '-.'; close: '\27 .'; single-word: '\27 .' }">
+           style="@text-transform downgrade { system: -sbs-indicators; open: '-.'; close: '\27 .'; single-word: '\27 .'; text-transform: auto }">
           ⠫ ⠎⠏⠗⠼⠺⠢⠞⠒ ⠤⠄<span brl:grade="0" xml:lang="fr">⠞⠕⠥⠞ ⠧⠊⠑⠝⠞ ⠈⠷ ⠏⠕⠊⠝⠞ ⠈⠷ ⠟⠥⠊ ⠎⠁⠊⠞
           ⠁⠞⠞⠑⠝⠙⠗⠑</span>⠠⠄ ⠶⠵ ⠷⠂ ⠗ ⠺⠴⠞⠉ ⠅⠂ ⠅⠭⠞ ⠁⠿ ⠞ ⠗ ⠵⠞⠶⠄
         </p>
