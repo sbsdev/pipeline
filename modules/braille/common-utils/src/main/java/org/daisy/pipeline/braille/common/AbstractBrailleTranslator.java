@@ -154,9 +154,13 @@ public abstract class AbstractBrailleTranslator extends AbstractTransform implem
 				private String lastWordOtherPart;
 				private final boolean precedingSpace;
 				private final boolean alwaysEmpty;
+				private final char hyphenChar;
 				// words are separated with SPACE, TAB, LF, CR, BLANK, NBSP or LS
 				private final static Pattern WORD_BOUNDARY = Pattern.compile("[\\x20\t\\n\\r\\u2800\\xA0\u2028]");
 				public FullyHyphenatedAndTranslatedString(String string, int from, int to) {
+					this(string, from, to, '\u2824');
+				}
+				public FullyHyphenatedAndTranslatedString(String string, int from, int to, char hyphenChar) {
 					// if there are no preceding segments, assume that we are at the beginning of a line,
 					// so leading space can be stripped
 					// FIXME: we can not make this assumption! see for example FormatterCoreContext,
@@ -185,6 +189,7 @@ public abstract class AbstractBrailleTranslator extends AbstractTransform implem
 					if (next.replaceAll("[\u00ad\u200b]","").isEmpty())
 						next = null;
 					alwaysEmpty = (next == null);
+					this.hyphenChar = hyphenChar;
 				}
 				public boolean hasNext() {
 					return next != null || lastWordPart != null;
@@ -212,13 +217,13 @@ public abstract class AbstractBrailleTranslator extends AbstractTransform implem
 							byte[] hyphens = t._2;
 							boolean inFirstPart = false;
 							String nextLastWordPart = null;
-							for (int i = limit - 1; i > 0; i--) {
+							for (int i = limit; i > 0; i--) {
 								// FIXME: don't hard-code the number 4
-								if ((hyphens[i] & 4) == 4) {
+								if ((hyphens[i - 1] & 4) == 4) {
 									inFirstPart = true;
 									nextLastWordPart = lastWord.substring(0, i); }
 								// FIXME: don't hard-code these numbers
-								if ((((hyphens[i] & 1) == 1) && (i < limit - 1)) || ((hyphens[i] & 2) == 2)) {
+								if ((((hyphens[i - 1] & 1) == 1) && (i < limit)) || ((hyphens[i - 1] & 2) == 2)) {
 									if (!inFirstPart) {
 										// break point in second part of word, or in first part and first part does not fit on line
 										// in both cases the implicit line breaking will break correctly
@@ -230,9 +235,11 @@ public abstract class AbstractBrailleTranslator extends AbstractTransform implem
 										// need to switch to "explicit" mode because otherwise the first part would not be broken
 										String n = lastWord.substring(0, i);
 										// FIXME: don't hard-code the number 1
-										if ((hyphens[i] & 1) == 1)
-											n += SHY;
+										if ((hyphens[i - 1] & 1) == 1)
+											// don't use SHY because it would be dropped by LineIterator if no more characters follow
+											n += hyphenChar;
 										lastWordPart = nextLastWordPart.substring(i);
+										if (lastWordPart.isEmpty()) lastWordPart = null;
 										return n; }}}}
 						// else move the word to the next line
 						return "";
@@ -296,7 +303,7 @@ public abstract class AbstractBrailleTranslator extends AbstractTransform implem
 				
 				public LineIterator(String fullyHyphenatedAndTranslatedString, int from, int to,
 				                    char blankChar, char hyphenChar, int wordSpacing) {
-					this(new FullyHyphenatedAndTranslatedString(fullyHyphenatedAndTranslatedString, from, to),
+					this(new FullyHyphenatedAndTranslatedString(fullyHyphenatedAndTranslatedString, from, to, hyphenChar),
 					     blankChar, hyphenChar, wordSpacing);
 				}
 				

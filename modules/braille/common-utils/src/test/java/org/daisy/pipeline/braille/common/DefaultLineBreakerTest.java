@@ -105,6 +105,54 @@ public class DefaultLineBreakerTest {
 		assertFalse(i.hasNext());
 	}
 	
+	@Test
+	public void testKeepSegmentsTogether() {
+		assertEquals(
+			"xxx abc",
+			fillLines(
+				new AbstractBrailleTranslator.util.DefaultLineBreaker.LineIterator(
+					"xxx abcdef",
+					0, 7, ' ', '-', 1),
+				10));
+		assertEquals(
+			"xxx\n" +
+			"abc",
+			fillLines(
+				new AbstractBrailleTranslator.util.DefaultLineBreaker.LineIterator(
+					"xxx abcdefg",
+					0, 7, ' ', '-', 1),
+				10));
+		assertEquals(
+			"xxx\n" +
+			"abc",
+			fillLines(
+				new AbstractBrailleTranslator.util.DefaultLineBreaker.LineIterator(
+					"xxx abcdef­g",
+					0, 7, ' ', '-', 1),
+				10));
+		assertEquals(
+			"xxx abc",
+			fillLines(
+				new AbstractBrailleTranslator.util.DefaultLineBreaker.LineIterator(
+					"xxx abcde­fg",
+					0, 7, ' ', '-', 1),
+				10));
+		assertEquals(
+			"xxx abc",
+			fillLines(
+				new AbstractBrailleTranslator.util.DefaultLineBreaker.LineIterator(
+					"xxx abcde-\u200Bfg",
+					0, 7, ' ', '-', 1),
+				10));
+		assertEquals(
+			"xxx ab-",
+			fillLines(
+				new AbstractBrailleTranslator.util.DefaultLineBreaker.LineIterator(
+					"xxx ab­cdefg",
+					0, 7, ' ', '-', 1),
+				10));
+	}
+	
 	private static class TestHyphenator extends AbstractHyphenator {
 		
 		@Override

@@ -128,10 +128,12 @@ public class LibhyphenJnaImpl extends AbstractTransformProvider<LibhyphenHyphena
 		if (q.containsKey("hyphenator")) {
 			String v = q.removeOnly("hyphenator").getValue().get();
 			if (!"hyphen".equals(v)) {
-				if (q.isEmpty())
-					return of(get(asURI(v)));
-				else
-					return fromNullable(fromId(v)); }}
+				if (!q.isEmpty())
+					return empty;
+				LibhyphenHyphenator h = fromId(v);
+				if (h != null)
+					return fromNullable(h);
+				return of(get(asURI(v))); }}
 		String table = null;
 		if (q.containsKey("libhyphen-table"))
 			table = q.removeOnly("libhyphen-table").getValue().get();
