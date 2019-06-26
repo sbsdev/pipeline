@@ -58,7 +58,7 @@ public class TablePath extends LiblouisTablePath {
 			relative = getIdentifier().relativize(resource);
 		if (relative.isAbsolute())
 			relative = URIs.relativize(makeUnpackDir(), resource);
-		if (relative.isAbsolute())
+		if (whitelistBase != null && relative.isAbsolute())
 			relative = URIs.relativize(whitelistBase, resource);
 		if (relative.isAbsolute())
 			return null;
