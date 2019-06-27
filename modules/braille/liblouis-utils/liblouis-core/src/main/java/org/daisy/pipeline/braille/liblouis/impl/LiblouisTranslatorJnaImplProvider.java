@@ -270,6 +270,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 		protected FullHyphenator fullHyphenator;
 		private Hyphenator.LineBreaker lineBreaker;
 		private final String mainLocale;
+		private final Map<String,Typeform> supportedTypeforms;
 		
 		// how to handle non-standard hyphenation in pre-translation mode
 
@@ -290,6 +291,8 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 			this.translator = translator;
 			this.handleNonStandardHyphenation = handleNonStandardHyphenation;
 			this.mainLocale = mainLocale;
+			this.supportedTypeforms
+				= translator.getSupportedTypeforms().stream().collect(Collectors.toMap(Typeform::getName, e -> e));
 		}
 		
 		private LiblouisTranslatorImpl(Translator translator, Hyphenator hyphenator, int handleNonStandardHyphenation, String mainLocale) {
@@ -315,11 +318,9 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 			if (fromTypeformedTextToBraille == null)
 				fromTypeformedTextToBraille = new FromTypeformedTextToBraille() {
 					public String[] transform(String[] text, String[] emphClasses) {
-						Map<String,Typeform> typeforms
-							= translator.getSupportedTypeforms().stream().collect(Collectors.toMap(Typeform::getName, e -> e));
 						Typeform[] typeform = new Typeform[emphClasses.length];
 						for (int i = 0; i < typeform.length; i++) {
-							typeform[i] = typeforms.get(emphClasses[i]);
+							typeform[i] = supportedTypeforms.get(emphClasses[i]);
 							if (typeform[i] == null)
 								logger.warn("emphclass 'italic' not defined in table {}", translator.getTable());
 						}
@@ -354,6 +355,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 			if (lineBreakingFromStyledText == null)
 				lineBreakingFromStyledText = new LineBreaker(
 					translator,
+					supportedTypeforms,
 					lineBreaker,
 					fullHyphenator,
 					new FromStyledTextToBraille() {
@@ -374,16 +376,19 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 		static class LineBreaker extends DefaultLineBreaker {
 			
 			final Translator liblouisTranslator;
+			final Map<String,Typeform> supportedTypeforms;
 			final Hyphenator.LineBreaker lineBreaker;
 			final FullHyphenator fullHyphenator;
 			final FromStyledTextToBraille fullTranslator;
 			
 			protected LineBreaker(Translator liblouisTranslator,
+			                      Map<String,Typeform> supportedTypeforms,
 			                      Hyphenator.LineBreaker lineBreaker,
 			                      FullHyphenator fullHyphenator,
 			                      FromStyledTextToBraille fullTranslator) {
 				super(logger);
 				this.liblouisTranslator = liblouisTranslator;
+				this.supportedTypeforms = supportedTypeforms;
 				this.lineBreaker = lineBreaker;
 				this.fullHyphenator = fullHyphenator;
 				this.fullTranslator = fullTranslator;
@@ -397,7 +402,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 				try {
 					braille = fullTranslator.transform(styledTextCopy); }
 				catch (Exception e) {
-					return new BrailleStreamImpl(liblouisTranslator, lineBreaker, fullHyphenator, styledText, from, to); }
+					return new BrailleStreamImpl(liblouisTranslator, supportedTypeforms, lineBreaker, fullHyphenator, styledText, from, to); }
 				StringBuilder brailleString = new StringBuilder();
 				int fromChar = 0;
 				int toChar = to >= 0 ? 0 : -1;
@@ -414,6 +419,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 			static class BrailleStreamImpl implements BrailleStream {
 				
 				final Translator liblouisTranslator;
+				final Map<String,Typeform> supportedTypeforms;
 				final Hyphenator.LineBreaker lineBreaker;
 				final FullHyphenator fullHyphenator;
 				
@@ -467,6 +473,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 				final int to;
 				
 				BrailleStreamImpl(Translator liblouisTranslator,
+				                  Map<String,Typeform> supportedTypeforms,
 				                  Hyphenator.LineBreaker lineBreaker,
 				                  FullHyphenator fullHyphenator,
 				                  java.lang.Iterable<CSSStyledText> styledText,
@@ -474,6 +481,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 				                  int to) {
 					
 					this.liblouisTranslator = liblouisTranslator;
+					this.supportedTypeforms = supportedTypeforms;
 					this.lineBreaker = lineBreaker;
 					this.fullHyphenator = fullHyphenator;
 					
@@ -535,7 +543,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 									else if (val == TextTransform.list_values) {
 										TermList values = style.getValue(TermList.class, "text-transform");
 										text[i] = textFromTextTransform(text[i], values);
-										typeform[i] = typeform[i].add(typeformFromTextTransform(values, liblouisTranslator)); }
+										typeform[i] = typeform[i].add(typeformFromTextTransform(values, liblouisTranslator, supportedTypeforms)); }
 									style.removeProperty("text-transform"); }
 								someTransform = true;
 								val = style.getProperty("hyphens");
@@ -553,7 +561,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 											logger.warn("letter-spacing: {} not supported, must be non-negative", val);
 											letterSpacing[i] = 0; }}
 									style.removeProperty("letter-spacing"); }
-								typeform[i] = typeform[i].add(typeformFromInlineCSS(style, liblouisTranslator)); }
+								typeform[i] = typeform[i].add(typeformFromInlineCSS(style, liblouisTranslator, supportedTypeforms)); }
 							else
 								someTransform = true; }
 					}
@@ -1065,7 +1073,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 						else if (val == TextTransform.list_values) {
 							TermList values = style.getValue(TermList.class, "text-transform");
 							text[i] = textFromTextTransform(text[i], values);
-							typeform[i] = typeform[i].add(typeformFromTextTransform(values, translator)); }
+							typeform[i] = typeform[i].add(typeformFromTextTransform(values, translator, supportedTypeforms)); }
 						style.removeProperty("text-transform"); }
 					someTransform = true;
 					val = style.getProperty("hyphens");
@@ -1083,7 +1091,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 								logger.warn("letter-spacing: {} not supported, must be non-negative", val);
 								letterSpacing[i] = 0; }}
 						style.removeProperty("letter-spacing"); }
-					typeform[i] = typeform[i].add(typeformFromInlineCSS(style, translator)); }
+					typeform[i] = typeform[i].add(typeformFromInlineCSS(style, translator, supportedTypeforms)); }
 				else
 					someTransform = true; }
 			
@@ -1538,15 +1546,13 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 	 * @return the corresponding Typeform object.
 	 * @see <a href="http://liblouis.googlecode.com/svn/documentation/liblouis.html#lou_translateString">lou_translateString</a>
 	 */
-	protected static Typeform typeformFromInlineCSS(SimpleInlineStyle style, Translator table) {
-		Map<String,Typeform> typeforms
-			= table.getSupportedTypeforms().stream().collect(Collectors.toMap(Typeform::getName, e -> e));
+	protected static Typeform typeformFromInlineCSS(SimpleInlineStyle style, Translator table, Map<String,Typeform> supportedTypeforms) {
 		Typeform typeform = Typeform.PLAIN_TEXT;
 		for (String prop : style.getPropertyNames()) {
 			if (prop.equals("font-style")) {
 				CSSProperty value = style.getProperty(prop);
 				if (value == FontStyle.ITALIC || value == FontStyle.OBLIQUE) {
-					Typeform t = typeforms.get("italic");
+					Typeform t = supportedTypeforms.get("italic");
 					if (t != null)
 						typeform = typeform.add(t);
 					else
@@ -1557,7 +1563,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 			else if (prop.equals("font-weight")) {
 				CSSProperty value = style.getProperty(prop);
 				if (value == FontWeight.BOLD) {
-					Typeform t = typeforms.get("bold");
+					Typeform t = supportedTypeforms.get("bold");
 					if (t != null)
 						typeform = typeform.add(t);
 					else
@@ -1568,7 +1574,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 			else if (prop.equals("text-decoration")) {
 				CSSProperty value = style.getProperty(prop);
 				if (value == TextDecoration.UNDERLINE) {
-					Typeform t = typeforms.get("underline");
+					Typeform t = supportedTypeforms.get("underline");
 					if (t != null)
 						typeform = typeform.add(t);
 					else
@@ -1609,9 +1615,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 	 * These values can be added for multiple emphasis.
 	 * @see <a href="http://liblouis.googlecode.com/svn/documentation/liblouis.html#lou_translateString">lou_translateString</a>
 	 */
-	protected static Typeform typeformFromTextTransform(TermList textTransform, Translator table) {
-		Map<String,Typeform> typeforms
-			= table.getSupportedTypeforms().stream().collect(Collectors.toMap(Typeform::getName, e -> e));
+	protected static Typeform typeformFromTextTransform(TermList textTransform, Translator table, Map<String,Typeform> supportedTypeforms) {
 		Typeform typeform = Typeform.PLAIN_TEXT;
 		for (Term<?> t : textTransform) {
 			String tt = ((TermIdent)t).getValue();
@@ -1625,7 +1629,7 @@ public class LiblouisTranslatorJnaImplProvider extends AbstractTransformProvider
 						emphClass= "italic";
 					else if (emphClass.equals("under"))
 						emphClass = "underline";
-					Typeform tf = typeforms.get(emphClass);
+					Typeform tf = supportedTypeforms.get(emphClass);
 					if (tf != null)
 						typeform = typeform.add(tf);
 					else

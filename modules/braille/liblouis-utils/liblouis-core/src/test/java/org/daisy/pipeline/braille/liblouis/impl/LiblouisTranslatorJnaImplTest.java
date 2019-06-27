@@ -102,6 +102,7 @@ public class LiblouisTranslatorJnaImplTest {
 		LiblouisTranslatorImpl.LineBreaker.BrailleStreamImpl stream
 		= new LiblouisTranslatorImpl.LineBreaker.BrailleStreamImpl(
 			liblouisTranslator,
+			null,
 			hyphenator,
 			null,
 			styledText("volleyballederen volleyballederen", "hyphens:auto"),
