@@ -161,6 +161,9 @@
 	    <xsl:text> können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht
 	    weiter verbreiten oder öffentlich zugänglich machen.</xsl:text>
 	  </xsl:element>
+	  <xsl:element name="p" namespace="{$namespace}">
+	    <xsl:text>Dieses Braillebuch ist nicht Korrektur gelesen</xsl:text>
+	  </xsl:element>
 	</xsl:otherwise>
       </xsl:choose>
 
@@ -179,7 +182,7 @@
 	<!-- Publisher long -->
 	<xsl:element name="p" namespace="{$namespace}">
 	  <xsl:attribute name="class" select="'publisher'"/>
-	  <xsl:text>Verlag, Satz und Druck</xsl:text>
+	  <xsl:text>Braillebearbeitung und Druck</xsl:text>
 	  <xsl:element name="br" namespace="{$namespace}"/>
 	  <xsl:element name="abbr" namespace="{$namespace}">SBS</xsl:element>
 	  <xsl:choose>
