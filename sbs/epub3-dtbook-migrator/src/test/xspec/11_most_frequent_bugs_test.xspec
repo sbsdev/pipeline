@@ -44,14 +44,6 @@
       </x:expect>
     </x:scenario>
 
-    <x:scenario label="Inhalt von BRL:COMPUTER enthält fälschlicherweise Trennmarken">
-      <!-- http://redmine.sbszh.ch/issues/2360 -->
-      <x:context>
-      </x:context>
-      <x:expect label="braille">
-      </x:expect>
-    </x:scenario>
-
     <x:scenario label="Automatische Korrektur des Abstands zwischen Operator und Zahl">
       <!-- http://redmine.sbszh.ch/issues/2326 -->
       <x:context>
