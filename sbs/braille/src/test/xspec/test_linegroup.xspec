@@ -49,7 +49,7 @@
         <dtb:line xml:lang="de"><dtb:linenum>6</dtb:linenum>DAS HIER IST EIN KLEINER TEST. ES GEHT DARUM.</dtb:line>
       </x:context>
       <x:expect label="braille">
-	<dtb:line xml:lang="de"><dtb:linenum>#F</dtb:linenum>D HR ] 6 KL67 TE]. % &amp;HT D)UM.</dtb:line>
+	<dtb:line xml:lang="de"><dtb:linenum>#F</dtb:linenum>D HR ] 6 KL67 TE]. % G=T D)UM.</dtb:line>
       </x:expect>
     </x:scenario>
 
@@ -58,7 +58,7 @@
         <dtb:line xml:lang="de"><dtb:linenum>36</dtb:linenum>DAS HIER IST EIN KLEINER TEST. ES GEHT DARUM.</dtb:line>
       </x:context>
       <x:expect label="braille">
-        <dtb:line xml:lang="de"><dtb:linenum>#CF</dtb:linenum>D HR ] 6 KL67 TE]. % &amp;HT D)UM.</dtb:line>
+        <dtb:line xml:lang="de"><dtb:linenum>#CF</dtb:linenum>D HR ] 6 KL67 TE]. % G=T D)UM.</dtb:line>
       </x:expect>
     </x:scenario>
 
@@ -67,9 +67,9 @@
         <dtb:line xml:lang="de"><dtb:linenum>6</dtb:linenum>DAS HIER IST EIN KLEINER TEST. ES GEHT DARUM.</dtb:line><dtb:line xml:lang="de">DAS HIER IST EIN KLEINER TEST. ES GEHT DARUM.</dtb:line><dtb:line xml:lang="de"><dtb:linenum>6</dtb:linenum>DAS HIER IST EIN KLEINER TEST. ES GEHT DARUM.</dtb:line>
       </x:context>
       <x:expect label="braille">
-        <dtb:line xml:lang="de"><dtb:linenum>#F</dtb:linenum>D HR ] 6 KL67 TE]. % &amp;HT D)UM.</dtb:line>
-	<dtb:line xml:lang="de">D HR ] 6 KL67 TE]. % &amp;HT D)UM.</dtb:line>
-	<dtb:line xml:lang="de"><dtb:linenum>#F</dtb:linenum>D HR ] 6 KL67 TE]. % &amp;HT D)UM.</dtb:line>
+        <dtb:line xml:lang="de"><dtb:linenum>#F</dtb:linenum>D HR ] 6 KL67 TE]. % G=T D)UM.</dtb:line>
+	<dtb:line xml:lang="de">D HR ] 6 KL67 TE]. % G=T D)UM.</dtb:line>
+	<dtb:line xml:lang="de"><dtb:linenum>#F</dtb:linenum>D HR ] 6 KL67 TE]. % G=T D)UM.</dtb:line>
       </x:expect>
     </x:scenario>
 
@@ -81,7 +81,7 @@
       </x:context>
       <x:expect label="braille">
         <dtb:poem xml:lang="de">
-	  <dtb:line><dtb:linenum>#F</dtb:linenum>D HR ] 6 KL67 TE]. % &amp;HT D)UM.</dtb:line>
+	  <dtb:line><dtb:linenum>#F</dtb:linenum>D HR ] 6 KL67 TE]. % G=T D)UM.</dtb:line>
 	</dtb:poem>
       </x:expect>
     </x:scenario>
@@ -95,8 +95,8 @@
       </x:context>
       <x:expect label="braille">
         <dtb:poem xml:lang="de">
-	  <dtb:line><dtb:linenum>#F</dtb:linenum>D HR ] 6 KL67 TE]. % &amp;HT D)UM.</dtb:line>
-	  <dtb:line>D HR ] 6 KL67 TE]. % &amp;HT D)UM.</dtb:line>
+	  <dtb:line><dtb:linenum>#F</dtb:linenum>D HR ] 6 KL67 TE]. % G=T D)UM.</dtb:line>
+	  <dtb:line>D HR ] 6 KL67 TE]. % G=T D)UM.</dtb:line>
 	</dtb:poem>
       </x:expect>
     </x:scenario>
@@ -115,10 +115,10 @@
       <x:expect label="braille">
         <dtb:poem xml:lang="de">
 	  <dtb:linegroup>
-	    <dtb:line><dtb:linenum>#F</dtb:linenum>D HR ] 6 KL67 TE]. % &amp;HT D)UM.</dtb:line>
+	    <dtb:line><dtb:linenum>#F</dtb:linenum>D HR ] 6 KL67 TE]. % G=T D)UM.</dtb:line>
 	  </dtb:linegroup>
 	  <dtb:linegroup>
-	    <dtb:line>D HR ] 6 KL67 TE]. % &amp;HT D)UM.</dtb:line>
+	    <dtb:line>D HR ] 6 KL67 TE]. % G=T D)UM.</dtb:line>
 	  </dtb:linegroup>
 	</dtb:poem>
       </x:expect>
