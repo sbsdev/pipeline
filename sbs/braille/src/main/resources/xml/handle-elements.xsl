@@ -937,6 +937,26 @@
     </xsl:call-template>
   </xsl:template>
 
+  <!-- ========================================== -->
+  <!-- Wortersatzstrich -->
+  <!-- ========================================== -->
+  <!-- assume a text node starts with a Wortersatzstrich if it matches the regexp and the
+       previous text node ends in whitespace -->
+  <xsl:template
+    match="text()[my:starts-with-wortersatzstrich(string()) and my:ends-with-whitespace(string(my:preceding-textnode-within-block(.)))]">
+    <xsl:call-template name="translate">
+      <xsl:with-param name="text" select="concat('&#x2569;',string()))"/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <!-- assume a text node starts with a Wortersatzstrich if it matches the regexp and is the first text node within the block -->
+  <xsl:template
+    match="text()[my:starts-with-wortersatzstrich(string()) and exists(ancestor-or-self::*[my:is-block-element(.)]) and empty(my:preceding-textnode-within-block(.))]">
+    <xsl:call-template name="translate">
+      <xsl:with-param name="text" select="concat('&#x2569;',string())"/>
+    </xsl:call-template>
+  </xsl:template>
+
   <!-- ================================================= -->
   <!-- Single word mixed emphasis, mixed emphasis before-->
   <!-- ================================================= -->

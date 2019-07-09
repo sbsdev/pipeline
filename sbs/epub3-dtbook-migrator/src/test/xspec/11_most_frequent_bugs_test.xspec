@@ -145,8 +145,7 @@
       </x:expect>
     </x:scenario>
 
-    <x:scenario label="falsches Resultat bei Wortersatzstrich -xxx, wenn direkt nach Tag"
-		pending="true">
+    <x:scenario label="falsches Resultat bei Wortersatzstrich -xxx, wenn direkt nach Tag">
       <!-- http://redmine.sbszh.ch/issues/1505 -->
       <x:context>
 	<dtb:p xml:lang="de">-losenheim</dtb:p>

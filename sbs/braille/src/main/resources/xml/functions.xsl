@@ -155,6 +155,11 @@
     <xsl:value-of select="not(empty($string)) and matches($string, '\S$')"/>
   </xsl:function>
 
+  <xsl:function name="my:ends-with-whitespace" as="xs:boolean">
+    <xsl:param name="string"/>
+    <xsl:value-of select="not(empty($string)) and matches($string, '\s$')"/>
+  </xsl:function>
+
   <xsl:function name="my:starts-with-punctuation" as="xs:boolean">
     <xsl:param name="string"/>
     <xsl:value-of select="matches($string, '^\p{P}')"/>
@@ -168,6 +173,11 @@
   <xsl:function name="my:ends-with-punctuation-word" as="xs:boolean">
     <xsl:param name="string"/>
     <xsl:value-of select="matches($string, '\W([-/]|\p{P})+$')"/>
+  </xsl:function>
+
+  <xsl:function name="my:starts-with-wortersatzstrich" as="xs:boolean">
+    <xsl:param name="string"/>
+    <xsl:value-of select="matches($string, '^-\w')"/>
   </xsl:function>
 
   <xsl:function name="my:filter-hyphenation" as="xs:string">

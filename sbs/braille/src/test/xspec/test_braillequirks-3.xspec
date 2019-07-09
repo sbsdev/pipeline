@@ -117,28 +117,28 @@ mm</brl:num>
       <x:expect label="braille"><stub xml:lang="de">QDUKTJ!,mTE]</stub></x:expect>
     </x:scenario>
 
-    <x:scenario label="Kursive/Fette Anführungszeichen bei brl:render=&#34;ignore&#34; (http://redmine.sbszh.ch/issues/show/1006)">
+    <x:scenario label="Kursive/Fette Anführungszeichen bei brl:render=&#34;ignore&#34; I (http://redmine.sbszh.ch/issues/show/1006)">
       <x:context>
         <stub xml:lang="de">»<dtb:em brl:render="ignore">Test</dtb:em>«-Beispiel</stub>
       </x:context>
       <x:expect label="braille"><stub xml:lang="de">(<dtb:em brl:render="ignore">TE]</dtb:em>)-,B,0</stub></x:expect>
     </x:scenario>
 
-    <x:scenario label="Kursive/Fette Anführungszeichen bei brl:render=&#34;ignore&#34; (http://redmine.sbszh.ch/issues/show/1006)">
+    <x:scenario label="Kursive/Fette Anführungszeichen bei brl:render=&#34;ignore&#34; II (http://redmine.sbszh.ch/issues/show/1006)">
       <x:context>
         <stub xml:lang="de"><dtb:em brl:render="ignore">»Test«</dtb:em>-Beispiel</stub>
       </x:context>
       <x:expect label="braille"><stub xml:lang="de"><dtb:em brl:render="ignore">(TE])</dtb:em>-,B,0</stub></x:expect>
     </x:scenario>
 
-    <x:scenario label="Kursive/Fette Anführungszeichen bei brl:render=&#34;ignore&#34; (http://redmine.sbszh.ch/issues/show/1006)">
+    <x:scenario label="Kursive/Fette Anführungszeichen bei brl:render=&#34;ignore&#34; III (http://redmine.sbszh.ch/issues/show/1006)">
       <x:context>
         <stub xml:lang="de">›<dtb:em brl:render="ignore">Test</dtb:em>‹-Beispiel</stub>
       </x:context>
       <x:expect label="braille"><stub xml:lang="de">'(<dtb:em brl:render="ignore">TE]</dtb:em>')-,B,0</stub></x:expect>
     </x:scenario>
 
-    <x:scenario label="Kursive/Fette Anführungszeichen bei brl:render=&#34;ignore&#34; (http://redmine.sbszh.ch/issues/show/1006)">
+    <x:scenario label="Kursive/Fette Anführungszeichen bei brl:render=&#34;ignore&#34; IV (http://redmine.sbszh.ch/issues/show/1006)">
       <x:context>
         <stub xml:lang="de"><dtb:em brl:render="ignore">›Test‹</dtb:em>-Beispiel</stub>
       </x:context>
