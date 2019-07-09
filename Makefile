@@ -123,7 +123,7 @@ run-docker : dist-docker-image
 .PHONY : check
 
 .PHONY : check-sbs
-check-sbs : check-modules/sbs/braille check-modules/sbs/braille-tables check-modules/sbs/dtbook-to-odt
+check-sbs : check-sbs/braille check-sbs/braille-tables check-sbs/dtbook-to-odt
 
 .PHONY : check-clientlib/go
 check-clientlib/go :
