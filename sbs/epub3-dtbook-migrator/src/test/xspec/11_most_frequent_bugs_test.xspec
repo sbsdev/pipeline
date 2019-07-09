@@ -18,8 +18,7 @@
       </x:expect>
     </x:scenario>
 
-    <x:scenario label="Falsche Übersetzungen bei mixed emphasis"
-		pending="true">
+    <x:scenario label="Falsche Übersetzungen bei mixed emphasis">
       <!-- http://redmine.sbszh.ch/issues/2464 -->
       <x:context>
 	  <dtb:p xml:lang="de"><dtb:em>experimental</dtb:em>protektorverhalten</dtb:p>

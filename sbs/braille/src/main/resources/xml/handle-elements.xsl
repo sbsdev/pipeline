@@ -367,7 +367,11 @@
                     <xsl:with-param name="table" select="$braille_tables"/>
                     <xsl:with-param name="text" select="'&#x255F;'"/>
                   </xsl:call-template>
-                  <xsl:apply-templates/>
+		  <!-- when translating make sure to inhibit contraction at the end by inserting a special character -->
+                  <xsl:call-template name="translate">
+                    <xsl:with-param name="table" select="$braille_tables"/>
+                    <xsl:with-param name="text" select="concat(string(),'&#x250A;')"/>
+                  </xsl:call-template>
                   <xsl:call-template name="translate">
                     <xsl:with-param name="table" select="$braille_tables"/>
                     <xsl:with-param name="text" select="'&#x2561;'"/>
@@ -380,7 +384,11 @@
                     <xsl:with-param name="table" select="$braille_tables"/>
                     <xsl:with-param name="text" select="'&#x255E;'"/>
                   </xsl:call-template>
-                  <xsl:apply-templates/>
+		<!-- when translating make sure to inhibit contraction at the beginning by inserting a special character -->
+                  <xsl:call-template name="translate">
+                    <xsl:with-param name="table" select="$braille_tables"/>
+                    <xsl:with-param name="text" select="concat('&#x250A;',string())"/>
+                  </xsl:call-template>
 		</xsl:when>
 		<!-- emph is inside the word -->
 		<xsl:when
@@ -389,7 +397,11 @@
                     <xsl:with-param name="table" select="$braille_tables"/>
                     <xsl:with-param name="text" select="'&#x255E;'"/>
                   </xsl:call-template>
-                  <xsl:apply-templates/>
+		  <!-- when translating make sure to inhibit contraction at the beginning or at the end by inserting a special character -->
+                  <xsl:call-template name="translate">
+                    <xsl:with-param name="table" select="$braille_tables"/>
+                    <xsl:with-param name="text" select="concat('&#x250A;',string(),'&#x250A;')"/>
+                  </xsl:call-template>
                   <xsl:call-template name="translate">
                     <xsl:with-param name="table" select="$braille_tables"/>
                     <xsl:with-param name="text" select="'&#x2561;'"/>
