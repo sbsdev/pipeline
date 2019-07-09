@@ -45,8 +45,7 @@
       </x:expect>
     </x:scenario>
 
-    <x:scenario label="Automatische Korrektur des Abstands zwischen Operator und Zahl"
-		pending="true">
+    <x:scenario label="Automatische Korrektur des Abstands zwischen Operator und Zahl">
       <!-- http://redmine.sbszh.ch/issues/2326 -->
       <x:context>
 	<dtb:p xml:lang="de">Kaufpreis × 4</dtb:p>
@@ -56,8 +55,7 @@
       </x:expect>
     </x:scenario>
 
-    <x:scenario label="Plus"
-		pending="true">
+    <x:scenario label="Plus">
       <x:context>
 	<dtb:p xml:lang="de">222 + 222 222+222 222 +222 wort + wort wort + 222</dtb:p>
       </x:context>
@@ -66,8 +64,7 @@
       </x:expect>
     </x:scenario>
 
-    <x:scenario label="Minus"
-		pending="true">
+    <x:scenario label="Minus">
       <x:context>
 	<dtb:p xml:lang="de">222 &#x2212; 222 222&#x2212;222 222 &#x2212;222 wort &#x2212; wort wort &#x2212; 222</dtb:p>
       </x:context>
@@ -76,8 +73,7 @@
       </x:expect>
     </x:scenario>
 
-    <x:scenario label="Malkreuz"
-		pending="true">
+    <x:scenario label="Malkreuz">
       <x:context>
 	<dtb:p xml:lang="de">222 × 222 222×222 222 ×222 wort × wort wort × 222</dtb:p>
       </x:context>
@@ -86,8 +82,7 @@
       </x:expect>
     </x:scenario>
 
-    <x:scenario label="Geteilt durch"
-		pending="true">
+    <x:scenario label="Geteilt durch">
       <x:context>
 	<dtb:p xml:lang="de">222 ÷ 222 222÷222 222 ÷222 wort ÷ wort wort ÷ 222</dtb:p>
       </x:context>
@@ -96,8 +91,7 @@
       </x:expect>
     </x:scenario>
 
-    <x:scenario label="Gleich"
-		pending="true">
+    <x:scenario label="Gleich">
       <x:context>
 	<dtb:p xml:lang="de">222 = 222 222=222 222 =222 wort = wort wort = 222</dtb:p>
       </x:context>
