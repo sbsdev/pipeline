@@ -955,7 +955,7 @@
   <xsl:template
     match="text()[my:starts-with-wortersatzstrich(string()) and my:ends-with-whitespace(string(my:preceding-textnode-within-block(.)))]">
     <xsl:call-template name="translate">
-      <xsl:with-param name="text" select="concat('&#x2569;',string()))"/>
+      <xsl:with-param name="text" select="concat('&#x2569;',string())"/>
     </xsl:call-template>
   </xsl:template>
 
