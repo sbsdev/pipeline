@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<x:description xmlns:x="http://www.jenitennison.com/xslt/xspec"
+	       xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
+	       xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
+               stylesheet="../resources/block-translate.xsl"
+	       preserve-space="dtb:p dtb:byline dtb:author dtb:li dtb:lic dtb:doctitle dtb:docauthor dtb:span dtb:em dtb:strong brl:emph dtb:line dtb:h1 dtb:h2 dtb:h3 dtb:h4 dtb:h5 dtb:h6">
+
+  <x:param name="contraction-grade">0</x:param>
+  <x:param name="ascii-braille">yes</x:param>
+
+  <x:param name="downshift_ordinals" select="true()"/>
+
+  <x:scenario label="Nested list I, (redmine#2677)">
+    <x:context>
+      <dtb:list xml:lang="de" type="ul">
+        <dtb:li>item 1</dtb:li>
+        <dtb:li>item 2</dtb:li>
+        <dtb:li>item 3</dtb:li>
+      </dtb:list>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:list xml:lang="de" type="ul">
+        <dtb:li>'- IT[ #A</dtb:li>
+        <dtb:li>'- IT[ #B</dtb:li>
+        <dtb:li>'- IT[ #C</dtb:li>
+      </dtb:list>
+    </x:expect>
+    </x:scenario>
+
+  <x:scenario label="Nested list II, (redmine#2677)">
+    <x:context>
+      <dtb:list xml:lang="de" type="ul">
+        <dtb:li>item 1</dtb:li>
+        <dtb:li>item 2</dtb:li>
+        <dtb:li>
+          <dtb:list type="ul">
+	    <dtb:li>item 1</dtb:li>
+	    <dtb:li>item 2</dtb:li>
+	    <dtb:li>
+              <dtb:list type="ul">
+                <dtb:li>item 1</dtb:li>
+                <dtb:li>item 2</dtb:li>
+                <dtb:li>item 3</dtb:li>
+              </dtb:list>
+	    </dtb:li>
+          </dtb:list>
+        </dtb:li>
+      </dtb:list>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:list xml:lang="de" type="ul">
+        <dtb:li>'- IT[ #A</dtb:li>
+        <dtb:li>'- IT[ #B</dtb:li>
+        <dtb:li>
+          <dtb:list type="ul">
+	    <dtb:li>'- IT[ #A</dtb:li>
+	    <dtb:li>'- IT[ #B</dtb:li>
+	    <dtb:li>
+              <dtb:list type="ul">
+                <dtb:li>'- IT[ #A</dtb:li>
+                <dtb:li>'- IT[ #B</dtb:li>
+                <dtb:li>'- IT[ #C</dtb:li>
+              </dtb:list>
+	    </dtb:li>
+          </dtb:list>
+        </dtb:li>
+      </dtb:list>
+    </x:expect>
+    </x:scenario>
+
+  <x:scenario label="Nested list III, (redmine#2677)">
+    <x:context>
+      <dtb:list xml:lang="de" type="pl">
+        <dtb:li>item 1</dtb:li>
+        <dtb:li>item 2</dtb:li>
+      </dtb:list>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:list xml:lang="de" type="pl">
+        <dtb:li>IT[ #A</dtb:li>
+        <dtb:li>IT[ #B</dtb:li>
+      </dtb:list>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Nested list IV, (redmine#2677)">
+    <x:context>
+      <dtb:list xml:lang="de" type="pl">
+        <dtb:li>item 1</dtb:li>
+        <dtb:li>item 2</dtb:li>
+        <dtb:li>
+          <dtb:list type="ul">
+	    <dtb:li>item 1</dtb:li>
+	    <dtb:li>item 2</dtb:li>
+	    <dtb:li>
+              <dtb:list type="ul">
+                <dtb:li>item 1</dtb:li>
+                <dtb:li>item 2</dtb:li>
+                <dtb:li>item 3</dtb:li>
+              </dtb:list>
+	    </dtb:li>
+          </dtb:list>
+        </dtb:li>
+      </dtb:list>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:list xml:lang="de" type="pl">
+        <dtb:li>IT[ #A</dtb:li>
+        <dtb:li>IT[ #B</dtb:li>
+        <dtb:li>
+          <dtb:list type="ul">
+	    <dtb:li>IT[ #A</dtb:li>
+	    <dtb:li>IT[ #B</dtb:li>
+	    <dtb:li>
+              <dtb:list type="ul">
+                <dtb:li>IT[ #A</dtb:li>
+                <dtb:li>IT[ #B</dtb:li>
+                <dtb:li>IT[ #C</dtb:li>
+              </dtb:list>
+	    </dtb:li>
+          </dtb:list>
+        </dtb:li>
+      </dtb:list>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Nested list V, (redmine#2677)">
+    <x:context>
+      <dtb:list xml:lang="de" type="ul">
+        <dtb:li>item 1</dtb:li>
+        <dtb:li>item 2</dtb:li>
+        <dtb:li>
+          <dtb:list type="pl">
+	    <dtb:li>item 1</dtb:li>
+	    <dtb:li>item 2</dtb:li>
+	    <dtb:li>
+              <dtb:list type="ul">
+                <dtb:li>item 1</dtb:li>
+                <dtb:li>item 2</dtb:li>
+                <dtb:li>item 3</dtb:li>
+              </dtb:list>
+	    </dtb:li>
+          </dtb:list>
+        </dtb:li>
+      </dtb:list>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:list xml:lang="de" type="ul">
+        <dtb:li>'- IT[ #A</dtb:li>
+        <dtb:li>'- IT[ #B</dtb:li>
+        <dtb:li>
+          <dtb:list type="pl">
+	    <dtb:li>'- IT[ #A</dtb:li>
+	    <dtb:li>'- IT[ #B</dtb:li>
+	    <dtb:li>
+              <dtb:list type="ul">
+                <dtb:li>'- IT[ #A</dtb:li>
+                <dtb:li>'- IT[ #B</dtb:li>
+                <dtb:li>'- IT[ #C</dtb:li>
+              </dtb:list>
+	    </dtb:li>
+          </dtb:list>
+        </dtb:li>
+      </dtb:list>
+    </x:expect>
+  </x:scenario>
+
+</x:description>
