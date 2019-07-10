@@ -926,6 +926,16 @@
   <!--     </xsl:call-template> -->
   <!-- </xsl:template> -->
 
+  <!-- ================================== -->
+  <!-- Handle letters after roman numbers -->
+  <!-- ================================== -->
+  <xsl:template
+    match="text()[(preceding::* intersect my:preceding-textnode-within-block(.)/(ancestor::brl:num[@role='roman'])) and my:isLetter(substring(.,1,1))]" priority="100">
+    <xsl:call-template name="translate">
+      <xsl:with-param name="text" select="concat('&#x256C;',string())"/>
+    </xsl:call-template>
+  </xsl:template>
+
   <!-- ========================================== -->
   <!-- Apostrophe after v-form or after homograph -->
   <!-- ========================================== -->
