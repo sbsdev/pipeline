@@ -55,16 +55,6 @@
       <x:expect label="braille"><stub xml:space="preserve" xml:lang="de">&amp;DKC'- ]R#</stub></x:expect>
     </x:scenario>
 
-    <x:scenario label="test 2 for brl:num role=&#34;measure&#34;, wenn Zeilenumbruch zwischen Zahl und Einheit steht (http://redmine.sbszh.ch/issues/show/898) ">
-      <x:context>
-        <stub xml:lang="de">
-          <brl:num role="measure">24 
-mm</brl:num>
-        </stub>
-      </x:context>
-      <x:expect label="braille"><stub xml:lang="de"><brl:num role="measure">#BD'MM</brl:num></stub></x:expect>
-    </x:scenario>
-
     <x:scenario label="test 1 for brl:homograph (http://redmine.sbszh.ch/issues/show/925) ">
       <x:context>
         <stub xml:lang="de">Iron <brl:homograph>M<brl:separator/>an</brl:homograph></stub>

@@ -178,16 +178,6 @@
       </x:expect>
     </x:scenario>
 
-    <x:scenario label="24 mm Falsches Resultat bei brl:num role=&#34;measure&#34;, wenn Zeilenumbruch zwischen Zahl und Einheit steht Bug #1263">
-      <x:context>
-        <dtb:p xml:lang="de"><brl:num role="measure">24
-          mm</brl:num></dtb:p>
-      </x:context>
-      <x:expect label="braille">
-        <dtb:p xml:lang="de"><brl:num role="measure">#BD'MM</brl:num></dtb:p>
-      </x:expect>
-    </x:scenario>
-
     <x:scenario label="text nodes ending with punctuation">
       <x:context>
         <stub xml:lang="de">

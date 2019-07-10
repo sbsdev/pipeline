@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<x:description xmlns:x="http://www.jenitennison.com/xslt/xspec"
+	       xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
+	       xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
+               stylesheet="../resources/block-translate.xsl"
+	       preserve-space="dtb:p dtb:byline dtb:author dtb:li dtb:lic dtb:doctitle dtb:docauthor dtb:span dtb:em dtb:strong brl:emph dtb:line dtb:h1 dtb:h2 dtb:h3 dtb:h4 dtb:h5 dtb:h6">
+
+  <x:param name="contraction-grade">2</x:param>
+  <x:param name="ascii-braille">yes</x:param>
+
+  <x:scenario label="num role=measure 14 km/h (Bug #1523)">
+    <x:context>
+      <brl:num xml:lang="de" role="measure">14 km/h</brl:num>
+    </x:context>
+    <x:expect label="braille">
+      <brl:num xml:lang="de" role="measure">#AD'KM!,'H</brl:num>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="brl:num with role measure, wenn Zeilenumbruch zwischen Zahl und Einheit steht (redmine#898 and redmine#1263) ">
+    <x:context>
+      <brl:num xml:lang="de" role="measure">24 mm</brl:num>
+    </x:context>
+    <x:expect label="braille">
+      <brl:num xml:lang="de" role="measure">#BD'MM</brl:num>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="brl:num with role measure, wenn Zeilenumbruch zwischen Zahl und Einheit steht (redmine#898) ">
+    <x:context>
+      <brl:num xml:lang="de" role="measure">24
+      mm</brl:num>
+    </x:context>
+    <x:expect label="braille">
+      <brl:num xml:lang="de" role="measure">#BD'MM</brl:num>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Zeilenumbruch zwischen Zahl und Einheit steht sollte Leerzeichen getilgt werden (redmine#898)">
+    <x:context>
+      <dtb:abbr xml:lang="de">Nr.
+25</dtb:abbr>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:abbr xml:lang="de">NR.#BE</dtb:abbr>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Whitespace after operator before measure">
+    <x:context>
+      <dtb:p xml:lang="de">10 + <brl:num role="measure">5 m</brl:num> Umfang</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">#AJ "+#E'M UMF+G</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Whitespace after operator before measure">
+    <x:context>
+      <dtb:p xml:lang="de">10 − <brl:num role="measure">5 m</brl:num> Umfang</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">#AJ "-#E'M UMF+G</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Whitespace after operator before measure">
+    <x:context>
+      <dtb:p xml:lang="de">10 × <brl:num role="measure">5 m</brl:num> Umfang</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">#AJ "(#E'M UMF+G</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Whitespace after operator before measure">
+    <x:context>
+      <dtb:p xml:lang="de">10 ÷ <brl:num role="measure">5 m</brl:num> Umfang</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">#AJ ":#E'M UMF+G</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Whitespace after operator before measure">
+    <x:context>
+      <dtb:p xml:lang="de">10 = <brl:num role="measure">5 m</brl:num> Umfang</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">#AJ "=#E'M UMF+G</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="measure m mit Dezimalkomma">
+    <x:context>
+      <stub xml:lang="de"><brl:num role="measure">1,8 m</brl:num></stub>
+    </x:context>
+    <x:expect label="braille">
+      <stub xml:lang="de"><brl:num role="measure">#A,H'M</brl:num></stub>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="measure m mit Dezimalpunkt">
+    <x:context>
+      <stub xml:lang="de"><brl:num role="measure">1.8 m</brl:num></stub>
+    </x:context>
+    <x:expect label="braille">
+      <stub xml:lang="de"><brl:num role="measure">#A.H'M</brl:num></stub>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="measure mm mit Dezimalpunkt">
+    <x:context>
+      <stub xml:lang="de"><brl:num role="measure">1.8 mm</brl:num></stub>
+    </x:context>
+    <x:expect label="braille">
+      <stub xml:lang="de"><brl:num role="measure">#A.H'MM</brl:num></stub>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="measure Hz mit Dezimalpunkt">
+    <x:context>
+      <stub xml:lang="de"><brl:num role="measure">1.8 Hz</brl:num></stub>
+    </x:context>
+    <x:expect label="braille">
+      <stub xml:lang="de"><brl:num role="measure">#A.H$HZ</brl:num></stub>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="measure MW mit Dezimalpunkt">
+    <x:context>
+      <stub xml:lang="de"><brl:num role="measure">1.8 MW</brl:num></stub>
+    </x:context>
+    <x:expect label="braille">
+      <stub xml:lang="de"><brl:num role="measure">#A.H&gt;MW</brl:num></stub>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="measure kW mit Dezimalpunkt">
+    <x:context>
+      <stub xml:lang="de"><brl:num role="measure">1.8 kW</brl:num></stub>
+    </x:context>
+    <x:expect label="braille">
+      <stub xml:lang="de"><brl:num role="measure">#A.H'K&gt;W</brl:num></stub>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="measure V mit Dezimalpunkt">
+    <x:context>
+      <stub xml:lang="de"><brl:num role="measure">1.8 V</brl:num></stub>
+    </x:context>
+    <x:expect label="braille">
+      <stub xml:lang="de"><brl:num role="measure">#A.H&gt;V</brl:num></stub>
+    </x:expect>
+  </x:scenario>
+
+</x:description>

@@ -8,69 +8,6 @@
   <x:param name="contraction-grade">2</x:param>
   <x:param name="ascii-braille">yes</x:param>
 
-    <x:scenario label="measure m mit Dezimalkomma">
-      <x:context>
-        <stub xml:lang="de"><brl:num role="measure">1,8 m</brl:num></stub>
-      </x:context>
-      <x:expect label="braille">
-	<stub xml:lang="de"><brl:num role="measure">#A,H'M</brl:num></stub>
-      </x:expect>
-    </x:scenario>
-
-    <x:scenario label="measure m mit Dezimalpunkt">
-      <x:context>
-        <stub xml:lang="de"><brl:num role="measure">1.8 m</brl:num></stub>
-      </x:context>
-      <x:expect label="braille">
-	<stub xml:lang="de"><brl:num role="measure">#A.H'M</brl:num></stub>
-      </x:expect>
-    </x:scenario>
-
-    <x:scenario label="measure mm mit Dezimalpunkt">
-      <x:context>
-        <stub xml:lang="de"><brl:num role="measure">1.8 mm</brl:num></stub>
-      </x:context>
-      <x:expect label="braille">
-	<stub xml:lang="de"><brl:num role="measure">#A.H'MM</brl:num></stub>
-      </x:expect>
-    </x:scenario>
-
-    <x:scenario label="measure Hz mit Dezimalpunkt">
-      <x:context>
-        <stub xml:lang="de"><brl:num role="measure">1.8 Hz</brl:num></stub>
-      </x:context>
-      <x:expect label="braille">
-	<stub xml:lang="de"><brl:num role="measure">#A.H$HZ</brl:num></stub>
-      </x:expect>
-    </x:scenario>
-
-    <x:scenario label="measure MW mit Dezimalpunkt">
-      <x:context>
-        <stub xml:lang="de"><brl:num role="measure">1.8 MW</brl:num></stub>
-      </x:context>
-      <x:expect label="braille">
-	<stub xml:lang="de"><brl:num role="measure">#A.H&gt;MW</brl:num></stub>
-      </x:expect>
-    </x:scenario>
-
-    <x:scenario label="measure kW mit Dezimalpunkt">
-      <x:context>
-        <stub xml:lang="de"><brl:num role="measure">1.8 kW</brl:num></stub>
-      </x:context>
-      <x:expect label="braille">
-	<stub xml:lang="de"><brl:num role="measure">#A.H'K&gt;W</brl:num></stub>
-      </x:expect>
-    </x:scenario>
-
-    <x:scenario label="measure V mit Dezimalpunkt">
-      <x:context>
-        <stub xml:lang="de"><brl:num role="measure">1.8 V</brl:num></stub>
-      </x:context>
-      <x:expect label="braille">
-	<stub xml:lang="de"><brl:num role="measure">#A.H&gt;V</brl:num></stub>
-      </x:expect>
-    </x:scenario>
-
     <x:scenario label="abbr GmbH">
       <x:context>
         <stub xml:lang="de"><dtb:abbr>GmbH</dtb:abbr></stub>
