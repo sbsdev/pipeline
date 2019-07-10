@@ -7,5 +7,5 @@
 	remote = git@github.com:sbsdev/pipeline-mod-sbs.git
 	branch = master
 	commit = 0c59cfac38a84d0289e07699b195e196ca4517f7
-	parent = f5a443280b70e5460f3a0e669df8792c14211ff8
+	parent = df77f43b123c870b4a85e5ba94c66c46f22c1304
 	cmdver = 0.3.1
