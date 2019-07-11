@@ -51,7 +51,7 @@
       <dtb:p xml:lang="de">10 + <brl:num role="measure">5 m</brl:num> Umfang</dtb:p>
     </x:context>
     <x:expect label="braille">
-      <dtb:p xml:lang="de">#AJ "+#E'M UMF+G</dtb:p>
+      <dtb:p xml:lang="de">#AJ "+<brl:num role="measure">#E'M</brl:num> UMF+G</dtb:p>
     </x:expect>
   </x:scenario>
 
@@ -60,7 +60,7 @@
       <dtb:p xml:lang="de">10 − <brl:num role="measure">5 m</brl:num> Umfang</dtb:p>
     </x:context>
     <x:expect label="braille">
-      <dtb:p xml:lang="de">#AJ "-#E'M UMF+G</dtb:p>
+      <dtb:p xml:lang="de">#AJ "-<brl:num role="measure">#E'M</brl:num> UMF+G</dtb:p>
     </x:expect>
   </x:scenario>
 
@@ -69,7 +69,7 @@
       <dtb:p xml:lang="de">10 × <brl:num role="measure">5 m</brl:num> Umfang</dtb:p>
     </x:context>
     <x:expect label="braille">
-      <dtb:p xml:lang="de">#AJ "(#E'M UMF+G</dtb:p>
+      <dtb:p xml:lang="de">#AJ "(<brl:num role="measure">#E'M</brl:num> UMF+G</dtb:p>
     </x:expect>
   </x:scenario>
 
@@ -78,7 +78,7 @@
       <dtb:p xml:lang="de">10 ÷ <brl:num role="measure">5 m</brl:num> Umfang</dtb:p>
     </x:context>
     <x:expect label="braille">
-      <dtb:p xml:lang="de">#AJ ":#E'M UMF+G</dtb:p>
+      <dtb:p xml:lang="de">#AJ ":<brl:num role="measure">#E'M</brl:num> UMF+G</dtb:p>
     </x:expect>
   </x:scenario>
 
@@ -87,7 +87,7 @@
       <dtb:p xml:lang="de">10 = <brl:num role="measure">5 m</brl:num> Umfang</dtb:p>
     </x:context>
     <x:expect label="braille">
-      <dtb:p xml:lang="de">#AJ "=#E'M UMF+G</dtb:p>
+      <dtb:p xml:lang="de">#AJ "=<brl:num role="measure">#E'M</brl:num> UMF+G</dtb:p>
     </x:expect>
   </x:scenario>
 

@@ -5,80 +5,70 @@
                stylesheet="../resources/block-translate.xsl"
 	       preserve-space="dtb:p dtb:byline dtb:author dtb:li dtb:lic dtb:doctitle dtb:docauthor dtb:span dtb:em dtb:strong brl:emph dtb:line dtb:h1 dtb:h2 dtb:h3 dtb:h4 dtb:h5 dtb:h6">
 
-  <x:param name="contraction-grade">2</x:param>
+  <x:param name="contraction-grade">0</x:param>
   <x:param name="ascii-braille">yes</x:param>
-
-    <x:scenario label="Römische Zahlen">
-      <x:context>
-        <dtb:p xml:lang="de">Henry <brl:num role="roman">IV</brl:num>.
-          Auf Seite <brl:num role="roman">iii</brl:num> beginnt das Vorwort.</dtb:p>
-      </x:context>
-      <x:expect label="braille">
-        <dtb:p xml:lang="de">HCR'Y <brl:num role="roman">&gt;IV</brl:num>. 1 S3( <brl:num role="roman">'III</brl:num> ;G*NT D ,?W?T.</dtb:p>
-      </x:expect>
-    </x:scenario>
 
     <x:scenario label="Roman number, http://redmine.sbszh.ch/issues/2634">
       <x:context>
 	<dtb:p xml:lang="de">Seite <brl:num role="roman">VI</brl:num></dtb:p>
       </x:context>
       <x:expect label="braille">
-	<dtb:p xml:lang="de">SEITE >VI</dtb:p>
+	<dtb:p xml:lang="de">SEITE <brl:num role="roman">&gt;VI</brl:num></dtb:p>
       </x:expect>
     </x:scenario>
 
     <x:scenario label="Roman number with characters following, http://redmine.sbszh.ch/issues/2634">
       <x:context>
-	<dtb:p xml:lang="de">Seite <brl:num role="roman">VI</brl:num>)  </dtb:p>
+	<dtb:p xml:lang="de">Seite <brl:num role="roman">VI</brl:num>)</dtb:p>
       </x:context>
       <x:expect label="braille">
-	<dtb:p xml:lang="de">SEITE >VI=</dtb:p>
+	<dtb:p xml:lang="de">SEITE <brl:num role="roman">&gt;VI</brl:num>=</dtb:p>
       </x:expect>
     </x:scenario>
 
     <x:scenario label="Roman number with characters following, http://redmine.sbszh.ch/issues/2634">
       <x:context>
-	<dtb:p xml:lang="de">Seite <brl:num role="roman">VI</brl:num>,  </dtb:p>
+    	<dtb:p xml:lang="de">Seite <brl:num role="roman">VI</brl:num>,</dtb:p>
       </x:context>
       <x:expect label="braille">
+	<dtb:p xml:lang="de">SEITE <brl:num role="roman">&gt;VI</brl:num>,</dtb:p>
       </x:expect>
-      <dtb:p xml:lang="de">SEITE >VI,</dtb:p>
     </x:scenario>
 
     <x:scenario label="Roman number with characters following, http://redmine.sbszh.ch/issues/2634">
       <x:context>
-	<dtb:p xml:lang="de">Seite <brl:num role="roman">VI</brl:num>.  </dtb:p>
+    	<dtb:p xml:lang="de">Seite <brl:num role="roman">VI</brl:num>.</dtb:p>
       </x:context>
       <x:expect label="braille">
+	<dtb:p xml:lang="de">SEITE <brl:num role="roman">&gt;VI</brl:num>.</dtb:p>
       </x:expect>
-      <dtb:p xml:lang="de">SEITE >VI.</dtb:p>
     </x:scenario>
 
     <x:scenario label="Roman number with characters following, http://redmine.sbszh.ch/issues/2634">
       <x:context>
-	<dtb:p xml:lang="de">Seite <brl:num role="roman">VI</brl:num>  </dtb:p>
+    	<dtb:p xml:lang="de">Seite <brl:num role="roman">VI</brl:num> </dtb:p>
       </x:context>
       <x:expect label="braille">
+	<dtb:p xml:lang="de">SEITE <brl:num role="roman">&gt;VI</brl:num> </dtb:p>
       </x:expect>
-      <dtb:p xml:lang="de">SEITE >VI</dtb:p>
     </x:scenario>
 
     <x:scenario label="Roman number with characters following, http://redmine.sbszh.ch/issues/2634">
       <x:context>
-	<dtb:p xml:lang="de">Seite <brl:num role="roman">VI</brl:num>ff. </dtb:p>
+    	<dtb:p xml:lang="de">Seite <brl:num role="roman">VI</brl:num>ff.</dtb:p>
       </x:context>
       <x:expect label="braille">
+	<dtb:p xml:lang="de">SEITE <brl:num role="roman">&gt;VI</brl:num>'FF.</dtb:p>
       </x:expect>
-      <dtb:p xml:lang="de">SEITE >VI'FF.</dtb:p>
     </x:scenario>
 
     <x:scenario label="Roman number with characters following, http://redmine.sbszh.ch/issues/2634">
       <x:context>
-	<dtb:p xml:lang="de">Seite <brl:num role="roman">VI</brl:num>UIUIUI </dtb:p>
+    	<dtb:p xml:lang="de">Seite <brl:num role="roman">VI</brl:num>UIUIUI</dtb:p>
       </x:context>
       <x:expect label="braille">
+	<dtb:p xml:lang="de">SEITE <brl:num role="roman">&gt;VI</brl:num>'UIUIUI</dtb:p>
       </x:expect>
-      <dtb:p xml:lang="de">SEITE >VI'UIUIUI</dtb:p>
     </x:scenario>
 
 </x:description>

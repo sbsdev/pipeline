@@ -53,7 +53,7 @@
         <dtb:p xml:lang="de">Arbeits<dtb:span>-losenheim</dtb:span></dtb:p>
       </x:context>
       <x:expect label="braille">
-	<dtb:p xml:lang="de">)BS-LOSCH3M</dtb:p>
+	<dtb:p xml:lang="de">)BS<dtb:span>-LOSCH3M</dtb:span></dtb:p>
       </x:expect>
     </x:scenario>
 
@@ -62,7 +62,7 @@
         <dtb:p xml:lang="de">Arbeits <dtb:span>-losenheim</dtb:span></dtb:p>
       </x:context>
       <x:expect label="braille">
-	<dtb:p xml:lang="de">)BS '-LOSCH3M</dtb:p>
+	<dtb:p xml:lang="de">)BS <dtb:span>'-LOSCH3M</dtb:span></dtb:p>
       </x:expect>
     </x:scenario>
 

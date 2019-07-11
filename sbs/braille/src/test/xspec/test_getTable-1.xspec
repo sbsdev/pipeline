@@ -16,7 +16,7 @@
         </x:param>
         <x:param select="''"/>
       </x:call>
-      <x:expect label="braille" select="'sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti,sbs-whitespace.mod,sbs-numsign.mod,litdigits6Dots.uti,sbs-de-core.mod,sbs-de-g0-core.mod,sbs-de-hyph-none.mod,sbs-de-accents-ch.mod,sbs-special.mod'"/>
+      <x:expect label="braille" select="'sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti,sbs-whitespace.mod,sbs-numsign.mod,litdigits6Dots.uti,sbs-de-core.mod,sbs-de-g0-core.mod,sbs-de-accents-ch.mod,sbs-special.mod'"/>
     </x:scenario>
 
     <x:scenario label="getTable for de and contraction = 2">
@@ -26,7 +26,7 @@
 	</x:param>
         <x:param select="''"/>
       </x:call>
-      <x:expect label="braille" select="'sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti,sbs-whitespace.mod,sbs-de-letsign.mod,sbs-numsign.mod,litdigits6Dots.uti,sbs-de-core.mod,sbs-de-g2-white.mod,sbs-de-g2-core.mod,sbs-de-hyph-none.mod,sbs-de-accents-ch.mod,sbs-special.mod'"/>
+      <x:expect label="braille" select="'sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti,sbs-whitespace.mod,sbs-de-letsign.mod,sbs-numsign.mod,litdigits6Dots.uti,sbs-de-core.mod,sbs-de-g2-white.mod,sbs-de-g2-core.mod,sbs-de-accents-ch.mod,sbs-special.mod'"/>
     </x:scenario>
 
     <x:scenario label="getTable for de-1901 and contraction = 2">
@@ -36,7 +36,7 @@
 	</x:param>
         <x:param select="''"/>
       </x:call>
-      <x:expect label="braille" select="'sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti,sbs-whitespace.mod,sbs-de-letsign.mod,sbs-numsign.mod,litdigits6Dots.uti,sbs-de-core.mod,sbs-de-g2-white.mod,sbs-de-g2-core.mod,sbs-de-hyph-none.mod,sbs-de-accents-ch.mod,sbs-special.mod'"/>
+      <x:expect label="braille" select="'sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti,sbs-whitespace.mod,sbs-de-letsign.mod,sbs-numsign.mod,litdigits6Dots.uti,sbs-de-core.mod,sbs-de-g2-white.mod,sbs-de-g2-core.mod,sbs-de-accents-ch.mod,sbs-special.mod'"/>
     </x:scenario>
 
     <x:scenario label="getTable for abbr (de) and contraction = 2">
@@ -46,7 +46,7 @@
 	</x:param>
         <x:param select="'abbr'"/>
       </x:call>
-      <x:expect label="braille" select="'sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti,sbs-whitespace.mod,sbs-numsign.mod,litdigits6Dots.uti,sbs-de-core.mod,sbs-de-g0-core.mod,sbs-de-hyph-none.mod,sbs-de-accents-ch.mod,sbs-special.mod'"/>
+      <x:expect label="braille" select="'sbs.dis,sbs-de-core6.cti,sbs-de-accents.cti,sbs-special.cti,sbs-whitespace.mod,sbs-numsign.mod,litdigits6Dots.uti,sbs-de-core.mod,sbs-de-g0-core.mod,sbs-de-accents-ch.mod,sbs-special.mod'"/>
     </x:scenario>
 
 </x:description>
