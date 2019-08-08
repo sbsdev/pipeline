@@ -56,7 +56,7 @@
 		'sbs-de-accents.cti',
 		'sbs-special.cti',
 		'sbs-whitespace.mod',
-		if ($context = 'v-form' or $context = 'name_capitalized' or ($actual_contraction != '2' and $enable_capitalization = true())) then 'sbs-de-capsign.mod' else '',
+		if ($context = 'v-form' or $context = 'name_capitalized' or ($actual_contraction != '2' and $enable_capitalization = true())) then 'sbs-de-capsign.mod' else 'sbs-de-capsign-fake.mod',
 		if ($actual_contraction = '2' and not($context=('num_roman','abbr','date_month','date_day','name_capitalized'))) then 'sbs-de-letsign.mod' else '',
 		if (not($context = 'date_month' or $context = 'denominator' or $context = 'index' or $context = 'linenum')) then 'sbs-numsign.mod' else '',
 		if ($context = 'num_ordinal' or $context = 'date_day' or $context = 'denominator' or $context = 'index') then 'sbs-litdigit-lower.mod' else 'litdigits6Dots.uti',
