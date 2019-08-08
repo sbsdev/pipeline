@@ -62,7 +62,7 @@
     </xsl:copy>
   </xsl:template>
 
-  <!-- Ziffern bekommen das Exponentzeichen und werden tiefgestellt -->
+  <!-- Ziffern bekommen das Zeichen für den oberen Index und werden tiefgestellt -->
   <xsl:template match="dtb:sup[matches(., '^[-]*\d+$')]|
                        html:sup[matches(., '^[-]*\d+$')]">
     <xsl:copy>
@@ -73,7 +73,7 @@
             <xsl:with-param name="context" select="'index'"/>
           </xsl:call-template>
         </xsl:with-param>
-        <xsl:with-param name="text" select="concat('&#x257E;',string())"/>
+        <xsl:with-param name="text" select="concat('&#x2580;',string())"/>
       </xsl:call-template>
     </xsl:copy>
   </xsl:template>
