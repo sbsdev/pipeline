@@ -198,19 +198,19 @@
 
     <x:scenario label="Time">
       <x:context>
-        <stub xml:lang="de"><brl:time value="10:30">10:30</brl:time></stub>
+        <stub xml:lang="de"><brl:time value="10:30" brl:render="compact">10:30</brl:time></stub>
       </x:context>
       <x:expect label="braille">
-	<stub xml:lang="de"><brl:time value="10:30">#AJ.CJ</brl:time></stub>
+	<stub xml:lang="de"><brl:time value="10:30" brl:render="compact">#AJ.CJ</brl:time></stub>
       </x:expect>
     </x:scenario>
 
     <x:scenario label="Time with leading zeros">
       <x:context>
-        <stub xml:lang="de"><brl:time value="10:05">10:05</brl:time></stub>
+        <stub xml:lang="de"><brl:time value="10:05" brl:render="compact">10:05</brl:time></stub>
       </x:context>
       <x:expect label="braille">
-	<stub xml:lang="de"><brl:time value="10:05">#AJ.JE</brl:time></stub>
+	<stub xml:lang="de"><brl:time value="10:05" brl:render="compact">#AJ.JE</brl:time></stub>
       </x:expect>
     </x:scenario>
 

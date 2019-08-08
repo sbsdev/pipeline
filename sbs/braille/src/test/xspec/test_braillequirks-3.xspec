@@ -240,10 +240,10 @@
 
     <x:scenario label="Leading zeros in time indication Bug #1172, Bug #969, Bug ##1292">
       <x:context>
-        <stub xml:lang="de"><brl:time value="11:05">11:05</brl:time></stub>
+        <stub xml:lang="de"><brl:time value="11:05" brl:render="compact">11:05</brl:time></stub>
       </x:context>
       <x:expect label="braille">
-	<stub xml:lang="de"><brl:time value="11:05">#AA.JE</brl:time></stub>
+	<stub xml:lang="de"><brl:time value="11:05" brl:render="compact">#AA.JE</brl:time></stub>
       </x:expect>
     </x:scenario>
 
