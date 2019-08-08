@@ -13,7 +13,7 @@
         <dtb:p xml:lang="de">2<dtb:sup>23</dtb:sup>, x<dtb:sup>2</dtb:sup>, x<dtb:sup>-2</dtb:sup>, </dtb:p>
       </x:context>
       <x:expect label="braille">
-	<dtb:p xml:lang="de">#B<dtb:sup>0;:</dtb:sup>', 'X<dtb:sup>0;</dtb:sup>', 'X<dtb:sup>0-;</dtb:sup>', </dtb:p>
+	<dtb:p xml:lang="de">#B<dtb:sup>\;:</dtb:sup>', 'X<dtb:sup>\;</dtb:sup>', 'X<dtb:sup>\-;</dtb:sup>', </dtb:p>
       </x:expect>
     </x:scenario>
 
