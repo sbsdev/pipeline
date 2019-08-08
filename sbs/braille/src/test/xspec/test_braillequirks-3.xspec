@@ -15,7 +15,7 @@
         <stub xml:space="preserve" xml:lang="de"><dtb:em>Mein Mann.</dtb:em> <brl:v-form>Ihr</brl:v-form></stub>
       </x:context>
       <x:expect label="braille">
-        <stub xml:space="preserve" xml:lang="de"><dtb:em>__M6 MN.'.</dtb:em> <brl:v-form>$I</brl:v-form></stub>
+        <stub xml:space="preserve" xml:lang="de"><dtb:em>__M6 M+N.'.</dtb:em> <brl:v-form>$I</brl:v-form></stub>
       </x:expect>
     </x:scenario>
 
