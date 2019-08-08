@@ -16,7 +16,7 @@
       </x:context>
       <x:expect label="braille">
         <stub xml:lang="de">
-          <dtb:p>VOLL5RIFT 5RIFT 5RIFT <dtb:span brl:grade="0">BASISSCHRIFT!,mBASISSCHRIFT</dtb:span> VOLL VOLL VOLL</dtb:p>
+          <dtb:p>VOLL5RIFT 5RIFT 5RIFT <dtb:span brl:grade="0">BASISSCHRIFT!,BASISSCHRIFT</dtb:span> VOLL VOLL VOLL</dtb:p>
         </stub>
       </x:expect>
     </x:scenario>

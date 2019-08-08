@@ -29,10 +29,10 @@
           <dtb:p>KZ5T 5T 5T <dtb:span>'.</dtb:span><dtb:span brl:grade="0">BASISSCHRIFT</dtb:span> KZ KZ KZ</dtb:p>
           <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="1">VOLL5RIFT 5RIFT 5RIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
           <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="0">BASISSCHRIFT SCHRIFT SCHRIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
-          <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="1">VOLL5RIFT!,mVOLL5RIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
-          <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="0">BASISSCHRIFT!,mBASISSCHRIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
-          <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="1">VOLL5RIFT-mVOLL5RIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
-          <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="0">BASISSCHRIFT-mBASISSCHRIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
+          <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="1">VOLL5RIFT!,VOLL5RIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
+          <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="0">BASISSCHRIFT!,BASISSCHRIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
+          <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="1">VOLL5RIFT-VOLL5RIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
+          <dtb:p>KZ5T 5T 5T <dtb:span>-.</dtb:span><dtb:span brl:grade="0">BASISSCHRIFT-BASISSCHRIFT</dtb:span><dtb:span>'.</dtb:span> KZ KZ KZ</dtb:p>
         </stub>
       </x:expect>
     </x:scenario>

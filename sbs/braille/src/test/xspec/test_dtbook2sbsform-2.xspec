@@ -327,7 +327,7 @@
       </x:context>
       <x:expect label="braille">
         <stub xml:lang="de">
-          <dtb:p><dtb:abbr>&gt;A</dtb:abbr>!,m<dtb:abbr>&gt;Z</dtb:abbr></dtb:p>
+          <dtb:p><dtb:abbr>&gt;A</dtb:abbr>!,<dtb:abbr>&gt;Z</dtb:abbr></dtb:p>
         </stub>
       </x:expect>
     </x:scenario>

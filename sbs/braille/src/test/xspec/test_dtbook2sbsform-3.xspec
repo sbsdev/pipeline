@@ -14,7 +14,7 @@
         <stub xml:lang="de"><dtb:em>Wort</dtb:em>, <dtb:strong>Wort</dtb:strong>, <brl:emph>Wort</brl:emph>. <dtb:em>Zwei Wörter</dtb:em>, <dtb:strong>eins/zwei</dtb:strong>, <brl:emph>eins-​zwei</brl:emph>.</stub>
       </x:context>
       <x:expect label="braille">
-        <stub xml:lang="de"><dtb:em>_W?T</dtb:em>, <dtb:strong>_W?T</dtb:strong>, <brl:emph>_W?T</brl:emph>. <dtb:em>__ZW3 W9RT7'.</dtb:em>, <dtb:strong>__6S!,mZW3'.</dtb:strong>, <brl:emph>__6S-mZW3'.</brl:emph>.</stub>
+        <stub xml:lang="de"><dtb:em>_W?T</dtb:em>, <dtb:strong>_W?T</dtb:strong>, <brl:emph>_W?T</brl:emph>. <dtb:em>__ZW3 W9RT7'.</dtb:em>, <dtb:strong>__6S!,ZW3'.</dtb:strong>, <brl:emph>__6S-ZW3'.</brl:emph>.</stub>
       </x:expect>
     </x:scenario>
 

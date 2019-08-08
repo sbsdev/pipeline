@@ -104,7 +104,7 @@
       <x:context>
         <stub xml:lang="de">Produktion/Test</stub>
       </x:context>
-      <x:expect label="braille"><stub xml:lang="de">QDUKTJ!,mTE]</stub></x:expect>
+      <x:expect label="braille"><stub xml:lang="de">QDUKTJ!,TE]</stub></x:expect>
     </x:scenario>
 
     <x:scenario label="Kursive/Fette Anführungszeichen bei brl:render=&#34;ignore&#34; I (http://redmine.sbszh.ch/issues/show/1006)">

@@ -46,7 +46,7 @@
       <x:context>
         <stub xml:lang="de">Substanz und/oder deren</stub>
       </x:context>
-      <x:expect label="braille"><stub xml:lang="de">SUB]+Z U!,mO D7C</stub></x:expect>
+      <x:expect label="braille"><stub xml:lang="de">SUB]+Z U!,O D7C</stub></x:expect>
     </x:scenario>
 
     <x:scenario label="test for AM">
