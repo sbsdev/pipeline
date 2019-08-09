@@ -338,6 +338,24 @@
 	       For that reason we do the announcing here in xslt. This also
 	       neatly works around a bug where liblouis doesn't correctly
 	       announce multi-word emphasis -->
+	  <xsl:variable name="map">
+	    <xsl:choose>
+	      <xsl:when test="@brl:render = 'emph2'">
+		<entry key="start-multi">&#x256E;</entry>
+		<entry key="end-multi">&#x256F;</entry>
+		<entry key="start-single">&#x256D;</entry>
+		<entry key="start-inside">&#x2570;</entry>
+		<entry key="end-single">&#x2571;</entry>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<entry key="start-multi">&#x2560;</entry>
+		<entry key="end-multi">&#x2563;</entry>
+		<entry key="start-single">&#x255F;</entry>
+		<entry key="start-inside">&#x255E;</entry>
+		<entry key="end-single">&#x2561;</entry>
+	      </xsl:otherwise>
+	    </xsl:choose>
+	  </xsl:variable>
           <xsl:choose>
             <xsl:when test="not($isFirst) or not($isLast) or (count(tokenize(string(.), '(\s|&#xA0;|/|-)+')[string(.) ne '']) > 1)">
               <!-- There are multiple words. -->
@@ -345,7 +363,7 @@
 		<!-- Insert a multiple word announcement -->
                 <xsl:call-template name="translate">
                   <xsl:with-param name="table" select="$braille_tables"/>
-                  <xsl:with-param name="text" select="'&#x2560;'"/>
+                  <xsl:with-param name="text" select="$map/entry[@key='start-multi']"/>
                 </xsl:call-template>
               </xsl:if>
               <xsl:apply-templates/>
@@ -353,7 +371,7 @@
 		<!-- Announce the end of emphasis -->
                 <xsl:call-template name="translate">
                   <xsl:with-param name="table" select="$braille_tables"/>
-                  <xsl:with-param name="text" select="'&#x2563;'"/>
+                  <xsl:with-param name="text" select="$map/entry[@key='end-multi']"/>
                 </xsl:call-template>
               </xsl:if>
             </xsl:when>
@@ -365,7 +383,7 @@
                     test="my:ends-with-non-word(preceding-sibling::text()[1]) and my:starts-with-word(following-sibling::text()[1])">
                   <xsl:call-template name="translate">
                     <xsl:with-param name="table" select="$braille_tables"/>
-                    <xsl:with-param name="text" select="'&#x255F;'"/>
+                    <xsl:with-param name="text" select="$map/entry[@key='start-single']"/>
                   </xsl:call-template>
 		  <!-- when translating make sure to inhibit contraction at the end by inserting a special character -->
                   <xsl:call-template name="translate">
@@ -374,7 +392,7 @@
                   </xsl:call-template>
                   <xsl:call-template name="translate">
                     <xsl:with-param name="table" select="$braille_tables"/>
-                    <xsl:with-param name="text" select="'&#x2561;'"/>
+                    <xsl:with-param name="text" select="$map/entry[@key='end-single']"/>
                   </xsl:call-template>
 		</xsl:when>
 		<!-- emph is at the end of the word -->
@@ -382,7 +400,7 @@
                     test="my:ends-with-word(preceding-sibling::text()[1]) and my:starts-with-non-word(following-sibling::text()[1])">
                   <xsl:call-template name="translate">
                     <xsl:with-param name="table" select="$braille_tables"/>
-                    <xsl:with-param name="text" select="'&#x255E;'"/>
+                    <xsl:with-param name="text" select="$map/entry[@key='start-inside']"/>
                   </xsl:call-template>
 		<!-- when translating make sure to inhibit contraction at the beginning by inserting a special character -->
                   <xsl:call-template name="translate">
@@ -395,7 +413,7 @@
                     test="my:ends-with-word(preceding-sibling::text()[1]) and my:starts-with-word(following-sibling::text()[1])">
                   <xsl:call-template name="translate">
                     <xsl:with-param name="table" select="$braille_tables"/>
-                    <xsl:with-param name="text" select="'&#x255E;'"/>
+                    <xsl:with-param name="text" select="$map/entry[@key='start-inside']"/>
                   </xsl:call-template>
 		  <!-- when translating make sure to inhibit contraction at the beginning or at the end by inserting a special character -->
                   <xsl:call-template name="translate">
@@ -404,13 +422,13 @@
                   </xsl:call-template>
                   <xsl:call-template name="translate">
                     <xsl:with-param name="table" select="$braille_tables"/>
-                    <xsl:with-param name="text" select="'&#x2561;'"/>
+                    <xsl:with-param name="text" select="$map/entry[@key='end-single']"/>
                   </xsl:call-template>
 		</xsl:when>
 		<xsl:otherwise>
                   <xsl:call-template name="translate">
                     <xsl:with-param name="table" select="$braille_tables"/>
-                    <xsl:with-param name="text" select="'&#x255F;'"/>
+                    <xsl:with-param name="text" select="$map/entry[@key='start-single']"/>
                   </xsl:call-template>
                   <xsl:apply-templates/>
 		</xsl:otherwise>
