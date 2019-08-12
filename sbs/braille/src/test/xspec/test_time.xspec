@@ -8,21 +8,81 @@
   <x:param name="contraction-grade">2</x:param>
   <x:param name="ascii-braille">yes</x:param>
 
-    <x:scenario label="time compact">
-      <x:context>
-        <brl:time xml:lang="de" brl:render="compact" value="09:30">09:30</brl:time>
-      </x:context>
-      <x:expect label="braille">
-        <brl:time xml:lang="de" brl:render="compact" value="09:30">#I.CJ</brl:time>
-      </x:expect>
-    </x:scenario>
-
-    <x:scenario label="time ">
+    <x:scenario label="time">
       <x:context>
         <brl:time xml:lang="de" value="09:30">09:30</brl:time>
       </x:context>
       <x:expect label="braille">
         <brl:time xml:lang="de" value="09:30">#JI':#CJ</brl:time>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="time using period">
+      <x:context>
+        <brl:time xml:lang="de" value="09:30">09.30</brl:time>
+      </x:context>
+      <x:expect label="braille">
+        <brl:time xml:lang="de" value="09:30">#JI.CJ</brl:time>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="time using period without leading zero">
+      <x:context>
+        <brl:time xml:lang="de" value="09:30">9.30</brl:time>
+      </x:context>
+      <x:expect label="braille">
+        <brl:time xml:lang="de" value="09:30">#I.CJ</brl:time>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="time I">
+      <x:context>
+        <brl:time xml:lang="de">2:55:18.4</brl:time>
+      </x:context>
+      <x:expect label="braille">
+        <brl:time xml:lang="de">#B':#EE':#AH.D</brl:time>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="time II">
+      <x:context>
+        <brl:time xml:lang="de">2:55:18,4</brl:time>
+      </x:context>
+      <x:expect label="braille">
+        <brl:time xml:lang="de">#B':#EE':#AH,D</brl:time>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="time III">
+      <x:context>
+        <brl:time xml:lang="de">2:55.18,4</brl:time>
+      </x:context>
+      <x:expect label="braille">
+        <brl:time xml:lang="de">#B':#EE.AH,D</brl:time>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="time IV">
+      <x:context>
+	<stub xml:lang="de">
+	  <brl:time>4:20</brl:time> Uhr
+	  <brl:time>04:20</brl:time> Uhr
+	</stub>
+      </x:context>
+      <x:expect label="braille">
+	<stub xml:lang="de"><brl:time>#D':#BJ</brl:time> UHR <brl:time>#JD':#BJ</brl:time> UHR </stub>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="time V">
+      <x:context>
+	<stub xml:lang="de">
+	  <brl:time>4.20</brl:time> Uhr
+	  <brl:time>04.20</brl:time> Uhr
+	</stub>
+      </x:context>
+      <x:expect label="braille">
+	<stub xml:lang="de"><brl:time>#D.BJ</brl:time> UHR <brl:time>#JD.BJ</brl:time> UHR </stub>
       </x:expect>
     </x:scenario>
 

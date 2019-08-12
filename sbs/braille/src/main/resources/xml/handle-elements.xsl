@@ -814,49 +814,14 @@
     </xsl:copy>
   </xsl:template>
 
-  <xsl:template match="brl:time[@brl:render='compact']">
-    <xsl:variable name="time">
-      <xsl:for-each select="tokenize(string(@value), ':')">
-	<xsl:choose>
-	  <!-- Drop the leading zero for the hours and append a dot -->
-	  <xsl:when test="not(position() = last())">
-	    <xsl:value-of select="format-number(. cast as xs:integer,'#')"/>
-	    <xsl:text>.</xsl:text>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <xsl:value-of select="."/>
-	  </xsl:otherwise>
-	</xsl:choose>
-      </xsl:for-each>
-    </xsl:variable>
-    <xsl:copy>
-      <xsl:apply-templates select="@*"/>
-      <xsl:call-template name="translate">
-        <xsl:with-param name="text" select="string($time)"/>
-      </xsl:call-template>
-    </xsl:copy>
-  </xsl:template>
-
   <xsl:template match="brl:time">
-    <xsl:variable name="time">
-      <xsl:for-each select="tokenize(string(@value), ':')">
-	<xsl:choose>
-	  <!-- Drop the leading zero for the hours and append a dot -->
-	  <xsl:when test="not(position() = last())">
-	    <!-- translate the number and append a special character
-	         that will be converted to a plain colon -->
-	    <xsl:value-of select="concat(.,'&#x2573;')"/>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <xsl:value-of select="."/>
-	  </xsl:otherwise>
-	</xsl:choose>
-      </xsl:for-each>
-    </xsl:variable>
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
+      <!-- Ignore the @value, just use the text content of the
+           element. Convert all ':' to a special sign and let liblouis
+           do the rest -->
       <xsl:call-template name="translate">
-        <xsl:with-param name="text" select="string($time)"/>
+        <xsl:with-param name="text" select="string(translate(string(.),':', '&#x2573;'))"/>
       </xsl:call-template>
     </xsl:copy>
   </xsl:template>
