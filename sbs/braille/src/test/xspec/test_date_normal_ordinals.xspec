@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<x:description xmlns:x="http://www.jenitennison.com/xslt/xspec"
+	       xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
+	       xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
+               stylesheet="../resources/block-translate.xsl"
+	       preserve-space="dtb:p dtb:byline dtb:author dtb:li dtb:lic dtb:doctitle dtb:docauthor dtb:span dtb:em dtb:strong brl:emph dtb:line dtb:h1 dtb:h2 dtb:h3 dtb:h4 dtb:h5 dtb:h6">
+
+  <x:param name="contraction-grade">2</x:param>
+  <x:param name="ascii-braille">yes</x:param>
+  <x:param name="downshift_ordinals" select="false()"/>
+
+  <x:scenario label="Date with normal ordinals I">
+    <x:context>
+      <brl:date xml:lang="de">11.12.98</brl:date>
+    </x:context>
+    <x:expect label="braille">
+      <brl:date xml:lang="de">#AA.AB.IH</brl:date>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Date with normal ordinals II">
+    <x:context>
+      <brl:date xml:lang="de">31.4.2091</brl:date>
+    </x:context>
+    <x:expect label="braille">
+      <brl:date xml:lang="de">#CA.D.BJIA</brl:date>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Date with normal ordinals III">
+    <x:context>
+      <brl:date xml:lang="de">01.01.2019</brl:date>
+      <brl:date xml:lang="de">1.1.2019</brl:date>
+    </x:context>
+    <x:expect label="braille">
+      <brl:date xml:lang="de">#JA.JA.BJAI</brl:date>
+      <brl:date xml:lang="de">#A.A.BJAI</brl:date>
+    </x:expect>
+  </x:scenario>
+
+</x:description>
