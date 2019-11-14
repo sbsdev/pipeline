@@ -81,7 +81,7 @@
         <xsl:text>sbs-de-g2-name.mod,</xsl:text>
       </xsl:if>
       <xsl:if
-        test="$context != 'name' and $context != 'name_capitalized' and $context != 'place' and ($context != 'abbr' or  my:containsDot($ctx)) and $context != 'date_day' and $context != 'date_month'">
+        test="$context != 'name' and $context != 'name_capitalized' and $context != 'place' and ($context != 'abbr' or my:containsDotNotAfterDigit($ctx)) and $context != 'date_day' and $context != 'date_month'">
         <xsl:if test="$use_local_dictionary = true()">
           <xsl:value-of select="concat('sbs-de-g2-white-',$document-identifier,'.mod,')"/>
         </xsl:if>

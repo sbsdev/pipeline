@@ -114,7 +114,12 @@
     <xsl:param name="string"/>
     <xsl:value-of select="contains($string,'.')"/>
   </xsl:function>
-  
+
+  <xsl:function name="my:containsDotNotAfterDigit" as="xs:boolean">
+    <xsl:param name="string"/>
+    <xsl:value-of select="matches($string,'\D\.')"/>
+  </xsl:function>
+
   <xsl:function name="my:starts-with-number" as="xs:boolean">
     <xsl:param name="string"/>
     <xsl:value-of select="matches($string, '^\d')"/>

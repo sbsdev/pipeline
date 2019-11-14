@@ -154,4 +154,31 @@
     </x:expect>
   </x:scenario>
 
+  <x:scenario label="Measure with number that cointains a decimal point, (redmine#2574)">
+    <x:context>
+      <stub xml:lang="de"><brl:num role="measure">300.000 sec</brl:num></stub>
+    </x:context>
+    <x:expect label="braille">
+      <stub xml:lang="de"><brl:num role="measure">#CJJ.JJJ'SEC</brl:num></stub>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Dot (separator) in number with measure unit, (redmine#2574)">
+    <x:context>
+      <stub xml:lang="de">bla <brl:num role="measure">300.000 sec</brl:num> blo</stub>
+    </x:context>
+    <x:expect label="braille">
+      <stub xml:lang="de">BLA <brl:num role="measure">#CJJ.JJJ'SEC</brl:num> BLO</stub>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Dot (separator) in number with measure unit, (redmine#2574)">
+    <x:context>
+      <stub xml:lang="de">bla <brl:num role="measure">300.000 km/sec</brl:num> blo</stub>
+    </x:context>
+    <x:expect label="braille">
+      <stub xml:lang="de">BLA <brl:num role="measure">#CJJ.JJJ'KM!,'SEC</brl:num> BLO</stub>
+    </x:expect>
+  </x:scenario>
+
 </x:description>
