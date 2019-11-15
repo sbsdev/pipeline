@@ -914,6 +914,22 @@
     </xsl:call-template>
   </xsl:template>
 
+  <!-- ============================================== -->
+  <!-- Punctuation after a km2 and km3 inside measure -->
+  <!-- ============================================== -->
+  <xsl:template
+      match="text()[my:starts-with-punctuation(string())
+  	     and my:ends-with-number(string(my:preceding-textnode-within-block(.)))
+	     and (preceding::* intersect
+	     my:preceding-textnode-within-block(.)/ancestor::brl:num[@role='measure'])]"
+      priority="100">
+    <!-- Handle km2 before comma slightly differently -->
+    <xsl:variable name="dummy_number" select="if (matches(string(), '^,')) then '&#x256C;' else '&#x250B;'"/>
+    <xsl:call-template name="translate">
+      <xsl:with-param name="text" select="concat($dummy_number,string())"/>
+    </xsl:call-template>
+  </xsl:template>
+
   <!-- ============================================= -->
   <!-- Punctuation after a number and after ordinals -->
   <!-- ============================================= -->

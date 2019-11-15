@@ -127,7 +127,7 @@
   
   <xsl:function name="my:ends-with-number" as="xs:boolean">
     <xsl:param name="string"/>
-    <xsl:value-of select="matches($string, '\d$')"/>
+    <xsl:value-of select="matches($string, '(\d|²|³)$')"/>
   </xsl:function>
 
   <xsl:function name="my:ends-with-non-word" as="xs:boolean">

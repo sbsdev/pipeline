@@ -181,4 +181,76 @@
     </x:expect>
   </x:scenario>
 
+  <x:scenario label="Square kilometers followed by period">
+    <x:context>
+      <dtb:p xml:lang="de">bla <brl:num role="measure">30 km²</brl:num>. bla</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">BLA <brl:num role="measure">#CJ'KM\;</brl:num>. BLA</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Square kilometers followed by comma">
+    <x:context>
+      <dtb:p xml:lang="de">bla <brl:num role="measure">30 km²</brl:num>, bla</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">BLA <brl:num role="measure">#CJ'KM\;</brl:num>', BLA</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Square kilometers followed by semicolon">
+    <x:context>
+      <dtb:p xml:lang="de">bla <brl:num role="measure">30 km²</brl:num>; bla</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">BLA <brl:num role="measure">#CJ'KM\;</brl:num>'; BLA</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Square kilometers followed by colon">
+    <x:context>
+      <dtb:p xml:lang="de">bla <brl:num role="measure">30 km²</brl:num>: bla</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">BLA <brl:num role="measure">#CJ'KM\;</brl:num>': BLA</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Square kilometers followed by question mark">
+    <x:context>
+      <dtb:p xml:lang="de">bla <brl:num role="measure">30 km²</brl:num>? bla</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">BLA <brl:num role="measure">#CJ'KM\;</brl:num>'? BLA</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Square kilometers followed by exclamation mark">
+    <x:context>
+      <dtb:p xml:lang="de">bla <brl:num role="measure">30 km²</brl:num>! bla</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">BLA <brl:num role="measure">#CJ'KM\;</brl:num>'+ BLA</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Square kilometers followed by right parenthesis">
+    <x:context>
+      <dtb:p xml:lang="de">bla <brl:num role="measure">30 km²</brl:num>) bla</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">BLA <brl:num role="measure">#CJ'KM\;</brl:num>'= BLA</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Square kilometers followed by left-pointing double angle quotation mark">
+    <x:context>
+      <dtb:p xml:lang="de">bla <brl:num role="measure">30 km²</brl:num>« bla</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">BLA <brl:num role="measure">#CJ'KM\;</brl:num>') BLA</dtb:p>
+    </x:expect>
+  </x:scenario>
+
 </x:description>
