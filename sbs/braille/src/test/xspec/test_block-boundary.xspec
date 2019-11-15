@@ -85,4 +85,78 @@
       </x:expect>
     </x:scenario>
 
+    <x:scenario label="Text matcher inside block, h1"
+		pending="the apo needs to be moved out of the abbr">
+      <x:context>
+	<dtb:h1 xml:lang="de"><dtb:abbr>ABC</dtb:abbr>s</dtb:h1>
+      </x:context>
+      <x:expect label="braille">
+	<dtb:h1 xml:lang="de"><dtb:abbr>&gt;ABC</dtb:abbr>'S</dtb:h1>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Text matcher inside block, p"
+		pending="the apo needs to be moved out of the abbr">
+      <x:context>
+	<dtb:p xml:lang="de"><dtb:abbr>ABC</dtb:abbr>s</dtb:p>
+      </x:context>
+      <x:expect label="braille">
+	<dtb:p xml:lang="de"><dtb:abbr>&gt;ABC</dtb:abbr>'S</dtb:p>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Text matcher inside block, bridgehead"
+		pending="the apo needs to be moved out of the abbr">
+      <x:context>
+        <dtb:bridgehead xml:lang="de"><dtb:abbr>ABC</dtb:abbr>s</dtb:bridgehead>
+      </x:context>
+      <x:expect label="braille">
+	<dtb:bridgehead xml:lang="de"><dtb:abbr>&gt;ABC</dtb:abbr>'S</dtb:bridgehead>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Text matcher inside block, hd"
+		pending="the apo needs to be moved out of the abbr">
+      <x:context>
+        <dtb:hd xml:lang="de"><dtb:abbr>ABC</dtb:abbr>s</dtb:hd>
+      </x:context>
+      <x:expect label="braille">
+	<dtb:hd xml:lang="de"><dtb:abbr>&gt;ABC</dtb:abbr>'S</dtb:hd>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Text matcher inside block, dd and dt"
+		pending="the apo needs to be moved out of the abbr">
+      <x:context>
+        <dtb:dd xml:lang="de"><dtb:abbr>ABC</dtb:abbr>s</dtb:dd>
+        <dtb:dt xml:lang="de"><dtb:abbr>ABC</dtb:abbr>s</dtb:dt>
+      </x:context>
+      <x:expect label="braille">
+        <dtb:dd xml:lang="de"><dtb:abbr>&gt;ABC</dtb:abbr>'S</dtb:dd>
+        <dtb:dt xml:lang="de"><dtb:abbr>&gt;ABC</dtb:abbr>'S</dtb:dt>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Text matcher inside block, caption, th and td"
+		pending="the apo needs to be moved out of the abbr">
+      <x:context>
+	<dtb:caption xml:lang="de"><dtb:abbr>ABC</dtb:abbr>s</dtb:caption>
+      </x:context>
+      <x:expect label="braille">
+	<dtb:caption xml:lang="de"><dtb:abbr>&gt;ABC</dtb:abbr>'S</dtb:caption>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="Text matcher inside block, th and td"
+		pending="the apo needs to be moved out of the abbr">
+      <x:context>
+	<dtb:th xml:lang="de"><dtb:abbr>ABC</dtb:abbr>s</dtb:th>
+        <dtb:td xml:lang="de"><dtb:abbr>ABC</dtb:abbr>s</dtb:td>
+      </x:context>
+      <x:expect label="braille">
+	<dtb:th xml:lang="de"><dtb:abbr>&gt;ABC</dtb:abbr>'S</dtb:th>
+        <dtb:td xml:lang="de"><dtb:abbr>&gt;ABC</dtb:abbr>'S</dtb:td>
+      </x:expect>
+    </x:scenario>
+
 </x:description>
