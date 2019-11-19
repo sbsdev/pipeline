@@ -59,6 +59,7 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 	
 	@Test
 	public void runXSpecAndXProcSpec() throws Exception {
+		boolean generateEpubTests = Boolean.parseBoolean(System.getProperty("generate-epub-tests", "true"));
 		File baseDir = new File(PathUtils.getBaseDir());
 		File xspecTestsDir = new File(baseDir, "src/test/xspec");
 		File generatedXSpecTestsDir = new File(baseDir, "target/generated-test-sources/xspec");
@@ -91,22 +92,23 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 		if (xspecHasFocus || !xprocspecHasFocus) {
 			
 			// execute tests a second time via EPUB 3, except if they contain custom CSS (in style attributes)
-			Set<String> tests = new HashSet<>(xspecTests.keySet());
-			for (String test : tests) {
-				File generatedTest = new File(generatedXSpecTestsDir, xspecTests.get(test).getName());
-				if (!test.equals("test_block-translate") &&
-				    !test.equals("test_handle_downgrading-1") &&
-				    !test.equals("test_handle-downgrading-2") &&
-				    !test.equals("test_dtbook2sbsform-9") &&
-				    !test.equals("test_handle-dl")) {
-					xprocEngine.run(generateXSpecTests,
-					                ImmutableMap.of("source", (List<String>)ImmutableList.of(xspecTests.get(test).toURI().toASCIIString())),
-					                ImmutableMap.of("result", generatedTest.toURI().toASCIIString()),
-					                null,
-					                ImmutableMap.of("parameters",
-					                                (Map<String,String>)ImmutableMap.of("projectBaseDir",
-					                                                                    baseDir.toURI().toASCIIString())));
-					xspecTests.put(test + "_via_epub3", generatedTest); }}
+			if (generateEpubTests) {
+				Set<String> tests = new HashSet<>(xspecTests.keySet());
+				for (String test : tests) {
+					File generatedTest = new File(generatedXSpecTestsDir, xspecTests.get(test).getName());
+					if (!test.equals("test_block-translate") &&
+					    !test.equals("test_handle_downgrading-1") &&
+					    !test.equals("test_handle-downgrading-2") &&
+					    !test.equals("test_dtbook2sbsform-9") &&
+					    !test.equals("test_handle-dl")) {
+						xprocEngine.run(generateXSpecTests,
+						                ImmutableMap.of("source", (List<String>)ImmutableList.of(xspecTests.get(test).toURI().toASCIIString())),
+						                ImmutableMap.of("result", generatedTest.toURI().toASCIIString()),
+						                null,
+						                ImmutableMap.of("parameters",
+						                                (Map<String,String>)ImmutableMap.of("projectBaseDir",
+						                                                                    baseDir.toURI().toASCIIString())));
+						xspecTests.put(test + "_via_epub3", generatedTest); }}}
 			File xspecReportsDir = new File(baseDir, "target/surefire-reports");
 			xspecReportsDir.mkdirs();
 			TestResults result = xspecRunner.run(xspecTests, xspecReportsDir);
@@ -118,19 +120,20 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 		if (xprocspecHasFocus || !xspecHasFocus) {
 			
 			// execute tests a second time via EPUB 3, except if they contain custom, DTBook-specific CSS
-			Set<String> tests = new HashSet<>(xprocspecTests.keySet());
-			for (String test : tests)
-				if (!test.equals("test_translator") &&
-				    !test.equals("test_epub3-to-epub3") &&
-				    !test.equals("test_epub3-to-pef") &&
-				    !test.equals("test_epub3-to-pef.load")) {
-					File generatedTest = new File(generatedXProcSpecTestsDir, test + ".xprocspec");
-					xprocEngine.run(generateXProcSpecTests,
-					                ImmutableMap.of("source", (List<String>)ImmutableList.of(xprocspecTests.get(test).toURI().toASCIIString())),
-					                ImmutableMap.of("result", generatedTest.toURI().toASCIIString()),
-					                null,
-					                null);
-					xprocspecTests.put(test + "_via_epub3", generatedTest); }
+			if (generateEpubTests) {
+				Set<String> tests = new HashSet<>(xprocspecTests.keySet());
+				for (String test : tests)
+					if (!test.equals("test_translator") &&
+					    !test.equals("test_epub3-to-epub3") &&
+					    !test.equals("test_epub3-to-pef") &&
+					    !test.equals("test_epub3-to-pef.load")) {
+						File generatedTest = new File(generatedXProcSpecTestsDir, test + ".xprocspec");
+						xprocEngine.run(generateXProcSpecTests,
+						                ImmutableMap.of("source", (List<String>)ImmutableList.of(xprocspecTests.get(test).toURI().toASCIIString())),
+						                ImmutableMap.of("result", generatedTest.toURI().toASCIIString()),
+						                null,
+						                null);
+						xprocspecTests.put(test + "_via_epub3", generatedTest); }}
 			File xprocspecReportsDir = new File(baseDir, "target/xprocspec-reports");
 			boolean success = xprocspecRunner.run(xprocspecTests,
 			                                      xprocspecReportsDir,
