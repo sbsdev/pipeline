@@ -53,4 +53,58 @@
     </x:expect>
   </x:scenario>
 
+  <x:scenario label="Mixed emphasis word after">
+    <x:context>
+      <dtb:p xml:lang="de"><dtb:em>kursiv</dtb:em>blo</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de"><dtb:em>_KURSIV'.</dtb:em>BLO</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Mixed emphasis word before">
+    <x:context>
+      <dtb:p xml:lang="de">bla<dtb:em>kursiv</dtb:em></dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">BLA<dtb:em>'_KURSIV</dtb:em></dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Mixed emphasis word on both sides">
+    <x:context>
+      <dtb:p xml:lang="de">bla<dtb:em>kursiv</dtb:em>blo</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">BLA<dtb:em>'_KURSIV'.</dtb:em>BLO</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Mixed emphasis ellipsis after">
+    <x:context>
+      <dtb:p xml:lang="de"><dtb:em>kursiv</dtb:em>...blo</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de"><dtb:em>_KURSIV'.</dtb:em>...BLO</dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Mixed emphasis ellipsis before">
+    <x:context>
+      <dtb:p xml:lang="de">bla...<dtb:em>kursiv</dtb:em></dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">BLA...<dtb:em>'_KURSIV</dtb:em></dtb:p>
+    </x:expect>
+  </x:scenario>
+
+  <x:scenario label="Mixed emphasis ellipsis on both sides">
+    <x:context>
+      <dtb:p xml:lang="de">bla...<dtb:em>kursiv</dtb:em>...blo</dtb:p>
+    </x:context>
+    <x:expect label="braille">
+      <dtb:p xml:lang="de">BLA...<dtb:em>'_KURSIV'.</dtb:em>...BLO</dtb:p>
+    </x:expect>
+  </x:scenario>
+
 </x:description>
