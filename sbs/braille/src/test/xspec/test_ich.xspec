@@ -154,33 +154,33 @@
   </x:scenario>
 
   <x:scenario label="All-Caps ich inside em II">
-    <x:context><stub xml:lang="de"><dtb:em>ICH.</dtb:em></stub></x:context>
-    <x:expect label="braille"><stub xml:lang="de"><dtb:em>_#.</dtb:em></stub></x:expect>
+    <x:context><stub xml:lang="de"><dtb:em>ICH</dtb:em>.</stub></x:context>
+    <x:expect label="braille"><stub xml:lang="de"><dtb:em>_#</dtb:em>.</stub></x:expect>
   </x:scenario>
 
   <x:scenario label="All-Caps ich inside em III">
-    <x:context><stub xml:lang="de"><dtb:em>ICH,</dtb:em></stub></x:context>
-    <x:expect label="braille"><stub xml:lang="de"><dtb:em>_I4,</dtb:em></stub></x:expect>
+    <x:context><stub xml:lang="de"><dtb:em>ICH</dtb:em>,</stub></x:context>
+    <x:expect label="braille"><stub xml:lang="de"><dtb:em>_I4</dtb:em>,</stub></x:expect>
   </x:scenario>
 
   <x:scenario label="All-Caps ich inside em IV">
-    <x:context><stub xml:lang="de"><dtb:em>ICH;</dtb:em></stub></x:context>
-    <x:expect label="braille"><stub xml:lang="de"><dtb:em>_I4;</dtb:em></stub></x:expect>
+    <x:context><stub xml:lang="de"><dtb:em>ICH</dtb:em>;</stub></x:context>
+    <x:expect label="braille"><stub xml:lang="de"><dtb:em>_I4</dtb:em>;</stub></x:expect>
   </x:scenario>
 
   <x:scenario label="All-Caps ich inside em V">
-    <x:context><stub xml:lang="de"><dtb:em>ICH:</dtb:em></stub></x:context>
-    <x:expect label="braille"><stub xml:lang="de"><dtb:em>_I4:</dtb:em></stub></x:expect>
+    <x:context><stub xml:lang="de"><dtb:em>ICH</dtb:em>:</stub></x:context>
+    <x:expect label="braille"><stub xml:lang="de"><dtb:em>_I4</dtb:em>:</stub></x:expect>
   </x:scenario>
 
   <x:scenario label="All-Caps ich inside em VI">
-    <x:context><stub xml:lang="de"><dtb:em>ICH!</dtb:em></stub></x:context>
-    <x:expect label="braille"><stub xml:lang="de"><dtb:em>_I4+</dtb:em></stub></x:expect>
+    <x:context><stub xml:lang="de"><dtb:em>ICH</dtb:em>!</stub></x:context>
+    <x:expect label="braille"><stub xml:lang="de"><dtb:em>_I4</dtb:em>+</stub></x:expect>
   </x:scenario>
 
   <x:scenario label="All-Caps ich inside em VII">
-    <x:context><stub xml:lang="de"><dtb:em>ICH?</dtb:em></stub></x:context>
-    <x:expect label="braille"><stub xml:lang="de"><dtb:em>_I4?</dtb:em></stub></x:expect>
+    <x:context><stub xml:lang="de"><dtb:em>ICH</dtb:em>?</stub></x:context>
+    <x:expect label="braille"><stub xml:lang="de"><dtb:em>_I4</dtb:em>?</stub></x:expect>
   </x:scenario>
 
   <x:scenario label="Capitalized ich I">
