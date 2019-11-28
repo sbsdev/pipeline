@@ -160,6 +160,24 @@
       </x:expect>
     </x:scenario>
 
+    <x:scenario label="abbr 10 abbr inside em Bug dtbook2sbsform#14 (#2243)">
+      <x:context>
+	<dtb:p xml:lang="de"><dtb:em>es lebe das Format <dtb:abbr>A</dtb:abbr>4</dtb:em></dtb:p>
+      </x:context>
+      <x:expect label="braille">
+	<dtb:p xml:lang="de"><dtb:em>__% LBE D F?MAT <dtb:abbr>&gt;A</dtb:abbr>#D'.</dtb:em></dtb:p>
+      </x:expect>
+    </x:scenario>
+
+    <x:scenario label="abbr 10 abbr inside em Bug dtbook2sbsform#14 (#2243)">
+      <x:context>
+	<dtb:p xml:lang="de">es lebe das Format <dtb:abbr>A</dtb:abbr>4</dtb:p>
+      </x:context>
+      <x:expect label="braille">
+	<dtb:p xml:lang="de">% LBE D F?MAT <dtb:abbr>&gt;A</dtb:abbr>#D</dtb:p>
+      </x:expect>
+    </x:scenario>
+
     <x:scenario label="Namen mit Upshifts (McDonalds) werden von brl:name nicht behandelt Bug #1343">
       <x:context>
         <dtb:p xml:lang="de"><brl:name>McCartney</brl:name></dtb:p>

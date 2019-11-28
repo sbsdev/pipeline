@@ -1003,7 +1003,7 @@
   <!-- Single word mixed emphasis, mixed emphasis before-->
   <!-- ================================================= -->
   <xsl:template
-      match="text()[my:starts-with-word(string()) and my:ends-with-word(string(my:preceding-textnode-within-block(.)[ancestor::*:em]))]"
+      match="text()[my:starts-with-word(string()) and my:ends-with-word(string(preceding::* intersect my:preceding-textnode-within-block(.)/(ancestor::*:em)))]"
       priority="60">
     <xsl:call-template name="translate">
       <xsl:with-param name="text" select="concat('&#x250A;',string())"/>
@@ -1014,7 +1014,7 @@
   <!-- Single word mixed emphasis, mixed emphasis after -->
   <!-- ================================================ -->
   <xsl:template
-      match="text()[my:ends-with-word(string()) and my:starts-with-word(string(my:following-textnode-within-block(.)[ancestor::*:em]))]"
+      match="text()[my:ends-with-word(string()) and my:starts-with-word(string(following::* intersect my:following-textnode-within-block(.)/(ancestor::*:em)))]"
       priority="60">
     <xsl:call-template name="translate">
       <xsl:with-param name="text" select="concat(string(),'&#x250A;')"/>
