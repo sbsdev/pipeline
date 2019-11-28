@@ -134,34 +134,6 @@
       <x:expect label="braille"><stub xml:lang="de"><dtb:em brl:render="ignore">'(TE]')</dtb:em>-,B,0</stub></x:expect>
     </x:scenario>
 
-    <x:scenario label="&#34;ich&#34; innerhalb em vor Komma (http://redmine.sbszh.ch/issues/show/944)">
-      <x:context>
-        <stub xml:lang="de"><dtb:em>ich</dtb:em>, </stub>
-      </x:context>
-      <x:expect label="braille"><stub xml:lang="de"><dtb:em>_I4</dtb:em>, </stub></x:expect>
-    </x:scenario>
-
-    <x:scenario label="&#34;ich&#34; innerhalb em vor Klammer (http://redmine.sbszh.ch/issues/show/944)">
-      <x:context>
-        <stub xml:lang="de"><dtb:em>ich</dtb:em>) </stub>
-      </x:context>
-      <x:expect label="braille"><stub xml:lang="de"><dtb:em>_I4</dtb:em>= </stub></x:expect>
-    </x:scenario>
-
-    <x:scenario label="&#34;ich&#34; innerhalb em vor Klammer (http://redmine.sbszh.ch/issues/show/944)">
-      <x:context>
-        <stub xml:lang="de"><dtb:em>(ich</dtb:em>) </stub>
-      </x:context>
-      <x:expect label="braille"><stub xml:lang="de"><dtb:em>_=I4</dtb:em>= </stub></x:expect>
-    </x:scenario>
-
-    <x:scenario label="&#34;mich&#34; innerhalb em vor Klammer (http://redmine.sbszh.ch/issues/show/944)">
-      <x:context>
-        <stub xml:lang="de"><dtb:em>mich</dtb:em>) </stub>
-      </x:context>
-      <x:expect label="braille"><stub xml:lang="de"><dtb:em>_M#</dtb:em>= </stub></x:expect>
-    </x:scenario>
-
     <x:scenario label="Single word mixed emphasis em before (http://redmine.sbszh.ch/issues/show/1007)">
       <x:context>
         <dtb:p xml:lang="de"><dtb:em>Menschen</dtb:em>versuch</dtb:p>
