@@ -15,6 +15,7 @@
   <xsl:param name="show_v_forms" select="true()"/>
   <xsl:param name="downshift_ordinals" select="true()"/>
   <xsl:param name="ascii-braille">no</xsl:param>
+  <xsl:param name="enable_capitalization" select="false()"/>
 
   <xsl:variable name="GROSS_FUER_BUCHSTABENFOLGE">╦</xsl:variable>
   <xsl:variable name="GROSS_FUER_EINZELBUCHSTABE">╤</xsl:variable>
@@ -1037,8 +1038,14 @@
   <xsl:template
       match="text()[(matches(string(), '^ich$', 'i') or matches(string(), '\Wich$', 'i')) and matches(string(following::text()[1]), '^[,;:?!)&#x00bb;&#x00ab;]')]"
       priority="61">
+    <!-- Our braille tables have a bit of a problem with upper case, so cases like
+         "ICH" most likely fail. That's why we convert the string to lower case
+         before showing it to liblouis. This fails even worse if we enable
+         capitalization, but for now it is a good enough solution. The real fix is
+         of course to handle capitalisation properly in the liblouis tables. -->
+    <xsl:variable name="ich" select="if ($enable_capitalization = false()) then lower-case(string()) else string()"/>
     <xsl:call-template name="translate">
-      <xsl:with-param name="text" select="concat(string(),'&#x250A;')"/>
+      <xsl:with-param name="text" select="concat($ich,'&#x250A;')"/>
     </xsl:call-template>
   </xsl:template>
 
