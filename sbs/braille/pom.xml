@@ -10,6 +10,7 @@
     <relativePath />
   </parent>
 
+  <groupId>org.daisy.pipeline.modules.braille</groupId>
   <artifactId>mod-sbs</artifactId>
   <version>1.8.1-SNAPSHOT</version>
   <packaging>bundle</packaging>
