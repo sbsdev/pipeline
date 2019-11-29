@@ -765,7 +765,7 @@
       <dependency>
         <groupId>org.daisy.libs</groupId>
         <artifactId>jnaerator</artifactId>
-        <version>0.11-p1-SNAPSHOT</version>
+        <version>0.11-p1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
