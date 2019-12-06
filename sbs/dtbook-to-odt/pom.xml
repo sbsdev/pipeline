@@ -23,11 +23,11 @@
     <!--
 	this needs to match the version in scripts-bom (1.12.1-SNAPSHOT: defined in modules-parent)
     -->
-    <dtbook-to-odt.version>2.1.0</dtbook-to-odt.version>
+    <dtbook-to-odt.version>2.1.1-SNAPSHOT</dtbook-to-odt.version>
     <!--
 	this needs to match the version in scripts-utils-bom (1.12.0: defined in modules-parent)
     -->
-    <odt-utils.version>1.0.3</odt-utils.version>
+    <odt-utils.version>1.0.4-SNAPSHOT</odt-utils.version>
     <tagNameFormat>v@{project.version}</tagNameFormat>
   </properties>
   
