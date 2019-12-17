@@ -160,6 +160,32 @@
         <xsl:apply-templates select="node()[not((self::*, following-sibling::*[1])[1][self::dtbook:meta[starts-with(@name,'dtb:')]])]"/>
     </xsl:template>
 
+    <xsl:template name="f:a11y.meta">
+      <!-- See http://idpf.org/epub/a11y/accessibility.html#sec-disc-package -->
+
+      <!-- does it contain images? -->
+      <meta property="schema:accessMode"><xsl:value-of select="if (//dtbook:img) then 'visual' else 'textual'"/></meta>
+
+      <meta property="schema:accessibilityFeature">structuralNavigation</meta>
+      <meta property="schema:accessibilityFeature">readingOrder</meta>
+      <xsl:if test="//dtbook:pagenum">
+	<meta property="schema:accessibilityFeature">printPageNumbers</meta>
+      </xsl:if>
+      <xsl:if test="//dtbook:img">
+      <meta property="schema:accessibilityFeature">alternativeText</meta>
+      </xsl:if>
+      <xsl:variable name="prodnotes" select="//dtbook:prodnote | //dtbook:div[f:classes(.) = ('prodnote','production')]"/>
+      <xsl:variable name="imgrefs" select="for $p in $prodnotes return tokenize($p/@imgref,'\s+')[not(.='')]"/>
+      <xsl:if test="((some $ref in $imgrefs satisfies //dtbook:img[@id=$ref]) or
+		    ($prodnotes[preceding-sibling::node()[not(self::text())][1][self::dtbook:img]]))">
+	<meta property="schema:accessibilityFeature">longDescriptions</meta>
+      </xsl:if>
+      <meta property="schema:accessibilityHazard">none</meta>
+      <meta property="schema:accessibilitySummary">This publication conforms to WCAG 2.0 Level AA</meta>
+      <meta property="schema:accessModeSufficient">textual</meta>
+      <meta property="schema:accessModeSufficient">visual</meta>
+    </xsl:template>
+
     <xsl:template match="dtbook:head">
         <head>
             <xsl:copy-of select="namespace::*[not(.='http://www.daisy.org/z3986/2005/dtbook/')]" exclude-result-prefixes="#all"/>
@@ -179,6 +205,7 @@
                 <meta name="dc:source" content="urn:isbn:0"/>
             </xsl:if>
             <xsl:call-template name="f:headmisc"/>
+            <xsl:call-template name="f:a11y.meta"/>
             <style type="text/css" xml:space="preserve"><![CDATA[
                 .initialism{
                     -epub-speak-as:spell-out;
