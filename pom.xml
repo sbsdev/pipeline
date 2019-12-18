@@ -28,7 +28,6 @@
     <module>libs/liblouis-java</module>
     <module>framework</module>
     <module>modules</module>
-    <module>sbs/maven-parents/super-parent</module>
     <module>sbs/maven-parents/modules-parent</module>
     <module>sbs/braille-tables</module>
     <module>sbs/hyphenation-tables</module>
