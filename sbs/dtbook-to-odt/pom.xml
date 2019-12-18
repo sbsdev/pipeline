@@ -20,18 +20,18 @@
   <name>DAISY Pipeline 2 module :: sbs:dtbook-to-odt</name>
   
   <properties>
-    <!--
-	this needs to match the version in scripts-bom (1.12.1-SNAPSHOT: defined in modules-parent)
-    -->
-    <dtbook-to-odt.version>2.1.1-SNAPSHOT</dtbook-to-odt.version>
-    <!--
-	this needs to match the version in scripts-utils-bom (1.12.0: defined in modules-parent)
-    -->
-    <odt-utils.version>1.0.4-SNAPSHOT</odt-utils.version>
     <tagNameFormat>v@{project.version}</tagNameFormat>
+    <expose-services>
+      org.daisy.pipeline.modules.impl.Module_sbs_dtbook_to_odt,
+      org.daisy.pipeline.script.impl.XProcScript_sbs_dtbook_to_odt
+    </expose-services>
   </properties>
   
   <dependencies>
+    <dependency>
+      <groupId>org.daisy.pipeline</groupId>
+      <artifactId>framework-core</artifactId>
+    </dependency>
     <!--
 	runtime dependencies
     -->
@@ -54,27 +54,6 @@
       <groupId>org.daisy.pipeline.modules</groupId>
       <artifactId>file-utils</artifactId>
       <scope>runtime</scope>
-    </dependency>
-    <!--
-	for dtbook-to-odt
-    -->
-    <dependency>
-      <groupId>org.daisy.pipeline.modules</groupId>
-      <artifactId>image-utils</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <!--
-	test dependencies
-    -->
-    <dependency>
-      <groupId>org.daisy.pipeline.build</groupId>
-      <artifactId>modules-test-helper</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.daisy.pipeline</groupId>
-      <artifactId>framework-volatile</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -108,6 +87,21 @@
       </resource>
     </resources>
     <plugins>
+      <plugin>
+	<groupId>org.daisy.pipeline.build</groupId>
+	<artifactId>modules-build-helper</artifactId>
+	<executions>
+	  <execution>
+	    <id>process-catalog</id>
+	    <configuration>
+	      <!--
+		  avoid name collision
+	      -->
+	      <moduleName>sbs-${project.artifactId}</moduleName>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
       <plugin>
 	<groupId>org.codehaus.mojo</groupId>
 	<artifactId>shell-maven-plugin</artifactId>
@@ -163,92 +157,6 @@
 	      </filters>
 	    </configuration>
 	  </execution>
-	  <!--
-	  <execution>
-	    <id>copy-catalog</id>
-	    <phase>generate-resources</phase>
-	    <goals>
-	      <goal>copy-resources</goal>
-	    </goals>
-	    <configuration>
-	      <outputDirectory>target/generated-resources</outputDirectory>
-	      <resources>
-		<resource>
-		  <directory>src/main/resources</directory>
-		  <includes>
-		    <include>META-INF/catalog.xml</include>
-		  </includes>
-		</resource>
-	      </resources>
-	    </configuration>
-	  </execution>
-	  -->
-	</executions>
-      </plugin>
-      <!--
-      <plugin>
-	<groupId>org.daisy.pipeline.build</groupId>
-	<artifactId>modules-build-helper</artifactId>
-	<executions>
-	  <execution>
-	    <id>process-catalog</id>
-	    <phase>generate-resources</phase>
-	    <configuration>
-	      <catalogFile>target/generated-resources/META-INF/catalog.xml</catalogFile>
-	    </configuration>
-	  </execution>
-	</executions>
-      </plugin>
-      -->
-      <plugin>
-	<groupId>org.ops4j.pax.exam</groupId>
-	<artifactId>maven-paxexam-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <id>generate-depends-file</id>
-	    <goals>
-	      <goal>generate-depends-file</goal>
-	    </goals>
-	  </execution>
-	</executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>bundle-before-test</id>
-            <phase>generate-test-resources</phase>
-            <goals>
-              <goal>bundle</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-	<artifactId>maven-dependency-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <id>copy-dependencies</id>
-	    <phase>prepare-package</phase>
-	    <goals>
-	      <goal>copy</goal>
-	    </goals>
-	    <configuration>
-	      <useBaseVersion>true</useBaseVersion>
-	      <prependGroupId>true</prependGroupId>
-	      <artifactItems>
-		<artifactItem>
-		  <groupId>org.daisy.pipeline.modules</groupId>
-		  <artifactId>dtbook-to-odt</artifactId>
-		</artifactItem>
-		<artifactItem>
-		  <groupId>org.daisy.pipeline.modules</groupId>
-		  <artifactId>odt-utils</artifactId>
-		</artifactItem>
-	      </artifactItems>
-	    </configuration>
-	  </execution>
 	</executions>
       </plugin>
       <plugin>
@@ -259,28 +167,6 @@
 	    <data>
 	      <type>file</type>
 	      <src>target/${project.artifactId}-${project.version}.jar</src>
-	      <mapper>
-		<type>perm</type>
-		<prefix>/opt/daisy-pipeline2/modules</prefix>
-	      </mapper>
-	    </data>
-	    <!--
-		dtbook-to-odt is not in pipeline-assembly yet
-	    -->
-	    <data>
-	      <type>file</type>
-	      <src>target/dependency/org.daisy.pipeline.modules.dtbook-to-odt-${dtbook-to-odt.version}.jar</src>
-	      <mapper>
-		<type>perm</type>
-		<prefix>/opt/daisy-pipeline2/modules</prefix>
-	      </mapper>
-	    </data>
-	    <!--
-		odt-utils is not in pipeline-assembly yet
-	    -->
-	    <data>
-	      <type>file</type>
-	      <src>target/dependency/org.daisy.pipeline.modules.odt-utils-${odt-utils.version}.jar</src>
 	      <mapper>
 		<type>perm</type>
 		<prefix>/opt/daisy-pipeline2/modules</prefix>

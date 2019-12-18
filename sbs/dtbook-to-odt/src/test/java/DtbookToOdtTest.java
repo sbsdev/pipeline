@@ -8,9 +8,7 @@ public class DtbookToOdtTest extends AbstractXSpecAndXProcSpecTest {
 			pipelineModule("dtbook-to-odt"),
 			pipelineModule("odt-utils"),
 			pipelineModule("dtbook-utils"),
-			pipelineModule("file-utils"),
-			// for dtbook-to-odt
-			pipelineModule("image-utils"),
+			pipelineModule("file-utils")
 		};
 	}
 }
