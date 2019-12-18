@@ -4,10 +4,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ch.sbs</groupId>
-    <artifactId>super-parent</artifactId>
-    <version>1.8-SNAPSHOT</version>
-    <relativePath>../super-parent/</relativePath>
+    <groupId>org.daisy.pipeline.modules</groupId>
+    <artifactId>modules-parent</artifactId>
+    <version>1.13.2-SNAPSHOT</version>
   </parent>
 
   <groupId>ch.sbs.pipeline</groupId>
@@ -18,6 +17,56 @@
   <name>DAISY Pipeline 2 :: SBS Modules Parent POM</name>
   <description>Parent POM for all Maven based pipeline module projects at SBS</description>
   <url>https://github.com/sbsdev/maven-parents</url>
+
+  <organization>
+    <name>Swiss Library for the Blind, Visually Impaired and Print Disabled</name>
+    <url>http://www.sbs.ch/</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>GNU General Public License, Version 3</name>
+      <url>http://www.gnu.org/copyleft/gpl.html</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>eglic</id>
+      <name>Christian Egli</name>
+      <email>christian.egli@sbs.ch</email>
+      <organization>Swiss Library for the Blind, Visually Impaired and Print Disabled</organization>
+      <organizationUrl>http://www.sbs.ch/</organizationUrl>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>UTC+01:00</timezone>
+    </developer>
+    <developer>
+      <id>bertfrees</id>
+      <name>Bert Frees</name>
+      <email>bertfrees@gmail.com</email>
+      <organization>Swiss Library for the Blind, Visually Impaired and Print Disabled</organization>
+      <organizationUrl>http://www.sbs.ch/</organizationUrl>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>UTC+01:00</timezone>
+    </developer>
+  </developers>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </snapshotRepository>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <name>Nexus Release Repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
   <scm>
     <connection>scm:git:git://github.com/sbsdev/maven-parents.git</connection>
@@ -30,237 +79,198 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.daisy.pipeline.build</groupId>
-          <artifactId>modules-build-helper</artifactId>
-          <version>2.2.0</version>
+          <groupId>org.vafer</groupId>
+          <artifactId>jdeb</artifactId>
+          <version>1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>shell-maven-plugin</artifactId>
+          <version>1.0-beta-1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.1</version>
+          <configuration>
+            <arguments>-Pattach-sources,attach-javadoc,sign</arguments>
+            <mavenExecutorId>forked-path</mavenExecutorId>
+            <useReleaseProfile>false</useReleaseProfile>
+            <localCheckout>true</localCheckout>
+            <pushChanges>false</pushChanges>
+            <goals>deploy</goals>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>shell-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-detailed-snapshot-version-filter</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>shell</goal>
+            </goals>
+            <configuration>
+              <workDir>${project.basedir}</workDir>
+              <chmod>true</chmod>
+              <script>
+                #!/bin/bash
+                PROJECT_VERSION=${project.version}
+                PROPERTIES_FILE=target/filters/detailed-version.properties
+                rm -rf $PROPERTIES_FILE
+                mkdir -p $( dirname $PROPERTIES_FILE )
+                printf 'project.detailedVersion=' &gt;&gt; $PROPERTIES_FILE
+                case $PROJECT_VERSION in
+                  *-SNAPSHOT)
+                    printf ${PROJECT_VERSION%-SNAPSHOT}~$( date +"%Y%m%d.%H%M%S" )-$( git describe --tags --always --dirty ) &gt;&gt; $PROPERTIES_FILE
+                    ;;
+                  *)
+                    printf $PROJECT_VERSION &gt;&gt; $PROPERTIES_FILE
+                    ;;
+                esac
+                printf '\n' &gt;&gt; $PROPERTIES_FILE
+              </script>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
 
-  <dependencyManagement>
-    <dependencies>
-      <!--
-          pipeline
-      -->
-      <dependency>
-        <groupId>org.daisy.pipeline</groupId>
-        <artifactId>framework-bom</artifactId>
-        <version>1.13.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.daisy.pipeline.modules</groupId>
-        <artifactId>modules-bom</artifactId>
-        <version>1.12.1-SNAPSHOT</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!--
-          for testing
-      -->
-      <dependency>
-        <groupId>org.daisy.pipeline.build</groupId>
-        <artifactId>modules-test-helper</artifactId>
-        <version>1.0.4</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-  
-  <!-- Copied from modules parent of DAISY Pipeline build utils v1.7
-       with a small modification -->
   <profiles>
     <profile>
-      <id>pipeline-xml-module</id>
+      <id>deb</id>
       <activation>
         <file>
-          <exists>src/main/resources/META-INF/catalog.xml</exists>
+          <exists>src/main/deb/DEBIAN/control</exists>
         </file>
       </activation>
       <build>
-        <resources>
-          <resource>
-            <directory>src/main/resources</directory>
-            <excludes>
-              <exclude>META-INF/catalog.xml</exclude>
-            </excludes>
-          </resource>
-        </resources>
         <plugins>
           <plugin>
-            <groupId>org.daisy.pipeline.build</groupId>
-            <artifactId>modules-build-helper</artifactId>
+            <artifactId>maven-resources-plugin</artifactId>
             <executions>
               <execution>
-                <id>process-catalog</id>
-                <phase>generate-resources</phase>
+                <id>filter-deb</id>
+                <phase>process-resources</phase>
                 <goals>
-                  <goal>process-catalog</goal>
+                  <goal>copy-resources</goal>
                 </goals>
+                <configuration>
+                  <outputDirectory>${project.build.directory}/generated-resources/deb/DEBIAN</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>src/main/deb/DEBIAN</directory>
+                      <filtering>true</filtering>
+                    </resource>
+                  </resources>
+                  <filters>
+                    <filter>${project.build.directory}/filters/detailed-version.properties</filter>
+                  </filters>
+                </configuration>
               </execution>
             </executions>
           </plugin>
           <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-            <configuration>
-              <instructions>
-                <!-- always add Maven resources - add OSGI-INF if it exists -->
-                <!--
-                     TODO replace the hackish syntax when this is released:
-                     https://github.com/bndtools/bnd/issues/168
-                 -->
-                <Include-Resource>
-     {maven-resources}$(if;$(replace;$(isdir;${project.build.directory}/generated-resources/process-catalog/OSGI-INF);false(.*);$1);,OSGI-INF=${project.build.directory}/generated-resources/process-catalog/OSGI-INF)
-                </Include-Resource>
-                <_include>${project.build.directory}/generated-resources/process-catalog/bnd.bnd</_include>
-              </instructions>
-            </configuration>
+            <groupId>org.vafer</groupId>
+            <artifactId>jdeb</artifactId>
+            <executions>
+              <execution>
+                <id>package-deb</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jdeb</goal>
+                </goals>
+                <configuration>
+                  <controlDir>${project.build.directory}/generated-resources/deb/DEBIAN</controlDir>
+                  <classifier>all</classifier>
+                  <deb>${project.build.directory}/${project.artifactId}_${project.version}_all.deb</deb>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
     </profile>
     <profile>
-      <id>documentation-module</id>
-      <activation>
-        <file>
-          <exists>src/main</exists>
-        </file>
-      </activation>
+      <id>sign</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-resources-plugin</artifactId>
+            <artifactId>maven-gpg-plugin</artifactId>
             <executions>
               <execution>
-                <id>copy-markdown-and-html</id>
-                <phase>prepare-package</phase>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
                 <goals>
-                  <goal>copy-resources</goal>
+                  <goal>sign</goal>
                 </goals>
-                <configuration>
-                  <resources>
-                    <resource>
-                      <directory>${project.basedir}</directory>
-                      <includes>
-                        <include>index.md</include>
-                        <include>src/main/README.md</include>
-                        <include>doc/**/*</include>
-                      </includes>
-                    </resource>
-                  </resources>
-                  <outputDirectory>${project.build.directory}/doc/</outputDirectory>
-                </configuration>
               </execution>
             </executions>
           </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>attach-sources</id>
+      <build>
+        <plugins>
           <plugin>
-            <artifactId>maven-jxr-plugin</artifactId>
+            <artifactId>maven-source-plugin</artifactId>
             <executions>
               <execution>
-                <id>htmlize-java</id>
-                <phase>prepare-package</phase>
+                <id>attach-sources</id>
                 <goals>
-                  <goal>jxr</goal>
+                  <goal>jar-no-fork</goal>
                 </goals>
-                <configuration>
-                  <destDir>${project.build.directory}/doc/src/main/java/</destDir>
-                  <linkJavadoc>false</linkJavadoc>
-                </configuration>
               </execution>
             </executions>
           </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>attach-javadoc</id>
+      <build>
+        <plugins>
           <plugin>
-            <groupId>org.daisy.pipeline.build</groupId>
-            <artifactId>modules-build-helper</artifactId>
+            <artifactId>maven-javadoc-plugin</artifactId>
             <executions>
               <execution>
-                <id>xprocdoc</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>xprocdoc</goal>
-                </goals>
-                <configuration>
-                  <sourceDirectory>src/main/resources</sourceDirectory>
-                  <outputDirectory>${project.build.directory}/xprocdoc</outputDirectory>
-                  <catalogXmlFile>src/main/resources/META-INF/catalog.xml</catalogXmlFile>
-                  <includes>xml/**/*.xpl</includes>
-                </configuration>
-              </execution>
-              <execution>
-                <id>htmlize-sources</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>htmlize-sources</goal>
-                </goals>
-                <configuration>
-                  <sourceDirectory>${project.basedir}</sourceDirectory>
-                  <outputDirectory>${project.build.directory}/doc</outputDirectory>
-                  <catalogXmlFile>${project.basedir}/src/main/resources/META-INF/catalog.xml</catalogXmlFile>
-                  <includes>
-                    src/main/resources/META-INF/catalog.xml,
-                    src/main/resources/**/*.xpl,
-                    src/main/resources/**/*.xsl,
-                    src/main/resources/**/*.xml,
-                    src/main/resources/**/*.rng,
-                    src/main/resources/**/*.sch,
-                    src/main/resources/**/*.css,
-                    src/main/resources/**/*.scss
-                  </includes>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <artifactId>maven-jar-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>package-doc-jar</id>
-                <phase>package</phase>
+                <id>attach-javadocs</id>
                 <goals>
                   <goal>jar</goal>
                 </goals>
-                <configuration>
-                  <classifier>doc</classifier>
-                  <classesDirectory>${project.build.directory}/doc</classesDirectory>
-                  <includes>
-                    <include>**/*.md</include>
-                    <include>**/*.html</include>
-                    <include>doc/**/*</include>
-                    <include>src/main/java/stylesheet.css</include>
-                  </includes>
-                  <archive>
-                    <addMavenDescriptor>false</addMavenDescriptor>
-                  </archive>
-                </configuration>
-              </execution>
-              <execution>
-                <id>package-xprocdoc-jar</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <configuration>
-                  <classifier>xprocdoc</classifier>
-                  <classesDirectory>${project.build.directory}/xprocdoc</classesDirectory>
-                  <skipIfEmpty>true</skipIfEmpty>
-                  <archive>
-                    <addMavenDescriptor>false</addMavenDescriptor>
-                  </archive>
-                </configuration>
               </execution>
             </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>graph</id>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>mvnplugins.fusesource.org</id>
+          <url>http://mvnplugins.fusesource.org/repo/release</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+        </pluginRepository>
+      </pluginRepositories>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.fusesource.mvnplugins</groupId>
+            <artifactId>maven-graph-plugin</artifactId>
+            <version>1.4</version>
           </plugin>
         </plugins>
       </build>
     </profile>
   </profiles>
+
 </project>
