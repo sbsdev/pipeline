@@ -112,12 +112,15 @@ class ExpressionImpl implements Expression {
 		if (localVars.containsKey(expr)) {
 			return localVars.get(expr);
 		}
-		if ("true".equals(expr))
+		if ("true".equals(expr)) {
 			return Boolean.TRUE;
-		if ("false".equals(expr))
+		}
+		if ("false".equals(expr)) {
 			return Boolean.FALSE;
-		if (IDENT.matcher(expr).matches())
+		}
+		if (IDENT.matcher(expr).matches()) {
 			return expr;
+		}
 		try {
 			return toNumber(expr);
 		} catch (NumberFormatException e) {
@@ -435,7 +438,7 @@ class ExpressionImpl implements Expression {
 			}
 			else if (expr.charAt(i)==' ' && level==0 && !str) {
 				ret.add(expr.substring(ci, i));
-				while (i+1<expr.length() && expr.charAt(i+1)==' ') i++;
+				while (i+1<expr.length() && expr.charAt(i+1)==' ') { i++; }
 				ci=i+1;
 			}
 		}
