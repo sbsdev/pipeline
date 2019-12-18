@@ -163,13 +163,12 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 			brailleModule("css-utils"),
 			brailleModule("pef-utils"),
 			brailleModule("liblouis-utils"),
-			"org.daisy.pipeline.modules.braille:liblouis-native:jar:" + thisPlatform() + ":?",
-			brailleModule("libhyphen-core"),
-			"org.daisy.pipeline.modules.braille:libhyphen-native:jar:" + thisPlatform() + ":?",
+			"org.daisy.pipeline.modules.braille:liblouis-utils:jar:" + thisPlatform() + ":?",
+			brailleModule("libhyphen-utils"),
+			"org.daisy.pipeline.modules.braille:libhyphen-utils:jar:" + thisPlatform() + ":?",
 			"ch.sbs.pipeline:sbs-braille-tables:?",
 			"ch.sbs.pipeline:sbs-hyphenation-tables:?",
 			brailleModule("dotify-utils"),
-			brailleModule("dotify-formatter"),
 			brailleModule("dtbook-to-pef"),
 			brailleModule("epub3-to-pef"),
 			pipelineModule("epub3-to-epub3"),
@@ -178,9 +177,6 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 			pipelineModule("fileset-utils"),
 			pipelineModule("epubcheck-adapter"),
 			pipelineModule("nordic-epub3-dtbook-migrator"),
-			// because of bug in lou_indexTables we need to include liblouis-tables even though
-			// we're not using it (needed for include-brf)
-			brailleModule("liblouis-tables"),
 			// logging
 			"org.slf4j:jul-to-slf4j:?",
 			"org.daisy.pipeline:logging-activator:?",
