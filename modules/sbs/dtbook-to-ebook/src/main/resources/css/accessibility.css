@@ -22,7 +22,6 @@ samp{
    assist with "glare" issues, but also to make the black
    symbols subtly stand out. */
 body {
-  font-size:14px;
   /* normal line height is 1.2
    (https://developer.mozilla.org/en-US/docs/Web/CSS/line-height#Values).
 
