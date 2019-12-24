@@ -171,8 +171,8 @@
       <xsl:if test="//dtbook:pagenum">
 	<meta property="schema:accessibilityFeature">printPageNumbers</meta>
       </xsl:if>
-      <xsl:if test="//dtbook:img">
-      <meta property="schema:accessibilityFeature">alternativeText</meta>
+      <xsl:if test="//dtbook:img[@alt!='']">
+	<meta property="schema:accessibilityFeature">alternativeText</meta>
       </xsl:if>
       <xsl:variable name="prodnotes" select="//dtbook:prodnote | //dtbook:div[f:classes(.) = ('prodnote','production')]"/>
       <xsl:variable name="imgrefs" select="for $p in $prodnotes return tokenize($p/@imgref,'\s+')[not(.='')]"/>
