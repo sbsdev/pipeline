@@ -142,6 +142,34 @@
         </p:input>
       </p:xslt>
 
+      <!-- We assume that if an image has a long description it will
+           be inside a prodnote and that prodnote will be bundled with
+           the image inside an imggroup. That means we do not have
+           manually link the two elements using imgrefs. However as
+	   the upstream off the shelf EPUB creation code in the
+	   pipeline2 relies on imgrefs. For that reason we insert them
+	   here.
+	   We add an imageref to the first prodnote inside an image
+	   group unless there are some existing elements within the
+	   same imggroup that actually have an imgref already -->
+      <p:xslt name="add-image-ids">
+        <p:input port="parameters">
+          <p:empty/>
+        </p:input>
+        <p:input port="stylesheet">
+          <p:document href="../xslt/addImageIds.xsl"/>
+        </p:input>
+      </p:xslt>
+
+      <p:xslt name="add-image-refs">
+        <p:input port="parameters">
+          <p:empty/>
+        </p:input>
+        <p:input port="stylesheet">
+          <p:document href="../xslt/addImageRefs.xsl"/>
+        </p:input>
+      </p:xslt>
+
       <px:message severity="INFO" message="DTBook preprocessing done"/>
       
       <p:identity name="dtbook-xml-preprocessed"/>
