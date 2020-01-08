@@ -1062,10 +1062,10 @@
         <xsl:copy-of select="@height|@width" exclude-result-prefixes="#all"/>
         <xsl:if test="@id">
             <xsl:variable name="id" select="@id"/>
-            <xsl:variable name="longdesc" select="(//dtbook:prodnote|//dtbook:caption)[tokenize(@imgref,'\s+')=$id]"/>
-            <xsl:if test="$longdesc">
+            <xsl:variable name="extended-descriptions" select="(//dtbook:prodnote|//dtbook:caption)[tokenize(@imgref,'\s+')=$id]"/>
+            <xsl:if test="$extended-descriptions">
                 <!-- NOTE: if the image has multiple prodnotes or captions, only the first one will be referenced. -->
-                <xsl:variable name="description-id" select="$longdesc[1]/((@id,f:generate-pretty-id(.,$all-ids))[1])"/>
+                <xsl:variable name="description-id" select="$extended-descriptions[1]/((@id,f:generate-pretty-id(.,$all-ids))[1])"/>
                 <xsl:attribute name="aria-describedby" select="$description-id"/>
             </xsl:if>
         </xsl:if>
