@@ -164,26 +164,28 @@
       <!-- See http://idpf.org/epub/a11y/accessibility.html#sec-disc-package -->
 
       <!-- does it contain images? -->
-      <meta property="schema:accessMode"><xsl:value-of select="if (//dtbook:img) then 'visual' else 'textual'"/></meta>
+      <meta property="schema:accessMode">
+        <xsl:attribute name="content" select="if (//dtbook:img) then 'visual' else 'textual'"/>
+      </meta>
 
-      <meta property="schema:accessibilityFeature">structuralNavigation</meta>
-      <meta property="schema:accessibilityFeature">readingOrder</meta>
+      <meta property="schema:accessibilityFeature" content="structuralNavigation"/>
+      <meta property="schema:accessibilityFeature" content="readingOrder" />
       <xsl:if test="//dtbook:pagenum">
-	<meta property="schema:accessibilityFeature">printPageNumbers</meta>
+	<meta property="schema:accessibilityFeature" content="printPageNumbers"/>
       </xsl:if>
       <xsl:if test="//dtbook:img[@alt!='']">
-	<meta property="schema:accessibilityFeature">alternativeText</meta>
+	<meta property="schema:accessibilityFeature" content="alternativeText"/>
       </xsl:if>
       <xsl:variable name="prodnotes" select="//dtbook:prodnote | //dtbook:div[f:classes(.) = ('prodnote','production')]"/>
       <xsl:variable name="imgrefs" select="for $p in $prodnotes return tokenize($p/@imgref,'\s+')[not(.='')]"/>
       <xsl:if test="((some $ref in $imgrefs satisfies //dtbook:img[@id=$ref]) or
 		    ($prodnotes[preceding-sibling::node()[not(self::text())][1][self::dtbook:img]]))">
-	<meta property="schema:accessibilityFeature">longDescriptions</meta>
+	<meta property="schema:accessibilityFeature" content="longDescriptions"/>
       </xsl:if>
-      <meta property="schema:accessibilityHazard">none</meta>
-      <meta property="schema:accessibilitySummary">This publication conforms to WCAG 2.0 Level AA</meta>
-      <meta property="schema:accessModeSufficient">textual</meta>
-      <meta property="schema:accessModeSufficient">visual</meta>
+      <meta property="schema:accessibilityHazard" content="none"/>
+      <meta property="schema:accessibilitySummary" content="This publication conforms to WCAG 2.0 Level AA"/>
+      <meta property="schema:accessModeSufficient" content="textual"/>
+      <meta property="schema:accessModeSufficient" content="visual"/>
     </xsl:template>
 
     <xsl:template match="dtbook:head">

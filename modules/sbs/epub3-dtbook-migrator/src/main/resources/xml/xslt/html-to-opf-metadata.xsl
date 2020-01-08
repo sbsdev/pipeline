@@ -44,7 +44,7 @@
 		    <xsl:when test="matches(@property,'^schema:')">
                       <xsl:message select="concat('Accessibility meta data found (',@property,')')"/>
                       <meta property="{@property}" id="{$id}">
-                        <xsl:value-of select="."/>
+                        <xsl:value-of select="normalize-space(@content)"/>
                       </meta>
 		    </xsl:when>
                     <xsl:when test="string-length(normalize-space(@content)) = 0">
