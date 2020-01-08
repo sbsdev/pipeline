@@ -1067,6 +1067,7 @@
                 <!-- NOTE: if the image has multiple prodnotes or captions, only the first one will be referenced. -->
                 <xsl:variable name="description-id" select="$extended-descriptions[1]/((@id,f:generate-pretty-id(.,$all-ids))[1])"/>
                 <xsl:attribute name="aria-describedby" select="$description-id"/>
+		<!-- NOTE: In the future we might also use the aria-details attribute here -->
             </xsl:if>
         </xsl:if>
     </xsl:template>
