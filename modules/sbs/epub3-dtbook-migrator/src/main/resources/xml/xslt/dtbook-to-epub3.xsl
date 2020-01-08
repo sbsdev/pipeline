@@ -1059,17 +1059,13 @@
         </xsl:call-template>
         <xsl:attribute name="src" select="concat('images/',@src)"/>
         <xsl:attribute name="alt" select="if (@alt and @alt='') then '' else if (not(@alt)) then 'image' else @alt"/>
-        <xsl:copy-of select="@longdesc|@height|@width" exclude-result-prefixes="#all"/>
+        <xsl:copy-of select="@height|@width" exclude-result-prefixes="#all"/>
         <xsl:if test="@id">
             <xsl:variable name="id" select="@id"/>
             <xsl:variable name="longdesc" select="(//dtbook:prodnote|//dtbook:caption)[tokenize(@imgref,'\s+')=$id]"/>
             <xsl:if test="$longdesc">
                 <xsl:variable name="description-id" select="concat('#',$longdesc[1]/((@id,f:generate-pretty-id(.,$all-ids))[1]))"/>
                 <xsl:attribute name="aria-describedby" select="$description-id"/>
-                <xsl:if test="not(@longdesc)">
-                    <xsl:attribute name="longdesc" select="$description-id"/>
-                    <!-- NOTE: if the image has multiple prodnotes or captions, only the first one will be referenced. -->
-		</xsl:if>
             </xsl:if>
         </xsl:if>
     </xsl:template>
