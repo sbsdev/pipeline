@@ -3081,7 +3081,13 @@ rm -rf /opt/daisy-pipeline2/cli
     <repository>
       <id>central</id>
       <name>Maven Central</name>
-      <url>http://repo.maven.apache.org/maven2/</url>
+      <url>https://repo.maven.apache.org/maven2/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
     <!-- Restlet maven repository - They don't publish their stuff on maven central -->
     <repository>
