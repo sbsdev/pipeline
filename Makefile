@@ -39,6 +39,16 @@ settings.xml : settings.xml.in
 	             -e "s|\$${user\.home}|$(USER_HOME)|g" \
 	             >$@
 
+USER_HOME := $(shell echo ~)
+
+# instead of passing system properties "workspace" and "cache" we substitute them in the settings.xml file
+# this is required for org.ops4j.pax.url.mvn.settings
+settings.xml : settings.xml.in
+	cat $< | sed -e "s|\$${workspace}|$(CURDIR)/$(MVN_WORKSPACE)|g" \
+	             -e "s|\$${cache}|$(CURDIR)/$(MVN_CACHE)|g" \
+	             -e "s|\$${user\.home}|$(USER_HOME)|g" \
+	             >$@
+
 # -----------------------------------
 
 .PHONY : dist
