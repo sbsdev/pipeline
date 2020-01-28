@@ -7,10 +7,8 @@ MVN_CACHE               := .maven-cache
 # -----------------------------------
 TARGET_DIR              := .make-target
 MVN_SETTINGS            := settings.xml
-MVN_PROPERTIES          := -Dworkspace="$(CURDIR)/$(MVN_WORKSPACE)" \
-                           -Dcache="$(CURDIR)/$(MVN_CACHE)" \
-                           -Dorg.ops4j.pax.url.mvn.localRepository="$(CURDIR)/$(MVN_WORKSPACE)" \
-                           -Dorg.daisy.org.ops4j.pax.url.mvn.settings="$(CURDIR)/settings.xml"
+MVN_PROPERTIES          := -Dorg.ops4j.pax.url.mvn.localRepository="$(CURDIR)/$(MVN_WORKSPACE)" \
+                           -Dorg.ops4j.pax.url.mvn.settings="$(CURDIR)/settings.xml"
 MVN_RELEASE_CACHE_REPO  := $(MVN_CACHE)
 GRADLE                  := $(CURDIR)/libs/dotify/dotify.api/gradlew
 
@@ -22,6 +20,16 @@ include .make/main.mk
 endif
 endif
 endif
+
+USER_HOME := $(shell echo ~)
+
+# instead of passing system properties "workspace" and "cache" we substitute them in the settings.xml file
+# this is required for org.ops4j.pax.url.mvn.settings
+settings.xml : settings.xml.in
+	cat $< | sed -e "s|\$${workspace}|$(CURDIR)/$(MVN_WORKSPACE)|g" \
+	             -e "s|\$${cache}|$(CURDIR)/$(MVN_CACHE)|g" \
+	             -e "s|\$${user\.home}|$(USER_HOME)|g" \
+	             >$@
 
 # -----------------------------------
 
