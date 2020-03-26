@@ -35,6 +35,8 @@
 	  <head>
             <meta xmlns:dc="http://purl.org/dc/elements/1.1/">
               <dc:format>application/x-pef+xml</dc:format>
+              <dc:identifier>identifier?</dc:identifier>
+              <dc:date>2020-03-20</dc:date>
               <dc:language>de</dc:language>
 	    </meta>
  	  </head>
@@ -114,6 +116,8 @@
 	  <head>
             <meta xmlns:dc="http://purl.org/dc/elements/1.1/">
               <dc:format>application/x-pef+xml</dc:format>
+              <dc:identifier>identifier?</dc:identifier>
+              <dc:date>2020-03-20</dc:date>
               <dc:language>de</dc:language>
 	    </meta>
  	  </head>
