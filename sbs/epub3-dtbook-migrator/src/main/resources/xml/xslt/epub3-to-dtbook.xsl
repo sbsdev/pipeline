@@ -501,7 +501,7 @@
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="html:span[f:classes(.)='byline']">
+    <xsl:template match="html:p[f:classes(.)='byline']">
         <byline>
             <xsl:call-template name="f:attlist.byline"/>
             <xsl:apply-templates select="node()"/>
