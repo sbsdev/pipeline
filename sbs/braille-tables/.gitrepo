@@ -7,5 +7,5 @@
 	remote = git@github.com:sbsdev/sbs-braille-tables.git
 	branch = master
 	commit = 86145682c091e1952121385cc2cff77bd9eff6c1
-	parent = 02c5eab99cebfb78df140276f55c8b2130cc2b9b
+	parent = 9e53ef191e0a80f5cfd73fec56ea0c0d61863a3f
 	cmdver = 0.3.1
