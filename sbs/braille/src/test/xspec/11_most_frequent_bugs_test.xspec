@@ -14,7 +14,7 @@
         <dtb:p xml:lang="de"><dtb:em>bla blo</dtb:em></dtb:p>
       </x:context>
       <x:expect label="braille">
-	<dtb:p xml:lang="de"><dtb:em>__BLA BLO'.</dtb:em></dtb:p>
+	<dtb:p xml:lang="de"><dtb:em>__BLAbBLO'.</dtb:em></dtb:p>
       </x:expect>
     </x:scenario>
 
