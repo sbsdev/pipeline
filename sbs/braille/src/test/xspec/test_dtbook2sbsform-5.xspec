@@ -105,8 +105,8 @@
       </x:context>
       <x:expect label="braille">
         <stub xml:lang="de">
-          <dtb:p>GRUPPEN(MAHLZ3T)</dtb:p>
-          <dtb:p>(GRUPPEN)MAHLZ3T</dtb:p>
+          <dtb:p>GRUPPEN'(MAHLZ3T)</dtb:p>
+          <dtb:p>(GRUPPEN')MAHLZ3T</dtb:p>
         </stub>
       </x:expect>
     </x:scenario>
