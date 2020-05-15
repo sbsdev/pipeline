@@ -958,6 +958,16 @@
   <!--     </xsl:call-template> -->
   <!-- </xsl:template> -->
 
+  <!-- ================================ -->
+  <!-- Handle operators before measures -->
+  <!-- ================================ -->
+  <xsl:template
+    match="text()[(following::* intersect my:following-textnode-within-block(.)/(ancestor::brl:num[@role='measure'])) and matches(.,'[\+−×÷=]\s+$')]" priority="100">
+    <xsl:call-template name="translate">
+      <xsl:with-param name="text" select="replace(string(),'\s+$','')"/>
+    </xsl:call-template>
+  </xsl:template>
+
   <!-- ================================== -->
   <!-- Handle letters after roman numbers -->
   <!-- ================================== -->
