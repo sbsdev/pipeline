@@ -10,64 +10,6 @@
 
   <x:param name="downshift_ordinals" select="true()"/>
 
-  <x:scenario label="Nested list I, (redmine#2677)">
-    <x:context>
-      <dtb:list xml:lang="de" type="ul">
-        <dtb:li>item 1</dtb:li>
-        <dtb:li>item 2</dtb:li>
-        <dtb:li>item 3</dtb:li>
-      </dtb:list>
-    </x:context>
-    <x:expect label="braille">
-      <dtb:list xml:lang="de" type="ul">
-        <dtb:li>'- IT[ #A</dtb:li>
-        <dtb:li>'- IT[ #B</dtb:li>
-        <dtb:li>'- IT[ #C</dtb:li>
-      </dtb:list>
-    </x:expect>
-    </x:scenario>
-
-  <x:scenario label="Nested list II, (redmine#2677)">
-    <x:context>
-      <dtb:list xml:lang="de" type="ul">
-        <dtb:li>item 1</dtb:li>
-        <dtb:li>item 2</dtb:li>
-        <dtb:li>
-          <dtb:list type="ul">
-	    <dtb:li>item 1</dtb:li>
-	    <dtb:li>item 2</dtb:li>
-	    <dtb:li>
-              <dtb:list type="ul">
-                <dtb:li>item 1</dtb:li>
-                <dtb:li>item 2</dtb:li>
-                <dtb:li>item 3</dtb:li>
-              </dtb:list>
-	    </dtb:li>
-          </dtb:list>
-        </dtb:li>
-      </dtb:list>
-    </x:context>
-    <x:expect label="braille">
-      <dtb:list xml:lang="de" type="ul">
-        <dtb:li>'- IT[ #A</dtb:li>
-        <dtb:li>'- IT[ #B</dtb:li>
-        <dtb:li>
-          <dtb:list type="ul">
-	    <dtb:li>'- IT[ #A</dtb:li>
-	    <dtb:li>'- IT[ #B</dtb:li>
-	    <dtb:li>
-              <dtb:list type="ul">
-                <dtb:li>'- IT[ #A</dtb:li>
-                <dtb:li>'- IT[ #B</dtb:li>
-                <dtb:li>'- IT[ #C</dtb:li>
-              </dtb:list>
-	    </dtb:li>
-          </dtb:list>
-        </dtb:li>
-      </dtb:list>
-    </x:expect>
-    </x:scenario>
-
   <x:scenario label="Nested list III, (redmine#2677)">
     <x:context>
       <dtb:list xml:lang="de" type="pl">
@@ -116,47 +58,6 @@
                 <dtb:li>IT[ #A</dtb:li>
                 <dtb:li>IT[ #B</dtb:li>
                 <dtb:li>IT[ #C</dtb:li>
-              </dtb:list>
-	    </dtb:li>
-          </dtb:list>
-        </dtb:li>
-      </dtb:list>
-    </x:expect>
-  </x:scenario>
-
-  <x:scenario label="Nested list V, (redmine#2677)">
-    <x:context>
-      <dtb:list xml:lang="de" type="ul">
-        <dtb:li>item 1</dtb:li>
-        <dtb:li>item 2</dtb:li>
-        <dtb:li>
-          <dtb:list type="pl">
-	    <dtb:li>item 1</dtb:li>
-	    <dtb:li>item 2</dtb:li>
-	    <dtb:li>
-              <dtb:list type="ul">
-                <dtb:li>item 1</dtb:li>
-                <dtb:li>item 2</dtb:li>
-                <dtb:li>item 3</dtb:li>
-              </dtb:list>
-	    </dtb:li>
-          </dtb:list>
-        </dtb:li>
-      </dtb:list>
-    </x:context>
-    <x:expect label="braille">
-      <dtb:list xml:lang="de" type="ul">
-        <dtb:li>'- IT[ #A</dtb:li>
-        <dtb:li>'- IT[ #B</dtb:li>
-        <dtb:li>
-          <dtb:list type="pl">
-	    <dtb:li>'- IT[ #A</dtb:li>
-	    <dtb:li>'- IT[ #B</dtb:li>
-	    <dtb:li>
-              <dtb:list type="ul">
-                <dtb:li>'- IT[ #A</dtb:li>
-                <dtb:li>'- IT[ #B</dtb:li>
-                <dtb:li>'- IT[ #C</dtb:li>
               </dtb:list>
 	    </dtb:li>
           </dtb:list>

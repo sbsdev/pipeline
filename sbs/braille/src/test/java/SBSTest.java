@@ -79,6 +79,7 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 			"test_dtbook-to-pef",
 			"test_dtbook-to-pef_downgrade",
 			"test_dtbook-to-pef_notes",
+			"test_dtbook-to-pef_list",
 			"test_dtbook-to-pef_pagination",
 			"test_dtbook-to-pef_print_page_numbers",
 			"test_dtbook-to-pef_prodnote",
