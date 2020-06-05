@@ -208,16 +208,13 @@ tests:
     - "Gedanken – Strich      —"
     - "&DKC'- ]R#'-"
   - # Swallow white space whith embed new lines
-    - "Gedanken
-— Strich"
+    - "Gedanken\n— Strich"
     - "&DKC'- ]R#"
   - # Swallow white space whith embed new lines
-    - "Gedanken
-  — Strich"
+    - "Gedanken\n  — Strich"
     - "&DKC'- ]R#"
   - # Swallow white space whith embed new lines
-    - "Gedanken
-                         —         Strich"
+    - "Gedanken\n                         —         Strich"
     - "&DKC'- ]R#"
   - # test für Einzelbuchstaben mit Punkt
     - "A. B. C. D. E. F. G. H. I. J."
