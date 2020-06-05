@@ -44,15 +44,6 @@
     </x:expect>
   </x:scenario>
 
-  <x:scenario label="Single word mixed emphasis">
-    <x:context>
-      <stub xml:lang="de">Foo<dtb:em brl:render="emph2">bar</dtb:em>baz</stub>
-    </x:context>
-    <x:expect label="braille">
-      <stub xml:lang="de">FOO<dtb:em brl:render="emph2">!_BAR!.</dtb:em>BAZ</stub>
-    </x:expect>
-  </x:scenario>
-
   <x:scenario label="Mixed emphasis word after">
     <x:context>
       <dtb:p xml:lang="de"><dtb:em>kursiv</dtb:em>blo</dtb:p>
