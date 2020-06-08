@@ -63,7 +63,7 @@ p:hover, li:hover {
 
 /* Make sure images take the whole width (and not more) */
 img {
-    max-width: 100%;
+    max-width: 60%;
 }
 
 /* SBS specific changes */
