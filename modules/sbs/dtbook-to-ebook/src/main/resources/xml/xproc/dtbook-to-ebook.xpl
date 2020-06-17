@@ -179,6 +179,15 @@
         </p:input>
       </p:xslt>
 
+      <p:xslt name="move-footnotes-to-rearmatter">
+        <p:input port="parameters">
+          <p:empty/>
+        </p:input>
+        <p:input port="stylesheet">
+          <p:document href="../xslt/moveFootnotesToRear.xsl"/>
+        </p:input>
+      </p:xslt>
+
       <px:message severity="INFO" message="DTBook preprocessing done"/>
       
       <p:identity name="dtbook-xml-preprocessed"/>
