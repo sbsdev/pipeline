@@ -32,7 +32,9 @@
       <doc>
         <body>
           <p foo="bar">
-            <css:after css:content="attr(foo)"/>
+            <css:after>
+              <css:after css:content="attr(foo)"/>
+            </css:after>
           </p>
         </body>
       </doc>
@@ -41,7 +43,9 @@
       <doc>
         <body>
           <p foo="bar">
-            <css:after>bar</css:after>
+            <css:after>
+              <css:after>bar</css:after>
+            </css:after>
           </p>
         </body>
       </doc>
@@ -89,6 +93,19 @@
           </css:after>
         </entry>
       </toc>
+    </x:expect>
+  </x:scenario>
+  
+  <x:scenario label="test_05">
+    <x:context>
+      <foo>
+        <css:after css:content="'⠄' '⠄'"/>
+      </foo>
+    </x:context>
+    <x:expect label="result">
+      <foo>
+        <css:after>⠄⠄</css:after>
+      </foo>
     </x:expect>
   </x:scenario>
   

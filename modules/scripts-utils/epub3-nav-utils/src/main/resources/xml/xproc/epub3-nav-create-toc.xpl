@@ -9,11 +9,7 @@
     <p:output port="result">
         <p:pipe port="result" step="result"/>
     </p:output>
-    <p:option name="output-base-uri">
-        <p:documentation xmlns="http://www.w3.org/1999/xhtml">
-            <p>The base URI of the resulting document.</p>
-        </p:documentation>
-    </p:option>
+    <p:option name="output-base-uri"/>
 
     <!--TODO honnor the 'untitled' option-->
     <p:option name="untitled" select="'unwrap'"/>
@@ -27,11 +23,7 @@
 
     <p:import href="http://www.daisy.org/pipeline/modules/common-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/html-utils/library.xpl"/>
-    <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl">
-        <p:documentation>
-            px:set-base-uri
-        </p:documentation>
-    </p:import>
+
     
     <!-- create an ordered list (ol) from an xhtml document -->
     <p:for-each name="tocs">
@@ -78,9 +70,6 @@
 
     <!--TODO better handling of duplicate IDs-->
     <p:delete match="@xml:id|@id"/>
-    <px:set-base-uri>
-        <p:with-option name="base-uri" select="$output-base-uri"/>
-    </px:set-base-uri>
     <p:identity name="result"/>
     <p:sink/>
 

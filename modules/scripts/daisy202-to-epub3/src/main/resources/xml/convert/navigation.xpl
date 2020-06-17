@@ -141,7 +141,6 @@
             <p:pipe step="ncc-nav-page-list" port="result"/>
             <p:pipe step="ncc-nav-landmarks" port="result"/>
         </p:input>
-        <p:with-option name="output-base-uri" select="concat($content-dir,'ncc.xhtml')"/>
     </px:epub3-nav-aggregate>
     <p:xslt>
         <!-- TODO: This XSLT is here temporarily until px:epub3-nav-aggregate supports title and language customization -->
@@ -208,6 +207,9 @@
             <p:pipe port="ncc-navigation" step="main"/>
         </p:with-option>
     </p:add-attribute>
+    <px:set-base-uri>
+        <p:with-option name="base-uri" select="concat($content-dir,'ncc.xhtml')"/>
+    </px:set-base-uri>
     <px:message message="Successfully created navigation document (ncc.xhtml)"/>
     <p:identity name="result.navigation"/>
     <p:sink/>

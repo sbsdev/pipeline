@@ -206,16 +206,12 @@
             <p:input port="source">
                 <p:pipe port="html-files" step="zedai-to-html"/>
             </p:input>
-            <p:with-option name="output-base-uri" select="$nav-base">
-                <p:empty/>
-            </p:with-option>
         </px:epub3-nav-create-page-list>
         <px:epub3-nav-aggregate name="navigation-doc.html-file">
             <p:input port="source">
                 <p:pipe port="result" step="navigation-doc.toc"/>
                 <p:pipe port="result" step="navigation-doc.page-list"/>
             </p:input>
-            <p:with-option name="output-base-uri" select="$nav-base"/>
         </px:epub3-nav-aggregate>
         <!--TODO create other nav types (configurable ?)-->
         <px:fileset-create>
@@ -224,11 +220,12 @@
         <px:fileset-add-entry media-type="application/xhtml+xml" name="navigation-doc.result.fileset">
             <p:with-option name="href" select="$nav-base"/>
         </px:fileset-add-entry>
-        <p:identity>
+        <px:set-base-uri>
             <p:input port="source">
                 <p:pipe port="result" step="navigation-doc.html-file"/>
             </p:input>
-        </p:identity>
+            <p:with-option name="base-uri" select="$nav-base"/>
+        </px:set-base-uri>
         <px:message message="Navigation Document Created." name="navigation-doc.result.html-file"/>
     </p:group>
 

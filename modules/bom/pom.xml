@@ -12,7 +12,7 @@
 
   <groupId>org.daisy.pipeline.modules</groupId>
   <artifactId>modules-bom</artifactId>
-  <version>1.13.2-SNAPSHOT</version>
+  <version>1.13.7-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>DAISY Pipeline 2 :: Modules BoM</name>
@@ -40,63 +40,65 @@
       <dependency>
         <groupId>org.daisy.pipeline.modules.braille</groupId>
         <artifactId>common-utils</artifactId>
-        <version>7.0.1-SNAPSHOT</version>
+        <version>7.1.0</version>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules.braille</groupId>
         <artifactId>css-utils</artifactId>
-        <version>4.0.1</version>
+        <version>4.1.1</version>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules.braille</groupId>
         <artifactId>dotify-utils</artifactId>
-        <version>3.1.0-SNAPSHOT</version>
+        <version>3.5.0-SNAPSHOT</version>
       </dependency>
+      <!-- list main libhyphen-utils first because this determines the version of the 'doc' artifact picked for the website -->
       <dependency>
         <groupId>org.daisy.pipeline.modules.braille</groupId>
         <artifactId>libhyphen-utils</artifactId>
-        <classifier>linux</classifier>
-        <version>2.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.daisy.pipeline.modules.braille</groupId>
-        <artifactId>libhyphen-utils</artifactId>
-        <classifier>mac</classifier>
-        <version>2.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.daisy.pipeline.modules.braille</groupId>
-        <artifactId>libhyphen-utils</artifactId>
-        <classifier>windows</classifier>
-        <version>2.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.daisy.pipeline.modules.braille</groupId>
-        <artifactId>libhyphen-utils</artifactId>
-        <version>2.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.daisy.pipeline.modules.braille</groupId>
-        <artifactId>liblouis-utils</artifactId>
-        <classifier>linux</classifier>
-        <version>2.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.daisy.pipeline.modules.braille</groupId>
-        <artifactId>liblouis-utils</artifactId>
-        <classifier>mac</classifier>
-        <version>2.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.daisy.pipeline.modules.braille</groupId>
-        <artifactId>liblouis-utils</artifactId>
-        <classifier>windows</classifier>
-        <version>2.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.daisy.pipeline.modules.braille</groupId>
-        <artifactId>liblouis-utils</artifactId>
         <version>2.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.daisy.pipeline.modules.braille</groupId>
+        <artifactId>libhyphen-utils</artifactId>
+        <classifier>linux</classifier>
+        <version>2.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.daisy.pipeline.modules.braille</groupId>
+        <artifactId>libhyphen-utils</artifactId>
+        <classifier>mac</classifier>
+        <version>2.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.daisy.pipeline.modules.braille</groupId>
+        <artifactId>libhyphen-utils</artifactId>
+        <classifier>windows</classifier>
+        <version>2.0.0</version>
+      </dependency>
+      <!-- list main liblouis-utils first because this determines the version of the 'doc' artifact picked for the website -->
+      <dependency>
+        <groupId>org.daisy.pipeline.modules.braille</groupId>
+        <artifactId>liblouis-utils</artifactId>
+        <version>2.2.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.daisy.pipeline.modules.braille</groupId>
+        <artifactId>liblouis-utils</artifactId>
+        <classifier>linux</classifier>
+        <version>2.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.daisy.pipeline.modules.braille</groupId>
+        <artifactId>liblouis-utils</artifactId>
+        <classifier>mac</classifier>
+        <version>2.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.daisy.pipeline.modules.braille</groupId>
+        <artifactId>liblouis-utils</artifactId>
+        <classifier>windows</classifier>
+        <version>2.1.1</version>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules.braille</groupId>
@@ -120,7 +122,7 @@
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
         <artifactId>common-utils</artifactId>
-        <version>1.1.6</version>
+        <version>1.2.0</version>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
@@ -181,11 +183,11 @@
         <artifactId>nlp-lexing</artifactId>
         <version>1.0.1</version>
       </dependency>
-      <dependency>
-        <groupId>org.daisy.pipeline.modules</groupId>
-        <artifactId>nlp-light-lexer</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
-      </dependency>
+      <!-- <dependency> -->
+      <!--   <groupId>org.daisy.pipeline.modules</groupId> -->
+      <!--   <artifactId>nlp-light-lexer</artifactId> -->
+      <!--   <version>1.0.1-SNAPSHOT</version> -->
+      <!-- </dependency> -->
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
         <artifactId>nlp-common</artifactId>
@@ -201,11 +203,11 @@
         <artifactId>nlp-ruled-lexer</artifactId>
         <version>1.0.1</version>
       </dependency>
-      <dependency>
-        <groupId>org.daisy.pipeline.modules</groupId>
-        <artifactId>zedai-break-detection</artifactId>
-        <version>2.0.2-SNAPSHOT</version>
-      </dependency>
+      <!-- <dependency> -->
+      <!--   <groupId>org.daisy.pipeline.modules</groupId> -->
+      <!--   <artifactId>zedai-break-detection</artifactId> -->
+      <!--   <version>2.0.2-SNAPSHOT</version> -->
+      <!-- </dependency> -->
       
       <!--
           scripts-utils
@@ -233,7 +235,7 @@
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
         <artifactId>daisy3-utils</artifactId>
-        <version>1.2.3</version>
+        <version>1.2.4</version>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
@@ -243,7 +245,7 @@
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
         <artifactId>epub3-nav-utils</artifactId>
-        <version>1.1.1-SNAPSHOT</version> <!-- FIXME: 2.0.0-SNAPSHOT -->
+        <version>1.1.0</version>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
@@ -287,7 +289,7 @@
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
         <artifactId>daisy202-to-epub3</artifactId>
-        <version>2.0.2-SNAPSHOT</version>
+        <version>2.0.1</version>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
@@ -352,12 +354,12 @@
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
         <artifactId>epub3-to-epub3</artifactId>
-        <version>2.1.0-SNAPSHOT</version>
+        <version>2.1.0</version>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules.braille</groupId>
         <artifactId>epub3-to-pef</artifactId>
-        <version>3.2.0-SNAPSHOT</version>
+        <version>3.2.0</version>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
@@ -372,7 +374,7 @@
       <dependency>
         <groupId>org.daisy.pipeline.modules.braille</groupId>
         <artifactId>html-to-pef</artifactId>
-        <version>3.1.1</version>
+        <version>3.1.2</version>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
@@ -382,7 +384,7 @@
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
         <artifactId>zedai-to-epub3</artifactId>
-        <version>2.1.1-SNAPSHOT</version>
+        <version>2.1.0</version>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
@@ -441,7 +443,7 @@
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
         <artifactId>tts-adapter-acapela</artifactId>
-        <version>3.0.4</version>
+        <version>3.0.5</version>
       </dependency>
       <!--
       <dependency>
@@ -480,11 +482,11 @@
         <artifactId>tts-common</artifactId>
         <version>3.0.5</version>
       </dependency>
-      <dependency>
-        <groupId>org.daisy.pipeline.modules</groupId>
-        <artifactId>zedai-to-ssml</artifactId>
-        <version>1.0.4-SNAPSHOT</version>
-      </dependency>
+      <!-- <dependency> -->
+      <!--   <groupId>org.daisy.pipeline.modules</groupId> -->
+      <!--   <artifactId>zedai-to-ssml</artifactId> -->
+      <!--   <version>1.0.4-SNAPSHOT</version> -->
+      <!-- </dependency> -->
       <dependency>
         <groupId>org.daisy.pipeline.modules</groupId>
         <artifactId>tts-helpers</artifactId>
@@ -546,7 +548,7 @@
       <dependency>
         <groupId>org.daisy.libs</groupId>
         <artifactId>jstyleparser</artifactId>
-        <version>1.20-p14-SNAPSHOT</version>
+        <version>1.20-p14</version>
         <exclusions>
           <exclusion>
             <groupId>xerces</groupId>
@@ -565,7 +567,7 @@
       <dependency>
         <groupId>org.daisy.braille</groupId>
         <artifactId>braille-css</artifactId>
-        <version>1.15.0</version>
+        <version>1.16.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.bundles</groupId>
@@ -591,7 +593,7 @@
       <dependency>
         <groupId>org.daisy.dotify</groupId>
         <artifactId>dotify.api</artifactId>
-        <version>5.0.0</version>
+        <version>5.0.5</version>
       </dependency>
       <!--
           for dotify-utils
@@ -599,11 +601,23 @@
       <dependency>
         <groupId>org.daisy.dotify</groupId>
         <artifactId>dotify.common</artifactId>
-        <version>4.4.0</version>
+        <version>4.4.1</version>
       </dependency>
       <dependency>
         <groupId>org.daisy.dotify</groupId>
         <artifactId>dotify.translator.impl</artifactId>
+        <!--
+            FIXME: Dotify's Liblouis-based translator currently does not work because of this error:
+            
+            java.lang.IllegalAccessError: tried to access method
+            org.liblouis.Translator.translate(Ljava/lang/String;[S[I[ILorg/liblouis/DisplayTable;)Lorg/liblouis/TranslationResult;
+            from class org.daisy.dotify.translator.impl.liblouis.LiblouisBrailleFilter
+            
+            Updating dotify.translator.impl to version 5.1.0 results in the following Pax-Exam error
+            (because both "standalone" and regular jar on the class path)
+            
+            Bundle symbolic name and version are not unique: org.liblouis.java:4.2.0
+        -->
         <version>5.0.0</version>
       </dependency>
       <dependency>
@@ -614,7 +628,7 @@
       <dependency>
         <groupId>org.daisy.dotify</groupId>
         <artifactId>dotify.formatter.impl</artifactId>
-        <version>5.0.3-SNAPSHOT</version>
+        <version>5.0.7-SNAPSHOT</version>
         <exclusions>
           <exclusion>
             <!--
@@ -651,7 +665,7 @@
       <dependency>
         <groupId>org.liblouis</groupId>
         <artifactId>liblouis-java</artifactId>
-        <version>4.2.0</version>
+        <version>4.3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>net.java.dev.jna</groupId>

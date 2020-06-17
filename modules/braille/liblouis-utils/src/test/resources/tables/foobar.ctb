@@ -1,4 +1,4 @@
-#+type:translation
 #+locale: foo
-include foobar.cti
+#+contraction:full
+include foobar.uti
 always foo 124-136

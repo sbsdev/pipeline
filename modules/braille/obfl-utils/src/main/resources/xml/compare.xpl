@@ -49,6 +49,17 @@
                         <xsl:template match="@id|@ref-id|obfl:anchor/@item">
                             <xsl:attribute name="{name(.)}" select="concat('id',index-of($ids,string(.))[1])"/>
                         </xsl:template>
+                        <xsl:template match="obfl:toc-entry-on-resumed/@range">
+                            <xsl:variable name="range-start" as="xs:string"  select="replace(string(.),'^\[(.+?),(.*?)\)$','$1')"/>
+                            <xsl:variable name="range-end"   as="xs:string?" select="replace(string(.),'^\[(.+?),(.*?)\)$','$2')"/>
+                            <xsl:attribute name="{name(.)}" select="concat('[',
+                                                                           concat('id',index-of($ids,$range-start)[1]),
+                                                                           ',',
+                                                                           if ($range-end)
+                                                                             then concat('id',index-of($ids,$range-end)[1])
+                                                                             else '',
+                                                                           ')')"/>
+                        </xsl:template>
                     </xsl:stylesheet>
                 </p:inline>
             </p:input>
@@ -72,33 +83,12 @@
         </p:input>
     </pxi:normalize-obfl>
     
-    <!--
-        this step would ideally go in x:obfl-compare, but it needs to be applied after the
-        normalization
-    -->
-    <p:xslt name="replace-patterns">
-        <p:input port="source">
-            <p:pipe step="normalize-alternate" port="result"/>
-            <p:pipe step="normalize-source" port="result"/>
-        </p:input>
-        <p:input port="stylesheet">
-            <p:document href="replace-patterns.xsl"/>
-        </p:input>
-        <p:input port="parameters">
-            <p:empty/>
-        </p:input>
-    </p:xslt>
-    
-    <p:for-each>
-        <p:identity/>
-    </p:for-each>
-    
     <p:compare name="compare">
         <p:input port="source">
             <p:pipe step="normalize-source" port="result"/>
         </p:input>
         <p:input port="alternate">
-            <p:pipe step="replace-patterns" port="result"/>
+            <p:pipe step="normalize-alternate" port="result"/>
         </p:input>
         <p:with-option name="fail-if-not-equal" select="$fail-if-not-equal"/>
     </p:compare>
