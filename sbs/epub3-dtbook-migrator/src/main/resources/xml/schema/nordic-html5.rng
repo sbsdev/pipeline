@@ -541,9 +541,12 @@
             </attribute>
         </optional>
         <optional>
+	  <choice>
             <attribute name="name">
                 <data type="NMTOKEN"/>
             </attribute>
+            <attribute name="property"/>
+	  </choice>
         </optional>
         <attribute name="content"/>
     </define>
@@ -2630,6 +2633,10 @@
                     <!-- A single image -->
                     <ref name="attlist.figure.image"/>
                     
+                    <optional>
+                        <ref name="caption.figure"/> <!-- figcaption -->
+                    </optional>
+
                     <ref name="img"/> <!-- img -->
                     
                     <zeroOrMore>

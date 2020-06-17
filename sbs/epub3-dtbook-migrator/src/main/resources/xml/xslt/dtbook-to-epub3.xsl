@@ -162,6 +162,34 @@
         <xsl:apply-templates select="node()[not((self::*, following-sibling::*[1])[1][self::dtbook:meta[starts-with(@name,'dtb:')]])]"/>
     </xsl:template>
 
+    <xsl:template name="f:a11y.meta">
+      <!-- See http://idpf.org/epub/a11y/accessibility.html#sec-disc-package -->
+
+      <!-- does it contain images? -->
+      <meta property="schema:accessMode">
+        <xsl:attribute name="content" select="if (//dtbook:img) then 'visual' else 'textual'"/>
+      </meta>
+
+      <meta property="schema:accessibilityFeature" content="structuralNavigation"/>
+      <meta property="schema:accessibilityFeature" content="readingOrder" />
+      <xsl:if test="//dtbook:pagenum">
+	<meta property="schema:accessibilityFeature" content="printPageNumbers"/>
+      </xsl:if>
+      <xsl:if test="//dtbook:img[@alt!='']">
+	<meta property="schema:accessibilityFeature" content="alternativeText"/>
+      </xsl:if>
+      <xsl:variable name="prodnotes" select="//dtbook:prodnote | //dtbook:div[f:classes(.) = ('prodnote','production')]"/>
+      <xsl:variable name="imgrefs" select="for $p in $prodnotes return tokenize($p/@imgref,'\s+')[not(.='')]"/>
+      <xsl:if test="((some $ref in $imgrefs satisfies //dtbook:img[@id=$ref]) or
+		    ($prodnotes[preceding-sibling::node()[not(self::text())][1][self::dtbook:img]]))">
+	<meta property="schema:accessibilityFeature" content="longDescriptions"/>
+      </xsl:if>
+      <meta property="schema:accessibilityHazard" content="none"/>
+      <meta property="schema:accessibilitySummary" content="This publication conforms to WCAG 2.0 Level AA"/>
+      <meta property="schema:accessModeSufficient" content="textual"/>
+      <meta property="schema:accessModeSufficient" content="visual"/>
+    </xsl:template>
+
     <xsl:template match="dtbook:head">
         <head>
             <xsl:copy-of select="namespace::*[not(.='http://www.daisy.org/z3986/2005/dtbook/')]" exclude-result-prefixes="#all"/>
@@ -181,6 +209,7 @@
                 <meta name="dc:source" content="urn:isbn:0"/>
             </xsl:if>
             <xsl:call-template name="f:headmisc"/>
+            <xsl:call-template name="f:a11y.meta"/>
             <style type="text/css" xml:space="preserve"><![CDATA[
                 .initialism{
                     -epub-speak-as:spell-out;
@@ -1048,13 +1077,15 @@
         </xsl:call-template>
         <xsl:attribute name="src" select="concat('images/',@src)"/>
         <xsl:attribute name="alt" select="if (@alt and @alt='') then '' else if (not(@alt)) then 'image' else @alt"/>
-        <xsl:copy-of select="@longdesc|@height|@width" exclude-result-prefixes="#all"/>
-        <xsl:if test="not(@longdesc) and @id">
+        <xsl:copy-of select="@height|@width" exclude-result-prefixes="#all"/>
+        <xsl:if test="@id">
             <xsl:variable name="id" select="@id"/>
-            <xsl:variable name="longdesc" select="(//dtbook:prodnote|//dtbook:caption)[tokenize(@imgref,'\s+')=$id]"/>
-            <xsl:if test="$longdesc">
-                <xsl:attribute name="longdesc" select="concat('#',$longdesc[1]/((@id,f:generate-pretty-id(.,$all-ids))[1]))"/>
+            <xsl:variable name="extended-descriptions" select="(//dtbook:prodnote|//dtbook:caption)[tokenize(@imgref,'\s+')=$id]"/>
+            <xsl:if test="$extended-descriptions">
                 <!-- NOTE: if the image has multiple prodnotes or captions, only the first one will be referenced. -->
+                <xsl:variable name="description-id" select="$extended-descriptions[1]/((@id,f:generate-pretty-id(.,$all-ids))[1])"/>
+                <xsl:attribute name="aria-describedby" select="$description-id"/>
+		<!-- NOTE: In the future we might also use the aria-details attribute here -->
             </xsl:if>
         </xsl:if>
     </xsl:template>
@@ -1116,9 +1147,6 @@
     <xsl:template name="f:imggroup.image">
         <xsl:param name="content" required="yes"/>
 
-        <xsl:apply-templates select="$content[self::dtbook:img]"/>
-        <xsl:apply-templates select="$content[self::node() and not(self::dtbook:img or self::dtbook:caption)]"/>
-
         <xsl:variable name="image-captions" select="$content[self::dtbook:caption]"/>
         <xsl:choose>
             <xsl:when test="count($image-captions) = 1">
@@ -1140,6 +1168,9 @@
                 </figcaption>
             </xsl:when>
         </xsl:choose>
+
+        <xsl:apply-templates select="$content[self::dtbook:img]"/>
+        <xsl:apply-templates select="$content[self::node() and not(self::dtbook:img or self::dtbook:caption)]"/>
     </xsl:template>
 
     <xsl:template name="f:attlist.imggroup">

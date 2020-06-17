@@ -75,7 +75,7 @@
         </p:variable>
 
         <px:mkdir name="mkdir">
-          <p:with-option name="href" select="resolve-uri('css/fonts/opendyslexic/',$html-base)"/>
+          <p:with-option name="href" select="resolve-uri('css/',$html-base)"/>
         </px:mkdir>
         <!--
             Extract resources contained in JAR
@@ -87,51 +87,9 @@
           <p:with-option name="target"
                          select="resolve-uri('css/accessibility.css', $html-base)"/>
         </px:copy-resource>
-        <px:copy-resource name="dtbook-to-html.step.store2" cx:depends-on="mkdir">
-          <p:with-option name="href" select="resolve-uri('../../../css/fonts/opendyslexic/OpenDyslexic-Regular.otf',$xproc-base)"/>
-          <p:with-option name="target"
-                         select="resolve-uri('css/fonts/opendyslexic/OpenDyslexic-Regular.otf',
-                                 $html-base)"/>
-        </px:copy-resource>
-        <px:copy-resource name="dtbook-to-html.step.store3" cx:depends-on="mkdir">
-          <p:with-option name="href" select="resolve-uri('../../../css/fonts/opendyslexic/OpenDyslexic-Italic.otf',$xproc-base)"/>
-          <p:with-option name="target"
-                         select="resolve-uri('css/fonts/opendyslexic/OpenDyslexic-Italic.otf',
-                                 $html-base)"/>
-        </px:copy-resource>
-        <px:copy-resource name="dtbook-to-html.step.store4" cx:depends-on="mkdir">
-          <p:with-option name="href" select="resolve-uri('../../../css/fonts/opendyslexic/OpenDyslexic-Bold.otf',$xproc-base)"/>
-          <p:with-option name="target"
-                         select="resolve-uri('css/fonts/opendyslexic/OpenDyslexic-Bold.otf',
-                                 $html-base)"/>
-        </px:copy-resource>
-        <px:copy-resource name="dtbook-to-html.step.store5" cx:depends-on="mkdir">
-          <p:with-option name="href" select="resolve-uri('../../../css/fonts/opendyslexic/OpenDyslexic-BoldItalic.otf',$xproc-base)"/>
-          <p:with-option name="target"
-                         select="resolve-uri('css/fonts/opendyslexic/OpenDyslexic-BoldItalic.otf',
-                                 $html-base)"/>
-        </px:copy-resource>
-        <px:copy-resource name="dtbook-to-html.step.store6" cx:depends-on="mkdir">
-          <p:with-option name="href" select="resolve-uri('../../../css/fonts/opendyslexic/OpenDyslexicMono-Regular.otf',$xproc-base)"/>
-          <p:with-option name="target"
-                         select="resolve-uri('css/fonts/opendyslexic/OpenDyslexicMono-Regular.otf',
-                                 $html-base)"/>
-        </px:copy-resource>
-        <px:copy-resource name="dtbook-to-html.step.store7" cx:depends-on="mkdir">
-          <p:with-option name="href" select="resolve-uri('../../../css/fonts/opendyslexic/LICENSE.txt',$xproc-base)"/>
-          <p:with-option name="target"
-                         select="resolve-uri('css/fonts/opendyslexic/LICENSE.txt',
-                                 $html-base)"/>
-        </px:copy-resource>
         <p:identity>
           <p:input port="source">
             <p:pipe port="result" step="dtbook-to-html.step.store1"/>
-            <p:pipe port="result" step="dtbook-to-html.step.store2"/>
-            <p:pipe port="result" step="dtbook-to-html.step.store3"/>
-            <p:pipe port="result" step="dtbook-to-html.step.store4"/>
-            <p:pipe port="result" step="dtbook-to-html.step.store5"/>
-            <p:pipe port="result" step="dtbook-to-html.step.store6"/>
-            <p:pipe port="result" step="dtbook-to-html.step.store7"/>
           </p:input>
         </p:identity>
         <p:sink name="store-resources"/>
@@ -143,24 +101,6 @@
         </p:identity>
         <px:fileset-add-entry media-type="text/css">
           <p:with-option name="href" select="resolve-uri('css/accessibility.css',$html-base)"/>
-        </px:fileset-add-entry>
-        <px:fileset-add-entry media-type="application/x-font-opentype">
-          <p:with-option name="href" select="resolve-uri('css/fonts/opendyslexic/OpenDyslexic-Regular.otf',$html-base)"/>
-        </px:fileset-add-entry>
-        <px:fileset-add-entry media-type="application/x-font-opentype">
-          <p:with-option name="href" select="resolve-uri('css/fonts/opendyslexic/OpenDyslexic-Italic.otf',$html-base)"/>
-        </px:fileset-add-entry>
-        <px:fileset-add-entry media-type="application/x-font-opentype">
-          <p:with-option name="href" select="resolve-uri('css/fonts/opendyslexic/OpenDyslexic-Bold.otf',$html-base)"/>
-        </px:fileset-add-entry>
-        <px:fileset-add-entry media-type="application/x-font-opentype">
-          <p:with-option name="href" select="resolve-uri('css/fonts/opendyslexic/OpenDyslexic-BoldItalic.otf',$html-base)"/>
-        </px:fileset-add-entry>
-        <px:fileset-add-entry media-type="application/x-font-opentype">
-          <p:with-option name="href" select="resolve-uri('css/fonts/opendyslexic/OpenDyslexicMono-Regular.otf',$html-base)"/>
-        </px:fileset-add-entry>
-        <px:fileset-add-entry media-type="text/plain">
-          <p:with-option name="href" select="resolve-uri('css/fonts/opendyslexic/LICENSE.txt',$html-base)"/>
         </px:fileset-add-entry>
 
         <p:identity cx:depends-on="store-resources"/>

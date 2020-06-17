@@ -16,12 +16,12 @@
 
     <!--
         * imgref:
-            Try to transform a longdesc attribute to an imgref attributes on the target.
+            Try to transform a longdesc/aria-describedby attribute to an imgref attributes on the target.
         * longdesc:
             Keep longdesc attributes.
         * both:
-            Keep longdesc attributes and also try to transform them to imgref attributes. This
-            results in redundancy.
+            Keep longdesc attributes (or convert aria-describedby to longdesc) and also try to transform
+            them to imgref attributes. This results in redundancy.
     -->
     <xsl:param name="transform-longdesc-to" select="'both'"/>
 
@@ -390,7 +390,7 @@
         <xsl:variable name="img" as="element()*">
             <xsl:if test="@id and $transform-longdesc-to=('imgref','both')">
                 <xsl:variable name="id" select="@id"/>
-                <xsl:sequence select="//html:img[replace(@longdesc,'^#','')=$id]"/>
+                <xsl:sequence select="//html:img[(@aria-describedby,@longdesc/replace(.,'^#',''))[1]=$id]"/>
             </xsl:if>
         </xsl:variable>
         <xsl:call-template name="f:attrs">
@@ -924,14 +924,16 @@
         </xsl:choose>
         <xsl:copy-of select="@height|@width" exclude-result-prefixes="#all"/>
         <xsl:variable name="imgref-element" as="element()*">
-            <xsl:if test="@longdesc and $transform-longdesc-to=('imgref','both')">
-                <xsl:variable name="longdesc" select="@longdesc"/>
+            <xsl:if test="(@aria-describedby|@longdesc) and $transform-longdesc-to=('imgref','both')">
+                <xsl:variable name="describedby" select="(@aria-describedby,@longdesc/replace(.,'^#',''))[1]"/>
                 <!-- assuming element is converted to a dtbook:prodnote or dtbook:caption -->
-                <xsl:sequence select="//*[concat('#',@id)=$longdesc]"/>
+                <xsl:sequence select="//*[@id=$describedby]"/>
             </xsl:if>
         </xsl:variable>
         <xsl:if test="$transform-longdesc-to=('longdesc','both') or not(exists($imgref-element))">
-            <xsl:copy-of select="@longdesc"/>
+            <xsl:if test="@aria-describedby|@longdesc">
+                <xsl:attribute name="longdesc" select="(@aria-describedby/concat('#',.),@longdesc)[1]"/>
+            </xsl:if>
         </xsl:if>
         <xsl:if test="not(@id) and (
                         $generate-ids or
@@ -1383,7 +1385,7 @@
         <xsl:variable name="img" as="element()*">
             <xsl:if test="@id and $transform-longdesc-to=('imgref','both')">
                 <xsl:variable name="id" select="@id"/>
-                <xsl:sequence select="//html:img[replace(@longdesc,'^#','')=$id]"/>
+                <xsl:sequence select="//html:img[(@aria-describedby,@longdesc/replace(.,'^#',''))[1]=$id]"/>
             </xsl:if>
         </xsl:variable>
         <xsl:if test="exists($img)">

@@ -55,6 +55,7 @@
         <xsl:sequence select="if ($prefix = 'nordic') then 'http://www.mtm.se/epub/' else
                               if ($prefix = 'z3998') then 'http://www.daisy.org/z3998/2012/vocab/structure/#' else
                               if ($prefix = 'a11y') then 'http://www.idpf.org/epub/vocab/package/a11y/#' else
+                              if ($prefix = 'schema') then 'http://schema.org/' else
                               if ($prefix = 'msv') then 'http://www.idpf.org/epub/vocab/structure/magazine/#' else
                               if ($prefix = 'prism') then 'http://www.prismstandard.org/specifications/3.0/PRISM_CV_Spec_3.0.htm#' else
                               if (concat($prefix,':') = tokenize($existing-prefixes, '\s+')[position() mod 2 = 1]) then replace($existing-prefixes, concat('(^|.*\s)', $prefix ,':\s*([^\s]+)(\s.*|$)'), '$2') else

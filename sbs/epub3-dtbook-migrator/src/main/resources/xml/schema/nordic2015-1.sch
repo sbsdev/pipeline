@@ -866,12 +866,12 @@
     </pattern>
 
     <!-- Rule 260: img must be first in image figure, and non-image content must be placed first in image-series -->
-    <pattern id="epub_nordic_260_a">
-        <rule context="html:figure[tokenize(@class,'\s+')='image']">
-            <assert test="html:img intersect *[1]">[nordic260a] The first element in a figure with class="image" must be a "img" element: <value-of
-                    select="concat('&lt;',name(),string-join(for $a in (@*) return concat(' ',$a/name(),'=&quot;',$a,'&quot;'),''),'&gt;')"/></assert>
-        </rule>
-    </pattern>
+    <!-- <pattern id="epub_nordic_260_a"> -->
+    <!--     <rule context="html:figure[tokenize(@class,'\s+')='image']"> -->
+    <!--         <assert test="html:img intersect *[1]">[nordic260a] The first element in a figure with class="image" must be a "img" element: <value-of -->
+    <!--                 select="concat('&lt;',name(),string-join(for $a in (@*) return concat(' ',$a/name(),'=&quot;',$a,'&quot;'),''),'&gt;')"/></assert> -->
+    <!--     </rule> -->
+    <!-- </pattern> -->
 
     <pattern id="epub_nordic_260_b">
         <rule context="html:figure[tokenize(@class,'\s+')='image-series']/html:*[not(self::html:figure[tokenize(@class,'\s+')='image'])]">

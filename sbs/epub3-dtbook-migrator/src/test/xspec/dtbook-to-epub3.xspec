@@ -131,6 +131,13 @@
                 <html:meta name="viewport" content="..."/>
                 <html:meta name="nordic:guidelines" content="2015-1"/>
                 <html:meta name="dc:source" content="urn:isbn:0"/>
+		<html:meta property="schema:accessMode" content="textual"/>
+		<html:meta property="schema:accessibilityFeature" content="structuralNavigation"/>
+		<html:meta property="schema:accessibilityFeature" content="readingOrder"/>
+		<html:meta property="schema:accessibilityHazard" content="none"/>
+		<html:meta property="schema:accessibilitySummary" content="This publication conforms to WCAG 2.0 Level AA"/>
+		<html:meta property="schema:accessModeSufficient" content="textual"/>
+		<html:meta property="schema:accessModeSufficient" content="visual"/>
                 <html:style type="text/css" xml:space="preserve">...</html:style>
                 <html:link rel="profile" href="http://www.nlb.no/metadata-profile"/>
             </html:head>
@@ -154,6 +161,13 @@
                 <html:meta name="nordic:guidelines" content="2015-1"/>
                 <html:link/>
                 <html:meta name="dc:source" content="urn:isbn:1234"/>
+		<html:meta property="schema:accessMode" content="textual"/>
+		<html:meta property="schema:accessibilityFeature" content="structuralNavigation"/>
+		<html:meta property="schema:accessibilityFeature" content="readingOrder"/>
+		<html:meta property="schema:accessibilityHazard" content="none"/>
+		<html:meta property="schema:accessibilitySummary" content="This publication conforms to WCAG 2.0 Level AA"/>
+		<html:meta property="schema:accessModeSufficient" content="textual"/>
+		<html:meta property="schema:accessModeSufficient" content="visual"/>
                 <html:style type="text/css" xml:space="preserve">...</html:style>
             </html:head>
         </x:expect>
@@ -746,14 +760,14 @@
                 <dtbook:img id="img2" src="img.jpg"/>
             </dtbook:imggroup>
         </x:context>
-        <x:expect label="the render should become a class and imgref is replaced by the longdesc attribute on the corresponding img element.">
+        <x:expect label="the render should become a class and imgref is replaced by the aria-describedby attribute on the corresponding img element.">
             <html:figure id="..." class="image-series">
                 <html:aside id="prodnote" epub:type="z3998:production" class="prodnote render-optional"/>
                 <html:figure class="image">
-                    <html:img id="img1" src="images/img.jpg" longdesc="#prodnote" alt="image"/>
+                    <html:img id="img1" src="images/img.jpg" aria-describedby="prodnote" alt="image"/>
                 </html:figure>
                 <html:figure class="image">
-                    <html:img id="img2" src="images/img.jpg" longdesc="#prodnote" alt="image"/>
+                    <html:img id="img2" src="images/img.jpg" aria-describedby="prodnote" alt="image"/>
                 </html:figure>
             </html:figure>
         </x:expect>
@@ -1408,7 +1422,7 @@
             <dtbook:img src="img.jpg#target" alt="alt text" longdesc="#image-description" height="100" width="100" id="id"/>
         </x:context>
         <x:expect label="the resulting element should be a img">
-            <html:img src="images/img.jpg#target" alt="alt text" longdesc="#image-description" height="100" width="100" id="id"/>
+            <html:img src="images/img.jpg#target" alt="alt text" height="100" width="100" id="id"/>
         </x:expect>
     </x:scenario>
 
@@ -1433,10 +1447,10 @@
             </x:context>
             <x:expect label="the resulting element should be a figure with class='image'">
                 <html:figure id="..." class="image">
-                    <html:img src="images/img.jpg" id="img1" longdesc="#prodnote1" alt="image"/>
+                    <html:figcaption id="caption1"/>
+                    <html:img src="images/img.jpg" id="img1" aria-describedby="prodnote1" alt="image"/>
                     <html:aside id="prodnote1" epub:type="z3998:production" class="prodnote"/>
                     <html:div epub:type="pagebreak" title="1"/>
-                    <html:figcaption id="caption1"/>
                 </html:figure>
             </x:expect>
         </x:scenario>
@@ -1467,15 +1481,13 @@
             <x:expect label="the resulting element should be a figure with class='image-series'">
                 <html:figure id="..." class="image-series">
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img1" longdesc="#prodnote1" alt="image"/>
-                        <html:aside id="prodnote1" epub:type="z3998:production" class="prodnote"/>
                         <html:figcaption id="caption1">
                             <html:p/>
                         </html:figcaption>
+                        <html:img src="images/img.jpg" id="img1" aria-describedby="prodnote1" alt="image"/>
+                        <html:aside id="prodnote1" epub:type="z3998:production" class="prodnote"/>
                     </html:figure>
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img2" longdesc="#prodnote2" alt="image"/>
-                        <html:aside id="prodnote2" epub:type="z3998:production" class="prodnote"/>
                         <html:figcaption>
                             <html:div id="caption2">
                                 <html:p/>
@@ -1484,15 +1496,17 @@
                                 <html:p/>
                             </html:div>
                         </html:figcaption>
+                        <html:img src="images/img.jpg" id="img2" aria-describedby="prodnote2" alt="image"/>
+                        <html:aside id="prodnote2" epub:type="z3998:production" class="prodnote"/>
                     </html:figure>
                     <html:figure class="image">
                         <html:img src="images/img.jpg" id="img3" alt="image"/>
                     </html:figure>
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img4" alt="image"/>
                         <html:figcaption id="caption4">
                             <html:p/>
                         </html:figcaption>
+                        <html:img src="images/img.jpg" id="img4" alt="image"/>
                     </html:figure>
                     <html:figure class="image">
                         <html:img src="images/img.jpg" id="img5" alt="image"/>
@@ -1527,7 +1541,6 @@
                         <html:p/>
                     </html:figcaption>
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img1" alt="image"/>
                         <html:figcaption>
                             <html:div id="caption2">
                                 <html:p/>
@@ -1536,15 +1549,16 @@
                                 <html:p/>
                             </html:div>
                         </html:figcaption>
+                        <html:img src="images/img.jpg" id="img1" alt="image"/>
                     </html:figure>
                     <html:figure class="image">
                         <html:img src="images/img.jpg" id="img2" alt="image"/>
                     </html:figure>
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img3" alt="image"/>
                         <html:figcaption id="caption4">
                             <html:p/>
                         </html:figcaption>
+                        <html:img src="images/img.jpg" id="img3" alt="image"/>
                     </html:figure>
                     <html:figure class="image">
                         <html:img src="images/img.jpg" id="img4" alt="image"/>
@@ -1567,14 +1581,14 @@
             </x:context>
             <x:expect label="the text nodes should remain as text nodes">
                 <html:figure id="..." class="image">
-                    <html:img src="images/img.jpg" id="img1" alt="image"/>
                     <html:figcaption id="caption1">TEXT</html:figcaption>
+                    <html:img src="images/img.jpg" id="img1" alt="image"/>
                 </html:figure>
                 <html:figure id="..." class="image-series">
                     <html:figcaption id="caption2">TEXT</html:figcaption>
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img2" alt="image"/>
                         <html:figcaption id="caption3">TEXT</html:figcaption>
+                        <html:img src="images/img.jpg" id="img2" alt="image"/>
                     </html:figure>
                     <html:figure class="image">
                         <html:img src="images/img.jpg" id="img3" alt="image"/>
@@ -3037,13 +3051,13 @@
                 </dtbook:tbody>
             </dtbook:table>
         </x:context>
-        <x:expect label="the imgref should be replaced by the longdesc attribute on the corresponding img element.">
+        <x:expect label="the imgref should be replaced by the  aria-describedby attribute on the corresponding img element.">
             <html:table id="...">
                 <html:caption id="caption"><!-- COMMENT --></html:caption>
                 <html:tbody>
                     <html:tr>
                         <html:td>
-                            <html:img id="img" src="images/img.jpg" longdesc="#caption" alt="image"/>
+                            <html:img id="img" src="images/img.jpg" aria-describedby="caption" alt="image"/>
                         </html:td>
                     </html:tr>
                 </html:tbody>

@@ -704,8 +704,8 @@
         <x:context>
             <html:div>
                 <html:aside epub:type="z3998:production" class="render-optional" id="prodnote"/>
-                <html:img longdesc="#prodnote" src="images/img.jpg#" id="img1"/>
-                <html:img longdesc="#prodnote" src="images/img.jpg#" id="img2"/>
+                <html:img aria-describedby="prodnote" src="images/img.jpg#" id="img1"/>
+                <html:img aria-describedby="prodnote" src="images/img.jpg#" id="img2"/>
             </html:div>
         </x:context>
         <x:expect label="any render-* class should become a 'render' attribute and any images that reference the prodnote should be referenced by id in the prodnotes imgref attribute">
@@ -899,9 +899,9 @@
     <!-- test not needed (attrs) -->
 
     <!-- byline -->
-    <x:scenario label="when processing a span element with a 'byline' class">
+    <x:scenario label="when processing a p element with a 'byline' class">
         <x:context>
-            <html:span class="byline"/>
+            <html:p class="byline"/>
         </x:context>
         <x:expect label="the resulting element should be a byline and the byline class should be removed">
             <dtbook:byline/>
@@ -1337,7 +1337,7 @@
     <!-- attlist.img -->
     <x:scenario label="when processing the img element attributes">
         <x:context>
-            <html:img src="images/img.jpg#target" alt="alt text" longdesc="#image-description" height="100" width="100"/>
+            <html:img src="images/img.jpg#target" alt="alt text" aria-describedby="image-description" height="100" width="100"/>
         </x:context>
         <x:expect label="the resulting element should be a img">
             <dtbook:img src="img.jpg#target" alt="alt text" longdesc="#image-description" height="100" width="100" id="..."/>
@@ -1385,7 +1385,7 @@
                 <html:figure class="image-series">
                     <html:aside id="prodnote1" epub:type="z3998:production"/>
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img1" longdesc="#prodnote1"/>
+                        <html:img src="images/img.jpg" id="img1" aria-describedby="prodnote1"/>
                         <html:span epub:type="pagebreak" class="page-normal" title="1"/>
                         <html:figcaption>
                             <html:p/>
@@ -1408,7 +1408,7 @@
             <x:context>
                 <html:figure class="image-series">
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img1" longdesc="#prodnote1"/>
+                        <html:img src="images/img.jpg" id="img1" aria-describedby="prodnote1"/>
                         <html:aside id="prodnote1" epub:type="z3998:production"/>
                         <html:figcaption id="caption1">
                             <html:p/>
@@ -1460,7 +1460,7 @@
             <x:context>
                 <html:figure class="image-series">
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img1" longdesc="#prodnote1" alt="image"/>
+                        <html:img src="images/img.jpg" id="img1" aria-describedby="prodnote1" alt="image"/>
                         <html:figcaption>
                             <html:aside id="prodnote1" epub:type="z3998:production"/>
                             <html:div id="caption1">

@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:opf="http://www.idpf.org/2007/opf" xmlns="http://www.idpf.org/2007/opf"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="#all" version="2.0">
+<xsl:stylesheet
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns:opf="http://www.idpf.org/2007/opf"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
+    xmlns="http://www.idpf.org/2007/opf"
+    exclude-result-prefixes="#all" version="2.0">
 
     <xsl:template match="/*">
-        <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" prefix="nordic: http://www.mtm.se/epub/ prod: http://www.sbs.ch/prod/">
+        <metadata prefix="nordic: http://www.mtm.se/epub/ prod: http://www.sbs.ch/prod/ schema: http://www.schema.org/">
 
             <xsl:variable name="identifier" select="//html:head/html:meta[lower-case(@name)=('dc:identifier','dct:identifier','dcterms:identifier','dtb:uid')][1]"/>
             <dc:identifier id="pub-id">
@@ -33,6 +41,12 @@
                     <xsl:when test="@http-equiv">
                         <xsl:message select="'Dropping empty meta element with http-equiv'"/>
                     </xsl:when>
+		    <xsl:when test="matches(@property,'^schema:')">
+                      <xsl:message select="concat('Accessibility meta data found (',@property,')')"/>
+                      <meta property="{@property}" id="{$id}">
+                        <xsl:value-of select="normalize-space(@content)"/>
+                      </meta>
+		    </xsl:when>
                     <xsl:when test="string-length(normalize-space(@content)) = 0">
                         <xsl:message select="concat('Dropping empty meta element: ',@name)"/>
                     </xsl:when>
