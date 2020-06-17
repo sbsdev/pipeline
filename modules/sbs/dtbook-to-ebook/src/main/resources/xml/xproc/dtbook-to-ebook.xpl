@@ -201,6 +201,15 @@
         </p:input>
       </p:xslt>
 
+      <p:xslt name="add-backlinks-to-footnotes">
+        <p:input port="parameters">
+          <p:empty/>
+        </p:input>
+        <p:input port="stylesheet">
+          <p:document href="../xslt/addFootnoteBacklinks.xsl"/>
+        </p:input>
+      </p:xslt>
+
       <px:message severity="INFO" message="DTBook preprocessing done"/>
       
       <p:identity name="dtbook-xml-preprocessed"/>
