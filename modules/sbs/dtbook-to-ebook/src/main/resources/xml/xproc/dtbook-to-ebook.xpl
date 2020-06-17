@@ -179,12 +179,25 @@
         </p:input>
       </p:xslt>
 
+      <!-- ================= -->
+      <!-- Footnote handling -->
+      <!-- ================= -->
+
       <p:xslt name="move-footnotes-to-rearmatter">
         <p:input port="parameters">
           <p:empty/>
         </p:input>
         <p:input port="stylesheet">
           <p:document href="../xslt/moveFootnotesToRear.xsl"/>
+        </p:input>
+      </p:xslt>
+
+      <p:xslt name="add-anchors-before-noterefs">
+        <p:input port="parameters">
+          <p:empty/>
+        </p:input>
+        <p:input port="stylesheet">
+          <p:document href="../xslt/addFootnoteAnchor.xsl"/>
         </p:input>
       </p:xslt>
 
