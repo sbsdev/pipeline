@@ -6,6 +6,6 @@
 [subrepo]
 	remote = git@github.com:sbsdev/dotify.formatter.impl.git
 	branch = master
-	commit = 9f4d3d9796b8ce374c47a24c771305831577e211
-	parent = e7c0b776b3bd46ed13c34ae54dc8e01a21a6efa4
+	commit = 1989b12f011da3b42cbe8bda4a13b39029cfde78
+	parent = bf5609321ca5f631407c8e7a767c84ebededc354
 	cmdver = 0.3.1

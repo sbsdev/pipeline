@@ -4,7 +4,9 @@
 		<meta xmlns:dc="http://purl.org/dc/elements/1.1/">
 			<dc:format>application/x-pef+xml</dc:format>
 			<dc:identifier>identifier?</dc:identifier>
-			<dc:date>2018-04-27</dc:date>
+			<dc:date>2020-06-04</dc:date>
+			<dc:title>Right text indent</dc:title>
+			<dc:description>Tests a right-aligned leader on the last line of a block which is indented on the right side for all the other lines.</dc:description>
 		</meta>
 	</head>
 	<body>
