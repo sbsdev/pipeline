@@ -13,10 +13,12 @@
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates/>
-      <level1>
-	<h1>Fussnoten</h1>
-	<xsl:copy-of select="//dtb:note"/>
-      </level1>
+      <xsl:if test="//dtb:note">
+	<level1>
+	  <h1>Fussnoten</h1>
+	  <xsl:copy-of select="//dtb:note"/>
+	</level1>
+      </xsl:if>
     </xsl:copy>
   </xsl:template>
 
@@ -24,12 +26,14 @@
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates/>
-      <rearmatter>
-	<level1>
-	  <h1>Fussnoten</h1>
-	  <xsl:copy-of select="//dtb:note"/>
-	</level1>
-      </rearmatter>
+      <xsl:if test="//dtb:note">
+	<rearmatter>
+	  <level1>
+	    <h1>Fussnoten</h1>
+	    <xsl:copy-of select="//dtb:note"/>
+	  </level1>
+	</rearmatter>
+      </xsl:if>
     </xsl:copy>
   </xsl:template>
 
