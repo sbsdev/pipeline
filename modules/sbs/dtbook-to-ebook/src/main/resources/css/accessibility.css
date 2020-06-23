@@ -66,6 +66,11 @@ img {
     max-width: 60%;
 }
 
+/* Images with class 'block-image' should display as a block */
+.block-image {
+  display:block;
+}
+
 /* SBS specific changes */
 
 ol {

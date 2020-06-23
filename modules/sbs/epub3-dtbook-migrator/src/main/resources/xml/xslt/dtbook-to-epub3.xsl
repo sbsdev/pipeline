@@ -1151,7 +1151,10 @@
             </xsl:when>
         </xsl:choose>
 
-        <xsl:apply-templates select="$content[self::dtbook:img]"/>
+        <xsl:apply-templates select="$content[self::dtbook:img]">
+	  <!-- if an image is preceeded by a caption we need to display the image as a block -->
+          <xsl:with-param name="classes" select="if (count($image-captions)) then 'block-image' else ''" tunnel="yes"/>
+	</xsl:apply-templates>
         <xsl:apply-templates select="$content[self::node() and not(self::dtbook:img or self::dtbook:caption)]"/>
     </xsl:template>
 
