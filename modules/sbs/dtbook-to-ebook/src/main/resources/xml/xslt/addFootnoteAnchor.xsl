@@ -27,9 +27,7 @@
     <a>
       <xsl:attribute name="id" select="f:generate-pretty-id(.,$all-ids)"/>
     </a>
-    <xsl:copy>
-      <xsl:copy-of select="@*"/>
-    </xsl:copy>
+    <xsl:apply-templates/>
   </xsl:template>
 
 </xsl:stylesheet>
