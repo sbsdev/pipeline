@@ -84,11 +84,7 @@
     </x:expect>
   </x:scenario>
   
-  <!--
-      I had to make this pending. Christian please have a look, I think it broke after the latest
-      CSS update.
-  -->
-  <x:scenario label="margin-top" pending="true">
+  <x:scenario label="margin-top">
     <x:documentation>
       Test that empty lines before headings are skipped at the top of a page.
     </x:documentation>
@@ -145,6 +141,8 @@
           <head>
             <meta  xmlns:dc="http://purl.org/dc/elements/1.1/">
               <dc:format>application/x-pef+xml</dc:format>
+	      <dc:identifier>identifier?</dc:identifier>
+              <dc:date>2020-06-25</dc:date>
               <dc:language>de</dc:language>
             </meta>
           </head>
@@ -152,19 +150,11 @@
             <volume cols="28" rows="28" rowgap="0" duplex="true">
               <section>
                 <page>
+                  <row/>
                   <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠇⠑⠧⠑⠇⠀⠼⠁</row>
                   <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤⠤⠤⠤</row>
                   <row/>
                   <row/>
-                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠇⠑⠧⠑⠇⠀⠼⠃</row>
-                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤⠤⠤⠤</row>
-                  <row/>
-                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
-                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
-                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
-                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
-                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
-                  <row/>
                   <row/>
                   <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠇⠑⠧⠑⠇⠀⠼⠃</row>
                   <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤⠤⠤⠤</row>
@@ -177,11 +167,20 @@
                   <row/>
                   <row/>
                   <row/>
+                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠇⠑⠧⠑⠇⠀⠼⠃</row>
+                  <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤⠤⠤⠤</row>
+                  <row/>
+                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
+                  <row>⠀⠀⠃⠇⠁⠀⠃⠇⠁⠀⠃⠇⠁</row>
                   <row/>
                   <row/>
                   <row>⠒⠒⠒⠀⠇⠑⠧⠑⠇⠀⠼⠁⠀⠀⠀⠀⠀⠀⠀</row>
                 </page>
                 <page>
+                  <row/>
                   <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠇⠑⠧⠑⠇⠀⠼⠃</row>
                   <row>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⠤⠤⠤⠤⠤⠤</row>
                   <row/>
