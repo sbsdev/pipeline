@@ -162,6 +162,7 @@
 	    weiter verbreiten oder öffentlich zugänglich machen.</xsl:text>
 	  </xsl:element>
 	  <xsl:element name="p" namespace="{$namespace}">
+	    <xsl:attribute name="id" select="'korrektur-blurb'"/>
 	    <xsl:text>Dieses Braillebuch ist nicht Korrektur gelesen</xsl:text>
 	  </xsl:element>
 	</xsl:otherwise>
