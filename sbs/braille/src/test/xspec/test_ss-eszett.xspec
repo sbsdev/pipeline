@@ -22,7 +22,7 @@
         <stub xml:lang="de">daß größ groß muß schließ wiß</stub>
       </x:context>
       <x:expect label="braille">
-	<stub xml:lang="de">^ !G^ G^ M^ 5^ W^</stub>
+	<stub xml:lang="de">DA'^ !G^ G^ MU'^ 5^ WI'^</stub>
       </x:expect>
     </x:scenario>
 
