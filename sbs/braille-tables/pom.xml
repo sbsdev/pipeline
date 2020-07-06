@@ -80,7 +80,7 @@
     <dependency>
       <groupId>org.liblouis</groupId>
       <artifactId>louis</artifactId>
-      <version>3.6.0</version>
+      <version>3.11.0</version>
       <type>nar</type>
       <scope>test</scope>
     </dependency>
