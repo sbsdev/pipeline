@@ -16,17 +16,7 @@
   <packaging>pom</packaging>
   
   <modules>
-    <module>utils/build-utils</module>
-    <module>utils/xspec-maven-plugin</module>
-    <module>utils/xprocspec</module>
-    <module>utils/xproc-maven-plugin</module>
     <module>utils/project-version-maven-plugin</module>
-    <module>libs/jstyleparser</module>
-    <module>libs/braille-css</module>
-    <module>libs/jhyphen</module>
-    <module>libs/osgi-libs</module>
-    <module>libs/liblouis-java</module>
-    <module>framework</module>
     <module>modules</module>
     <module>sbs/maven-parents/modules-parent</module>
     <module>sbs/braille-tables</module>
@@ -35,12 +25,8 @@
     <module>sbs/epub3-dtbook-migrator</module>
     <module>sbs/dtbook-to-odt</module>
     <module>cli</module>
-    <module>gui</module>
-    <module>updater/cli</module>
-    <module>updater/gui</module>
     <module>assembly</module>
     <!-- <module>website/target/maven</module> -->
-    <module>clientlib/java</module>
   </modules>
   
   <build>

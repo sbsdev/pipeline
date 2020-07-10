@@ -1,9 +1,0 @@
-/bin/
-/build/
-/.settings/
-/.gradle/
-.idea/
-.classpath
-.project
-/test/errors.txt
-/test/report.xml
