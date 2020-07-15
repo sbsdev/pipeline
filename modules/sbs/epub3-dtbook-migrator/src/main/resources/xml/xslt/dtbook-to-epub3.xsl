@@ -163,10 +163,11 @@
     <xsl:template name="f:a11y.meta">
       <!-- See http://idpf.org/epub/a11y/accessibility.html#sec-disc-package -->
 
+      <meta property="schema:accessMode" content="textual"/>
       <!-- does it contain images? -->
-      <meta property="schema:accessMode">
-        <xsl:attribute name="content" select="if (//dtbook:img) then 'visual' else 'textual'"/>
-      </meta>
+      <xsl:if test="//dtbook:img">
+	<meta property="schema:accessMode" content="visual"/>
+      </xsl:if>
 
       <meta property="schema:accessibilityFeature" content="structuralNavigation"/>
       <meta property="schema:accessibilityFeature" content="readingOrder" />
@@ -185,6 +186,10 @@
       <meta property="schema:accessibilityHazard" content="none"/>
       <meta property="schema:accessibilitySummary" content="This publication conforms to WCAG 2.0 Level AA"/>
       <meta property="schema:accessModeSufficient" content="textual"/>
+      <!-- FIXME: I would argue that according to
+           http://kb.daisy.org/publishing/docs/metadata/schema.org/accessModeSufficient.html
+           the next line should be 'content="textual,visual"' it was
+           decreed that we should use 'content="visual"' -->
       <meta property="schema:accessModeSufficient" content="visual"/>
     </xsl:template>
 
