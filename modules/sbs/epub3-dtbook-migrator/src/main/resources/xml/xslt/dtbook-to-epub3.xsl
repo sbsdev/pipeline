@@ -181,7 +181,7 @@
       <xsl:variable name="imgrefs" select="for $p in $prodnotes return tokenize($p/@imgref,'\s+')[not(.='')]"/>
       <xsl:if test="((some $ref in $imgrefs satisfies //dtbook:img[@id=$ref]) or
 		    ($prodnotes[preceding-sibling::node()[not(self::text())][1][self::dtbook:img]]))">
-	<meta property="schema:accessibilityFeature" content="longDescriptions"/>
+	<meta property="schema:accessibilityFeature" content="longDescription"/>
       </xsl:if>
       <meta property="schema:accessibilityHazard" content="none"/>
       <meta property="schema:accessibilitySummary" content="This publication conforms to WCAG 2.0 Level AA"/>
