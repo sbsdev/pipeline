@@ -186,11 +186,22 @@
       <meta property="schema:accessibilityHazard" content="none"/>
       <meta property="schema:accessibilitySummary" content="This publication conforms to WCAG 2.0 Level AA"/>
       <meta property="schema:accessModeSufficient" content="textual"/>
-      <!-- FIXME: I would argue that according to
-           http://kb.daisy.org/publishing/docs/metadata/schema.org/accessModeSufficient.html
-           the next line should be 'content="textual,visual"' it was
-           decreed that we should use 'content="visual"' -->
-      <meta property="schema:accessModeSufficient" content="visual"/>
+
+      <!--													     -->
+      <!-- According to Avnesh Sing:										     -->
+      <!-- 													     -->
+      <!-- AccessModeSufficient indicates which are the access modes through which a reader can access the	     -->
+      <!-- meaningful content of the book. In your example, a reader can access it using the text (screen reader     -->
+      <!-- access), and a sighted user can access it by using text and visuals, it would not be possible to perceive -->
+      <!-- the meaningful content through only visual (images). So, the following is right representation	     -->
+      <!-- 													     -->
+      <!-- textual												     -->
+      <!-- textual, visual											     -->
+      <!-- 													     -->
+
+      <xsl:if test="//dtbook:img">
+	<meta property="schema:accessMode" content="textual,visual"/>
+      </xsl:if>
     </xsl:template>
 
     <xsl:template match="dtbook:head">
