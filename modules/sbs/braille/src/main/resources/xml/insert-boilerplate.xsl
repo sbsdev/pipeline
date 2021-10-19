@@ -146,9 +146,7 @@
 	    </xsl:element>
 	    <xsl:text> Genehmigung des </xsl:text>
 	    <xsl:element name="abbr" namespace="{$namespace}">SJW</xsl:element>
-	    <xsl:text> Schweizerischen Jugendschriftenwerks, Zürich. Wir danken dem </xsl:text>
-	    <xsl:element name="abbr" namespace="{$namespace}">SJW</xsl:element>
-	    <xsl:text>-Verlag für die Bereitstellung der Daten.</xsl:text>
+	    <xsl:text> Schweizerischen Jugendschriftenwerks, Zürich.</xsl:text>
 	  </xsl:element>
 	</xsl:when>
 	<xsl:otherwise>
