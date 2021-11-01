@@ -9,8 +9,12 @@
               doctype-public="-//NISO//DTD dtbook 2005-3//EN"
               doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" />
 
+  <xsl:variable name="translations" select="document('../i18n/translations.xml')/*"/>
+
   <xsl:template name="bildbeschreibung">
-    <p>Bildbeschreibung:</p>
+    <xsl:variable name="language" select="('de',ancestor-or-self::*[@xml:lang|@lang]/(@xml:lang|@lang)[1])[last()]"/>
+    <xsl:variable name="blurb" select="pf:i18n-translate('Bildbeschreibung',$language,$translations)"/>
+    <p><xsl:value-of select="$blurb"/>:</p>
   </xsl:template>
 
   <!-- if a prodnote is inside an imggroup and refers to an image then

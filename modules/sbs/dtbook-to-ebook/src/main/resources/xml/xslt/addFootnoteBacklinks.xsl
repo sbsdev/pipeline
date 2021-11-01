@@ -9,12 +9,16 @@
 
   <xsl:output method="xml" encoding="utf-8" indent="no"/>
 
+  <xsl:variable name="translations" select="document('../i18n/translations.xml')/*"/>
+
   <xsl:template match="dtb:note">
+    <xsl:variable name="language" select="('de',ancestor-or-self::*[@xml:lang|@lang]/(@xml:lang|@lang)[1])[last()]"/>
+    <xsl:variable name="blurb" select="pf:i18n-translate('Zurück',$language,$translations)"/>
     <xsl:variable name="backlink" select="//dtb:noteref[@idref=concat('#', current()/@id)]/preceding-sibling::dtb:a[1]/@id"/>
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates/>
-      <p><a href="#{$backlink}">Zurück</a></p>
+      <p><a href="#{$backlink}"><xsl:value-of select="$blurb"/></a></p>
     </xsl:copy>
   </xsl:template>
 

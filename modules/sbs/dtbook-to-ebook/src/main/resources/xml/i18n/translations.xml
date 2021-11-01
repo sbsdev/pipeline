@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<i18n xmlns="http://www.daisy.org/ns/pipeline/data">
+    <translation string="Bibliographische Angaben">
+        <text xml:lang="de">Bibliographische Angaben</text>
+        <text xml:lang="de-CH">Bibliographische Angaben</text>
+        <text xml:lang="de-DE">Bibliographische Angaben</text>
+        <text xml:lang="it">Informazioni bibliografiche</text>
+    </translation>
+    <translation string="Vorspann">
+        <text xml:lang="de">Vorspann</text>
+        <text xml:lang="de-CH">Vorspann</text>
+        <text xml:lang="de-DE">Vorspann</text>
+        <text xml:lang="it">Capo</text>
+    </translation>
+    <translation string="Nachspann">
+        <text xml:lang="de">Nachspann</text>
+        <text xml:lang="de-CH">Nachspann</text>
+        <text xml:lang="de-DE">Nachspann</text>
+        <text xml:lang="it">Rimorchio</text>
+    </translation>
+    <translation string="Im Original ohne Nummerierung">
+        <text xml:lang="de">Im Original ohne Nummerierung</text>
+        <text xml:lang="de-CH">Im Original ohne Nummerierung</text>
+        <text xml:lang="de-DE">Im Original ohne Nummerierung</text>
+        <text xml:lang="it">Nell'originale senza numerazione</text>
+    </translation>
+    <translation string="Ohne Überschrift">
+        <text xml:lang="de">Ohne Überschrift</text>
+        <text xml:lang="de-CH">Ohne Überschrift</text>
+        <text xml:lang="de-DE">Ohne Überschrift</text>
+        <text xml:lang="it">Senza intestazione</text>
+    </translation>
+    <translation string="Zurück">
+        <text xml:lang="de">Zurück</text>
+        <text xml:lang="de-CH">Zurück</text>
+        <text xml:lang="de-DE">Zurück</text>
+        <text xml:lang="it">Indietro</text>
+    </translation>
+    <translation string="Bildbeschreibung">
+        <text xml:lang="de">Bildbeschreibung</text>
+        <text xml:lang="de-CH">Bildbeschreibung</text>
+        <text xml:lang="de-DE">Bildbeschreibung</text>
+        <text xml:lang="it">Descrizione</text>
+    </translation>
+    <translation string="Fussnoten">
+        <text xml:lang="de">Fussnoten</text>
+        <text xml:lang="de-CH">Fussnoten</text>
+        <text xml:lang="de-DE">Fussnoten</text>
+        <text xml:lang="it">Note</text>
+    </translation>
+    <translation string="about-book">
+        <text xml:lang="de">Zu diesem Buch</text>
+        <text xml:lang="de-CH">Zu diesem Buch</text>
+        <text xml:lang="de-DE">Zu diesem Buch</text>
+        <text xml:lang="it">su questo libro</text>
+    </translation>
+    <translation string="electronic-data-thanks">
+        <text xml:lang="de">Wir danken dem Verlag für die freundliche Bereitstellung der elektronischen Textdaten.</text>
+        <text xml:lang="de-CH">Wir danken dem Verlag für die freundliche Bereitstellung der elektronischen Textdaten.</text>
+        <text xml:lang="de-DE">Wir danken dem Verlag für die freundliche Bereitstellung der elektronischen Textdaten.</text>
+        <text xml:lang="it">Vorremmo ringraziare l'editore per l'amichevole fornitura dei dati di testo elettronici.</text>
+    </translation>
+    <translation string="producer">
+        <text xml:lang="de">SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte, Zürich</text>
+        <text xml:lang="de-CH">SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte, Zürich</text>
+        <text xml:lang="de-DE">SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte, Zürich</text>
+        <text xml:lang="it">Unitas - Associazione ciechi e ipovedenti della Svizzera italiana</text>
+    </translation>
+    <translation string="producer-brief">
+        <text xml:lang="de">SBS</text>
+        <text xml:lang="de-CH">SBS</text>
+        <text xml:lang="de-DE">SBS</text>
+        <text xml:lang="it">Unitas</text>
+    </translation>
+    <translation string="producer-url">
+        <text xml:lang="de">http://www.sbs.ch</text>
+        <text xml:lang="de-CH">http://www.sbs.ch</text>
+        <text xml:lang="de-DE">http://www.sbs.ch</text>
+        <text xml:lang="it">http://unitas.ch</text>
+    </translation>
+    <translation string="producer-url-brief">
+        <text xml:lang="de">www.sbs.ch</text>
+        <text xml:lang="de-CH">www.sbs.ch</text>
+        <text xml:lang="de-DE">www.sbs.ch</text>
+        <text xml:lang="it">unitas.ch</text>
+    </translation>
+    <translation string="production">
+        <text xml:lang="de">Herstellung</text>
+        <text xml:lang="de-CH">Herstellung</text>
+        <text xml:lang="de-DE">Herstellung</text>
+        <text xml:lang="it">Produzione</text>
+    </translation>
+    <translation string="copyright-blurb">
+        <text xml:lang="de">Dieses E-Book im EPUB-Format ist die ausschliesslich für die Nutzung durch seh- und lesebehinderte Menschen bestimmte zugängliche Version eines urheberrechtlich geschützten Werks. Sie können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht weiter verbreiten oder öffentlich zugänglich machen.</text>
+        <text xml:lang="de-CH">Dieses E-Book im EPUB-Format ist die ausschliesslich für die Nutzung durch seh- und lesebehinderte Menschen bestimmte zugängliche Version eines urheberrechtlich geschützten Werks. Sie können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht weiter verbreiten oder öffentlich zugänglich machen.</text>
+        <text xml:lang="de-DE">Dieses E-Book im EPUB-Format ist die ausschliesslich für die Nutzung durch seh- und lesebehinderte Menschen bestimmte zugängliche Version eines urheberrechtlich geschützten Werks. Sie können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht weiter verbreiten oder öffentlich zugänglich machen.</text>
+        <text xml:lang="it">Questo e-book in formato EPUB è la versione accessibile di un'opera protetta da copyright destinata esclusivamente all'uso da parte di persone con disabilità visive e di lettura. Puoi usarlo personalmente ai sensi della legge sul copyright, ma non puoi ridistribuirlo o renderlo pubblicamente disponibile.</text>
+    </translation>
+</i18n>

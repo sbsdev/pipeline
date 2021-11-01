@@ -8,6 +8,8 @@
               doctype-public="-//NISO//DTD dtbook 2005-3//EN"
               doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" />
 
+  <xsl:variable name="translations" select="document('../i18n/translations.xml')/*"/>
+
   <xsl:template match="*" mode="copyLeadingPagenums">
     <xsl:apply-templates select="(dtb:pagenum|text()|processing-instruction()|comment())[not(preceding-sibling::dtb:*[not(self::dtb:pagenum)])]" />
   </xsl:template>
@@ -30,17 +32,21 @@
 
   <!-- Add an empty header to the first level1 w/o h1 in the frontmatter -->
   <xsl:template match="dtb:frontmatter//dtb:level1[@class='titlepage'][1][not(dtb:h1)]">
+    <xsl:variable name="language" select="('de',ancestor-or-self::*[@xml:lang|@lang]/(@xml:lang|@lang)[1])[last()]"/>
+    <xsl:variable name="blurb" select="pf:i18n-translate('Bibliographische Angaben',$language,$translations)"/>
     <xsl:apply-templates select="." mode="addHeading">
       <xsl:with-param name="level" select="1"/>
-      <xsl:with-param name="blurb" select="'Bibliographische Angaben'"/>
+      <xsl:with-param name="blurb" select="$blurb"/>
     </xsl:apply-templates>
   </xsl:template>
 
   <!-- Add an empty header to all level1 w/o h1 in the frontmatter -->
   <xsl:template match="dtb:frontmatter//dtb:level1[not(dtb:h1)][not(@class='titlepage')]">
+    <xsl:variable name="language" select="('de',ancestor-or-self::*[@xml:lang|@lang]/(@xml:lang|@lang)[1])[last()]"/>
+    <xsl:variable name="blurb" select="pf:i18n-translate('Vorspann',$language,$translations)"/>
     <xsl:variable name="total" select="count(../dtb:level1[not(dtb:h1)][not(@class='titlepage')])"/>
     <xsl:variable name="pos" select="count(preceding-sibling::dtb:level1[not(dtb:h1)][not(@class='titlepage')])+1"/>
-    <xsl:variable name="title" select="if ($total &gt; 1) then concat('Vorspann ', $pos) else 'Vorspann'"/>
+    <xsl:variable name="title" select="if ($total &gt; 1) then concat($blurb,' ', $pos) else $blurb"/>
     <xsl:apply-templates select="." mode="addHeading">
       <xsl:with-param name="level" select="1"/>
       <xsl:with-param name="blurb" select="$title"/>
@@ -56,10 +62,12 @@
 
   <!-- Add an empty header to all level1 w/o h1 in the rearmatter -->
   <xsl:template match="dtb:rearmatter//dtb:level1[not(dtb:h1)]">
+    <xsl:variable name="language" select="('de',ancestor-or-self::*[@xml:lang|@lang]/(@xml:lang|@lang)[1])[last()]"/>
+    <xsl:variable name="blurb" select="pf:i18n-translate('Nachspann',$language,$translations)"/>
     <xsl:variable name="total" select="count(../dtb:level1[not(dtb:h1)])"/>
     <xsl:variable name="pos" select="count(preceding-sibling::dtb:level1[not(dtb:h1)])+1"/>
     <xsl:variable name="title"
-                  select="if ($total &gt; 1) then concat('Nachspann ', $pos) else 'Nachspann'"/>
+                  select="if ($total &gt; 1) then concat($blurb,' ', $pos) else $blurb"/>
     <xsl:apply-templates select="." mode="addHeading">
       <xsl:with-param name="level" select="1"/>
       <xsl:with-param name="blurb" select="$title"/>
@@ -67,6 +75,8 @@
   </xsl:template>
 
   <xsl:template match="dtb:bodymatter//dtb:level1[not(dtb:h1)]">
+    <xsl:variable name="language" select="('de',ancestor-or-self::*[@xml:lang|@lang]/(@xml:lang|@lang)[1])[last()]"/>
+    <xsl:variable name="blurb" select="pf:i18n-translate('Im Original ohne Nummerierung',$language,$translations)"/>
     <xsl:variable name="level" >
       <xsl:choose>
         <xsl:when test="local-name() = 'level1'">1</xsl:when>
@@ -75,8 +85,7 @@
     </xsl:variable>
     <xsl:apply-templates select="." mode="addHeading">
       <xsl:with-param name="level" select="1"/>
-      <xsl:with-param name="blurb" select="concat(format-number(count(preceding-sibling::dtb:level1) + 1, '0'),
-        ' Im Original ohne Nummerierung')"/>
+      <xsl:with-param name="blurb" select="concat(format-number(count(preceding-sibling::dtb:level1) + 1, '0'),' ',$blurb)"/>
     </xsl:apply-templates>
   </xsl:template>
 
@@ -85,9 +94,11 @@
                        dtb:bodymatter//dtb:level4[not(dtb:h4)]|
                        dtb:bodymatter//dtb:level5[not(dtb:h5)]|
                        dtb:bodymatter//dtb:level6[not(dtb:h6)]">
+    <xsl:variable name="language" select="('de',ancestor-or-self::*[@xml:lang|@lang]/(@xml:lang|@lang)[1])[last()]"/>
+    <xsl:variable name="blurb" select="pf:i18n-translate('Ohne Überschrift',$language,$translations)"/>
     <xsl:apply-templates select="." mode="addHeading">
       <xsl:with-param name="level" select="substring-after(name(), 'level')"/>
-      <xsl:with-param name="blurb" select="'Ohne Überschrift'"/>
+      <xsl:with-param name="blurb" select="$blurb"/>
     </xsl:apply-templates>
   </xsl:template>
 
