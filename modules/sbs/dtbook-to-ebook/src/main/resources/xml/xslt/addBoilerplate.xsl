@@ -6,6 +6,8 @@
 		xmlns:pf="http://www.daisy.org/ns/pipeline/functions"
                 exclude-result-prefixes="dtb">
 
+  <xsl:import href="http://www.daisy.org/pipeline/modules/common-utils/i18n.xsl"/>
+
   <xsl:output method="xml" encoding="utf-8" indent="no"
               doctype-public="-//NISO//DTD dtbook 2005-3//EN"
               doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" />
