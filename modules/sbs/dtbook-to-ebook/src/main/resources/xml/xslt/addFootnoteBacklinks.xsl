@@ -13,7 +13,7 @@
 
   <xsl:template match="dtb:note">
     <xsl:variable name="language" select="('de',ancestor-or-self::*[@xml:lang|@lang]/(@xml:lang|@lang)[1])[last()]"/>
-    <xsl:variable name="blurb" select="pf:i18n-translate('Zurück',$language,$translations)"/>
+    <xsl:variable name="blurb" select="pf:i18n-translate('back',$language,$translations)"/>
     <xsl:variable name="backlink" select="//dtb:noteref[@idref=concat('#', current()/@id)]/preceding-sibling::dtb:a[1]/@id"/>
     <xsl:copy>
       <xsl:copy-of select="@*"/>

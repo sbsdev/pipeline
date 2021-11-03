@@ -11,18 +11,18 @@
 
   <xsl:variable name="translations" select="document('../i18n/translations.xml')/*"/>
 
-  <xsl:template name="bildbeschreibung">
+  <xsl:template name="image-description">
     <xsl:variable name="language" select="('de',ancestor-or-self::*[@xml:lang|@lang]/(@xml:lang|@lang)[1])[last()]"/>
-    <xsl:variable name="blurb" select="pf:i18n-translate('Bildbeschreibung',$language,$translations)"/>
+    <xsl:variable name="blurb" select="pf:i18n-translate('image-description',$language,$translations)"/>
     <p><xsl:value-of select="$blurb"/>:</p>
   </xsl:template>
 
   <!-- if a prodnote is inside an imggroup and refers to an image then
-       add a para with the text "Bildbeschreibung" -->
+       add a para with the text "image-description" -->
   <xsl:template match="dtb:imggroup//dtb:prodnote[@imgref]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
-      <xsl:call-template name="bildbeschreibung"/>
+      <xsl:call-template name="image-description"/>
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>

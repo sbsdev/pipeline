@@ -13,7 +13,7 @@
 
   <xsl:template match="dtb:rearmatter">
     <xsl:variable name="language" select="('de',ancestor-or-self::*[@xml:lang|@lang]/(@xml:lang|@lang)[1])[last()]"/>
-    <xsl:variable name="blurb" select="pf:i18n-translate('Fussnoten',$language,$translations)"/>
+    <xsl:variable name="blurb" select="pf:i18n-translate('footnotes',$language,$translations)"/>
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates/>
@@ -28,7 +28,7 @@
 
   <xsl:template match="dtb:book[not(dtb:rearmatter)]">
     <xsl:variable name="language" select="('de',ancestor-or-self::*[@xml:lang|@lang]/(@xml:lang|@lang)[1])[last()]"/>
-    <xsl:variable name="blurb" select="pf:i18n-translate('Fussnoten',$language,$translations)"/>
+    <xsl:variable name="blurb" select="pf:i18n-translate('footnotes',$language,$translations)"/>
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates/>

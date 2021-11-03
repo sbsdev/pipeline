@@ -6,43 +6,43 @@
         <text xml:lang="de-DE">Bibliographische Angaben</text>
         <text xml:lang="it">Informazioni bibliografiche</text>
     </translation>
-    <translation string="Vorspann">
+    <translation string="header">
         <text xml:lang="de">Vorspann</text>
         <text xml:lang="de-CH">Vorspann</text>
         <text xml:lang="de-DE">Vorspann</text>
         <text xml:lang="it">Capo</text>
     </translation>
-    <translation string="Nachspann">
+    <translation string="trailer">
         <text xml:lang="de">Nachspann</text>
         <text xml:lang="de-CH">Nachspann</text>
         <text xml:lang="de-DE">Nachspann</text>
         <text xml:lang="it">Rimorchio</text>
     </translation>
-    <translation string="Im Original ohne Nummerierung">
+    <translation string="original-without-numbering">
         <text xml:lang="de">Im Original ohne Nummerierung</text>
         <text xml:lang="de-CH">Im Original ohne Nummerierung</text>
         <text xml:lang="de-DE">Im Original ohne Nummerierung</text>
         <text xml:lang="it">Nell'originale senza numerazione</text>
     </translation>
-    <translation string="Ohne Überschrift">
+    <translation string="without-heading">
         <text xml:lang="de">Ohne Überschrift</text>
         <text xml:lang="de-CH">Ohne Überschrift</text>
         <text xml:lang="de-DE">Ohne Überschrift</text>
         <text xml:lang="it">Senza intestazione</text>
     </translation>
-    <translation string="Zurück">
+    <translation string="back">
         <text xml:lang="de">Zurück</text>
         <text xml:lang="de-CH">Zurück</text>
         <text xml:lang="de-DE">Zurück</text>
         <text xml:lang="it">Indietro</text>
     </translation>
-    <translation string="Bildbeschreibung">
+    <translation string="image-description">
         <text xml:lang="de">Bildbeschreibung</text>
         <text xml:lang="de-CH">Bildbeschreibung</text>
         <text xml:lang="de-DE">Bildbeschreibung</text>
         <text xml:lang="it">Descrizione</text>
     </translation>
-    <translation string="Fussnoten">
+    <translation string="footnotes">
         <text xml:lang="de">Fussnoten</text>
         <text xml:lang="de-CH">Fussnoten</text>
         <text xml:lang="de-DE">Fussnoten</text>
@@ -90,7 +90,7 @@
         <text xml:lang="de-DE">Herstellung</text>
         <text xml:lang="it">Produzione</text>
     </translation>
-    <translation string="copyright-blurb">
+    <translation string="copyright-text">
         <text xml:lang="de">Dieses E-Book im EPUB-Format ist die ausschliesslich für die Nutzung durch seh- und lesebehinderte Menschen bestimmte zugängliche Version eines urheberrechtlich geschützten Werks. Sie können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht weiter verbreiten oder öffentlich zugänglich machen.</text>
         <text xml:lang="de-CH">Dieses E-Book im EPUB-Format ist die ausschliesslich für die Nutzung durch seh- und lesebehinderte Menschen bestimmte zugängliche Version eines urheberrechtlich geschützten Werks. Sie können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht weiter verbreiten oder öffentlich zugänglich machen.</text>
         <text xml:lang="de-DE">Dieses E-Book im EPUB-Format ist die ausschliesslich für die Nutzung durch seh- und lesebehinderte Menschen bestimmte zugängliche Version eines urheberrechtlich geschützten Werks. Sie können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht weiter verbreiten oder öffentlich zugänglich machen.</text>
