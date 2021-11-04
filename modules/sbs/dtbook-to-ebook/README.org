@@ -1,0 +1,54 @@
+* Why do we need a separate migrator?
+
+We generate EPUB3 files based on the DTBook files we create in our
+production. There are some requirements that aren't matched by the
+vanilla migrator
+
+* Requirements
+- No dislexic font in the EPUB
+- small changes to the css
+  - do not hard code the font size
+  - set the line height in terms of a factor instead of in precent
+  - image width only 60%
+  - new class to display images as a block
+  - list-style-type for ~ol~ and ~ul~ (https://github.com/sbsdev/pipeline/commit/d38121499523ed67a4dffda54a1b546c2a54ce0a)
+- Add some boilerplate text to the frontmatter
+  - copyright statements, usage restrictions, producer informantion, etc
+- Render inline prodnotes as spans
+- Retain ~dtbook:hd~ inside ~dtbook:list~ (4f548adac14cedf6be06c94cafbed8443e921f6f)
+- Render dtbook:epigraph as html:blockquote (376e6dd88131dbed9071ca93f0435be76b2f3542)
+- Allow both blockquote and p for epigraph (8079ef4c458ed1d98e6f02dcd0c7a388557ddbc7)
+- Change the fake sections in the frontmatter to divs (ce31babca039a3cbad19ab3850381aac6feb6b0c)
+- Render poems without a header as divs (996b390b7e281d84b35bfb74e1a62c8eb94933f1)
+- Use substring-before to get the marker text (2f2e1e7a2af03c623175711a4a68fd98900f35b2)
+- Drop the ascii encoding of EPUBs (6f7dcb5e073080e21dc062ee1ae33a175d85623e)
+- Clean up namespace handling in package document creation (c565281043b699123fe35a560b6bb11ea369fdf2)
+- Image descriptions
+  - Put the caption before the image (c3709bcf340d6216349fabc00cce9e137cb37c71)
+  - No longer emit the longdesc attribute (4d8d66f85edeaf396c8684a825fd4f91d356d34d)
+  - Add some boilerplate text to extended image descriptions (c1f3fc2ca116059693085590ea94bf2e92ee368a)
+  - Add imgrefs automatically. (b3826a3ffd1e3524ad44e6a3e21e331d990fbc5f)
+    - Based on the assumption that we will markup every image in a
+      separate imggroup and that we will group images together with
+      their respective prodnote (long description) inside this imggroup,
+      we can simply insert imgrefs for those cases. This will simplify
+      the processing in the pipeline and we can rely on off the shelf
+      functionality to create EPUBs.
+  - Add an aria-describedby attribute to images (27abc8a7583bb3f01ddab230c45f4d923df6f19f)
+- a11y metadata
+  - Put value of metadata in the content attribute (5b7f102c1430f39668a73e38ec0f589f5706ac3c)
+  - Add accessibility meta data to the package document (9bd9881a19b1cd9dc1df2ee6e3715b1bbb5a9d7f)
+  - Only add the alternativeText meta data if there are images with alt
+    text (6874de14168d294372a34611135f226f14f290e2)
+  - Add schema:accessMode textual for all epubs (5d85e9430b84703b293c07ce56b85f3a403e4744)
+  - Fix metadata value for longDescription in accessibilityFeature (0a12308fc71bb5b62bccabc87f0ea1c85c50d8a7)
+  - Fix accessModeSufficient according to Avnesh Sing's answer (80fe53ba14368f86eb2c00d025f9b275158e5e85)
+- Images following a caption should be displayed as a block (14346e2e9ce5cfb189366249008b65abdf2cb39e)
+- Footnotes
+  - Move footnotes to rearmatter (6d13f324a51d21cd29d3dab522e5d73b83e3bcb2)
+  - Add an anchor before the noterefs (c6fe8c3b67ca3bfaadbbe0f3855c4fc706a68088)
+  - Add backlinks to footnotes (488aa88fcee2e818a7bbf8c81daca7d1cac0edc6)
+  - Only append a rearmatter footnote chapter if there are footnotes
+- i18n capable
+
+
