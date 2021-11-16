@@ -40,25 +40,25 @@
         <text xml:lang="de">Bildbeschreibung</text>
         <text xml:lang="de-CH">Bildbeschreibung</text>
         <text xml:lang="de-DE">Bildbeschreibung</text>
-        <text xml:lang="it">Descrizione</text>
+        <text xml:lang="it">Descrizione dell'immagine</text>
     </translation>
     <translation string="footnotes">
         <text xml:lang="de">Fussnoten</text>
         <text xml:lang="de-CH">Fussnoten</text>
         <text xml:lang="de-DE">Fussnoten</text>
-        <text xml:lang="it">Note</text>
+        <text xml:lang="it">Nota a pie' di pagina</text>
     </translation>
     <translation string="about-book">
         <text xml:lang="de">Zu diesem Buch</text>
         <text xml:lang="de-CH">Zu diesem Buch</text>
         <text xml:lang="de-DE">Zu diesem Buch</text>
-        <text xml:lang="it">su questo libro</text>
+        <text xml:lang="it">In questo libro</text>
     </translation>
     <translation string="electronic-data-thanks">
         <text xml:lang="de">Wir danken dem Verlag für die freundliche Bereitstellung der elektronischen Textdaten.</text>
         <text xml:lang="de-CH">Wir danken dem Verlag für die freundliche Bereitstellung der elektronischen Textdaten.</text>
         <text xml:lang="de-DE">Wir danken dem Verlag für die freundliche Bereitstellung der elektronischen Textdaten.</text>
-        <text xml:lang="it">Vorremmo ringraziare l'editore per l'amichevole fornitura dei dati di testo elettronici.</text>
+        <text xml:lang="it">Ringraziamo l'editore per i dati dei testi elettronici.</text>
     </translation>
     <translation string="producer">
         <text xml:lang="de">SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte, Zürich</text>
@@ -76,13 +76,13 @@
         <text xml:lang="de">http://www.sbs.ch</text>
         <text xml:lang="de-CH">http://www.sbs.ch</text>
         <text xml:lang="de-DE">http://www.sbs.ch</text>
-        <text xml:lang="it">http://unitas.ch</text>
+        <text xml:lang="it">http://www.unitas.ch</text>
     </translation>
     <translation string="producer-url-brief">
         <text xml:lang="de">www.sbs.ch</text>
         <text xml:lang="de-CH">www.sbs.ch</text>
         <text xml:lang="de-DE">www.sbs.ch</text>
-        <text xml:lang="it">unitas.ch</text>
+        <text xml:lang="it">www.unitas.ch</text>
     </translation>
     <translation string="production">
         <text xml:lang="de">Herstellung</text>
