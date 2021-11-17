@@ -10,13 +10,13 @@
         <text xml:lang="de">Vorspann</text>
         <text xml:lang="de-CH">Vorspann</text>
         <text xml:lang="de-DE">Vorspann</text>
-        <text xml:lang="it">Capo</text>
+        <text xml:lang="it">Titoli di testa</text>
     </translation>
     <translation string="trailer">
         <text xml:lang="de">Nachspann</text>
         <text xml:lang="de-CH">Nachspann</text>
         <text xml:lang="de-DE">Nachspann</text>
-        <text xml:lang="it">Rimorchio</text>
+        <text xml:lang="it">Titoli di coda</text>
     </translation>
     <translation string="original-without-numbering">
         <text xml:lang="de">Im Original ohne Nummerierung</text>
@@ -28,7 +28,7 @@
         <text xml:lang="de">Ohne Überschrift</text>
         <text xml:lang="de-CH">Ohne Überschrift</text>
         <text xml:lang="de-DE">Ohne Überschrift</text>
-        <text xml:lang="it">Senza intestazione</text>
+        <text xml:lang="it">Senza Titolo</text>
     </translation>
     <translation string="back">
         <text xml:lang="de">Zurück</text>
