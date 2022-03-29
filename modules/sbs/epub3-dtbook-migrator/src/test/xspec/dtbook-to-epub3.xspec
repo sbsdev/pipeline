@@ -2363,7 +2363,7 @@
             <x:expect label="the resulting list should be wrapped in a section element containing the hd">
                 <html:section id="...">
 		    <html:h1 id="...">TEXT</html:h1>
-		    <html:ol id="..." class="list-style-type-none">...</html:ol>
+		    <html:ol id="..." class="list-style-type-none preformatted">...</html:ol>
 	        </html:section>
             </x:expect>
         </x:scenario>
@@ -2607,7 +2607,7 @@
                 </dtbook:list>
             </x:context>
             <x:expect label="the type of list should be detected, the list markers removed and the value should be correct">
-                <html:ol id="...">
+                <html:ol id="..." class="preformatted">
                     <html:li id="..." value="2">Halten Sie
 		  Sie es tunlichst, der Öffentlichkeit jene Hautfladen auch bekannt als Bingofladen, die unter den Oberarmen hängen, zuzumuten. Dasselbe gilt für die Röllchen unter der Achsel, zwischen Oberarm und Oberkörper.</html:li>
                 </html:ol>
@@ -3514,17 +3514,17 @@
         </x:expect>
     </x:scenario>
 
-    <x:scenario label="when processing a li element enumerated with letters of with a string length &gt; 1">
+    <x:scenario label="when processing a li element enumerated with letters with a string length &gt; 2">
         <x:context>
             <dtbook:list type="pl" depth="1">
                 <dtbook:li>aa. ONE</dtbook:li>
                 <dtbook:li>bbb. TWO</dtbook:li>
             </dtbook:list>
         </x:context>
-        <x:expect label="the letters should be correctly parsed">
+        <x:expect label="the list markers should not be removed">
             <html:ol id="..." type="a" class="preformatted">
                 <html:li id="..." value="27">ONE</html:li>
-                <html:li id="..." value="1406">TWO</html:li>
+                <html:li id="..." value="1406">bbb. TWO</html:li>
             </html:ol>
         </x:expect>
     </x:scenario>

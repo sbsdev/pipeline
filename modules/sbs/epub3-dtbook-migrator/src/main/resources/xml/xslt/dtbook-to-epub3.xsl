@@ -1486,22 +1486,22 @@
                         <xsl:apply-templates select="."/>
                     </xsl:when>
                     <xsl:when
-                        test="self::dtbook:* and not(preceding-sibling::node()[self::* or self::text()[normalize-space()]]) and not(text()[1]/preceding-sibling::*) and matches(text()[1],'^(\w+\.|•)')">
-                        <xsl:if test="* or normalize-space(replace(text()[1],'^(\w+\.|•) ','')) != ''">
+                        test="self::dtbook:* and not(preceding-sibling::node()[self::* or self::text()[normalize-space()]]) and not(text()[1]/preceding-sibling::*) and matches(text()[1],'^([0-9a-zA-Z]{1,2}\.|•)')">
+                        <xsl:if test="* or normalize-space(replace(text()[1],'^([0-9a-zA-Z]{1,2}\.|•) ','')) != ''">
                             <xsl:variable name="element">
                                 <xsl:apply-templates select="."/>
                             </xsl:variable>
                             <xsl:for-each select="$element/*">
                                 <xsl:copy exclude-result-prefixes="#all">
                                     <xsl:copy-of select="@*" exclude-result-prefixes="#all"/>
-                                    <xsl:value-of select="replace(text()[1],'^(\w+\.|•) ','')"/>
+                                    <xsl:value-of select="replace(text()[1],'^([0-9a-zA-Z]\.|•) ','')"/>
                                     <xsl:copy-of select="node() except text()[1]" exclude-result-prefixes="#all"/>
                                 </xsl:copy>
                             </xsl:for-each>
                         </xsl:if>
                     </xsl:when>
-                    <xsl:when test="self::text() and not(preceding-sibling::node()[self::* or self::text()[normalize-space()]]) and matches(.,'^(\w+\.|•)')">
-                        <xsl:value-of select="replace(.,'^(\w+\.|•) ','')"/>
+                    <xsl:when test="self::text() and not(preceding-sibling::node()[self::* or self::text()[normalize-space()]]) and matches(.,'^([0-9a-zA-Z]{1,2}\.|•)')">
+                        <xsl:value-of select="replace(.,'^([0-9a-zA-Z]{1,2}\.|•) ','')"/>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:apply-templates select="."/>
