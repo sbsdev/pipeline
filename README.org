@@ -1,0 +1,26 @@
+
+These are a few notes to be able to build this very old fork of the
+pipeline.
+
+Make sure you compile with Java8
+
+#+begin_src shell
+$ sudo update-alternatives --config java
+There are 2 choices for the alternative java (providing /usr/bin/java).
+
+  Selection    Path                                            Priority   Status
+------------------------------------------------------------
+  0            /usr/lib/jvm/java-11-openjdk-amd64/bin/java      1111      auto mode
+  1            /usr/lib/jvm/java-11-openjdk-amd64/bin/java      1111      manual mode
+* 2            /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java   1081      manual mode
+
+Press <enter> to keep the current choice[*], or type selection number: 
+#+end_src
+
+#+begin_src shell
+  $ make dist-deb
+#+end_src
+
+#+begin_src shell
+  $ make check-modules/sbs/epub3-dtbook-migrator
+#+end_src
