@@ -1388,10 +1388,10 @@
             </x:context>
             <x:expect label="the resulting element should be a figure with class='image'">
                 <html:figure id="..." class="image">
-                    <html:img src="images/img.jpg" id="img1" aria-describedby="prodnote1" alt="image"/>
+                    <html:figcaption id="caption1"/>
+                    <html:img src="images/img.jpg" id="img1" class="block-image" aria-describedby="prodnote1" alt="image"/>
                     <html:aside id="prodnote1" epub:type="z3998:production" class="prodnote"/>
                     <html:div epub:type="pagebreak" title="1"/>
-                    <html:figcaption id="caption1"/>
                 </html:figure>
             </x:expect>
         </x:scenario>
@@ -1422,15 +1422,13 @@
             <x:expect label="the resulting element should be a figure with class='image-series'">
                 <html:figure id="..." class="image-series">
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img1" aria-describedby="prodnote1" alt="image"/>
-                        <html:aside id="prodnote1" epub:type="z3998:production" class="prodnote"/>
                         <html:figcaption id="caption1">
                             <html:p/>
                         </html:figcaption>
+                        <html:img src="images/img.jpg" id="img1" class="block-image" aria-describedby="prodnote1" alt="image"/>
+                        <html:aside id="prodnote1" epub:type="z3998:production" class="prodnote"/>
                     </html:figure>
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img2" aria-describedby="prodnote2" alt="image"/>
-                        <html:aside id="prodnote2" epub:type="z3998:production" class="prodnote"/>
                         <html:figcaption>
                             <html:div id="caption2">
                                 <html:p/>
@@ -1439,15 +1437,17 @@
                                 <html:p/>
                             </html:div>
                         </html:figcaption>
+                        <html:img src="images/img.jpg" id="img2" class="block-image" aria-describedby="prodnote2" alt="image"/>
+                        <html:aside id="prodnote2" epub:type="z3998:production" class="prodnote"/>
                     </html:figure>
                     <html:figure class="image">
                         <html:img src="images/img.jpg" id="img3" alt="image"/>
                     </html:figure>
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img4" alt="image"/>
                         <html:figcaption id="caption4">
                             <html:p/>
                         </html:figcaption>
+                        <html:img src="images/img.jpg" id="img4" class="block-image" alt="image"/>
                     </html:figure>
                     <html:figure class="image">
                         <html:img src="images/img.jpg" id="img5" alt="image"/>
@@ -1482,7 +1482,6 @@
                         <html:p/>
                     </html:figcaption>
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img1" alt="image"/>
                         <html:figcaption>
                             <html:div id="caption2">
                                 <html:p/>
@@ -1491,15 +1490,16 @@
                                 <html:p/>
                             </html:div>
                         </html:figcaption>
+                        <html:img src="images/img.jpg" id="img1" class="block-image" alt="image"/>
                     </html:figure>
                     <html:figure class="image">
                         <html:img src="images/img.jpg" id="img2" alt="image"/>
                     </html:figure>
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img3" alt="image"/>
                         <html:figcaption id="caption4">
                             <html:p/>
                         </html:figcaption>
+                        <html:img src="images/img.jpg" id="img3" class="block-image" alt="image"/>
                     </html:figure>
                     <html:figure class="image">
                         <html:img src="images/img.jpg" id="img4" alt="image"/>
@@ -1522,14 +1522,14 @@
             </x:context>
             <x:expect label="the text nodes should remain as text nodes">
                 <html:figure id="..." class="image">
-                    <html:img src="images/img.jpg" id="img1" alt="image"/>
                     <html:figcaption id="caption1">TEXT</html:figcaption>
+                    <html:img src="images/img.jpg" id="img1" class="block-image" alt="image"/>
                 </html:figure>
                 <html:figure id="..." class="image-series">
                     <html:figcaption id="caption2">TEXT</html:figcaption>
                     <html:figure class="image">
-                        <html:img src="images/img.jpg" id="img2" alt="image"/>
                         <html:figcaption id="caption3">TEXT</html:figcaption>
+                        <html:img src="images/img.jpg" id="img2" class="block-image" alt="image"/>
                     </html:figure>
                     <html:figure class="image">
                         <html:img src="images/img.jpg" id="img3" alt="image"/>
