@@ -131,6 +131,12 @@
                 <html:meta name="viewport" content="..."/>
                 <html:meta name="nordic:guidelines" content="2015-1"/>
                 <html:meta name="dc:source" content="urn:isbn:0"/>
+		<html:meta property="schema:accessMode" content="textual"/>
+		<html:meta property="schema:accessibilityFeature" content="structuralNavigation"/>
+		<html:meta property="schema:accessibilityFeature" content="readingOrder" />
+		<html:meta property="schema:accessibilityHazard" content="none"/>
+		<html:meta property="schema:accessibilitySummary" content="This publication conforms to WCAG 2.0 Level AA"/>
+		<html:meta property="schema:accessModeSufficient" content="textual"/>
                 <html:style type="text/css" xml:space="preserve">...</html:style>
                 <html:link rel="profile" href="http://www.nlb.no/metadata-profile"/>
             </html:head>
@@ -154,6 +160,12 @@
                 <html:meta name="nordic:guidelines" content="2015-1"/>
                 <html:link/>
                 <html:meta name="dc:source" content="urn:isbn:1234"/>
+		<html:meta property="schema:accessMode" content="textual"/>
+		<html:meta property="schema:accessibilityFeature" content="structuralNavigation"/>
+		<html:meta property="schema:accessibilityFeature" content="readingOrder" />
+		<html:meta property="schema:accessibilityHazard" content="none"/>
+		<html:meta property="schema:accessibilitySummary" content="This publication conforms to WCAG 2.0 Level AA"/>
+		<html:meta property="schema:accessModeSufficient" content="textual"/>
                 <html:style type="text/css" xml:space="preserve">...</html:style>
             </html:head>
         </x:expect>
