@@ -2363,7 +2363,7 @@
             <x:expect label="the resulting list should be wrapped in a section element containing the hd">
                 <html:section id="...">
 		    <html:h1 id="...">TEXT</html:h1>
-		    <html:ol id="..." class="list-style-type-none">...</html:ol>
+		    <html:ol id="..." class="list-style-type-none preformatted">...</html:ol>
 	        </html:section>
             </x:expect>
         </x:scenario>
@@ -2517,11 +2517,11 @@
                     </dtbook:li>
                 </dtbook:list>
             </x:context>
-            <x:expect label="the result should become ul and the bullets should be removed">
+            <x:expect label="the result should become ul and the bullets should not be removed">
                 <html:ul id="..." class="preformatted">
-                    <html:li id="li_814"><html:p>TEXT1 <html:em>TEXT2</html:em> TEXT3</html:p>
+                    <html:li id="li_814"><html:p>• TEXT1 <html:em>TEXT2</html:em> TEXT3</html:p>
                         <html:ul id="list_213" class="preformatted">
-                            <html:li id="li_815">TEXT4 <html:em>TEXT5 </html:em> TEXT6</html:li>
+                            <html:li id="li_815">• TEXT4 <html:em>TEXT5 </html:em> TEXT6</html:li>
                         </html:ul>
                     </html:li>
                 </html:ul>
@@ -2540,16 +2540,16 @@
                     <dtbook:li>10. TEXT9</dtbook:li>
                 </dtbook:list>
             </x:context>
-            <x:expect label="the ul should become list, bullets should be added to text or block content as necessary">
+            <x:expect label="the ul should become list, list markers should not be removed">
                 <html:ol id="..." class="preformatted">
-                    <html:li id="li_814" value="1"><html:p>TEXT1 <html:em>TEXT2</html:em> TEXT3</html:p>
+                    <html:li id="li_814" value="1"><html:p>1. TEXT1 <html:em>TEXT2</html:em> TEXT3</html:p>
                         <html:ol id="list_213" class="preformatted">
-                            <html:li id="li_815" value="1">TEXT4 <html:em>TEXT5 </html:em> TEXT6</html:li>
+                            <html:li id="li_815" value="1">1. TEXT4 <html:em>TEXT5 </html:em> TEXT6</html:li>
                         </html:ol>
                     </html:li>
-                    <html:li id="..." value="2">TEXT7</html:li>
-                    <html:li id="..." value="9">TEXT8</html:li>
-                    <html:li id="..." value="10">TEXT9</html:li>
+                    <html:li id="..." value="2">2. TEXT7</html:li>
+                    <html:li id="..." value="9">9. TEXT8</html:li>
+                    <html:li id="..." value="10">10. TEXT9</html:li>
                 </html:ol>
             </x:expect>
         </x:scenario>
@@ -2576,26 +2576,26 @@
                     <dtbook:li>II. TWO</dtbook:li>
                 </dtbook:list>
             </x:context>
-            <x:expect label="the type of list should be detected, and the list markers removed">
+            <x:expect label="the type of list should be detected, and the list markers should not be removed">
                 <html:ol id="..." class="preformatted">
-                    <html:li id="..." value="1">ONE</html:li>
-                    <html:li id="..." value="2">TWO</html:li>
+                    <html:li id="..." value="1">1. ONE</html:li>
+                    <html:li id="..." value="2">2. TWO</html:li>
                 </html:ol>
                 <html:ol id="..." type="a" class="preformatted">
-                    <html:li id="..." value="1">ONE</html:li>
-                    <html:li id="..." value="2">TWO</html:li>
+                    <html:li id="..." value="1">a. ONE</html:li>
+                    <html:li id="..." value="2">b. TWO</html:li>
                 </html:ol>
                 <html:ol id="..." type="A" class="preformatted">
-                    <html:li id="..." value="1">ONE</html:li>
-                    <html:li id="..." value="2">TWO</html:li>
+                    <html:li id="..." value="1">A. ONE</html:li>
+                    <html:li id="..." value="2">B. TWO</html:li>
                 </html:ol>
                 <html:ol id="..." type="i" class="preformatted">
-                    <html:li id="..." value="1">ONE</html:li>
-                    <html:li id="..." value="2">TWO</html:li>
+                    <html:li id="..." value="1">i. ONE</html:li>
+                    <html:li id="..." value="2">ii. TWO</html:li>
                 </html:ol>
                 <html:ol id="..." type="I" class="preformatted">
-                    <html:li id="..." value="1">ONE</html:li>
-                    <html:li id="..." value="2">TWO</html:li>
+                    <html:li id="..." value="1">I. ONE</html:li>
+                    <html:li id="..." value="2">II. TWO</html:li>
                 </html:ol>
             </x:expect>
         </x:scenario>
@@ -2606,9 +2606,9 @@
 		  Sie es tunlichst, der Öffentlichkeit jene Hautfladen auch bekannt als Bingofladen, die unter den Oberarmen hängen, zuzumuten. Dasselbe gilt für die Röllchen unter der Achsel, zwischen Oberarm und Oberkörper.</dtbook:li>
                 </dtbook:list>
             </x:context>
-            <x:expect label="the type of list should be detected, the list markers removed and the value should be correct">
-                <html:ol id="...">
-                    <html:li id="..." value="2">Halten Sie
+            <x:expect label="the type of list should be detected, the list markers not removed and the value should be correct">
+                <html:ol id="..." class="preformatted">
+                    <html:li id="..." value="2">2. Halten Sie
 		  Sie es tunlichst, der Öffentlichkeit jene Hautfladen auch bekannt als Bingofladen, die unter den Oberarmen hängen, zuzumuten. Dasselbe gilt für die Röllchen unter der Achsel, zwischen Oberarm und Oberkörper.</html:li>
                 </html:ol>
             </x:expect>
@@ -2624,10 +2624,10 @@
             </x:context>
             <x:expect label="the result should be 10, 9, 5, 4">
                 <html:ol id="..." class="preformatted">
-                    <html:li id="..." value="10">ONE</html:li>
-                    <html:li id="..." value="9">TWO</html:li>
-                    <html:li id="..." value="5">THREE</html:li>
-                    <html:li id="..." value="4">FOUR</html:li>
+                    <html:li id="..." value="10">10. ONE</html:li>
+                    <html:li id="..." value="9">9. TWO</html:li>
+                    <html:li id="..." value="5">5. THREE</html:li>
+                    <html:li id="..." value="4">4. FOUR</html:li>
                 </html:ol>
             </x:expect>
         </x:scenario>
@@ -3521,10 +3521,10 @@
                 <dtbook:li>bbb. TWO</dtbook:li>
             </dtbook:list>
         </x:context>
-        <x:expect label="the letters should be correctly parsed">
+        <x:expect label="the letters should be correctly parsed and the markers should not be removed">
             <html:ol id="..." type="a" class="preformatted">
-                <html:li id="..." value="27">ONE</html:li>
-                <html:li id="..." value="1406">TWO</html:li>
+                <html:li id="..." value="27">aa. ONE</html:li>
+                <html:li id="..." value="1406">bbb. TWO</html:li>
             </html:ol>
         </x:expect>
     </x:scenario>
