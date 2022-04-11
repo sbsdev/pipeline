@@ -48,7 +48,8 @@
       </x:expect>
     </x:scenario>
 
-    <x:scenario label="Big imagegroup with caption">
+    <x:scenario label="Big imagegroup with caption"
+		pending="Via epub fails: our fork of the migrator doesn't handle round-triping of imagegroup with caption properly">
       <x:context>
         <dtb:imggroup id="imggrp_2" xml:lang="de">
           <dtb:img id="img1_1" src="fig1_01.png" alt="someday"/>
