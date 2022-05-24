@@ -19,13 +19,11 @@ ifneq ($(MAKECMDGOALS),)
 ifneq ($(MAKECMDGOALS), help)
 ifneq ($(MAKECMDGOALS), dump-maven-cmd)
 ifneq ($(MAKECMDGOALS), dump-gradle-cmd)
-ifneq ($(MAKECMDGOALS), clean-website)
 include .make/main.mk
 assembly/BASEDIR := assembly
 include assembly/deps.mk
 -include webui/.deps.mk
 -include it/sbs-benchmark/.deps.mk
-endif
 endif
 endif
 endif
@@ -320,7 +318,7 @@ cache :
 		rsync -mr --exclude "*-SNAPSHOT" --exclude "maven-metadata-*.xml" $(MVN_WORKSPACE)/ $(MVN_CACHE); \
 	fi
 
-clean : cache clean-workspace clean-old clean-website clean-dist clean-webui
+clean : cache clean-workspace clean-old clean-dist clean-webui
 
 .PHONY : clean-workspace
 clean-workspace :
@@ -378,27 +376,6 @@ go-offline :
 checked :
 	touch $(addsuffix /.last-tested,$(MODULES))
 
-poms : website/target/maven/pom.xml
-website/target/maven/pom.xml : $(addprefix website/src/_data/,modules.yml api.yml versions.yml)
-	$(MAKE) -C website target/maven/pom.xml
-
-.PHONY : website
-website :
-	$(MAKE) -C website
-
-.PHONY : serve-website publish-website clean-website
-serve-website publish-website clean-website :
-	target=$@ && \
-	$(MAKE) -C website $${target%-website}
-
-# this dependency is also defined in website/Makefile, but we need to repeat it here to enable the transitive dependency below
-website serve-website publish-website : | $(addprefix website/target/maven/,javadoc doc sources xprocdoc)
-
-$(addprefix website/target/maven/,javadoc doc sources xprocdoc) : website/target/maven/.compile-dependencies
-	rm -rf $@
-	target=$@ && \
-	$(MAKE) -C website $${target#website/}
-
 .PHONY : dump-maven-cmd
 dump-maven-cmd :
 	echo "mvn () { $(shell dirname "$$(which mvn)")/mvn --settings \"$(CURDIR)/$(MVN_SETTINGS)\" $(MVN_PROPERTIES) \"\$$@\"; }"
@@ -447,8 +424,6 @@ help :
 	echo "	Get the command for compiling and running CLI locally"                                                  >&2
 	echo "make run-docker:"                                                                                         >&2
 	echo "	Incrementally compile code and run a server inside a Docker container"                                  >&2
-	echo "make website:"                                                                                            >&2
-	echo "	Build the website"                                                                                      >&2
 	echo "make dump-maven-cmd:"                                                                                     >&2
 	echo '	Get the Maven command used. To configure your shell: eval $$(make dump-maven-cmd)'                      >&2
 
