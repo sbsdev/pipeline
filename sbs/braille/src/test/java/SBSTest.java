@@ -59,7 +59,7 @@ public class SBSTest extends AbstractXSpecAndXProcSpecTest {
 	
 	@Test
 	public void runXSpecAndXProcSpec() throws Exception {
-		boolean generateEpubTests = Boolean.parseBoolean(System.getProperty("generate-epub-tests", "true"));
+		boolean generateEpubTests = Boolean.parseBoolean(System.getProperty("generate-epub-tests", "false"));
 		File baseDir = new File(PathUtils.getBaseDir());
 		File xspecTestsDir = new File(baseDir, "src/test/xspec");
 		File generatedXSpecTestsDir = new File(baseDir, "target/generated-test-sources/xspec");
