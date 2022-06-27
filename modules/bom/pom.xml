@@ -45,7 +45,7 @@
       <dependency>
         <groupId>org.daisy.pipeline.modules.braille</groupId>
         <artifactId>css-utils</artifactId>
-        <version>4.1.1</version>
+        <version>4.1.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.daisy.pipeline.modules.braille</groupId>
@@ -593,7 +593,7 @@
       <dependency>
         <groupId>org.daisy.dotify</groupId>
         <artifactId>dotify.api</artifactId>
-        <version>5.0.5</version>
+        <version>5.0.7</version>
       </dependency>
       <!--
           for dotify-utils
