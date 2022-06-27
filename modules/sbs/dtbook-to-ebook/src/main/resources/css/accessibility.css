@@ -44,14 +44,6 @@ body {
   color:#1A0033;
 }
 
-/* alternate paragraph shading helps users stay on track
-   while reading. This shading is very subtle so it is not
-   annoying, but it still helps. */
-p:nth-child(even), li:nth-child(even) {
-	background-color: rgba(0,0,0, 0.03);
-}
-
-
 /* highlight text under cursor helps users focus on what
    they are currently reading. This shading is darker than
    the alt-paragraph shading. */
