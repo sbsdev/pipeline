@@ -44,14 +44,6 @@ body {
   color:#1A0033;
 }
 
-/* highlight text under cursor helps users focus on what
-   they are currently reading. This shading is darker than
-   the alt-paragraph shading. */
-p:hover, li:hover {
-   background-color: rgba(0,0,0, 0.5) !important;
-
-}
-
 /* Make sure images take the whole width (and not more) */
 img {
     max-width: 60%;
