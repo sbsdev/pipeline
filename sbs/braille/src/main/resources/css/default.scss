@@ -61,7 +61,7 @@ $include-production-notes: false !default;
 @page toc:right {
     margin-bottom: 1;
     @bottom-center {
-	content: "Inhaltsverzeichnis";
+	content: "inhaltsverzeichnis";
     }
     @bottom-right {
 	content: counter(page, upper-roman);
@@ -163,7 +163,7 @@ $include-production-notes: false !default;
 /* End-of-volume announcements */
 %end-of-volume {
     display: block;
-    content: "⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒\A Ende des ";
+    content: "⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒\A ende des ";
     white-space: pre-line;
     text-align: center;
     margin-top: 1;
@@ -182,7 +182,7 @@ html {
         flow: end-of-volume;
         // @extend %end-of-volume; // does not work correctly
         display: block;
-        content: "⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒\A Ende des ";
+        content: "⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒\A ende des ";
         white-space: pre-line;
         text-align: center;
         margin-top: 1;
@@ -217,7 +217,7 @@ br.braille-volume-break-grade-#{$contraction-grade} {
     &::before {
         // @extend %end-of-volume; // does not work correctly
         display: block;
-        content: "⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒\A Ende des ";
+        content: "⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒\A ende des ";
         white-space: pre-line;
         text-align: center;
         margin-top: 1;
@@ -246,7 +246,7 @@ rearmatter,
         // One line (padding) is part of content, the other line is done with margin-top.
         // In the case of only one volume (no end-of-book announcement) and endnotes are present, "margin-top: 2"
         // would result in two empty lines before the endnotes instead of 1.
-        content: -obfl-evaluate('(if (= $volumes 1) "" "\A ⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒\A Ende des buches\A ⠶⠶⠶⠶⠶⠶")');
+        content: -obfl-evaluate('(if (= $volumes 1) "" "\A ⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒\A ende des buches\A ⠶⠶⠶⠶⠶⠶")');
         margin-top: 1;
         white-space: pre-line;
         text-align: center;
@@ -316,7 +316,7 @@ rearmatter,
 #generated-document-toc::-obfl-on-toc-start,
 #generated-volume-toc::-obfl-on-toc-start::before {
     display: block;
-    content: 'Inhaltsverzeichnis';
+    content: 'inhaltsverzeichnis';
     text-align: center;
     text-indent:0;
     margin-top:1;
@@ -330,7 +330,7 @@ rearmatter,
 
 #generated-document-toc::-obfl-on-volume-start {
     display: block;
-    content: -obfl-evaluate('(if (> $volumes 1) " Band" "")');
+    content: -obfl-evaluate('(if (> $volumes 1) " band" "")');
     text-align: center;
     text-indent:0;
     margin-top:1;
@@ -343,7 +343,7 @@ rearmatter,
 
 #generated-volume-toc::-obfl-on-toc-start::after {
     display: block;
-    content: -obfl-evaluate('(if (> $volumes 1) " Band" "")');
+    content: -obfl-evaluate('(if (> $volumes 1) " band" "")');
     text-align: center;
     margin-top:1;
     margin-bottom:1;
@@ -495,7 +495,7 @@ a[epub|type~='noteref'] {
                 display: block;
                 margin-top: 1;
                 -obfl-underline: ⠒;
-                content: 'Anmerkungen';
+                content: 'anmerkungen';
                 text-transform: auto;
             }
         }
@@ -508,7 +508,7 @@ a[epub|type~='noteref'] {
             display: block;
             margin-top: 1;
             -obfl-underline: ⠒;
-            content: 'Anmerkungen';
+            content: 'anmerkungen';
             text-transform: auto;
         }
     }
@@ -525,7 +525,7 @@ a[epub|type~='noteref'] {
                 display: block;
                 -obfl-underline: ⠒;
                 page-break-after: avoid;
-                content: 'Anmerkungen' -obfl-evaluate('(if (> $volumes 1) (concat " Band " $started-volume-number) "")');
+                content: 'anmerkungen' -obfl-evaluate('(if (> $volumes 1) (concat " band " $started-volume-number) "")');
                 text-transform: auto;
             }
             /* because skip-margin-top-of-page=true currently does not work for margin-top on -obfl-on-volume-start */
@@ -664,7 +664,7 @@ frontmatter > level1:not(#cover-recto, #cover-verso) {
 
 frontmatter > level1:has(> level2),
 /*body|section*/[epub|type~='frontmatter']:has(> section) {
-    string-set: running-footer-front "Klappentexte";
+    string-set: running-footer-front "klappentexte";
 }
 
 frontmatter > level1.toc,
@@ -806,14 +806,14 @@ frontmatter level2,
    The same applies to "Erster Band" in the TOC */
 #cover-recto > .how-many-volumes {
     &::before {
-	content: -obfl-evaluate('(if (= $volumes 1) "" "In ")');
+	content: -obfl-evaluate('(if (= $volumes 1) "" "in ")');
     }
     &::after {
 	&::before {
 	    content: -obfl-evaluate('(if (= $volumes 1) "" $volumes)');
 	    text-transform: volumes;
 	}
-	content: -obfl-evaluate('(if (= $volumes 1) "" " Braillebänden")');;
+	content: -obfl-evaluate('(if (= $volumes 1) "" " braillebänden")');;
     }
     display: block;
     text-indent: 0;
@@ -826,7 +826,7 @@ frontmatter level2,
 	    content: -obfl-evaluate('(if (= $volumes 1) "" $volume)');
 	    text-transform: volume;
 	}
-	content: -obfl-evaluate('(if (= $volumes 1) "" " Band")');;
+	content: -obfl-evaluate('(if (= $volumes 1) "" " band")');;
     }
     display: block;
     text-indent: 0;

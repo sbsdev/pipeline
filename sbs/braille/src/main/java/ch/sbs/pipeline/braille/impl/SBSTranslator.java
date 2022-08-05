@@ -460,40 +460,40 @@ public interface SBSTranslator {
 					throw new RuntimeException("'" + number + "' is not a valid volume number");
 				switch (number) {
 				case "1":
-					ret = "Erster";
+					ret = "erster";
 				    break;
 				case "2":
-				    ret = "Zweiter";
+				    ret = "zweiter";
 				    break;
 				case "3":
-				    ret = "Dritter";
+				    ret = "dritter";
 				    break;
 				case "4":
-				    ret = "Vierter";
+				    ret = "vierter";
 				    break;
 				case "5":
-				    ret = "Fünfter";
+				    ret = "fünfter";
 				    break;
 				case "6":
-				    ret = "Sechster";
+				    ret = "sechster";
 				    break;
 				case "7":
-				    ret = "Siebter";
+				    ret = "siebter";
 				    break;
 				case "8":
-				    ret = "Achter";
+				    ret = "achter";
 				    break;
 				case "9":
-				    ret = "Neunter";
+				    ret = "neunter";
 				    break;
 				case "10":
-				    ret = "Zehnter";
+				    ret = "zehnter";
 				    break;
 				case "11":
-				    ret = "Elfter";
+				    ret = "elfter";
 				    break;
 				case "12":
-				    ret = "Zwölfter";
+				    ret = "zwölfter";
 				    break;
 				default:
 				    return new CSSStyledText(translateNaturalNumber(Integer.parseInt(number)), "text-transform: none");
@@ -556,40 +556,40 @@ public interface SBSTranslator {
 				String ret;
 				switch (number) {
 				case "1":
-				    ret = "Einem";
+				    ret = "einem";
 				    break;
 				case "2":
-				    ret = "Zwei";
+				    ret = "zwei";
 				    break;
 				case "3":
-				    ret = "Drei";
+				    ret = "drei";
 				    break;
 				case "4":
-				    ret = "Vier";
+				    ret = "vier";
 				    break;
 				case "5":
-				    ret = "Fünf";
+				    ret = "fünf";
 				    break;
 				case "6":
-				    ret = "Sechs";
+				    ret = "sechs";
 				    break;
 				case "7":
-				    ret = "Sieben";
+				    ret = "sieben";
 				    break;
 				case "8":
-				    ret = "Acht";
+				    ret = "acht";
 				    break;
 				case "9":
-				    ret = "Neun";
+				    ret = "neun";
 				    break;
 				case "10":
-				    ret = "Zehn";
+				    ret = "zehn";
 				    break;
 				case "11":
-				    ret = "Elf";
+				    ret = "elf";
 				    break;
 				case "12":
-				    ret = "Zwölf";
+				    ret = "zwölf";
 				    break;
 				default:
 				    return new CSSStyledText(translateNaturalNumber(Integer.parseInt(number)), "text-transform: none");
