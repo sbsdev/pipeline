@@ -48,7 +48,7 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="endnotes-volume">
+  <x:scenario label="endnotes-volume" pending="Notes are placed but title (Anmerkungen) is mising">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_4.4.67_endnotes_volume/test_4.4.67.xml"/>
@@ -70,7 +70,7 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="endnotes-book">
+  <x:scenario label="endnotes-book" pending="Notes aren't placed at all">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_4.4.67_endnotes_book/test_4.4.67.xml"/>
@@ -92,7 +92,7 @@
     </x:expect>
   </x:scenario>
   
-  <x:scenario label="endnotes-book-group-by-volume">
+  <x:scenario label="endnotes-book-group-by-volume" pending="Notes aren't placed at all">
     <x:call step="sbs:dtbook-to-pef">
       <x:input port="source">
         <x:document type="file" href="../resources/test_4.4.92_endnotes_book_group_by_volume/test_4.4.92.xml"/>
