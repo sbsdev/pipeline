@@ -31,7 +31,7 @@
         <p><xsl:value-of select="$electronic-data-thanks"/></p>
       </xsl:if>
       <xsl:variable name="year" select="tokenize(//dtb:meta[lower-case(@name)='dc:date']/@content, '-')[1]"/>
-      <p><xsl:value-of select="$production"/>:<br/><xsl:value-of select="$electronic-data-thanks"/><br/><a href="{$producer-url}" external="true"><xsl:value-of select="$producer-url-brief"/></a><br/><xsl:value-of select="concat($producer-brief,' ', $year)"/></p>
+      <p><xsl:value-of select="$production"/>:<br/><a href="{$producer-url}" external="true"><xsl:value-of select="$producer-url-brief"/></a><br/><xsl:value-of select="concat($producer-brief,' ', $year)"/></p>
     </level1>
   </xsl:template>
 
